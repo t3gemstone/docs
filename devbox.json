@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
+  "packages": [
+    "nodejs@latest"
+  ],
+  "env": {
+    "DEVBOX_COREPACK_ENABLED": "true"
+  },
+  "shell": {
+    "init_hook": [
+      "source <(devbox completion $(basename $SHELL))",
+      "export PATH=\"$PWD/node_modules/.bin:$PATH\"",
+      "export PS1='📦 shell> '"
+    ],
+    "scripts": {
+      "install": "npm install mintlify",
+      "docs": "mintlify dev"
+    }
+  }
+}

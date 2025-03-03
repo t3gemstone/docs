@@ -1,0 +1,53 @@
+{
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.autoIndent": "advanced",
+
+    "bitbake.disableConfigModification": true,
+    "bitbake.pathToBuildFolder": "${workspaceFolder}/build",
+
+    "guides.enabled": true,
+    "guides.sendUsagesAndStats": false,
+    "guides.active.hideOnSelection": false,
+    "guides.indent.hideBackgroundOnSelection": false,
+    "guides.active.gutter": true,
+    "guides.normal.hideOnSelection": false,
+    "guides.overrideDefault": true,
+    "guides.stack.enabled": true,
+    "guides.active.extraIndent": true,
+    "guides.normal.style": "dotted",
+    "guides.active.style": "dotted",
+    "guides.stack.style": "dotted",
+    "guides.normal.width": 2,
+    "guides.stack.width": 2,
+    "guides.active.width": 2,
+
+    "files.insertFinalNewline": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+    },
+    "search.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        ".devbox/*": true,
+        "build/*": true,
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/.hg/store/**": true,
+        ".devbox/*": true,
+        "build/*": true,
+    },
+    "yaml.schemas": {
+        "https://taskfile.dev/schema.json": "**/Taskfile.yml"
+    },
+}
