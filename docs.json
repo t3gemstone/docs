@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "mint",
   "name": "T3 Foundation Gemstone Boards",
   "colors": {
     "primary": "#0D9373",
@@ -177,7 +177,7 @@
   },
   "styling": {
     "codeblocks": "system",
-    "eyebrows": "breadcrumbs"
+    "eyebrows": "section"
   },
   "logo": {
     "light": "/logo/light.png",
