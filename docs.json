@@ -1,213 +1,203 @@
 {
-    "$schema": "https://mintlify.com/docs.json",
-    "theme": "mint",
-    "name": "T3 Foundation Gemstone Boards",
-    "colors": {
-        "primary": "#0D9373",
-        "light": "#55D799",
-        "dark": "#0D9373"
-    },
-    "favicon": "/favicon.svg",
-    "navigation": {
-        "languages": [
-            {
-                "language": "tr",
-                "default": true,
-                "tabs": [
-                    {
-                        "tab": "Dokümantasyon",
-                        "groups": [
-                            {
-                                "group": "Başlangıç",
-                                "pages": [
-                                    "tr/introduction",
-                                    "tr/quickstart",
-                                    "tr/development"
-                                ]
-                            },
-                            {
-                                "group": "Geliştirme Kartları",
-                                "pages": [
-                                    {
-                                        "group": "Obsidyen",
-                                        "pages": [
-                                            "tr/boards/obsidian/introduction"
-                                        ]
-                                    },
-                                    {
-                                        "group": "Beagley AI",
-                                        "pages": [
-                                            "tr/boards/beagleyai/introduction"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "tab": "Projeler",
-                        "groups": [
-                            {
-                                "group": "Tutorials",
-                                "pages": [
-                                    "tr/tutorials/introduction"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "tab": "Sdk",
-                        "groups": [
-                            {
-                                "group": "Sdk",
-                                "pages": [
-                                    "tr/sdk/introduction"
-                                ]
-                            }
-                        ]
-                    }
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "T3 Foundation Gemstone Boards",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#55D799",
+    "dark": "#0D9373"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "languages": [
+      {
+        "language": "tr",
+        "default": true,
+        "groups": [
+          {
+            "group": "Giriş",
+            "pages": [
+              "tr/introduction",
+              "tr/quickstart",
+              "tr/development"
+            ]
+          },
+          {
+            "group": "Geliştirme Kartları",
+            "pages": [
+              {
+                "group": "Obsidyen",
+                "pages": [
+                  "tr/boards/obsidian/introduction"
                 ]
-            },
-            {
-                "language": "en",
-                "tabs": [
-                    {
-                        "tab": "Documentation",
-                        "groups": [
-                            {
-                                "group": "Get Started",
-                                "pages": [
-                                    "en/introduction",
-                                    "en/quickstart",
-                                    "en/development"
-                                ]
-                            },
-                            {
-                                "group": "Boards",
-                                "pages": [
-                                    {
-                                        "group": "Obsidian",
-                                        "pages": [
-                                            "en/boards/obsidian/introduction"
-                                        ]
-                                    },
-                                    {
-                                        "group": "Beagley AI",
-                                        "pages": [
-                                            "en/boards/beagleyai/introduction"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "tab": "Tutorials",
-                        "groups": [
-                            {
-                                "group": "Tutorials",
-                                "pages": [
-                                    "en/tutorials/introduction"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "tab": "Sdk",
-                        "groups": [
-                            {
-                                "group": "Sdk",
-                                "pages": [
-                                    "en/sdk/introduction"
-                                ]
-                            }
-                        ]
-                    }
+              },
+              {
+                "group": "Turkuaz",
+                "pages": [
+                  "tr/boards/turquoise/introduction"
                 ]
-            },
-            {
-                "language": "ar",
-                "tabs": [
-                    {
-                        "tab": "الوثائق",
-                        "groups": [
-                            {
-                                "group": "ابدأ",
-                                "pages": [
-                                    "ar/introduction",
-                                    "ar/quickstart",
-                                    "ar/development"
-                                ]
-                            },
-                            {
-                                "group": "لوحات",
-                                "pages": [
-                                    {
-                                        "group": "Obsidian",
-                                        "pages": [
-                                            "ar/boards/obsidian/introduction"
-                                        ]
-                                    },
-                                    {
-                                        "group": "Beagley AI",
-                                        "pages": [
-                                            "ar/boards/beagleyai/introduction"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "tab": "دروس",
-                        "groups": [
-                            {
-                                "group": "Tutorials",
-                                "pages": [
-                                    "ar/tutorials/introduction"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "tab": "طقم تطوير البرمجيات",
-                        "groups": [
-                            {
-                                "group": "Sdk",
-                                "pages": [
-                                    "ar/sdk/introduction"
-                                ]
-                            }
-                        ]
-                    }
+              },
+              {
+                "group": "Beagleboard",
+                "pages": [
+                  "tr/boards/beagleyai/introduction"
                 ]
-            }
-        ],
-        "global": {}
-    },
-    "styling": {
-        "codeblocks": "system",
-        "eyebrows": "breadcrumbs"
-    },
-    "logo": {
-        "light": "/logo/light.svg",
-        "dark": "/logo/dark.svg"
-    },
-    "navbar": {
-        "primary": {
-            "type": "button",
-            "label": "GitHub",
-            "href": "https://github.com/t3gemstone"
-        },
-        "links": [
-            {
-                "label": "Community",
-                "href": "https://community.t3gemstone.org"
-            },
-            {
-                "label": "Shop",
-                "href": "https://magaza.deneyapkart.org/en/"
-            }
+              }
+            ]
+          },
+          {
+            "group": "Projeler",
+            "pages": [
+              "tr/tutorials/introduction"
+            ]
+          },
+          {
+            "group": "Sdk",
+            "pages": [
+              "tr/sdk/introduction"
+            ]
+          },
+          {
+            "group": "Topluluk",
+            "pages": [
+              "tr/community/introduction"
+            ]
+          }
         ]
-    }
+      },
+      {
+        "language": "en",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "en/introduction",
+              "en/quickstart",
+              "en/development"
+            ]
+          },
+          {
+            "group": "Boards",
+            "pages": [
+              {
+                "group": "Obsidian",
+                "pages": [
+                  "en/boards/obsidian/introduction"
+                ]
+              },
+              {
+                "group": "Turquoise",
+                "pages": [
+                  "en/boards/turquoise/introduction"
+                ]
+              },
+              {
+                "group": "Beagleboard",
+                "pages": [
+                  "en/boards/beagleyai/introduction"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Tutorials",
+            "pages": [
+              "en/tutorials/introduction"
+            ]
+          },
+          {
+            "group": "Sdk",
+            "pages": [
+              "en/sdk/introduction"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "en/community/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "language": "ar",
+        "groups": [
+          {
+            "group": "ابدأ",
+            "pages": [
+              "ar/introduction",
+              "ar/quickstart",
+              "ar/development"
+            ]
+          },
+          {
+            "group": "لوحات",
+            "pages": [
+              {
+                "group": "Obsidian",
+                "pages": [
+                  "ar/boards/obsidian/introduction"
+                ]
+              },
+              {
+                "group": "Turquoise",
+                "pages": [
+                  "ar/boards/turquoise/introduction"
+                ]
+              },
+              {
+                "group": "Beagleboard",
+                "pages": [
+                  "ar/boards/beagleyai/introduction"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "أدلة",
+            "pages": [
+              "ar/tutorials/introduction"
+            ]
+          },
+          {
+            "group": "أدوات التطوير",
+            "pages": [
+              "ar/sdk/introduction"
+            ]
+          },
+          {
+            "group": "مجتمع",
+            "pages": [
+              "ar/community/introduction"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "styling": {
+    "codeblocks": "system",
+    "eyebrows": "breadcrumbs"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "GitHub",
+      "href": "https://github.com/t3gemstone"
+    },
+    "links": [
+      {
+        "label": "Community",
+        "href": "https://community.t3gemstone.org"
+      },
+      {
+        "label": "Shop",
+        "href": "https://magaza.deneyapkart.org/en/"
+      }
+    ]
+  }
 }
