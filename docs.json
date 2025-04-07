@@ -7,6 +7,16 @@
     "light": "#AB1A18",
     "dark": "#AB1A18"
   },
+  "fonts": {
+    "body": {
+      "family": "Inter"
+    },
+    "heading": {
+      "family": "Inter"
+    }
+  },
+  "background": {"decoration": "windows"},
+  "banner": {"content": "Not ready yet. Wait until June 2025", "dismissible": true},
   "favicon": "/logo/favicon.png",
   "navigation": {
     "languages": [
