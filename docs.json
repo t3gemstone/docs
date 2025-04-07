@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "T3 Foundation Gemstone Boards",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#55D799",
-    "dark": "#0D9373"
+    "primary": "#AB1A18",
+    "light": "#AB1A18",
+    "dark": "#AB1A18"
   },
   "favicon": "/logo/favicon.png",
   "navigation": {
@@ -29,12 +29,6 @@
                 "group": "Obsidyen",
                 "pages": [
                   "tr/boards/obsidian/introduction"
-                ]
-              },
-              {
-                "group": "Turkuaz",
-                "pages": [
-                  "tr/boards/turquoise/introduction"
                 ]
               },
               {
@@ -62,6 +56,12 @@
             "pages": [
               "tr/community/introduction"
             ]
+          },
+          {
+            "group": "Kılavuz",
+            "pages": [
+              "tr/guides/introduction"
+            ]
           }
         ]
       },
@@ -83,12 +83,6 @@
                 "group": "Obsidian",
                 "pages": [
                   "en/boards/obsidian/introduction"
-                ]
-              },
-              {
-                "group": "Turquoise",
-                "pages": [
-                  "en/boards/turquoise/introduction"
                 ]
               },
               {
@@ -116,6 +110,12 @@
             "pages": [
               "en/community/introduction"
             ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "en/guides/introduction"
+            ]
           }
         ]
       },
@@ -137,12 +137,6 @@
                 "group": "Obsidian",
                 "pages": [
                   "ar/boards/obsidian/introduction"
-                ]
-              },
-              {
-                "group": "Turquoise",
-                "pages": [
-                  "ar/boards/turquoise/introduction"
                 ]
               },
               {
@@ -169,6 +163,12 @@
             "group": "مجتمع",
             "pages": [
               "ar/community/introduction"
+            ]
+          },
+          {
+            "group": "مرشد",
+            "pages": [
+              "ar/guides/introduction"
             ]
           }
         ]
