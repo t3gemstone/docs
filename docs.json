@@ -114,10 +114,10 @@
               "tr/tutorials/pwm",
               "tr/tutorials/imu",
               "tr/tutorials/camera",
-              "tr/tutorials/mcu",
-              "tr/tutorials/pixhawk",
               "tr/tutorials/ardupilot",
+              "tr/tutorials/mcu",
               "tr/tutorials/nuttx",
+              "tr/tutorials/pixhawk",
               "tr/tutorials/autoware"
             ]
           },
@@ -223,10 +223,10 @@
               "en/tutorials/pwm",
               "en/tutorials/imu",
               "en/tutorials/camera",
-              "en/tutorials/mcu",
-              "en/tutorials/pixhawk",
               "en/tutorials/ardupilot",
+              "en/tutorials/mcu",
               "en/tutorials/nuttx",
+              "en/tutorials/pixhawk",
               "en/tutorials/autoware"
             ]
           },
@@ -247,7 +247,10 @@
           {
             "group": "Guides",
             "pages": [
-              "en/guides/introduction"
+              "en/guides/introduction",
+              "en/guides/basic",
+              "en/guides/medium",
+              "en/guides/advanced"
             ]
           }
         ]
@@ -284,7 +287,7 @@
         "language": "ar",
         "groups": [
           {
-            "group": "ابدأ",
+            "group": "مدخل",
             "pages": [
               "ar/introduction",
               "ar/quickstart",
@@ -329,10 +332,10 @@
               "ar/tutorials/pwm",
               "ar/tutorials/imu",
               "ar/tutorials/camera",
-              "ar/tutorials/mcu",
-              "ar/tutorials/pixhawk",
               "ar/tutorials/ardupilot",
+              "ar/tutorials/mcu",
               "ar/tutorials/nuttx",
+              "ar/tutorials/pixhawk",
               "ar/tutorials/autoware"
             ]
           },
@@ -353,7 +356,10 @@
           {
             "group": "مرشد",
             "pages": [
-              "ar/guides/introduction"
+              "ar/guides/introduction",
+              "ar/guides/basic",
+              "ar/guides/medium",
+              "ar/guides/advanced"
             ]
           }
         ]
