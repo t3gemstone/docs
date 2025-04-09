@@ -1,9 +1,10 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "maple",
   "name": "T3 Foundation Gemstone Boards",
+  "favicon": "/logo/favicon.png",
   "colors": {
-    "primary": "#AB1A18",
+    "primary": "#ad152a",
     "light": "#AB1A18",
     "dark": "#AB1A18"
   },
@@ -15,17 +16,60 @@
       "family": "Inter"
     }
   },
-  "background": {"decoration": "windows"},
-  "banner": {"content": "Not ready yet. Wait until June 2025", "dismissible": true},
-  "favicon": "/logo/favicon.png",
+  "background": {
+    "decoration": "windows"
+  },
+  "banner": {
+    "content": "Not ready yet. Wait until June 2025",
+    "dismissible": true
+  },
+  "contextual": { "options": ["view","copy", "chatgpt", "claude"] },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/t3gemstone",
+      "linkedin": "https://tr.linkedin.com/company/teknofest",
+      "x": "https://x.com/teknofest",
+      "youtube": "https://www.youtube.com/@teknofest",
+      "instagram": "https://www.instagram.com/teknofest"
+    }
+  },
   "navigation": {
     "languages": [
       {
+        "global": {
+          "dropdowns": [
+            {
+              "dropdown": "Anasayfa",
+              "description": "T3 Gemstone Websitesi",
+              "href": "https://www.t3gemstone.org",
+              "icon": "firefox"
+            },
+            {
+              "dropdown": "Github",
+              "description": "Kaynak Kodlar",
+              "href": "https://github.com/t3gemstone",
+              "icon": "github"
+            },
+            {
+              "dropdown": "Topluluk",
+              "description": "Topluluk Forumları",
+              "href": "https://community.t3gemstone.org",
+              "icon": "discourse"
+            },
+            {
+              "dropdown": "Mağaza",
+              "description": "Mağaza",
+              "href": "https://magaza.deneyapkart.org",
+              "icon": "shop"
+            }
+          ]
+        },
         "language": "tr",
         "default": true,
         "groups": [
           {
             "group": "Giriş",
+            "icon": "book",
             "pages": [
               "tr/introduction",
               "tr/quickstart",
@@ -33,26 +77,48 @@
             ]
           },
           {
-            "group": "Geliştirme Kartları",
+            "group": "Geliştirme Kartı",
             "pages": [
               {
-                "group": "Obsidyen",
+                "group": "T3-GEM-O1",
                 "pages": [
                   "tr/boards/obsidian/introduction"
-                ]
-              },
-              {
-                "group": "Beagleboard",
-                "pages": [
-                  "tr/boards/beagleyai/introduction"
                 ]
               }
             ]
           },
           {
+            "group": "İşletim Sistemi",
+            "pages": [
+              "tr/distros/introduction",
+              "tr/distros/minimal",
+              "tr/distros/desktop",
+              "tr/distros/kiosk",
+              "tr/distros/components"
+            ]
+          },
+          {
+            "group": "İmaj Yazma Uygulaması",
+            "pages": [
+              "tr/imager/introduction",
+              "tr/imager/customization"
+            ]
+          },
+          {
             "group": "Projeler",
             "pages": [
-              "tr/tutorials/introduction"
+              "tr/tutorials/introduction",
+              "tr/tutorials/serial",
+              "tr/tutorials/canbus",
+              "tr/tutorials/gpio",
+              "tr/tutorials/pwm",
+              "tr/tutorials/imu",
+              "tr/tutorials/camera",
+              "tr/tutorials/ardupilot",
+              "tr/tutorials/mcu",
+              "tr/tutorials/nuttx",
+              "tr/tutorials/pixhawk",
+              "tr/tutorials/autoware"
             ]
           },
           {
@@ -64,18 +130,51 @@
           {
             "group": "Topluluk",
             "pages": [
-              "tr/community/introduction"
+              "tr/community/introduction",
+              "tr/community/standards",
+              "tr/community/faq"
             ]
           },
           {
-            "group": "Kılavuz",
+            "group": "Eğitim Kılavuzları",
             "pages": [
-              "tr/guides/introduction"
+              "tr/guides/introduction",
+              "tr/guides/basic",
+              "tr/guides/medium",
+              "tr/guides/advanced"
             ]
           }
         ]
       },
       {
+        "global": {
+          "dropdowns": [
+            {
+              "dropdown": "Homepage",
+              "description": "T3 Gemstone Web Site",
+              "href": "https://www.t3gemstone.org",
+              "icon": "firefox"
+            },
+            {
+              "dropdown": "Github",
+              "description": "Source code repository",
+              "href": "https://github.com/t3gemstone",
+              "icon": "github"
+            },
+            {
+              "dropdown": "Community",
+              "description": "Community forums",
+              "href": "https://community.t3gemstone.org",
+              "icon": "discourse"
+            },
+            {
+              "dropdown": "Store",
+              "description": "Store",
+              "href": "https://magaza.deneyapkart.org/tr/",
+              "icon": "shop"
+            }
+          ]
+        },
         "language": "en",
         "groups": [
           {
@@ -87,26 +186,48 @@
             ]
           },
           {
-            "group": "Boards",
+            "group": "Development Board",
             "pages": [
               {
-                "group": "Obsidian",
+                "group": "T3-GEM-O1",
                 "pages": [
                   "en/boards/obsidian/introduction"
-                ]
-              },
-              {
-                "group": "Beagleboard",
-                "pages": [
-                  "en/boards/beagleyai/introduction"
                 ]
               }
             ]
           },
           {
+            "group": "Operating System",
+            "pages": [
+              "en/distros/introduction",
+              "en/distros/minimal",
+              "en/distros/desktop",
+              "en/distros/kiosk",
+              "en/distros/components"
+            ]
+          },
+          {
+            "group": "Image Writer",
+            "pages": [
+              "en/imager/introduction",
+              "en/imager/customization"
+            ]
+          },
+          {
             "group": "Tutorials",
             "pages": [
-              "en/tutorials/introduction"
+              "en/tutorials/introduction",
+              "en/tutorials/serial",
+              "en/tutorials/canbus",
+              "en/tutorials/gpio",
+              "en/tutorials/pwm",
+              "en/tutorials/imu",
+              "en/tutorials/camera",
+              "en/tutorials/ardupilot",
+              "en/tutorials/mcu",
+              "en/tutorials/nuttx",
+              "en/tutorials/pixhawk",
+              "en/tutorials/autoware"
             ]
           },
           {
@@ -118,22 +239,55 @@
           {
             "group": "Community",
             "pages": [
-              "en/community/introduction"
+              "en/community/introduction",
+              "en/community/standards",
+              "en/community/faq"
             ]
           },
           {
             "group": "Guides",
             "pages": [
-              "en/guides/introduction"
+              "en/guides/introduction",
+              "en/guides/basic",
+              "en/guides/medium",
+              "en/guides/advanced"
             ]
           }
         ]
       },
       {
+         "global": {
+          "dropdowns": [
+            {
+              "dropdown": "Homepage",
+              "description": "T3 Gemstone Web Site",
+              "href": "https://www.t3gemstone.org",
+              "icon": "firefox"
+            },
+            {
+              "dropdown": "Github",
+              "description": "Source code repository",
+              "href": "https://github.com/t3gemstone",
+              "icon": "github"
+            },
+            {
+              "dropdown": "Community",
+              "description": "Community forums",
+              "href": "https://community.t3gemstone.org",
+              "icon": "discourse"
+            },
+            {
+              "dropdown": "Store",
+              "description": "Store",
+              "href": "https://magaza.deneyapkart.org/tr/",
+              "icon": "shop"
+            }
+          ]
+        },
         "language": "ar",
         "groups": [
           {
-            "group": "ابدأ",
+            "group": "مدخل",
             "pages": [
               "ar/introduction",
               "ar/quickstart",
@@ -148,19 +302,41 @@
                 "pages": [
                   "ar/boards/obsidian/introduction"
                 ]
-              },
-              {
-                "group": "Beagleboard",
-                "pages": [
-                  "ar/boards/beagleyai/introduction"
-                ]
               }
+            ]
+          },
+          {
+            "group": "نظام التشغيل",
+            "pages": [
+              "ar/distros/introduction",
+              "ar/distros/minimal",
+              "ar/distros/desktop",
+              "ar/distros/kiosk",
+              "ar/distros/components"
+            ]
+          },
+          {
+            "group": "طابعة",
+            "pages": [
+              "ar/imager/introduction",
+              "ar/imager/customization"
             ]
           },
           {
             "group": "أدلة",
             "pages": [
-              "ar/tutorials/introduction"
+              "ar/tutorials/introduction",
+              "ar/tutorials/serial",
+              "ar/tutorials/canbus",
+              "ar/tutorials/gpio",
+              "ar/tutorials/pwm",
+              "ar/tutorials/imu",
+              "ar/tutorials/camera",
+              "ar/tutorials/ardupilot",
+              "ar/tutorials/mcu",
+              "ar/tutorials/nuttx",
+              "ar/tutorials/pixhawk",
+              "ar/tutorials/autoware"
             ]
           },
           {
@@ -172,13 +348,18 @@
           {
             "group": "مجتمع",
             "pages": [
-              "ar/community/introduction"
+              "ar/community/introduction",
+              "ar/community/standards",
+              "ar/community/faq"
             ]
           },
           {
             "group": "مرشد",
             "pages": [
-              "ar/guides/introduction"
+              "ar/guides/introduction",
+              "ar/guides/basic",
+              "ar/guides/medium",
+              "ar/guides/advanced"
             ]
           }
         ]
@@ -194,19 +375,14 @@
     "dark": "/logo/dark.png"
   },
   "navbar": {
-    "primary": {
-      "type": "button",
-      "label": "GitHub",
-      "href": "https://github.com/t3gemstone"
-    },
     "links": [
       {
-        "label": "Community",
-        "href": "https://community.t3gemstone.org"
+        "label": "Teknofest",
+        "href": "https://www.teknofest.org"
       },
       {
-        "label": "Shop",
-        "href": "https://magaza.deneyapkart.org/en/"
+        "label": "T3 Foundation",
+        "href": "https://www.t3vakfi.org"
       }
     ]
   }

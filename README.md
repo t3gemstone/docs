@@ -1,8 +1,8 @@
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="./images/splash-dark.svg" />
-        <source media="(prefers-color-scheme: light)" srcset="./images/splash-light.svg" />
-        <img alt="Logo" src="./images/splash-light.svg" />
+        <source media="(prefers-color-scheme: dark)" srcset="logo/dark.png" width="40%" />
+        <source media="(prefers-color-scheme: light)" srcset="logo/light.png" width="40%" />
+        <img alt="T3 Foundation" src="logo/light.png" width="40%" />
     </picture>
 </p>
 
