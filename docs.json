@@ -8,22 +8,10 @@
     "light": "#AB1A18",
     "dark": "#AB1A18"
   },
-  "fonts": {
-    "body": {
-      "family": "Inter"
-    },
-    "heading": {
-      "family": "Inter"
-    }
-  },
   "background": {
     "decoration": "windows"
   },
-  "banner": {
-    "content": "Not ready yet. Wait until June 2025",
-    "dismissible": true
-  },
-  "contextual": { "options": ["view","copy", "chatgpt", "claude"] },
+  "contextual": { "options": ["chatgpt", "claude"] },
   "footer": {
     "socials": {
       "github": "https://github.com/t3gemstone",
@@ -373,17 +361,5 @@
   "logo": {
     "light": "/logo/light.png",
     "dark": "/logo/dark.png"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Teknofest",
-        "href": "https://www.teknofest.org"
-      },
-      {
-        "label": "T3 Foundation",
-        "href": "https://www.t3vakfi.org"
-      }
-    ]
   }
 }
