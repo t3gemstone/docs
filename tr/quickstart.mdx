@@ -3,3 +3,64 @@ title: 'Hızlı Başlangıç'
 description: 'Kart kurulumu ve keşfi'
 icon: "rocket"
 ---
+
+## 1. Kurulum
+Bu bölümde geliştirme kartının kurulumu yapılarak kullanıma hazır hale getirme adımları anlatılacaktır.
+
+<Steps>
+  <Step title="İmaj yazma uygulaması">
+    İşletim sistemini karta yüklemek ve özelleştirmek için kullanılan uygulamadır.
+  </Step>
+  <Step title="Bootmode switch değiştirme">
+    Kartı `sdcard` veya `eMMC` ile kullanabilmek için yapılacak değişikliklerdir.
+  </Step>
+  <Step title="Bilgisayar bağlantısı">
+    Geliştirme kartını ile bağlantı kurmak kurulur.
+  </Step>
+  <Step title="İmaj yazma işlemi">
+    GemImager uygulamasını kullanarak kartı hazır hale getirilir.
+  </Step>
+</Steps>
+
+<Tip>
+İmaj ismi verilen dosya genellikle .img uzantılı içerisinde linux işletim sistemine ait dosyaların,
+sürücülerin bulunduğu kısacası kartın çalışması için gerekli her şeyi barındıran dosyalardır.
+</Tip>
+
+### 1.1. İmaj yazma uygulaması
+Geliştirme kartlarında çalışacak İşletim Sistemi, Bootloader, Firmware vb. bütün çekirdek yazılımlar GemImager
+ismi verilen Gemstone Image Writer uygulaması ile yüklenmektedir. http://www.t3gemstone.org/software adresinden
+Linux, Windows veya macOS için uygulamayı indiriniz.
+
+### 1.2. Bootmode switch değiştirme
+Kart üzerinde bulunan
+
+### 1.3. Kartı bilgisayara bağlama
+Geliştirme kartını kutu içerisinden çıkardıktan sonra aşağıda gösterilen USB-C kablosunu bilgisayarınıza bağlayınız.
+
+### 1.4. İmaj yazma işlemi
+Uygulamayı açtıktan sonra
+
+## 2. Alıştırma
+Bu bölümde kartı giriş seviyesinde tanımak için izlenecek adımlar anlatılmaktadır.
+
+<Steps>
+  <Step title="VNC">
+    Bilgisayarınızın tarayıcısı ile karta bağlanma
+  </Step>
+  <Step title="SSH">
+    Terminal/Konsol uygulaması ile karta bağlanma
+  </Step>
+  <Step title="Seriport">
+    Seriport aracılığıyla karta bağlanma
+  </Step>
+</Steps>
+
+### 2.1. VNC ile tarayıcıdan uzak masaüstü bağlantısı
+Browser
+
+### 2.2. SSH ile network üzerinden bağlantı
+Ethernet
+
+### 2.3. Seriport
+TTL kablosu

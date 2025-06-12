@@ -8,6 +8,10 @@
     "light": "#AB1A18",
     "dark": "#AB1A18"
   },
+  "banner": {
+    "content": "Not ready yet. Wait until July 2025",
+    "dismissible": true
+  },
   "background": {
     "decoration": "windows"
   },
@@ -239,115 +243,6 @@
               "en/guides/basic",
               "en/guides/medium",
               "en/guides/advanced"
-            ]
-          }
-        ]
-      },
-      {
-         "global": {
-          "dropdowns": [
-            {
-              "dropdown": "Homepage",
-              "description": "T3 Gemstone Web Site",
-              "href": "https://www.t3gemstone.org",
-              "icon": "firefox"
-            },
-            {
-              "dropdown": "Github",
-              "description": "Source code repository",
-              "href": "https://github.com/t3gemstone",
-              "icon": "github"
-            },
-            {
-              "dropdown": "Community",
-              "description": "Community forums",
-              "href": "https://community.t3gemstone.org",
-              "icon": "discourse"
-            },
-            {
-              "dropdown": "Store",
-              "description": "Store",
-              "href": "https://magaza.deneyapkart.org/tr/",
-              "icon": "shop"
-            }
-          ]
-        },
-        "language": "ar",
-        "groups": [
-          {
-            "group": "مدخل",
-            "pages": [
-              "ar/introduction",
-              "ar/quickstart",
-              "ar/development"
-            ]
-          },
-          {
-            "group": "لوحات",
-            "pages": [
-              {
-                "group": "Obsidian",
-                "pages": [
-                  "ar/boards/obsidian/introduction"
-                ]
-              }
-            ]
-          },
-          {
-            "group": "نظام التشغيل",
-            "pages": [
-              "ar/distros/introduction",
-              "ar/distros/minimal",
-              "ar/distros/desktop",
-              "ar/distros/kiosk",
-              "ar/distros/components"
-            ]
-          },
-          {
-            "group": "طابعة",
-            "pages": [
-              "ar/imager/introduction",
-              "ar/imager/customization"
-            ]
-          },
-          {
-            "group": "أدلة",
-            "pages": [
-              "ar/tutorials/introduction",
-              "ar/tutorials/serial",
-              "ar/tutorials/canbus",
-              "ar/tutorials/gpio",
-              "ar/tutorials/pwm",
-              "ar/tutorials/imu",
-              "ar/tutorials/camera",
-              "ar/tutorials/ardupilot",
-              "ar/tutorials/mcu",
-              "ar/tutorials/nuttx",
-              "ar/tutorials/pixhawk",
-              "ar/tutorials/autoware"
-            ]
-          },
-          {
-            "group": "أدوات التطوير",
-            "pages": [
-              "ar/sdk/introduction"
-            ]
-          },
-          {
-            "group": "مجتمع",
-            "pages": [
-              "ar/community/introduction",
-              "ar/community/standards",
-              "ar/community/faq"
-            ]
-          },
-          {
-            "group": "مرشد",
-            "pages": [
-              "ar/guides/introduction",
-              "ar/guides/basic",
-              "ar/guides/medium",
-              "ar/guides/advanced"
             ]
           }
         ]
