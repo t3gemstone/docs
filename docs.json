@@ -108,9 +108,7 @@
               "tr/tutorials/camera",
               "tr/tutorials/ardupilot",
               "tr/tutorials/mcu",
-              "tr/tutorials/nuttx",
-              "tr/tutorials/pixhawk",
-              "tr/tutorials/autoware"
+              "tr/tutorials/nuttx"
             ]
           },
           {
@@ -217,9 +215,7 @@
               "en/tutorials/camera",
               "en/tutorials/ardupilot",
               "en/tutorials/mcu",
-              "en/tutorials/nuttx",
-              "en/tutorials/pixhawk",
-              "en/tutorials/autoware"
+              "en/tutorials/nuttx"
             ]
           },
           {
