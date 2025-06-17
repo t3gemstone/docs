@@ -8,6 +8,21 @@
     "light": "#AB1A18",
     "dark": "#AB1A18"
   },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "fonts": {
+    "body": {
+      "family": "InterVariable",
+      "format": "woff2",
+      "source": "https://rsms.me/inter/font-files/InterVariable.woff2?v=4.1"
+    },
+    "heading": {
+      "family": "InterVariable",
+      "format": "woff2",
+      "source": "https://rsms.me/inter/font-files/InterVariable.woff2?v=4.1"
+    }
+  },
   "banner": {
     "content": "Not ready yet. Wait until July 2025",
     "dismissible": true
@@ -61,7 +76,6 @@
         "groups": [
           {
             "group": "Giriş",
-            "icon": "book",
             "pages": [
               "tr/introduction",
               "tr/quickstart",
@@ -69,12 +83,25 @@
             ]
           },
           {
-            "group": "Geliştirme Kartı",
+            "group": "Geliştirme Kartları",
             "pages": [
               {
                 "group": "T3-GEM-O1",
                 "pages": [
-                  "tr/boards/obsidian/introduction"
+                  "tr/boards/obsidian/introduction",
+                  "tr/boards/obsidian/tiam67",
+                  {
+                    "group": "Çevresel Aygıtlar",
+                    "pages": [
+                      "tr/boards/obsidian/peripherals/serial",
+                      "tr/boards/obsidian/peripherals/canbus",
+                      "tr/boards/obsidian/peripherals/gpio",
+                      "tr/boards/obsidian/peripherals/imu",
+                      "tr/boards/obsidian/peripherals/pwm",
+                      "tr/boards/obsidian/peripherals/camera",
+                      "tr/boards/obsidian/peripherals/mcu"
+                    ]
+                  }
                 ]
               }
             ]
@@ -93,45 +120,49 @@
             "group": "İmaj Yazma Uygulaması",
             "pages": [
               "tr/imager/introduction",
+              "tr/imager/emmc",
               "tr/imager/customization"
             ]
           },
           {
             "group": "Projeler",
+            "icon": "code",
             "pages": [
-              "tr/tutorials/introduction",
-              "tr/tutorials/serial",
-              "tr/tutorials/canbus",
-              "tr/tutorials/gpio",
-              "tr/tutorials/pwm",
-              "tr/tutorials/imu",
-              "tr/tutorials/camera",
-              "tr/tutorials/ardupilot",
-              "tr/tutorials/mcu",
-              "tr/tutorials/nuttx"
-            ]
-          },
-          {
-            "group": "Sdk",
-            "pages": [
-              "tr/sdk/introduction"
+              "tr/projects/introduction",
+              "tr/projects/ardupilot",
+              "tr/projects/nuttx",
+              "tr/projects/autoware"
             ]
           },
           {
             "group": "Topluluk",
+            "icon":"layer-group",
             "pages": [
               "tr/community/introduction",
               "tr/community/standards",
-              "tr/community/faq"
+              "tr/community/faq",
+              "tr/changelog"
             ]
           },
           {
             "group": "Eğitim Kılavuzları",
+            "icon":"books",
             "pages": [
               "tr/guides/introduction",
               "tr/guides/basic",
               "tr/guides/medium",
               "tr/guides/advanced"
+            ]
+          },
+          {
+            "group": "Sdk",
+            "icon":"laptop-code",
+            "pages": [
+              "tr/sdk/introduction",
+              "tr/sdk/distro",
+              "tr/sdk/yocto",
+              "tr/sdk/uboot",
+              "tr/sdk/kernel"
             ]
           }
         ]
@@ -141,7 +172,7 @@
           "dropdowns": [
             {
               "dropdown": "Homepage",
-              "description": "T3 Gemstone Web Site",
+              "description": "T3 Gemstone Homepage",
               "href": "https://www.t3gemstone.org",
               "icon": "firefox"
             },
@@ -168,7 +199,7 @@
         "language": "en",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Getting Started",
             "pages": [
               "en/introduction",
               "en/quickstart",
@@ -176,12 +207,24 @@
             ]
           },
           {
-            "group": "Development Board",
+            "group": "Development Boards",
             "pages": [
               {
                 "group": "T3-GEM-O1",
                 "pages": [
-                  "en/boards/obsidian/introduction"
+                  "en/boards/obsidian/introduction",
+                  {
+                    "group": "Peripherals",
+                    "pages": [
+                      "en/boards/obsidian/peripherals/serial",
+                      "en/boards/obsidian/peripherals/canbus",
+                      "en/boards/obsidian/peripherals/gpio",
+                      "en/boards/obsidian/peripherals/imu",
+                      "en/boards/obsidian/peripherals/pwm",
+                      "en/boards/obsidian/peripherals/camera",
+                      "en/boards/obsidian/peripherals/mcu"
+                    ]
+                  }
                 ]
               }
             ]
@@ -200,45 +243,49 @@
             "group": "Image Writer",
             "pages": [
               "en/imager/introduction",
+              "tr/imager/emmc",
               "en/imager/customization"
             ]
           },
           {
-            "group": "Tutorials",
+            "group": "Projects",
+            "icon": "code",
             "pages": [
-              "en/tutorials/introduction",
-              "en/tutorials/serial",
-              "en/tutorials/canbus",
-              "en/tutorials/gpio",
-              "en/tutorials/pwm",
-              "en/tutorials/imu",
-              "en/tutorials/camera",
-              "en/tutorials/ardupilot",
-              "en/tutorials/mcu",
-              "en/tutorials/nuttx"
-            ]
-          },
-          {
-            "group": "Sdk",
-            "pages": [
-              "en/sdk/introduction"
+              "en/projects/introduction",
+              "en/projects/ardupilot",
+              "en/projects/nuttx",
+              "en/projects/autoware"
             ]
           },
           {
             "group": "Community",
+            "icon":"layer-group",
             "pages": [
               "en/community/introduction",
               "en/community/standards",
-              "en/community/faq"
+              "en/community/faq",
+              "en/changelog"
             ]
           },
           {
             "group": "Guides",
+            "icon":"books",
             "pages": [
               "en/guides/introduction",
               "en/guides/basic",
               "en/guides/medium",
               "en/guides/advanced"
+            ]
+          },
+          {
+            "group": "Sdk",
+            "icon": "laptop-code",
+            "pages": [
+              "en/sdk/introduction",
+              "en/sdk/distro",
+              "en/sdk/yocto",
+              "en/sdk/uboot",
+              "en/sdk/kernel"
             ]
           }
         ]
