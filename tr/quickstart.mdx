@@ -4,9 +4,18 @@ description: 'Kart Kurulumu ve Keşfi'
 icon: "rocket"
 ---
 
-Bu bölümde Gemstone geliştirme kartının ilk kurulumu ve kullanıma hazır hale getirilmesi için gerekli 
-başlangıç adımları açıklanacak, akabinde bilgisayar ile bağlantısının nasıl sağlandığı gösterilecektir.
-Dokümantasyonun ilerleyen bölümlerinde basitten karmaşığa doğru proje/yazılım geliştirme süreçleri irdelenecektir.
+Bu bölümde Gemstone geliştirme kartının **ilk kurulumu** ve kullanıma hazır hale getirilmesi için gerekli 
+başlangıç adımları açıklanarak, Gemstone'a bilgisayarınızdan nasıl bağlanabileceğiniz gösterilecektir.
+Dokümantasyonun ilerleyen bölümlerinde yazılım/donanım geliştirme süreçleri, çeşitli proje örnekleri 
+irdelenecektir.
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız.
+
+* Gemstone Imager isimli yazılım yükleme uygulamasını indirme ve kullanma
+* Yeni bir Gemstone geliştirme kartını, gerekli yazılımları kurarak hazır hale getirme
+* Gemstone'a bağlanarak sistemi kullanma
+</Tip>
 
 ### Kutu İçeriği
 
@@ -18,31 +27,31 @@ Kurulum için ihtiyaç duyulan donanımlar aşağıda belirtilmiştir.
 
 <Accordion title="Usb Type-C kablosu">
   <Frame>
-    <img height="800" width="400" src="/images/usb-type-c-cable.jpg" />
+    <img height="600" width="800" src="/images/usb-type-c-cable.jpg" />
   </Frame>
 </Accordion>
 
 <Accordion title="Sdcard (32GB veya üstü)">
   <Frame caption="Herhangi bir marka sdcard">
-    <img height="800" width="400" src="/images/sandisk-sdcard.png" />
+    <img height="600" width="800" src="/images/sandisk-sdcard.png" />
   </Frame>
 </Accordion>
 
 <Accordion title="Sdcard okuyucu">
   <Frame caption="Herhangi bir marka sdcard okuyucu">
-    <img height="800" width="400" src="/images/sdcard-reader.jpg" />
+    <img height="600" width="800" src="/images/sdcard-reader.jpg" />
   </Frame>
 </Accordion>
 
 <Accordion title="Ethernet kablosu">
   <Frame caption="Bilgisayar ve Gemstone kartını birbirine bağlayacak ethernet kablosu">
-    <img height="800" width="400" src="/images/ethernet-cable-wire.png" />
+    <img height="600" width="800" src="/images/ethernet-cable-wire.png" />
   </Frame>
 </Accordion>
 
-<Accordion title="TTL USB dönüştürücü (Opsiyonel)">
+<Accordion title="USB TTL dönüştürücü (Opsiyonel)">
   <Frame caption="Başlangıç için gerekli değildir. Ethernet kablosunun olmadığı durumlarda Seriport aracılığıyla kart bağlantısı için kullanılmaktadır.">
-    <img height="800" width="400" src="/images/pl2303-ta-usb-ttl-seri.jpg" />
+    <img height="600" width="800" src="/images/pl2303-ta-usb-ttl-seri.jpg" />
   </Frame>
 </Accordion>
 
@@ -51,7 +60,7 @@ kartı doğrudan bir bilgisayar olarak kullanmanız da mümkündür.
 
 <Accordion title="HDMI kablo">
   <Frame caption="HDMI to HDMI veya HDMI to Mini Display">
-    <img height="800" width="400" src="/images/hdmi-to-hdmi-cable.jpg" />
+    <img height="600" width="800" src="/images/hdmi-to-hdmi-cable.jpg" />
   </Frame>
 </Accordion>
 <Accordion title="Monitör + Klavye + Mouse">.</Accordion>
@@ -63,23 +72,23 @@ kartı doğrudan bir bilgisayar olarak kullanmanız da mümkündür.
 
 # 1. Kurulum
 
-Aşağıda dört başlık halinde sıralanan işlemler yapılarak kartınız hazır hale getirilecektir.
+Aşağıda dört ana başlık halinde sıralanan işlemler yapılarak kartınız hazır hale getirilecektir.
 
-<Tip>
-İmaj ifadesi genellikle .img uzantılı, içerisinde linux işletim sistemine ait dosyaların,
-sürücülerin bulunduğu kısacası kartın çalışması için gerekli her şeyi barındıran dosyayı ifade etmektedir.
-</Tip>
+<Note>İmaj ifadesi genellikle .img uzantılı, içerisinde linux işletim sistemine ait dosyaların, sürücülerin
+bulunduğu kısacası kartın çalışması için gerekli her şeyi barındıran dosyayı ifade etmektedir.
+https://packages.t3gemstone.org/images/ubuntu/jammy/t3-gem-o1 adresindeki dosyalardan minimal isimli olanı
+indirerek inceleyebilirsiniz.</Note>
 
 <Steps>
   <Step title="İmaj yazma uygulamasını indir">
-    Gemstone Imager uygulamasını İşletim sistemini karta yüklemek ve sistemi
-    özelleştirmek için kullanılan masaüstü uygulamasıdır.
+    İşletim sistemini karta yüklemek ve özelleştirmek için kullanılan masaüstü uygulamasını indirme işlemidir.
   </Step>
   <Step title="Geliştirme kartına imaj yaz">
     Gemstone Imager uygulamasını kullanarak karta yazılım yükleme ve hazır hale getirme işlemidir.
   </Step>
   <Step title="Bootmode switch değiştirerek geliştirme kartının sdcard ile açılmasını sağla">
     Geliştirme kartı opsiyonel olarak `sdcard` veya `eMMC` ile kullanılabilmektedir.
+    Bu seçimin nasıl yapıldığı gösterilir.
   </Step>
   <Step title="Bilgisayar ve geliştirme kartı arasında bağlantı kur">
     Geliştirme kartı ile bağlantı kurmak ve içerisindeki sisteme erişmek için yapılacak işlemlerdir.
@@ -96,7 +105,10 @@ bilgisayarınıza uygun (Linux, Windows veya macOS) olan uygulamayı indiriniz.
 
 ![Browser](/images/browser.png)
 
-<Note>Doküman boyunca imaj/işletim sistemi yazma uygulaması için Gemstone Imager ve Gemstone Image Writer ifadeleri kullanılacaktır.</Note>
+<Note>
+Doküman boyunca imaj/işletim sistemi yazma uygulaması için Gemstone Imager ve Gemstone Image Writer
+ifadeleri kullanılacaktır.
+</Note>
 
 ### 1.2. İmaj yazma işlemi
 
@@ -146,30 +158,34 @@ Geliştirme kartı seçimi yapıldıktan sonra (Gemstone board / Choose Device) 
   <img src="/images/gem-imager/c-select-image.png" />
 </Frame>
 
-Gemstone geliştirme kartlarında Ubuntu/Debian tabanlı işletim sistemi kullanılmaktadır ve projelerin ihtiyaçlarına göre
-farklı varyasyonları mevcuttur. Dokümanın ilerleyen bölümlerinde hangi sürümün hangi çalışmalarda kullanılacağı
-açıklanmış olmakla birlikte özet olarak aşağıda listelenmiştir;
+Gemstone'da Ubuntu/Debian tabanlı işletim sistemi kullanılmaktadır ve projelerin ihtiyaçlarına göre
+farklı varyasyonları mevcuttur. Dokümanın [ilerleyen bölümlerinde](./distros/introduction) hangi
+sürümün hangi çalışmalarda kullanılacağı açıklanmış olmakla birlikte özet olarak aşağıda listelenmiştir;
 
 * **Desktop:** Tarayıcı (Firefox), Metin Editörü, Kod Geliştirme
 Ortamı (Vscode), Video Oynatıcı (VLC) gibi yazılımları barındıran, bilgisayar olarak kullanılabilen imajdır.
-Aşağıdaki iki imaj türüne göre çok daha yüksek boyutludur. Çoğunlukla prototip, test vb. geliştirme faaliyetlerinde
+Aşağıdaki iki imaj türüne göre daha yüksek boyutludur. Çoğunlukla prototip, test vb. geliştirme faaliyetlerinde
 kullanılmaktadır. (Robotik çalışmalar için Minimal isimli imaj daha uygundur.)
 
-* **Kiosk:** İçerisinde Metin editörü veya Desktop imajındaki gibi uygulamaların masaüstü ortamının olmadığı
-çoğunlukla dokunmatik panel gibi amaçlarla kullanılan küçük boyutlu ve grafik arayüzünü destekleyen imajdır.
+* **Kiosk:** İçerisinde Metin editörü gibi veya Desktop imajında bulunan uygulamaların, masaüstü ortamının **olmadığı**
+çoğunlukla dokunmatik panel gibi amaçlarla kullanılan grafik arayüzünü destekleyen imajdır. (Örneğin Tesla
+otomobillerinde Medya kontrolü için kullanılan dokunmatik panel veya Teknofest yarışmalarında binek araçların
+içerisinde bulunan kontrol ekranı gibi.)
 
 * **Minimal:** Bu imaj ise gerçek zamanlı linux çekirdeği barındıran ve IoT, Robotik, Otopilot uygulamaları için
-özelleştirilmiş çok düşük boyutlu optimize edilmiş imajdır.
+özelleştirilmiş çok düşük boyutlu optimize edilmiş imajdır. Gömülü Yazılım Sistem geliştirme projelerinde tercih
+edilebilecek güçlü ve deterministik bir yapıya sahiptir.
 
 #### 1.2.5. Depolama aygıtı (Sdcard/eMMC) seç
 
-Sdcard ve okuyucunuzu bilgisayarınıza bağladıktan sonra aşağıdaki ekran görüntüsündeki gibi görüntülenecektir.
+Sdcard ve okuyucunuzu bilgisayarınıza bağladıktan sonra Gemstone Imager uygulamasını aşağıdaki 
+ekran görüntüsündeki ilgili aygıtı listeleyecektir.
 
 <Frame caption="Sdcard veya eMMC seçimi">
   <img src="/images/gem-imager/d-select-storage.png" />
 </Frame>
 
-Üç seçeneği de tamamladıktan sonra aşağıdaki gibi Next butonuna tıklayınız.
+Üç seçeneği de tamamladıktan sonra aşağıdaki gibi **Next butonuna** tıklayınız.
 
 <Frame>
   <img src="/images/gem-imager/g-prepare.png" />
@@ -179,8 +195,8 @@ Sdcard ve okuyucunuzu bilgisayarınıza bağladıktan sonra aşağıdaki ekran g
 
 Yukarıdaki seçimler tamamlandıktan sonra Next butonuna tıkladığınızda otomatik olarak Sistem Özelleştirme ekranı
 açılacaktır. Bu ekran kurulumu yapılacak kartın giriş şifresi ve bir takım servislerin otomatik başlatılabilmesi
-için kullanılmakta olup dokümanın [ilerleyen bölümlerinde](./imager/introduction) detaylı açıklamalar yapılacaktır. Burada yalnızca kurulum
-için ihtiyaç duyulduğu kadarı anlatılacaktır. 
+için kullanılmakta olup dokümanın [ilerleyen bölümlerinde](./imager/introduction) detaylı açıklamalar yapılacaktır.
+Burada yalnızca kurulum için yeterli olduğu kadarına değinilmiştir. 
 
 <Accordion title="Genel Ayarlar">
   <Frame>
@@ -218,12 +234,12 @@ için ihtiyaç duyulduğu kadarı anlatılacaktır.
 
 </Accordion>
 
-Özelleştirme işlemi sonrası "Save" butonuna tıkladığınızda imaj yazma işlemini otomatik olarak başlatılacaktır.
+Özelleştirme işlemi sonrası **Save** butonuna tıkladığınızda imaj yazma işlemini otomatik olarak başlatılacaktır.
 
 #### 1.2.7. Yazma işlemini başlat
 
-Yukarıdaki bütün işlemler tamamlandıktan imaj yazma işlemine başlarken kullandığınız işletim sistemine göre onay
-vermeniz istenecektir ve sdcard yazma işlemi başlatılacaktır.
+Yukarıdaki bütün işlemler tamamlandıktan imaj yazma işlemine başlarken onay vermeniz istenecektir
+ve sdcard yazma işlemi başlatılacaktır.
 
 <Accordion title="Yazma işlemini başlat">
   <Frame>
@@ -269,7 +285,7 @@ hareketli bir platform üzerinde kartınızı kullanacaksanız eMMC tercih edilm
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-| Boot modu         | Açıklama |
+| Boot modu         | Görsel   |
 | :---------------- | :------- |
 | Sdcard            |          |
 | eMMC              |          |
@@ -279,7 +295,7 @@ hareketli bir platform üzerinde kartınızı kullanacaksanız eMMC tercih edilm
 ### 1.4. Kartı bilgisayara bağla
 
 Geliştirme kartınına, aşağıdaki fotoğrafta gösterildiği şekilde kutu içerisinden çıkan USB-C ve ethernet kablosunu
-bilgisayarınıza bağladıktan sonra kartı keşfetme aşamasına hazırsınız!
+bilgisayarınıza bağladıktan sonra kartı keşfetmek için hazırsınız!
 
 <Frame caption="Todo: Sdcard ve okuyucunun bilgisayara bağlanması">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -292,9 +308,19 @@ Aşağıdaki adımlar Gemstone geliştirme kartınızı kendi bilgisayarınız a
 satırından işlem yapabilmek için). Şayet Monitör, Klavye ve Fare bağlama imkanınız varsa kartı bu
 yöntemle de keşfedebilirsiniz!
 
+<Accordion title="Terminal Nedir?">
+Terminal veya Konsol (Console) kavramı grafiksel arayüzün, pencere ve butonların olmadığı komut satırı ile
+kod yazarak işlem yapabildiğiniz yöntemi (Command Line Interface/Komut satırı arayüzü) ifade etmektedir.
+Windows işletim sisteminde bulunan **CMD, Powershell** veya Unix/Posix temelli işletim sistemlerindeki **Terminal**
+uygulaması örnek olarak verilebilir. Aşağıda örnek ekran görüntüsü verilmiştir.
+<Frame>
+  <img height="600" width="800" src="/images/terminal-windows.png" />
+</Frame>
+</Accordion>
+
 Kurulum sonrası bağlamış olduğunuz Ethernet ve Usb Type-C aracılığıyla veya 
 [Sistem Özelleştir](./quickstart#1-2-6-sistem-özelleştir) bölümünde anlatıldığı üzere Wifi ayarları
-yapılmışsa, kartınızın internet bağlantısının olup olmadığı yeşil ledin sürekli yanmasından anlayabilisiniz.
+yapılmışsa, kartınızın ağ bağlantısının olup olmadığı yeşil ledin sürekli yanmasından anlayabilisiniz.
 Eğer ağ bağlantısı yoksa bu led yanıp sönecektir, IP adresi almışsa sürekli yanacaktır.
 
 <Frame caption="Todo: Sdcard ve okuyucunun bilgisayara bağlanması">
@@ -321,20 +347,20 @@ bölümünde bulunan Servisler alanındaki "Gadget"lar aktifleştirildiğinde TT
 olmaktadır. Fakat geliştirme sırasında beklenmedik bir durum söz konusu olduğunda bu özellikler çalışmazsa USB TTL
 kablosu ile de karta bağlanmak mümkündür.
 
-Bu yöntem ile bağlantı sağlamanın bir avantajı Gemstone kartlarında bulunan U-Boot ismi verilen ön yükleyici konsol
-çıktılarını da görüntülemenizin mümkün olmasıdır. Ethernet üzerinden bağlantı sağladığınızda Ağ ilklendirme yapılana
-kadar konsolda veri gözükmezken TTL ile başlangıç aşamasından itibaren gözükür.
+Bu yöntem ile bağlantı sağlamanın bir avantajı Gemstone kartlarında bulunan U-Boot ismi verilen ön yükleyicinin (Bootloader),
+konsol çıktılarını da görüntülemenizin mümkün olmasıdır. Ethernet üzerinden bağlantı sağladığınızda Ağ ilklendirme yapılana
+kadar konsolda çıktılar gözükmezken, TTL ile başlangıç aşamasından itibaren gözükür.
 
-#### 2.1.1. Konsol/Terminal Uygulaması
+#### 2.1.1. Terminal/Konsol Uygulaması
 
-Konsol/Terminal işlemleri için Windows işletim sisteminde [Putty](https://www.putty.org/), Linux'ta Gnome Terminal
+Terminal/Konsol işlemleri için Windows işletim sisteminde [Putty](https://www.putty.org/), Linux'ta Gnome Terminal
 macOS'ta ise Terminal kullanmanız mümkündür. Bu dokümanda her üç işletim sisteminde de çalışan [Tabby.sh](https://tabby.sh/)
 isimli uygulama kullanılacaktır.
 
 #### 2.1.2. Uygulamayı indir
 
-[Tabby.sh](https://tabby.sh/) Web sitesine giderek "Download" butonuna tıklayıp kullandığınız işletim sistemine uygun
-yazılımı indiriniz.
+[Tabby.sh](https://tabby.sh/) Web sitesine giderek **Download** butonuna tıklayarak kullandığınız işletim
+sistemine uygun yazılımı indiriniz.
 
 <Frame caption="https://github.com/Eugeny/tabby/releases" >
   <img src="/images/tabbysh-terminal-website.png" />
@@ -353,6 +379,24 @@ Browser
 ### 2.3. SSH ile network üzerinden bağlantı
 
 Ethernet
+
+### 2.4. Gemstone işletim sistemini güncelle
+
+Gemstone geliştirme kartları özelleştirilmiş gerçek zamanlı linux çekirdeği barındıran Debian/Ubuntu tabanlı işletim
+içermektedir. GemImager uygulaması ile en son yüklemiş olduğunuz sürüm güncel olmakla birlikte aşağıdaki yöntemle
+-şayet varsa- kurulu olan Ubuntu/Debian paketlerini güncelleyebilirsiniz.
+
+<Note>
+Not: Aşağıdaki işlemler karta tarayıcıdan uzak masaüstü ile bağlandığınızda üst menüde bulunan Terminal
+simgesine tıklayarak komut satırından veya SSH/Konsol aracılığıyla kendi bilgisayarınızdan açtığınız
+Terminal ile kart üzerinde yapılmalıdır. Daha önce Linux kullanımını tecrübe etmediyseniz
+[Eğitim Kılavuzlarında](./guides/introduction) bulunan [Başlangıç bölümü](./guides/basic)
+okuyarak deneyim kazanabilirsiniz.
+</Note>
+
+```bash
+sudo apt update && sudo apt upgrade
+```
 
 ## 3. Sonuç
 
