@@ -94,18 +94,20 @@
               {
                 "group": "T3-GEM-O1",
                 "pages": [
-                  "tr/boards/obsidian/introduction",
-                  "tr/boards/obsidian/tiam67",
+                  "tr/boards/o1/introduction",
+                  "tr/boards/o1/tiam67",
                   {
-                    "group": "Çevresel Aygıtlar",
+                    "group": "Bileşenler",
                     "pages": [
-                      "tr/boards/obsidian/peripherals/serial",
-                      "tr/boards/obsidian/peripherals/canbus",
-                      "tr/boards/obsidian/peripherals/gpio",
-                      "tr/boards/obsidian/peripherals/imu",
-                      "tr/boards/obsidian/peripherals/pwm",
-                      "tr/boards/obsidian/peripherals/camera",
-                      "tr/boards/obsidian/peripherals/mcu"
+                      "tr/boards/o1/peripherals/serial",
+                      "tr/boards/o1/peripherals/canbus",
+                      "tr/boards/o1/peripherals/gpio",
+                      "tr/boards/o1/peripherals/i2c",
+                      "tr/boards/o1/peripherals/eeprom",
+                      "tr/boards/o1/peripherals/imu",
+                      "tr/boards/o1/peripherals/pwm",
+                      "tr/boards/o1/peripherals/camera",
+                      "tr/boards/o1/peripherals/mcu"
                     ]
                   }
                 ]
@@ -174,7 +176,8 @@
             "group": "Diğer",
             "pages": [
               "tr/license",
-              "tr/changelog"
+              "tr/changelog",
+              "tr/troubleshoting"
             ]
           }
         ]
@@ -224,17 +227,19 @@
               {
                 "group": "T3-GEM-O1",
                 "pages": [
-                  "en/boards/obsidian/introduction",
+                  "en/boards/o1/introduction",
                   {
-                    "group": "Peripherals",
+                    "group": "Components",
                     "pages": [
-                      "en/boards/obsidian/peripherals/serial",
-                      "en/boards/obsidian/peripherals/canbus",
-                      "en/boards/obsidian/peripherals/gpio",
-                      "en/boards/obsidian/peripherals/imu",
-                      "en/boards/obsidian/peripherals/pwm",
-                      "en/boards/obsidian/peripherals/camera",
-                      "en/boards/obsidian/peripherals/mcu"
+                      "en/boards/o1/peripherals/serial",
+                      "en/boards/o1/peripherals/canbus",
+                      "en/boards/o1/peripherals/gpio",
+                      "en/boards/o1/peripherals/i2c",
+                      "en/boards/o1/peripherals/eeprom",
+                      "en/boards/o1/peripherals/imu",
+                      "en/boards/o1/peripherals/pwm",
+                      "en/boards/o1/peripherals/camera",
+                      "en/boards/o1/peripherals/mcu"
                     ]
                   }
                 ]
@@ -304,7 +309,8 @@
             "group": "Other",
             "pages": [
               "en/license",
-              "en/changelog"
+              "en/changelog",
+              "en/troubleshoting"
             ]
           }
         ]

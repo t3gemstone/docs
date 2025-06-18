@@ -4,7 +4,7 @@ description: 'Ekosistem ve Geliştirme'
 icon: "gear-code"
 ---
 
-Bu bölümde T3 Gemstone projesinin kapsamının ne olduğu, ne gibi çalışmalar yapabileceğiniz,
+Bu bölümde T3 Gemstone projesinin kapsamının ne olduğu, ne gibi çalışmalar yapılabileceği,
 yazılım geliştirmek için yöntemler ve ekosistemin tanıtımına yönelik bilgiler bulunmaktadır.
 
 <Tip>
@@ -12,13 +12,13 @@ Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
 
 * Gemstone geliştirme kartının Donanım ve Yazılım çalışmalarına ait bileşenlerin neler olduğu,
 * Kart üzerinde veya Ubuntu bir bilgisayar üzerinde yazılım derleme yöntemleri
-* Github depolarında bulunan projelerin neler olduğu
+* Github repolarında bulunan projelerin neler olduğu
 </Tip>
 
 # 1. Ekosistem
 
-Gemstone projesi tümüyle açık kaynak yazılım ve donanım bileşenlerine sahiptir. Bu, geliştirme kartının elektronik
-tasarımlarını kullanarak kendi sistemlerinize özgü yeniden tasarlayabileceğiniz, yazılım bileşenleri ve kodlarda
+Gemstone projesi tümüyle açık kaynak yazılım ve donanım bileşenlerine sahiptir. Bu; geliştirme kartının elektronik
+tasarımlarını kullanarak kendi sistemlerinize göre yeniden tasarlayabileceğiniz, yazılım bileşenleri ve kodlarda
 değişiklik yaparak özgürce kullanabileceğiniz anlamına gelmekte olup [Son kullanıcı lisansı](./license) bölümünde
 ne gibi hususlara dikkat edilmesi gerektiği belirtilmiştir.
 
@@ -26,34 +26,140 @@ ne gibi hususlara dikkat edilmesi gerektiği belirtilmiştir.
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-Gemstone'nun ne gibi projelerde kullanılabileceğini örneklemek için aşağıda
-özet biçiminde bir liste verilmiştir ve başka nelerin eklenebileceği konusunda 
-katkılarınız beklenmektedir!
+Geliştirme kartlarının hangi projelerde kullanılabileceğini örneklemek için aşağıda bir liste verilmiştir ve
+başka nelerin eklenebileceği konusunda katkılarınız beklenmektedir!
 
-1. İnsansız hava ve kara aracı uçuş kontrol ve yardımcı görev bilgisayarı
-2. Sualtı araçlar, tarımsal araçlar, sanal gerçeklik gözlükleri, akıllı ev çalışmaları (örneğin diyafon), 
-   IoT, Robotik, Endüstriyel kollar.
+1. İnsansız hava, kara, deniz altı aracı uçuş kontrol ve yardımcı görev bilgisayarı
+2. Tarımsal araçlar, sanal gerçeklik gözlükleri, akıllı ev çalışmaları, IoT, Robotik, Endüstriyel kollar.
 3. Görüntü işleme ve yapay zekayı birlikte kullanan kamera sistemleri
 4. Otonom robotik çalışmalar için gömülü bilgisayar 
 5. Komuta kontrol sistemlerinde bulunan dokunmatik paneller ve kiosk ekranları
 
-Listede bulunan çalışmaların onlarca farklı örneği ve yeni teknoloji haberleri
-https://community.t3gemstone.org/c/blog/71 adresinde düzenli olarak yayınlanmaktadır.
+Listede bulunan çalışmaların onlarca farklı örneği ve yeni teknoloji haberleri 
+[Topluluk Forumlarında](https://community.t3gemstone.org/c/blog/71) düzenli olarak yayınlanmaktadır.
 
 ### 1.1. Geliştirme Kartı / Gömülü Bilgisayar
 
+Gemstone ürünleri ekseriyetle gömülü teknoloji çalışmalarında kullanılmakta olup çeşitli sensörler, çevresel
+aygıtlarla donatılmıştır. Seri haberleşme, CanBUS, i2c, SPI, Ethernet gibi iletişim yöntemleriyle; sensör ve
+kameralardan verileri aldıktan sonra işleyerek çeşitli motorların, <Tooltip tip="Actuator">eyleyicilerin</Tooltip>
+kontrol edilmesi gibi projeler yapılması mümkündür.
+
+T3-GEM-O1 isimli geliştirme kartının donanım tasarımları (PCB vb.)
+[bu adreste](http://github.com/t3gemstone/hardware) mevcuttur. Üzerindeki donanımların nasıl kullanılacağına dair
+örnekler ise sonraki ([Geliştirme Kartları](./boards/o1/introduction)) bölümlerde anlatılmıştır.
+
+<Frame caption="Todo: Kart tasarım sürecini PCB ve KiCAD gibi yazılımları özetleyen görsel">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
 ### 1.2. İşletim Sistemi
 
-### 1.3. SDK (Software Development Kit / Geliştirici Araçları)
+Gemstone üzerinde GNU/Linux işletim sistemi bulunmaktadır. [Çekirdek (Kernel)](https://github.com/t3gemstone/linux),
+[Önyükleyici (Bootloader/U-Boot)](https://github.com/t3gemstone/u-boot),
+[Dağıtım (Distro)](https://github.com/t3gemstone/sdk/tree/main/distro), Firmware gibi bileşenleri barındırmakta
+olup; sistem bir araya getirilirken [Yocto Project](https://preprod.kureansiklopedi.com/tr/detay/yocto-projesi-the-yocto-project-b9e7e) ve 
+[Debootstrap](https://github.com/t3gemstone/debos) gibi araçlar kullanılmıştır.
 
-### 1.4. Github Projeleri
+GNU/Linux dağıtımı ([Distro](https://github.com/t3gemstone/sdk/tree/main/distro)) olarak Debian, Ubuntu, Poky
+kullanılmıştır. Debian veya Ubuntu kullanınımı, kart ihtiyaçlarına göre değişkenlik gösterebileceği için farklı
+opsiyon olarak sunulmuştur.
+
+GNU/Linux işletim sistemlerinde yazılım güncellemeleri yapılabilmesi için çeşitli paket yönetim sistemleri
+kullanılmaktadır. Örneğin [Hızlı başlangıç](./quickstart#2-4-gemstone-işletim-sistemini-güncelle) bölümünde sistem
+güncellemesi yapılırken Ubuntu güncellemesi örneği verilmiştir.
+
+Benzer şekilde T3 Gemstone kartlarının özelleştirilmiş çekirdek, sürücü vb. bütün yazılımları
+için https://packages.t3gemstone.org/apt paket yönetim sistemi kullanılmaktadır. Güncelleme komutu
+çalıştırdığınızda sunuculardan -varsa- güncel paketler yüklenmektedir.
+
+<Tip>Gemstone için kullanılan işletim sistemi dağıtımı BeagleBoard BeagleY-AI için de kullanılabilmektedir.
+GemImager uygulamasından Board olarak BeagleY-AI seçtiğiniz takdirde oluşan sdcardı BeagleY-AI kartında
+kullanabilmektesiniz. Gemstone işletim sistemi dağıtımı Beagleboard'un sunmuş olduğundan daha güçlü ve
+günceldir.</Tip>
+
+Daha hızlı açılması için Linux kernelinde çeşitli özelleştirmeler ve geliştirme kartlarının barındırdığı donanımların
+sürücü seçimleri için Device Tree değişiklikleri 
+[github reposunda](https://github.com/t3gemstone/linux/tree/v6.1.83-ti-rt-arm64-r67-t3-gem-o1) mevcuttur. 
+
+### 1.3. SDK (Software Development Kit / Geliştirme Kiti)
+
+Yukarıda bahsedilen çekirdek, önyükleyici, dağıtım vb. bütün bileşenlerin, araç, paket ve yazılımların
+derlenerek bir araya getirilmesi, imaj dosyaların oluşturulması için
+[T3 Gemstone SDK](https://github.com/t3gemstone/sdk) kullanılmaktadır. İlgili reponun README dosyasında
+nasıl kullanılacağı özet olarak belirtildiği gibi bu Dokümantasyonun [SDK](./sdk/introduction) bölümünde daha
+detaylı anlatımlar yapılmıştır. SDK çalışmasında [Devbox](https://www.jetify.com/devbox), [Distrobox](https://github.com/89luca89/distrobox), 
+[Debos](https://github.com/t3gemstone/debos), [Taskfile](https://taskfile.dev/) Her biri çok geniş bilgi
+gereksinimlerine ihtiyaç duyulan alanlar olduğu için ilgi alanınıza göre dokümantasyon sonunda
+yardımcı kaynaklar verilmiştir.
+
+### 1.4. Github Reposu
+
+T3 Gemstone Github reposunda bulunan projelerin kullanım amaçları aşağıdaki tabloda belirtilmiştir.
+
+| Proje          | Repo                                | Açıklama |
+| :------------- | :---------------------------------- | :------- |
+| SDK            | [t3gemstone/sdk](https://github.com/t3gemstone/sdk) | Kernel, U-Boot, Firmware, Driver, Initrd gibi bileşenleri derleyerek işletim sistemi imajı oluşturan yazılım geliştirme kiti |
+| Yocto          | [t3gemstone/meta-gemstone](https://github.com/t3gemstone/meta-gemstone) | Yocto projesi kodları |
+| Linux Kernel   | [t3gemstone/linux](https://github.com/t3gemstone/linux) | Geliştirme kartlarında kullanılan linux kodları |
+| Bootloder      | [t3gemstone/u-boot](https://github.com/t3gemstone/u-boot) | Geliştirme kartlarında kullanılan ön yükleyici (bootloader) kodları. Bootloader donanımın sağlık kontrollerini yaparak linux kernelini başlatan kod parçasıdır. |
+| Debos          | [t3gemstone/debos](https://github.com/t3gemstone/debos) | Debos isimli projenin klonlanarak bir takım ilave özelliklerin eklendiği dağıtım oluşturma aracı |
+| GemImager      | [t3gemstone/gem-imager](https://github.com/t3gemstone/gem-imager) | RpiImager isimli projenin klonlanarak Gemstone kartlarına göre özelleştirilmiş ilave özellikler eklenmiş imaj yazma aracı |
+| Hardware       | [t3gemstone/hardware](https://github.com/t3gemstone/hardware) | Gemstone kartlarının anakart vb. donanım bileşenlerinin PCB vb. tasarımları |
+| Toolchains     | [t3gemstone/toolchains](https://github.com/t3gemstone/toolchains) | C/C++ gibi projelerin farklı mimarilere göre derlenmesinde kullanılan araç |
+| Package Server | [t3gemstone/package-server](https://github.com/t3gemstone/package-server) | packages.t3gemstone.org adresinde bulunan Linux APT paket yönetim sunucusu/sistemi |
+| noVNC          | [t3gemstone/t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) | Tarayıcı üzerinden Gemstone'a uzak masaüstü bağlantısı imkanı veren yazılım |
+| Ardupilot      | [t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot) | Gemstone için uyarlanmış insansız araç otopilotu |
+| NuttX          | [t3gemstone/nuttx](https://github.com/t3gemstone/nuttx) | PX4 gibi MCU barındıran donanımlarda çalışan gerçek zamanlı işletim sistemi. İlerleyen süreçte Gemstone Obsidyen kartlarında bulunan R5 MCU çekirdeklerinde çalışması sağlanacaktır. |
 
 # 2. Geliştirme
 
 Yazılım geliştirme süreçleri iki yöntemle yapılabilmektedir. Bunların ilki doğrudan kart üzerindeki derleme araçlarını
 kullanarak kart üzerinde yapılması iken ikinci yöntem Çapraz Derleme (Cross compilation) ismi verilen ve projeleri
-doğrudan kendi bilgisayarınız üzerinde derleyerek karta yüklediğiniz yöntemdir.
+doğrudan kendi bilgisayarınız üzerinde derleyerek karta yüklediğiniz yöntemdir. Aşağıda her iki yöntem ve avantajları
+anlatılmıştır.
 
 ### 2.1. Kart üzerinde yazılım geliştirme
 
+Gemstone Obsidyen geliştirme kartının üzerinde bulunan sensör, haberleşme veri yolları, kamera, yapay zeka ve network
+gibi bileşenlerin nasıl kullanıldığına dair C/C++/Python örnek projeler https://github.com/t3gemstone/examples adresinde
+mevcuttur. Aşağıda kart üzerinde bu projenin indirilerek derleme işleminin yapılması anlatılmış her bir bileşen
+için ayrı ayrı açıklamalar Geliştirme kartları bölümünde izah edilmiştir.
+
+<Tip>
+Bu bölüm t3gemstone/examples isimli projeyi kart içerisine indirerek derleme işlemi yapıp örnekleri
+çalıştırmayı gösterir.
+</Tip>
+
+<Frame caption="Todo: Büyük resmi gösteren içerik">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.1.1. Git clone işlemi ile örnek kodları indir
+
+<Frame caption="Todo: Büyük resmi gösteren içerik">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.1.1. İndirilen kodları derleyerek çalıştır
+
+<Frame caption="Todo: Büyük resmi gösteren içerik">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
 ### 2.2. Geliştirici bilgisayarında yazılım geliştirme
+
+Bir önceki bölümdeki gibi projelerin kart üzerinde derlenmesi mümkünken kullanmakta olduğunuz Dizüstü, Masaüstü
+bilgisayarlardaki GNU/Linux işletim sistemini kullanarak derleme yapmanın bir takım avantajları vardır. Örneğin
+T3-GEM-O1 kartı 4GB Bellek'e sahipken Dizüstü bilgisayarınız 16/32GB ve daha gelişmiş İşlemciye sahip olabilir.
+Dolayısıyla derleme işlemlerini hızlandırmak için Cross Compile Toolchain (Çarpaz Derleme Araçları) kullanılmaktadır.
+
+<Note>
+Geliştirme kartları ekseriyetle ARM mimarili işlemcilere sahipken dizüstü, masaüstü bilgisayarlar yine ekseriyetle
+Intel x86-64 mimarili işlemcilere sahiptir. Bu durumda farklı mimariler için derleme imkanını sağlayan Cross (Çarpaz)
+derleme araçlarıdır.
+</Note>
+
+<Frame caption="Todo: Büyük resmi gösteren içerik">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
