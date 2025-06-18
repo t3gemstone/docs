@@ -30,7 +30,13 @@
   "background": {
     "decoration": "windows"
   },
-  "contextual": { "options": ["chatgpt", "claude"] },
+  "contextual": {
+    "options": [
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
   "footer": {
     "socials": {
       "github": "https://github.com/t3gemstone",
@@ -136,17 +142,16 @@
           },
           {
             "group": "Topluluk",
-            "icon":"layer-group",
+            "icon": "layer-group",
             "pages": [
               "tr/community/introduction",
               "tr/community/standards",
-              "tr/community/faq",
-              "tr/changelog"
+              "tr/community/faq"
             ]
           },
           {
             "group": "Eğitim Kılavuzları",
-            "icon":"books",
+            "icon": "books",
             "pages": [
               "tr/guides/introduction",
               "tr/guides/basic",
@@ -156,13 +161,20 @@
           },
           {
             "group": "Sdk",
-            "icon":"laptop-code",
+            "icon": "laptop-code",
             "pages": [
               "tr/sdk/introduction",
               "tr/sdk/distro",
               "tr/sdk/yocto",
               "tr/sdk/uboot",
               "tr/sdk/kernel"
+            ]
+          },
+          {
+            "group": "Diğer",
+            "pages": [
+              "tr/license",
+              "tr/changelog"
             ]
           }
         ]
@@ -259,7 +271,7 @@
           },
           {
             "group": "Community",
-            "icon":"layer-group",
+            "icon": "layer-group",
             "pages": [
               "en/community/introduction",
               "en/community/standards",
@@ -269,7 +281,7 @@
           },
           {
             "group": "Guides",
-            "icon":"books",
+            "icon": "books",
             "pages": [
               "en/guides/introduction",
               "en/guides/basic",
@@ -287,6 +299,13 @@
               "en/sdk/uboot",
               "en/sdk/kernel"
             ]
+          },
+          {
+            "group": "Other",
+            "pages": [
+              "en/license",
+              "en/changelog"
+            ]
           }
         ]
       }
@@ -299,5 +318,36 @@
   "logo": {
     "light": "/logo/light.png",
     "dark": "/logo/dark.png"
+  },
+  "seo": {
+    "metatags": {
+      "charset": "UTF-8",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "description": "T3 Gemstone Development Boards",
+      "keywords": "t3, t3vakfi, t3gemstone, gemstone, gemstoneboard, t3foundation, embedded, realtime, iot, robotics, uav, drone, teknofest",
+      "author": "T3 Foundation",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "google": "notranslate",
+      "generator": "Mintlify",
+      "format-detection": "telephone=no",
+      "referrer": "origin",
+      "refresh": "30",
+      "rating": "general",
+      "revisit-after": "7 days",
+      "language": "en",
+      "copyright": "Copyright 2025",
+      "reply-to": "support@t3gemstone.org",
+      "distribution": "global",
+      "coverage": "Worldwide",
+      "category": "Technology",
+      "target": "all",
+      "HandheldFriendly": "True",
+      "MobileOptimized": "320",
+      "apple-mobile-web-app-capable": "yes",
+      "apple-mobile-web-app-status-bar-style": "black",
+      "apple-mobile-web-app-title": "T3 Gemstone",
+      "application-name": "T3 Gemstone"
+    }
   }
 }
