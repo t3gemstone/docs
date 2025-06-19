@@ -25,45 +25,53 @@ Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız.
 
 Kurulum için ihtiyaç duyulan donanımlar aşağıda belirtilmiştir.
 
-<Accordion title="Usb Type-C kablosu">
-  <Frame>
-    <img height="600" width="800" src="/images/usb-type-c-cable.jpg" />
-  </Frame>
-</Accordion>
+<AccordionGroup>
 
-<Accordion title="Sdcard (32GB veya üstü)">
-  <Frame caption="Herhangi bir marka sdcard">
-    <img height="600" width="800" src="/images/sandisk-sdcard.png" />
-  </Frame>
-</Accordion>
+  <Accordion title="Usb Type-C kablosu">
+    <Frame>
+      <img height="600" width="800" src="/images/usb-type-c-cable.jpg" />
+    </Frame>
+  </Accordion>
 
-<Accordion title="Sdcard okuyucu">
-  <Frame caption="Herhangi bir marka sdcard okuyucu">
-    <img height="600" width="800" src="/images/sdcard-reader.jpg" />
-  </Frame>
-</Accordion>
+  <Accordion title="Sdcard (32GB veya üstü)">
+    <Frame caption="Herhangi bir marka sdcard">
+      <img height="600" width="800" src="/images/sandisk-sdcard.png" />
+    </Frame>
+  </Accordion>
 
-<Accordion title="Ethernet kablosu">
-  <Frame caption="Bilgisayar ve Gemstone kartını birbirine bağlayacak ethernet kablosu">
-    <img height="600" width="800" src="/images/ethernet-cable-wire.png" />
-  </Frame>
-</Accordion>
+  <Accordion title="Sdcard okuyucu">
+    <Frame caption="Herhangi bir marka sdcard okuyucu">
+      <img height="600" width="800" src="/images/sdcard-reader.jpg" />
+    </Frame>
+  </Accordion>
 
-<Accordion title="USB TTL dönüştürücü (Opsiyonel)">
-  <Frame caption="Başlangıç için gerekli değildir. Ethernet kablosunun olmadığı durumlarda Seriport aracılığıyla kart bağlantısı için kullanılmaktadır.">
-    <img height="600" width="800" src="/images/pl2303-ta-usb-ttl-seri.jpg" />
-  </Frame>
-</Accordion>
+  <Accordion title="Ethernet kablosu">
+    <Frame caption="Bilgisayar ve Gemstone kartını birbirine bağlayacak ethernet kablosu">
+      <img height="600" width="800" src="/images/ethernet-cable-wire.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="USB TTL dönüştürücü (Opsiyonel)">
+    <Frame caption="Başlangıç için gerekli değildir. Ethernet kablosunun olmadığı durumlarda Seriport aracılığıyla kart bağlantısı için kullanılmaktadır.">
+      <img height="600" width="800" src="/images/pl2303-ta-usb-ttl-seri.jpg" />
+    </Frame>
+  </Accordion>
+
+</AccordionGroup>
 
 İlk kurulum sonrası ethernet kablosu yardımıyla Gemstone kartınıza bağlanabileceğiniz gibi aşağıdaki donanımlarla
 kartı doğrudan bir bilgisayar olarak kullanmanız da mümkündür.
 
-<Accordion title="HDMI kablo">
-  <Frame caption="HDMI to HDMI veya HDMI to Mini Display">
-    <img height="600" width="800" src="/images/hdmi-to-hdmi-cable.jpg" />
-  </Frame>
-</Accordion>
-<Accordion title="Monitör + Klavye + Mouse">.</Accordion>
+<AccordionGroup>
+  <Accordion title="HDMI kablo">
+    <Frame caption="HDMI to HDMI veya HDMI to Mini Display">
+      <img height="600" width="800" src="/images/hdmi-to-hdmi-cable.jpg" />
+    </Frame>
+  </Accordion>
+  <Accordion title="Monitör + Klavye + Mouse">
+  .
+  </Accordion>
+</AccordionGroup>
 
 <Frame caption="Todo: Bütün donanım ve gereksinimleri içeren görsel">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -198,41 +206,46 @@ Yukarıdaki seçimler tamamlandıktan sonra Next butonuna tıkladığınızda ot
 açılacaktır. Bu ekran kurulumu yapılacak kartın giriş şifresi ve bir takım servislerin otomatik başlatılabilmesi
 için kullanılmaktadır.
 
-<Accordion title="Genel Ayarlar">
-  <Frame>
-    <img src="/images/gem-imager/e-setting-1.png" />
-  </Frame>
+<AccordionGroup>
 
-  * Ekran üzerindeki **Password** isimli alana 8 karakterlik bir şifre girişi yapınız. Bu şifre Linux işletim
-    sisteminin "gemstone" kullanıcı adlı hesabının şifresidir ve karta erişim sağladığınızda girmeniz istenecektir.
+  <Accordion title="Genel Ayarlar">
+    <Frame>
+      <img src="/images/gem-imager/e-setting-1.png" />
+    </Frame>
 
-  * Gemstone kartınıza imaj yazma işlemlerini tamamladıktan ve güç verdikten sonra şayet bulunduğunuz yerde bir Wifi
-    ağına bağlanmasını isterseniz "Configure wireless LAN" isimli seçeneği işaretleyerek WIFI bağlantı adını ve
-    şifresini giriniz.
+    * Ekran üzerindeki **Password** isimli alana 8 karakterlik bir şifre girişi yapınız. Bu şifre Linux işletim
+      sisteminin "gemstone" kullanıcı adlı hesabının şifresidir ve karta erişim sağladığınızda girmeniz istenecektir.
 
-      <Warning>Dikkat: Wifi bağlantı adını (Access Point Name) ve şifresini doğru girdiğinize emin olunuz.</Warning>
+    * Gemstone kartınıza imaj yazma işlemlerini tamamladıktan ve güç verdikten sonra şayet bulunduğunuz yerde bir Wifi
+      ağına bağlanmasını isterseniz "Configure wireless LAN" isimli seçeneği işaretleyerek WIFI bağlantı adını ve
+      şifresini giriniz.
 
-  * Son olarak **Set locale settings** seçeneğini işaretleyerek Gemstone kartın klavye dilini seçiniz.
+        <Warning>Dikkat: Wifi bağlantı adını (Access Point Name) ve şifresini doğru girdiğinize emin olunuz.</Warning>
 
-</Accordion>
-<Accordion title="Servisler" >
-  <Frame>
-    <img src="/images/gem-imager/f-setting-2.png" />
-  </Frame>
+    * Son olarak **Set locale settings** seçeneğini işaretleyerek Gemstone kartın klavye dilini seçiniz.
 
-  * **Enable SSH:** (Secure Shell) seçeneği bu sayfanın sonlarında anlatılan, karta ethernet üzerinden Terminal
-    bağlantısı sağlamak için gereklidir. Minimal ve Kiosk gibi imajlarda Gemstone üzerinde masaüstü bileşenleri
-    olmayacağı için çoğu zaman Ethernet/SSH veya Seriport/Konsol kullanılmaktadır.
+  </Accordion>
 
-  * **Enable VNC:** Desktop türündeki imajlar kullanıldığında Monitör, Klavye ve mouse gereksinimini ortadan kaldırmak
-    için [t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) isminde bir çalışma yapılmıştır. Bu servis sayesinde kartınızın ethernet kablosunu kendi bilgisayarınıza
-    bağlayarak tarayıcı üzerinden kartın masaüstüne erişebilmektesiniz.
+  <Accordion title="Servisler" >
+    <Frame>
+      <img src="/images/gem-imager/f-setting-2.png" />
+    </Frame>
 
-  * **Gadgets:** Gemstone kartınızı USB Type-C ile bilgisayarınıza bağladığınızda ethernet kablosuna gerek kalmadan
-    Sanal IP almasını sağlamak, Seriport oluşturmak ve Kart üzerindeki diskin (Cep telefonunu bilgisayarınıza
-    bağladığınızda çıkan saklama alanı gibi) Saklama Alanı olarak kullanılabilmesi içindir.
+    * **Enable SSH:** (Secure Shell) seçeneği bu sayfanın sonlarında anlatılan, karta ethernet üzerinden Terminal
+      bağlantısı sağlamak için gereklidir. Minimal ve Kiosk gibi imajlarda Gemstone üzerinde masaüstü bileşenleri
+      olmayacağı için çoğu zaman Ethernet/SSH veya Seriport/Konsol kullanılmaktadır.
 
-</Accordion>
+    * **Enable VNC:** Desktop türündeki imajlar kullanıldığında Monitör, Klavye ve mouse gereksinimini ortadan kaldırmak
+      için [t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) isminde bir çalışma yapılmıştır. Bu servis sayesinde kartınızın ethernet kablosunu kendi bilgisayarınıza
+      bağlayarak tarayıcı üzerinden kartın masaüstüne erişebilmektesiniz.
+
+    * **Gadgets:** Gemstone kartınızı USB Type-C ile bilgisayarınıza bağladığınızda ethernet kablosuna gerek kalmadan
+      Sanal IP almasını sağlamak, Seriport oluşturmak ve Kart üzerindeki diskin (Cep telefonunu bilgisayarınıza
+      bağladığınızda çıkan saklama alanı gibi) Saklama Alanı olarak kullanılabilmesi içindir.
+
+  </Accordion>
+
+</AccordionGroup>
 
 Özelleştirme işlemi sonrası **Save** butonuna tıklayarak bir sonraki adıma geçiniz.
 
@@ -241,23 +254,27 @@ için kullanılmaktadır.
 Yukarıdaki bütün işlemler tamamlandıktan sonra imaj yazma işlemine başlamanız için aşağıdaki gibi onay vermeniz
 istenecektir ve kopyalama işlemleri başlatılacaktır.
 
-<Accordion title="Yazma işlemini başlat">
-  <Frame>
-    <img src="/images/gem-imager/h-begin.png" />
-  </Frame>
-</Accordion>
+<AccordionGroup>
 
-<Accordion title="Yazma işlemininin tamamlanmasını bekle">
-  <Frame>
-    <img src="/images/gem-imager/j-writing.png" />
-  </Frame>
-</Accordion>
+  <Accordion title="Yazma işlemini başlat">
+    <Frame>
+      <img src="/images/gem-imager/h-begin.png" />
+    </Frame>
+  </Accordion>
 
-<Accordion title="İşlem tamamlandı sdcard'ı çıkar">
-  <Frame>
-    <img src="/images/gem-imager/k-done.png" />
-  </Frame>
-</Accordion>
+  <Accordion title="Yazma işlemininin tamamlanmasını bekle">
+    <Frame>
+      <img src="/images/gem-imager/j-writing.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="İşlem tamamlandı sdcard'ı çıkar">
+    <Frame>
+      <img src="/images/gem-imager/k-done.png" />
+    </Frame>
+  </Accordion>
+
+</AccordionGroup>
 
 #### 1.2.8. Sdcardı yerleştir
 
@@ -309,13 +326,13 @@ satırından işlem yapabilmek için). Şayet Monitör, Klavye ve Fare bağlama 
 yöntemle de keşfedebilirsiniz!
 
 <Accordion title="Terminal Nedir?">
-Terminal veya Konsol (Console) kavramı grafiksel arayüzün, pencere ve butonların olmadığı komut satırı ile
-kod yazarak işlem yapabildiğiniz yöntemi (Command Line Interface/Komut satırı arayüzü) ifade etmektedir.
-Windows işletim sisteminde bulunan **CMD, Powershell** veya Unix/Posix temelli işletim sistemlerindeki **Terminal**
-uygulaması örnek olarak verilebilir. Aşağıda örnek ekran görüntüsü verilmiştir.
-<Frame>
-  <img height="600" width="800" src="/images/terminal-windows.png" />
-</Frame>
+  Terminal veya Konsol (Console) kavramı grafiksel arayüzün, pencere ve butonların olmadığı komut satırı ile
+  kod yazarak işlem yapabildiğiniz yöntemi (Command Line Interface/Komut satırı arayüzü) ifade etmektedir.
+  Windows işletim sisteminde bulunan **CMD, Powershell** veya Unix/Posix temelli işletim sistemlerindeki **Terminal**
+  uygulaması örnek olarak verilebilir. Aşağıda örnek ekran görüntüsü verilmiştir.
+  <Frame>
+    <img height="600" width="800" src="/images/terminal-windows.png" />
+  </Frame>
 </Accordion>
 
 Kurulum sonrası bağlamış olduğunuz Ethernet ve Usb Type-C aracılığıyla veya 
