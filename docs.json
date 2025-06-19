@@ -64,7 +64,7 @@
               "icon": "github"
             },
             {
-              "dropdown": "Topluluk",
+              "dropdown": "Topluluk Forumları",
               "description": "Topluluk Forumları",
               "href": "https://community.t3gemstone.org",
               "icon": "discourse"
@@ -146,15 +146,17 @@
             ]
           },
           {
-            "group": "Topluluk",
-            "icon": "layer-group",
+            "group": "Sdk",
+            "icon": "laptop-code",
             "pages": [
-              "tr/community/introduction",
-              "tr/community/standards",
-              "tr/community/faq"
+              "tr/sdk/introduction",
+              "tr/sdk/distro",
+              "tr/sdk/yocto",
+              "tr/sdk/uboot",
+              "tr/sdk/kernel"
             ]
           },
-          {
+                    {
             "group": "Eğitim Kılavuzları",
             "icon": "books",
             "pages": [
@@ -165,14 +167,12 @@
             ]
           },
           {
-            "group": "Sdk",
-            "icon": "laptop-code",
+            "group": "Topluluk",
+            "icon": "layer-group",
             "pages": [
-              "tr/sdk/introduction",
-              "tr/sdk/distro",
-              "tr/sdk/yocto",
-              "tr/sdk/uboot",
-              "tr/sdk/kernel"
+              "tr/community/introduction",
+              "tr/community/standards",
+              "tr/community/faq"
             ]
           },
           {
@@ -282,13 +282,14 @@
             ]
           },
           {
-            "group": "Community",
-            "icon": "layer-group",
+            "group": "Sdk",
+            "icon": "laptop-code",
             "pages": [
-              "en/community/introduction",
-              "en/community/standards",
-              "en/community/faq",
-              "en/changelog"
+              "en/sdk/introduction",
+              "en/sdk/distro",
+              "en/sdk/yocto",
+              "en/sdk/uboot",
+              "en/sdk/kernel"
             ]
           },
           {
@@ -302,14 +303,13 @@
             ]
           },
           {
-            "group": "Sdk",
-            "icon": "laptop-code",
+            "group": "Community",
+            "icon": "layer-group",
             "pages": [
-              "en/sdk/introduction",
-              "en/sdk/distro",
-              "en/sdk/yocto",
-              "en/sdk/uboot",
-              "en/sdk/kernel"
+              "en/community/introduction",
+              "en/community/standards",
+              "en/community/faq",
+              "en/changelog"
             ]
           },
           {
