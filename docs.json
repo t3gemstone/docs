@@ -64,7 +64,7 @@
               "icon": "github"
             },
             {
-              "dropdown": "Topluluk Forumları",
+              "dropdown": "Forum",
               "description": "Topluluk Forumları",
               "href": "https://community.t3gemstone.org",
               "icon": "discourse"
@@ -178,9 +178,9 @@
           {
             "group": "Diğer",
             "pages": [
-              "tr/license",
               "tr/changelog",
-              "tr/troubleshoting"
+              "tr/troubleshoting",
+              "tr/license"
             ]
           }
         ]
@@ -315,9 +315,9 @@
           {
             "group": "Other",
             "pages": [
-              "en/license",
               "en/changelog",
-              "en/troubleshoting"
+              "en/troubleshoting",
+              "en/license"
             ]
           }
         ]
