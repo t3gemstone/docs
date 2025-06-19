@@ -362,5 +362,10 @@
       "apple-mobile-web-app-title": "T3 Gemstone",
       "application-name": "T3 Gemstone"
     }
+  },
+  "integrations": {
+    "ga4": {
+        "measurementId": "G-Y2NEG1WBJW"
+    }
   }
 }
