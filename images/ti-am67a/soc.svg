@@ -1,0 +1,3921 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="AM67x_SPRSPA3_FBD.svg"
+   id="svg1177"
+   version="1.1"
+   class="st17"
+   color-interpolation-filters="sRGB"
+   xml:space="preserve"
+   viewBox="0 0 592.88001 738.56998"
+   height="10.257916in"
+   width="8.2344446in"><metadata
+   id="metadata1183"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs1181" /><sodipodi:namedview
+   id="namedview1179"
+   inkscape:window-height="480"
+   inkscape:window-width="640"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff" />
+	<v:documentProperties
+   v:viewMarkup="false"
+   v:langID="1033">
+		<v:userDefs>
+			<v:ud
+   v:val="VT0(1):26"
+   v:nameU="msvNoAutoConnect" />
+			<v:ud
+   v:nameU="msvConvertTheme" />
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style
+   id="style2"
+   type="text/css">
+	<![CDATA[
+		.st1 {fill:#fefefe;stroke:#373435;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st2 {fill:none;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st3 {fill:#000000;font-family:Arial;font-size:0.833336em}
+		.st4 {fill:#dcdddf;stroke:#fefefe;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.500004}
+		.st5 {fill:#878787;stroke:#fefefe;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st6 {fill:#cc0000;stroke:#fefefe;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st7 {fill:#ffffff;font-family:Arial;font-size:0.833336em}
+		.st8 {font-size:1em}
+		.st9 {fill:#000000;font-family:Arial;font-size:0.833336em;font-stretch:normal}
+		.st10 {fill:#ffffff;font-family:Arial;font-size:0.833336em;font-stretch:normal}
+		.st11 {fill:#d8d8d8;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st12 {fill:#878787;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st13 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st14 {fill:#ffffff;font-family:Arial;font-size:0.75em}
+		.st15 {fill:#aaaaaa;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st16 {fill:#cc0000;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st17 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g
+   transform="translate(-269.248,-69.68)"
+   id="g1175"
+   v:groupContext="foregroundPage"
+   v:index="1"
+   v:mID="16">
+		<title
+   id="title4">AM67x_SPRSPA3_FBD</title>
+		<v:pageProperties
+   v:shadowOffsetY="-9"
+   v:shadowOffsetX="9"
+   v:drawingUnits="19"
+   v:pageScale="1"
+   v:drawingScale="1" />
+		<v:layer
+   v:index="0"
+   v:name="Connector" />
+		<g
+   transform="translate(269.748,-740.25)"
+   v:groupContext="shape"
+   v:mID="4"
+   id="shape4-1">
+			<title
+   id="title6">Sheet.4</title>
+			<path
+   inkscape:connector-curvature="0"
+   id="path8"
+   class="st1"
+   d="M 0,810.43 H 591.88 V 932.82 1548 H 0 Z" />
+		</g>
+		<g
+   transform="translate(511.171,-1459.35)"
+   v:groupContext="shape"
+   v:mID="121"
+   id="shape121-3">
+			<title
+   id="title11">Sheet.121</title>
+			<desc
+   id="desc13">AM67x</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="14.3981"
+   width="114.72"
+   cy="1540.8"
+   cx="57.3556" />
+			<rect
+   id="rect15"
+   class="st2"
+   height="14.3981"
+   width="114.711"
+   y="1533.6"
+   x="0" />
+			<text
+   id="text17"
+   v:langID="1033"
+   class="st3"
+   y="1543.8"
+   x="41.790001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />AM67x</text>		</g>
+		<g
+   transform="translate(498.012,-934.394)"
+   v:groupContext="shape"
+   v:mID="5"
+   id="shape5-6">
+			<title
+   id="title20">Sheet.5</title>
+			<rect
+   id="rect22"
+   class="st4"
+   height="210.856"
+   width="107.85"
+   y="1337.14"
+   x="0" />
+		</g>
+		<g
+   transform="translate(282.239,-839.209)"
+   v:groupContext="shape"
+   v:mID="6"
+   id="shape6-8">
+			<title
+   id="title25">Sheet.6</title>
+			<rect
+   id="rect27"
+   class="st4"
+   height="88.339203"
+   width="567.25702"
+   y="1459.66"
+   x="0" />
+		</g>
+		<g
+   transform="translate(521.873,-911.722)"
+   v:groupContext="shape"
+   v:mID="7"
+   id="shape7-10">
+			<title
+   id="title30">Sheet.7</title>
+			<desc
+   id="desc32">Security</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="87.99"
+   cy="1541.4"
+   cx="43.9948" />
+			<rect
+   id="rect34"
+   class="st2"
+   height="13.1984"
+   width="87.989601"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text36"
+   v:langID="1033"
+   class="st3"
+   y="1544.4"
+   x="25.93"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Security</text>		</g>
+		<g
+   transform="translate(281.807,-1249.82)"
+   v:groupContext="shape"
+   v:mID="8"
+   id="shape8-13">
+			<title
+   id="title39">Sheet.8</title>
+			<rect
+   id="rect41"
+   class="st4"
+   height="204.61301"
+   width="207.63699"
+   y="1343.39"
+   x="0" />
+		</g>
+		<g
+   transform="translate(290.447,-1263.07)"
+   v:groupContext="shape"
+   v:mID="9"
+   id="shape9-15">
+			<title
+   id="title44">Sheet.9</title>
+			<rect
+   id="rect46"
+   class="st5"
+   height="50.6133"
+   width="188.84599"
+   y="1497.39"
+   x="0" />
+		</g>
+		<g
+   transform="translate(387.498,-1320.24)"
+   v:groupContext="shape"
+   v:mID="11"
+   id="shape11-17">
+			<title
+   id="title49">Sheet.11</title>
+			<rect
+   id="rect51"
+   class="st6"
+   height="52.701199"
+   width="91.794998"
+   y="1495.3"
+   x="0" />
+		</g>
+		<g
+   transform="translate(290.375,-1320.31)"
+   v:groupContext="shape"
+   v:mID="16"
+   id="shape16-19">
+			<title
+   id="title54">Sheet.16</title>
+			<rect
+   id="rect56"
+   class="st6"
+   height="52.557201"
+   width="91.794998"
+   y="1495.4399"
+   x="0" />
+		</g>
+		<g
+   transform="translate(644.164,-859.008)"
+   v:groupContext="shape"
+   v:mID="27"
+   id="shape27-21">
+			<title
+   id="title59">Sheet.27</title>
+			<rect
+   id="rect61"
+   class="st5"
+   height="22.1028"
+   width="94.0989"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(441.279,-885.143)"
+   v:groupContext="shape"
+   v:mID="28"
+   id="shape28-23">
+			<title
+   id="title64">Sheet.28</title>
+			<rect
+   id="rect66"
+   class="st5"
+   height="22.1028"
+   width="94.0989"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(543.657,-885.143)"
+   v:groupContext="shape"
+   v:mID="29"
+   id="shape29-25">
+			<title
+   id="title69">Sheet.29</title>
+			<rect
+   id="rect71"
+   class="st5"
+   height="22.1028"
+   width="92.803001"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(644.164,-885.143)"
+   v:groupContext="shape"
+   v:mID="30"
+   id="shape30-27">
+			<title
+   id="title74">Sheet.30</title>
+			<rect
+   id="rect76"
+   class="st5"
+   height="22.1028"
+   width="94.0989"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(441.279,-859.008)"
+   v:groupContext="shape"
+   v:mID="31"
+   id="shape31-29">
+			<title
+   id="title79">Sheet.31</title>
+			<rect
+   id="rect81"
+   class="st5"
+   height="22.1028"
+   width="94.0989"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(543.657,-859.008)"
+   v:groupContext="shape"
+   v:mID="32"
+   id="shape32-31">
+			<title
+   id="title84">Sheet.32</title>
+			<rect
+   id="rect86"
+   class="st5"
+   height="22.1028"
+   width="92.803001"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(669.216,-862.836)"
+   v:groupContext="shape"
+   v:mID="33"
+   id="shape33-33">
+			<title
+   id="title89">Sheet.33</title>
+			<desc
+   id="desc91">TRNG</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect93"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text95"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="7.8299999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />TRNG</text>		</g>
+		<g
+   transform="translate(471.83,-862.908)"
+   v:groupContext="shape"
+   v:mID="34"
+   id="shape34-36">
+			<title
+   id="title98">Sheet.34</title>
+			<desc
+   id="desc100">MD5</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect102"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text104"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="5.9400001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />MD5</text>		</g>
+		<g
+   transform="translate(471.83,-888.971)"
+   v:groupContext="shape"
+   v:mID="35"
+   id="shape35-39">
+			<title
+   id="title107">Sheet.35</title>
+			<desc
+   id="desc109">SHA</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect111"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text113"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="6.2199998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />SHA</text>		</g>
+		<g
+   transform="translate(573.561,-862.836)"
+   v:groupContext="shape"
+   v:mID="36"
+   id="shape36-42">
+			<title
+   id="title116">Sheet.36</title>
+			<desc
+   id="desc118">AES</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect120"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text122"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="6.4899998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />AES</text>		</g>
+		<g
+   transform="translate(573.561,-888.971)"
+   v:groupContext="shape"
+   v:mID="37"
+   id="shape37-45">
+			<title
+   id="title125">Sheet.37</title>
+			<desc
+   id="desc127">PKA</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect129"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text131"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="6.4899998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />PKA</text>		</g>
+		<g
+   transform="translate(669.216,-888.971)"
+   v:groupContext="shape"
+   v:mID="38"
+   id="shape38-48">
+			<title
+   id="title134">Sheet.38</title>
+			<desc
+   id="desc136">DRBG</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect138"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text140"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="7.5500002"><v:paragraph
+   v:horizAlign="1" /><v:tabList />DRBG</text>		</g>
+		<g
+   transform="translate(290.375,-885.215)"
+   v:groupContext="shape"
+   v:mID="39"
+   id="shape39-51">
+			<title
+   id="title143">Sheet.39</title>
+			<rect
+   id="rect145"
+   class="st5"
+   height="33.4062"
+   width="142.84"
+   y="1514.59"
+   x="0" />
+		</g>
+		<g
+   transform="translate(325.769,-895.319)"
+   v:groupContext="shape"
+   v:mID="40"
+   id="shape40-53">
+			<title
+   id="title148">Sheet.40</title>
+			<desc
+   id="desc150">HSM (Secure Boot)</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="72.06"
+   cy="1541.4"
+   cx="36.0259" />
+			<rect
+   id="rect152"
+   class="st2"
+   height="13.1984"
+   width="72.051804"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text156"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="24.92"><v:paragraph
+   v:horizAlign="1" /><v:tabList />HSM<v:newlineChar /><tspan
+   id="tspan154"
+   class="st8"
+   dy="1.2em"
+   x="5.1799998">(Secure Boot)</tspan></text>		</g>
+		<g
+   transform="translate(281.879,-934.394)"
+   v:groupContext="shape"
+   v:mID="42"
+   id="shape42-57">
+			<title
+   id="title159">Sheet.42</title>
+			<rect
+   id="rect161"
+   class="st4"
+   height="210.856"
+   width="207.709"
+   y="1337.14"
+   x="0" />
+		</g>
+		<g
+   transform="translate(290.303,-1036.46)"
+   v:groupContext="shape"
+   v:mID="43"
+   id="shape43-59">
+			<title
+   id="title164">Sheet.43</title>
+			<rect
+   id="rect166"
+   class="st5"
+   height="24.6947"
+   width="93.378998"
+   y="1523.3101"
+   x="0" />
+		</g>
+		<g
+   transform="translate(290.303,-1067.13)"
+   v:groupContext="shape"
+   v:mID="44"
+   id="shape44-61">
+			<title
+   id="title169">Sheet.44</title>
+			<rect
+   id="rect171"
+   class="st5"
+   height="24.6947"
+   width="93.378998"
+   y="1523.3101"
+   x="0" />
+		</g>
+		<g
+   transform="translate(290.303,-1006.23)"
+   v:groupContext="shape"
+   v:mID="45"
+   id="shape45-63">
+			<title
+   id="title174">Sheet.45</title>
+			<rect
+   id="rect176"
+   class="st5"
+   height="24.766701"
+   width="93.378998"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(290.303,-945.389)"
+   v:groupContext="shape"
+   v:mID="46"
+   id="shape46-65">
+			<title
+   id="title179">Sheet.46</title>
+			<rect
+   id="rect181"
+   class="st5"
+   height="24.766701"
+   width="93.378998"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(386.634,-1006.15)"
+   v:groupContext="shape"
+   v:mID="47"
+   id="shape47-67">
+			<title
+   id="title184">Sheet.47</title>
+			<rect
+   id="rect186"
+   class="st5"
+   height="24.766701"
+   width="93.450897"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(394.864,-1011.28)"
+   v:groupContext="shape"
+   v:mID="49"
+   id="shape49-69">
+			<title
+   id="title189">Sheet.49</title>
+			<desc
+   id="desc191">PCIe Gen3</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="77"
+   cy="1541.4"
+   cx="38.4955" />
+			<rect
+   id="rect193"
+   class="st2"
+   height="13.1984"
+   width="76.990898"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text195"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="13.76"><v:paragraph
+   v:horizAlign="1" /><v:tabList />PCIe Gen3</text>		</g>
+		<g
+   transform="translate(303.996,-1072.26)"
+   v:groupContext="shape"
+   v:mID="51"
+   id="shape51-72">
+			<title
+   id="title198">Sheet.51</title>
+			<desc
+   id="desc200">3x SPI</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="66"
+   cy="1541.4"
+   cx="32.9961" />
+			<rect
+   id="rect202"
+   class="st2"
+   height="13.1984"
+   width="65.992203"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text204"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="18.27"><v:paragraph
+   v:horizAlign="1" /><v:tabList />3x SPI</text>		</g>
+		<g
+   transform="translate(298.497,-1041.59)"
+   v:groupContext="shape"
+   v:mID="52"
+   id="shape52-75">
+			<title
+   id="title207">Sheet.52</title>
+			<desc
+   id="desc209">7x UART</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="77"
+   cy="1541.4"
+   cx="38.4955" />
+			<rect
+   id="rect211"
+   class="st2"
+   height="13.1984"
+   width="76.990898"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text213"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="18.209999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />7x UART</text>		</g>
+		<g
+   transform="translate(290.303,-975.555)"
+   v:groupContext="shape"
+   v:mID="53"
+   id="shape53-78">
+			<title
+   id="title216">Sheet.53</title>
+			<rect
+   id="rect218"
+   class="st5"
+   height="24.6947"
+   width="93.378998"
+   y="1523.3101"
+   x="0" />
+		</g>
+		<g
+   transform="translate(314.995,-950.513)"
+   v:groupContext="shape"
+   v:mID="54"
+   id="shape54-80">
+			<title
+   id="title221">Sheet.54</title>
+			<desc
+   id="desc223">OSPI</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect225"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text227"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="10.05"><v:paragraph
+   v:horizAlign="1" /><v:tabList />OSPI</text>		</g>
+		<g
+   transform="translate(386.634,-975.555)"
+   v:groupContext="shape"
+   v:mID="55"
+   id="shape55-83">
+			<title
+   id="title230">Sheet.55</title>
+			<rect
+   id="rect232"
+   class="st5"
+   height="24.6947"
+   width="93.450897"
+   y="1523.3101"
+   x="0" />
+		</g>
+		<g
+   transform="translate(287.498,-1011.35)"
+   v:groupContext="shape"
+   v:mID="56"
+   id="shape56-85">
+			<title
+   id="title235">Sheet.56</title>
+			<desc
+   id="desc237">2x CAN-FD</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="98.99"
+   cy="1541.4"
+   cx="49.4942" />
+			<rect
+   id="rect239"
+   class="st2"
+   height="13.1984"
+   width="98.988297"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text241"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="23.940001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />2x CAN-FD</text>		</g>
+		<g
+   transform="translate(386.634,-945.389)"
+   v:groupContext="shape"
+   v:mID="57"
+   id="shape57-88">
+			<title
+   id="title244">Sheet.57</title>
+			<rect
+   id="rect246"
+   class="st5"
+   height="24.766701"
+   width="93.450897"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(397.718,-951.662)"
+   v:groupContext="shape"
+   v:mID="58"
+   id="shape58-90">
+			<title
+   id="title249">Sheet.58</title>
+			<desc
+   id="desc251">USB 2.0</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="12.2198"
+   width="71.29"
+   cy="1541.89"
+   cx="35.6412" />
+			<rect
+   id="rect253"
+   class="st2"
+   height="12.2198"
+   width="71.282402"
+   y="1535.78"
+   x="0" />
+			<text
+   id="text255"
+   v:langID="1033"
+   class="st7"
+   y="1544.89"
+   x="17.02"><v:paragraph
+   v:horizAlign="1" /><v:tabList />USB 2.0</text>		</g>
+		<g
+   transform="translate(290.375,-1097.73)"
+   v:groupContext="shape"
+   v:mID="59"
+   id="shape59-93">
+			<title
+   id="title258">Sheet.59</title>
+			<rect
+   id="rect260"
+   class="st5"
+   height="31.8223"
+   width="189.71001"
+   y="1516.1801"
+   x="0" />
+		</g>
+		<g
+   transform="translate(292.98,-1107.39)"
+   v:groupContext="shape"
+   v:mID="60"
+   id="shape60-95">
+			<title
+   id="title263">Sheet.60</title>
+			<desc
+   id="desc265">2-port Gb Ethernet w/ 1588</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="184.51"
+   cy="1541.4"
+   cx="92.25" />
+			<rect
+   id="rect267"
+   class="st2"
+   height="13.1984"
+   width="184.5"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text269"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="31.940001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />2-port Gb Ethernet w/ 1588  </text>		</g>
+		<g
+   transform="translate(301.025,-1130.22)"
+   v:groupContext="shape"
+   v:mID="61"
+   id="shape61-98">
+			<title
+   id="title272">Sheet.61</title>
+			<desc
+   id="desc274">General Connectivity and IO</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="169.42"
+   cy="1541.4"
+   cx="84.7092" />
+			<rect
+   id="rect276"
+   class="st2"
+   height="13.1984"
+   width="169.418"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text278"
+   v:langID="1033"
+   class="st3"
+   y="1544.4"
+   x="21.9"><v:paragraph
+   v:horizAlign="1" /><v:tabList />General Connectivity and IO</text>		</g>
+		<g
+   transform="translate(497.652,-1249.82)"
+   v:groupContext="shape"
+   v:mID="62"
+   id="shape62-101">
+			<title
+   id="title281">Sheet.62</title>
+			<rect
+   id="rect283"
+   class="st4"
+   height="205.045"
+   width="107.922"
+   y="1342.96"
+   x="0" />
+		</g>
+		<g
+   transform="translate(488.309,-1431.15)"
+   v:groupContext="shape"
+   v:mID="63"
+   id="shape63-103">
+			<title
+   id="title286">Sheet.63</title>
+			<desc
+   id="desc288">MCU Channel with FFI</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="126.61"
+   cy="1541.4"
+   cx="63.304" />
+			<rect
+   id="rect290"
+   class="st2"
+   height="13.1984"
+   width="126.608"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text294"
+   v:langID="1033"
+   class="st9"
+   y="1538.4"
+   x="30.440001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />MCU Channel<v:newlineChar /><tspan
+   id="tspan292"
+   class="st8"
+   dy="1.2em"
+   x="44.700001">with FFI</tspan></text>		</g>
+		<g
+   transform="translate(746.47,-859.008)"
+   v:groupContext="shape"
+   v:mID="65"
+   id="shape65-107">
+			<title
+   id="title297">Sheet.65</title>
+			<rect
+   id="rect299"
+   class="st5"
+   height="48.2374"
+   width="94.170898"
+   y="1499.76"
+   x="0" />
+		</g>
+		<g
+   transform="translate(777.058,-875.868)"
+   v:groupContext="shape"
+   v:mID="66"
+   id="shape66-109">
+			<title
+   id="title302">Sheet.66</title>
+			<desc
+   id="desc304">SMS</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect306"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text308"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="5.6599998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />SMS</text>		</g>
+		<g
+   transform="translate(282.671,-753.75)"
+   v:groupContext="shape"
+   v:mID="67"
+   id="shape67-112">
+			<title
+   id="title311">Sheet.67</title>
+			<rect
+   id="rect313"
+   class="st4"
+   height="78.9077"
+   width="566.89697"
+   y="1469.09"
+   x="0" />
+		</g>
+		<g
+   transform="translate(483.63,-813.087)"
+   v:groupContext="shape"
+   v:mID="68"
+   id="shape68-114">
+			<title
+   id="title316">Sheet.68</title>
+			<desc
+   id="desc318">System Services</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="164.99"
+   cy="1541.4"
+   cx="82.4903" />
+			<rect
+   id="rect320"
+   class="st2"
+   height="13.1984"
+   width="164.981"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text322"
+   v:langID="1033"
+   class="st3"
+   y="1544.4"
+   x="45.259998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />System Services</text>		</g>
+		<g
+   transform="translate(289.295,-760.374)"
+   v:groupContext="shape"
+   v:mID="69"
+   id="shape69-117">
+			<title
+   id="title325">Sheet.69</title>
+			<rect
+   id="rect327"
+   class="st5"
+   height="48.2374"
+   width="80.0597"
+   y="1499.76"
+   x="0" />
+		</g>
+		<g
+   transform="translate(452.438,-786.508)"
+   v:groupContext="shape"
+   v:mID="70"
+   id="shape70-119">
+			<title
+   id="title330">Sheet.70</title>
+			<rect
+   id="rect332"
+   class="st5"
+   height="22.1028"
+   width="72.0681"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(531.634,-786.508)"
+   v:groupContext="shape"
+   v:mID="71"
+   id="shape71-121">
+			<title
+   id="title335">Sheet.71</title>
+			<rect
+   id="rect337"
+   class="st5"
+   height="22.1028"
+   width="73.075996"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(452.438,-760.374)"
+   v:groupContext="shape"
+   v:mID="72"
+   id="shape72-123">
+			<title
+   id="title340">Sheet.72</title>
+			<rect
+   id="rect342"
+   class="st5"
+   height="22.1028"
+   width="72.0681"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(531.634,-760.374)"
+   v:groupContext="shape"
+   v:mID="73"
+   id="shape73-125">
+			<title
+   id="title345">Sheet.73</title>
+			<rect
+   id="rect347"
+   class="st5"
+   height="22.1028"
+   width="73.075996"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(558.92,-764.202)"
+   v:groupContext="shape"
+   v:mID="74"
+   id="shape74-127">
+			<title
+   id="title350">Sheet.74</title>
+			<desc
+   id="desc352">IPC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect354"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text356"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="0"><v:paragraph /><v:tabList />IPC</text>		</g>
+		<g
+   transform="translate(471.974,-790.336)"
+   v:groupContext="shape"
+   v:mID="75"
+   id="shape75-130">
+			<title
+   id="title359">Sheet.75</title>
+			<desc
+   id="desc361">DMA</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect363"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text365"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="5.3899999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />DMA</text>		</g>
+		<g
+   transform="translate(301.828,-777.893)"
+   v:groupContext="shape"
+   v:mID="76"
+   id="shape76-133">
+			<title
+   id="title368">Sheet.76</title>
+			<desc
+   id="desc370">Power Manager</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="55"
+   cy="1541.4"
+   cx="27.4968" />
+			<rect
+   id="rect372"
+   class="st2"
+   height="13.1984"
+   width="54.9935"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text376"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="13.32"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Power<v:newlineChar /><tspan
+   id="tspan374"
+   class="st8"
+   dy="1.2em"
+   x="7.7600002">Manager</tspan></text>		</g>
+		<g
+   transform="translate(460.975,-765.354)"
+   v:groupContext="shape"
+   v:mID="78"
+   id="shape78-137">
+			<title
+   id="title379">Sheet.78</title>
+			<desc
+   id="desc381">Debug</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="55"
+   cy="1541.4"
+   cx="27.4968" />
+			<rect
+   id="rect383"
+   class="st2"
+   height="13.1984"
+   width="54.9935"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text385"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="12.76"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Debug</text>		</g>
+		<g
+   transform="translate(374.25,-760.518)"
+   v:groupContext="shape"
+   v:mID="79"
+   id="shape79-140">
+			<title
+   id="title388">Sheet.79</title>
+			<rect
+   id="rect390"
+   class="st5"
+   height="48.093399"
+   width="73.075996"
+   y="1499.91"
+   x="0" />
+		</g>
+		<g
+   transform="translate(377.793,-777.965)"
+   v:groupContext="shape"
+   v:mID="80"
+   id="shape80-142">
+			<title
+   id="title393">Sheet.80</title>
+			<desc
+   id="desc395">System Monitor</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1981"
+   width="66"
+   cy="1541.4"
+   cx="32.9952" />
+			<rect
+   id="rect397"
+   class="st2"
+   height="13.1981"
+   width="65.990501"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text401"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="16.32"><v:paragraph
+   v:horizAlign="1" /><v:tabList />System<v:newlineChar /><tspan
+   id="tspan399"
+   class="st8"
+   dy="1.2em"
+   x="16.32">Monitor</tspan></text>		</g>
+		<g
+   transform="translate(545.016,-790.96)"
+   v:groupContext="shape"
+   v:mID="82"
+   id="shape82-146">
+			<title
+   id="title404">Sheet.82</title>
+			<desc
+   id="desc406">Firewall</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="46.32"
+   cy="1541.4"
+   cx="23.1555" />
+			<rect
+   id="rect408"
+   class="st2"
+   height="13.1984"
+   width="46.311001"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text410"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="5.9299998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Firewall</text>		</g>
+		<g
+   transform="translate(610.182,-786.508)"
+   v:groupContext="shape"
+   v:mID="83"
+   id="shape83-149">
+			<title
+   id="title413">Sheet.83</title>
+			<rect
+   id="rect415"
+   class="st5"
+   height="22.1028"
+   width="73.075996"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(618.576,-790.961)"
+   v:groupContext="shape"
+   v:mID="84"
+   id="shape84-151">
+			<title
+   id="title418">Sheet.84</title>
+			<desc
+   id="desc420">Secure Boot</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1981"
+   width="56.29"
+   cy="1541.4"
+   cx="28.1433" />
+			<rect
+   id="rect422"
+   class="st2"
+   height="13.1981"
+   width="56.286598"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text424"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="0.63"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Secure Boot</text>		</g>
+		<g
+   transform="translate(767.565,-786.22)"
+   v:groupContext="shape"
+   v:mID="85"
+   id="shape85-154">
+			<title
+   id="title427">Sheet.85</title>
+			<rect
+   id="rect429"
+   class="st5"
+   height="22.1028"
+   width="73.148003"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(767.205,-761.022)"
+   v:groupContext="shape"
+   v:mID="86"
+   id="shape86-156">
+			<title
+   id="title432">Sheet.86</title>
+			<rect
+   id="rect434"
+   class="st5"
+   height="22.1028"
+   width="73.508003"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(688.945,-761.022)"
+   v:groupContext="shape"
+   v:mID="87"
+   id="shape87-158">
+			<title
+   id="title437">Sheet.87</title>
+			<rect
+   id="rect439"
+   class="st5"
+   height="22.1028"
+   width="73.075996"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(688.945,-786.508)"
+   v:groupContext="shape"
+   v:mID="88"
+   id="shape88-160">
+			<title
+   id="title442">Sheet.88</title>
+			<rect
+   id="rect444"
+   class="st5"
+   height="22.1028"
+   width="73.075996"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(703.486,-790.336)"
+   v:groupContext="shape"
+   v:mID="89"
+   id="shape89-162">
+			<title
+   id="title447">Sheet.89</title>
+			<desc
+   id="desc449">DCC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect451"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text453"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="11.16"><v:paragraph
+   v:horizAlign="1" /><v:tabList />DCC  </text>		</g>
+		<g
+   transform="translate(787.641,-789.976)"
+   v:groupContext="shape"
+   v:mID="90"
+   id="shape90-165">
+			<title
+   id="title456">Sheet.90</title>
+			<desc
+   id="desc458">RTC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect460"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text462"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="6.2199998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />RTC</text>		</g>
+		<g
+   transform="translate(713.568,-764.85)"
+   v:groupContext="shape"
+   v:mID="91"
+   id="shape91-168">
+			<title
+   id="title465">Sheet.91</title>
+			<desc
+   id="desc467">ESM</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect469"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text471"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="0"><v:paragraph /><v:tabList />ESM</text>		</g>
+		<g
+   transform="translate(770.963,-764.922)"
+   v:groupContext="shape"
+   v:mID="92"
+   id="shape92-171">
+			<title
+   id="title474">Sheet.92</title>
+			<desc
+   id="desc476">Timers</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="66"
+   cy="1541.4"
+   cx="32.9961" />
+			<rect
+   id="rect478"
+   class="st2"
+   height="13.1984"
+   width="65.992203"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text480"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="17.719999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Timers</text>		</g>
+		<g
+   transform="translate(394.864,-981.303)"
+   v:groupContext="shape"
+   v:mID="93"
+   id="shape93-174">
+			<title
+   id="title483">Sheet.93</title>
+			<desc
+   id="desc485">USB 3.1</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="77"
+   cy="1541.4"
+   cx="38.4955" />
+			<rect
+   id="rect487"
+   class="st2"
+   height="13.1984"
+   width="76.990898"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text489"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="19.870001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />USB 3.1</text>		</g>
+		<g
+   transform="translate(303.996,-980.679)"
+   v:groupContext="shape"
+   v:mID="94"
+   id="shape94-177">
+			<title
+   id="title492">Sheet.94</title>
+			<desc
+   id="desc494">5x I2C</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="66"
+   cy="1541.4"
+   cx="32.9961" />
+			<rect
+   id="rect496"
+   class="st2"
+   height="13.1984"
+   width="65.992203"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text498"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="18.549999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />5x I2C</text>		</g>
+		<g
+   transform="translate(386.922,-1067.35)"
+   v:groupContext="shape"
+   v:mID="95"
+   id="shape95-180">
+			<title
+   id="title501">Sheet.95</title>
+			<rect
+   id="rect503"
+   class="st5"
+   height="24.766701"
+   width="93.378998"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(411.614,-1072.47)"
+   v:groupContext="shape"
+   v:mID="96"
+   id="shape96-182">
+			<title
+   id="title506">Sheet.96</title>
+			<desc
+   id="desc508">GPIO</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect510"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text512"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="9.4899998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />GPIO</text>		</g>
+		<g
+   transform="translate(613.493,-934.394)"
+   v:groupContext="shape"
+   v:mID="97"
+   id="shape97-185">
+			<title
+   id="title515">Sheet.97</title>
+			<rect
+   id="rect517"
+   class="st4"
+   height="210.856"
+   width="235.49899"
+   y="1337.14"
+   x="0" />
+		</g>
+		<g
+   transform="translate(676.25,-1120.5)"
+   v:groupContext="shape"
+   v:mID="98"
+   id="shape98-187">
+			<title
+   id="title520">Sheet.98</title>
+			<desc
+   id="desc522">Multimedia</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="109.99"
+   cy="1541.4"
+   cx="54.9935" />
+			<rect
+   id="rect524"
+   class="st2"
+   height="13.1984"
+   width="109.987"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text526"
+   v:langID="1033"
+   class="st3"
+   y="1544.4"
+   x="30.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Multimedia</text>		</g>
+		<g
+   transform="translate(623.933,-945.497)"
+   v:groupContext="shape"
+   v:mID="100"
+   id="shape100-190">
+			<title
+   id="title529">Sheet.100</title>
+			<rect
+   id="rect531"
+   class="st5"
+   height="27.862499"
+   width="102.09"
+   y="1520.14"
+   x="0" />
+		</g>
+		<g
+   transform="translate(505.211,-1006.37)"
+   v:groupContext="shape"
+   v:mID="105"
+   id="shape105-192">
+			<title
+   id="title534">Sheet.105</title>
+			<rect
+   id="rect536"
+   class="st5"
+   height="24.766701"
+   width="93.450897"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(505.211,-1036.39)"
+   v:groupContext="shape"
+   v:mID="106"
+   id="shape106-194">
+			<title
+   id="title539">Sheet.106</title>
+			<rect
+   id="rect541"
+   class="st5"
+   height="24.766701"
+   width="93.450897"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(505.211,-974.979)"
+   v:groupContext="shape"
+   v:mID="107"
+   id="shape107-196">
+			<title
+   id="title544">Sheet.107</title>
+			<rect
+   id="rect546"
+   class="st5"
+   height="24.766701"
+   width="93.450897"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(518.941,-1041.52)"
+   v:groupContext="shape"
+   v:mID="108"
+   id="shape108-198">
+			<title
+   id="title549">Sheet.108</title>
+			<desc
+   id="desc551">2x SPI</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="66"
+   cy="1541.4"
+   cx="32.9961" />
+			<rect
+   id="rect553"
+   class="st2"
+   height="13.1984"
+   width="65.992203"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text555"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="18.27"><v:paragraph
+   v:horizAlign="1" /><v:tabList />2x SPI</text>		</g>
+		<g
+   transform="translate(529.939,-1011.57)"
+   v:groupContext="shape"
+   v:mID="109"
+   id="shape109-201">
+			<title
+   id="title558">Sheet.109</title>
+			<desc
+   id="desc560">UART</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect562"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text564"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="8.3900003"><v:paragraph
+   v:horizAlign="1" /><v:tabList />UART</text>		</g>
+		<g
+   transform="translate(505.211,-945.389)"
+   v:groupContext="shape"
+   v:mID="110"
+   id="shape110-204">
+			<title
+   id="title567">Sheet.110</title>
+			<rect
+   id="rect569"
+   class="st5"
+   height="24.766701"
+   width="93.450897"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(502.443,-980.103)"
+   v:groupContext="shape"
+   v:mID="111"
+   id="shape111-206">
+			<title
+   id="title572">Sheet.111</title>
+			<desc
+   id="desc574">2x CAN-FD</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="98.99"
+   cy="1541.4"
+   cx="49.4942" />
+			<rect
+   id="rect576"
+   class="st2"
+   height="13.1984"
+   width="98.988297"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text578"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="23.940001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />2x CAN-FD</text>		</g>
+		<g
+   transform="translate(535.439,-951.173)"
+   v:groupContext="shape"
+   v:mID="112"
+   id="shape112-209">
+			<title
+   id="title581">Sheet.112</title>
+			<desc
+   id="desc583">I2C</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect585"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text587"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="8.7200003"><v:paragraph
+   v:horizAlign="1" /><v:tabList />I2C</text>		</g>
+		<g
+   transform="translate(499.227,-1111.5)"
+   v:groupContext="shape"
+   v:mID="113"
+   id="shape113-212">
+			<title
+   id="title590">Sheet.113</title>
+			<desc
+   id="desc592">General Connectivity (MCUSS)</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="105.43"
+   cy="1541.4"
+   cx="52.7101" />
+			<rect
+   id="rect594"
+   class="st2"
+   height="13.1984"
+   width="105.42"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text598"
+   v:langID="1033"
+   class="st3"
+   y="1538.4"
+   x="7.6900001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />General Connectivity<v:newlineChar /><tspan
+   id="tspan596"
+   class="st8"
+   dy="1.2em"
+   x="31.32">(MCUSS)</tspan></text>		</g>
+		<g
+   transform="translate(505.211,-1067.35)"
+   v:groupContext="shape"
+   v:mID="115"
+   id="shape115-216">
+			<title
+   id="title601">Sheet.115</title>
+			<rect
+   id="rect603"
+   class="st5"
+   height="24.766701"
+   width="93.450897"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(529.939,-1072.47)"
+   v:groupContext="shape"
+   v:mID="116"
+   id="shape116-218">
+			<title
+   id="title606">Sheet.116</title>
+			<desc
+   id="desc608">GPIO</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect610"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text612"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="9.4899998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />GPIO</text>		</g>
+		<g
+   transform="translate(290.375,-847.705)"
+   v:groupContext="shape"
+   v:mID="117"
+   id="shape117-221">
+			<title
+   id="title615">Sheet.117</title>
+			<rect
+   id="rect617"
+   class="st5"
+   height="33.4062"
+   width="142.84"
+   y="1514.59"
+   x="0" />
+		</g>
+		<g
+   transform="translate(286.64,-1437.96)"
+   v:groupContext="shape"
+   v:mID="122"
+   id="shape122-223">
+			<title
+   id="title620">Sheet.122</title>
+			<desc
+   id="desc622">Application Cores</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1981"
+   width="197.98"
+   cy="1541.4"
+   cx="98.9857" />
+			<rect
+   id="rect624"
+   class="st2"
+   height="13.1981"
+   width="197.97099"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text626"
+   v:langID="1033"
+   class="st3"
+   y="1544.4"
+   x="59.799999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Application Cores  </text>		</g>
+		<g
+   transform="translate(387.498,-1379.35)"
+   v:groupContext="shape"
+   v:mID="123"
+   id="shape123-226">
+			<title
+   id="title629">Sheet.123</title>
+			<rect
+   id="rect631"
+   class="st6"
+   height="52.701199"
+   width="91.794998"
+   y="1495.3"
+   x="0" />
+		</g>
+		<g
+   transform="translate(307.15,-1407.18)"
+   v:groupContext="shape"
+   v:mID="124"
+   id="shape124-228">
+			<title
+   id="title634">Sheet.124</title>
+			<desc
+   id="desc636">2x Arm</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="12.2198"
+   width="61.1"
+   cy="1541.89"
+   cx="30.5496" />
+			<rect
+   id="rect638"
+   class="st2"
+   height="12.2198"
+   width="61.099201"
+   y="1535.78"
+   x="0" />
+			<text
+   id="text640"
+   v:langID="1033"
+   class="st7"
+   y="1544.89"
+   x="0"><v:paragraph /><v:tabList />2x Arm</text>		</g>
+		<g
+   transform="translate(341.852,-1411.73)"
+   v:groupContext="shape"
+   v:mID="125"
+   id="shape125-231">
+			<title
+   id="title643">Sheet.125</title>
+			<desc
+   id="desc645">®</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="8.40075"
+   width="7.01"
+   cy="1543.8"
+   cx="3.50031" />
+			<rect
+   id="rect647"
+   class="st2"
+   height="8.4007502"
+   width="7.0006299"
+   y="1539.6"
+   x="0" />
+			<text
+   id="text649"
+   v:langID="1033"
+   class="st7"
+   y="1546.8"
+   x="0"><v:paragraph /><v:tabList />®</text>		</g>
+		<g
+   transform="translate(301.5,-1383.75)"
+   v:groupContext="shape"
+   v:mID="126"
+   id="shape126-234">
+			<title
+   id="title652">Sheet.126</title>
+			<desc
+   id="desc654">Cortex -A53</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="29.25"
+   width="69.75"
+   cy="1533.38"
+   cx="34.875" />
+			<rect
+   id="rect656"
+   class="st2"
+   height="29.25"
+   width="69.75"
+   y="1518.75"
+   x="0" />
+			<text
+   id="text658"
+   v:langID="1033"
+   class="st7"
+   y="1536.38"
+   x="0"><v:paragraph /><v:tabList />Cortex  -A53</text>		</g>
+		<g
+   transform="translate(327.237,-1401.08)"
+   v:groupContext="shape"
+   v:mID="127"
+   id="shape127-237">
+			<title
+   id="title661">Sheet.127</title>
+			<desc
+   id="desc663">®</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="8.40075"
+   width="7.01"
+   cy="1543.8"
+   cx="3.50031" />
+			<rect
+   id="rect665"
+   class="st2"
+   height="8.4007502"
+   width="7.0006299"
+   y="1539.6"
+   x="0" />
+			<text
+   id="text667"
+   v:langID="1033"
+   class="st7"
+   y="1546.8"
+   x="0"><v:paragraph /><v:tabList />®</text>		</g>
+		<g
+   transform="translate(290.375,-1379.42)"
+   v:groupContext="shape"
+   v:mID="128"
+   id="shape128-240">
+			<title
+   id="title670">Sheet.128</title>
+			<rect
+   id="rect672"
+   class="st6"
+   height="52.557201"
+   width="91.794998"
+   y="1495.4399"
+   x="0" />
+		</g>
+		<g
+   transform="translate(301.603,-1399.1)"
+   v:groupContext="shape"
+   v:mID="132"
+   id="shape132-242">
+			<title
+   id="title675">Sheet.132</title>
+			<desc
+   id="desc677">Arm® Cortex®-A53</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="69.34"
+   cy="1541.4"
+   cx="34.6692" />
+			<rect
+   id="rect679"
+   class="st2"
+   height="13.1984"
+   width="69.338303"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text683"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="21.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Arm®<v:newlineChar /><tspan
+   id="tspan681"
+   class="st8"
+   dy="1.2em"
+   x="5.6999998">Cortex</tspan>®-A53</text>		</g>
+		<g
+   transform="translate(613.637,-1155.8)"
+   v:groupContext="shape"
+   v:mID="139"
+   id="shape139-246">
+			<title
+   id="title686">Sheet.139</title>
+			<rect
+   id="rect688"
+   class="st4"
+   height="125.273"
+   width="235.49899"
+   y="1422.73"
+   x="0" />
+		</g>
+		<g
+   transform="translate(659.896,-1264.45)"
+   v:groupContext="shape"
+   v:mID="140"
+   id="shape140-248">
+			<title
+   id="title691">Sheet.140</title>
+			<desc
+   id="desc693">System Memory</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="142.99"
+   cy="1541.4"
+   cx="71.4916" />
+			<rect
+   id="rect695"
+   class="st2"
+   height="13.1984"
+   width="142.983"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text697"
+   v:langID="1033"
+   class="st3"
+   y="1544.4"
+   x="35.380001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />System Memory</text>		</g>
+		<g
+   transform="translate(738.623,-1164)"
+   v:groupContext="shape"
+   v:mID="141"
+   id="shape141-251">
+			<title
+   id="title700">Sheet.141</title>
+			<rect
+   id="rect702"
+   class="st5"
+   height="46.005501"
+   width="102.162"
+   y="1501.99"
+   x="0" />
+		</g>
+		<g
+   transform="translate(738.623,-1217.35)"
+   v:groupContext="shape"
+   v:mID="142"
+   id="shape142-253">
+			<title
+   id="title705">Sheet.142</title>
+			<rect
+   id="rect707"
+   class="st5"
+   height="46.077499"
+   width="102.162"
+   y="1501.92"
+   x="0" />
+		</g>
+		<g
+   transform="translate(623.933,-1217.35)"
+   v:groupContext="shape"
+   v:mID="143"
+   id="shape143-255">
+			<title
+   id="title710">Sheet.143</title>
+			<rect
+   id="rect712"
+   class="st5"
+   height="46.077499"
+   width="102.162"
+   y="1501.92"
+   x="0" />
+		</g>
+		<g
+   transform="translate(623.933,-1164)"
+   v:groupContext="shape"
+   v:mID="144"
+   id="shape144-257">
+			<title
+   id="title715">Sheet.144</title>
+			<rect
+   id="rect717"
+   class="st5"
+   height="46.005501"
+   width="102.162"
+   y="1501.99"
+   x="0" />
+		</g>
+		<g
+   transform="translate(767.707,-1233.79)"
+   v:groupContext="shape"
+   v:mID="145"
+   id="shape145-259">
+			<title
+   id="title720">Sheet.145</title>
+			<desc
+   id="desc722">GPMC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect724"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text726"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="7"><v:paragraph
+   v:horizAlign="1" /><v:tabList />GPMC</text>		</g>
+		<g
+   transform="translate(745.71,-1179.78)"
+   v:groupContext="shape"
+   v:mID="146"
+   id="shape146-262">
+			<title
+   id="title729">Sheet.146</title>
+			<desc
+   id="desc731">3x MMCSD</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1981"
+   width="87.99"
+   cy="1541.4"
+   cx="43.9937" />
+			<rect
+   id="rect733"
+   class="st2"
+   height="13.1981"
+   width="87.987297"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text735"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="18.440001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />3x MMCSD</text>		</g>
+		<g
+   transform="translate(625.514,-1180.41)"
+   v:groupContext="shape"
+   v:mID="147"
+   id="shape147-265">
+			<title
+   id="title738">Sheet.147</title>
+			<desc
+   id="desc740">LPDDR4 with inline ECC (32b)</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1981"
+   width="99"
+   cy="1541.4"
+   cx="49.5" />
+			<rect
+   id="rect742"
+   class="st2"
+   height="13.1981"
+   width="99"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text748"
+   v:langID="1033"
+   class="st7"
+   y="1532.4"
+   x="29.77"><v:paragraph
+   v:horizAlign="1" /><v:tabList />LPDDR4<v:newlineChar /><tspan
+   id="tspan744"
+   class="st8"
+   dy="1.2em"
+   x="15.6">with inline ECC <v:newlineChar /></tspan><tspan
+   id="tspan746"
+   class="st8"
+   dy="1.2em"
+   x="37.830002">(32b)</tspan></text>		</g>
+		<g
+   transform="translate(626.639,-1233.81)"
+   v:groupContext="shape"
+   v:mID="150"
+   id="shape150-270">
+			<title
+   id="title751">Sheet.150</title>
+			<desc
+   id="desc753">256KB SRAM with ECC (Shared)</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1593"
+   width="96.75"
+   cy="1541.42"
+   cx="48.375" />
+			<rect
+   id="rect755"
+   class="st2"
+   height="13.1593"
+   width="96.75"
+   y="1534.84"
+   x="0" />
+			<text
+   id="text761"
+   v:langID="1033"
+   class="st10"
+   y="1532.42"
+   x="17.440001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />256KB SRAM<v:newlineChar /><tspan
+   id="tspan757"
+   class="st8"
+   dy="1.2em"
+   x="27.48">with ECC<v:newlineChar /></tspan><tspan
+   id="tspan759"
+   class="st8"
+   dy="1.2em"
+   x="28.870001">(Shared) </tspan> </text>		</g>
+		<g
+   transform="translate(505.067,-1329.74)"
+   v:groupContext="shape"
+   v:mID="156"
+   id="shape156-275">
+			<title
+   id="title764">Sheet.156</title>
+			<rect
+   id="rect766"
+   class="st5"
+   height="33.478199"
+   width="93.091003"
+   y="1514.52"
+   x="0" />
+		</g>
+		<g
+   transform="translate(505.576,-1339.88)"
+   v:groupContext="shape"
+   v:mID="164"
+   id="shape164-277">
+			<title
+   id="title769">Sheet.164</title>
+			<desc
+   id="desc771">64KB TCM with ECC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1978"
+   width="92.08"
+   cy="1541.4"
+   cx="46.0368" />
+			<rect
+   id="rect773"
+   class="st2"
+   height="13.1978"
+   width="92.0737"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text777"
+   v:langID="1033"
+   class="st10"
+   y="1538.4"
+   x="20.450001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />64KB TCM<v:newlineChar /><tspan
+   id="tspan775"
+   class="st8"
+   dy="1.2em"
+   x="24.23">with ECC</tspan></text>		</g>
+		<g
+   transform="translate(505.067,-1287.62)"
+   v:groupContext="shape"
+   v:mID="166"
+   id="shape166-281">
+			<title
+   id="title780">Sheet.166</title>
+			<rect
+   id="rect782"
+   class="st5"
+   height="37.366001"
+   width="93.091003"
+   y="1510.63"
+   x="0" />
+		</g>
+		<g
+   transform="translate(494.065,-1299.71)"
+   v:groupContext="shape"
+   v:mID="167"
+   id="shape167-283">
+			<title
+   id="title785">Sheet.167</title>
+			<desc
+   id="desc787">512KB SRAM with ECC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1981"
+   width="115.1"
+   cy="1541.4"
+   cx="57.5475" />
+			<rect
+   id="rect789"
+   class="st2"
+   height="13.1981"
+   width="115.095"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text793"
+   v:langID="1033"
+   class="st10"
+   y="1538.4"
+   x="25.27"><v:paragraph
+   v:horizAlign="1" /><v:tabList />512KB SRAM<v:newlineChar /><tspan
+   id="tspan791"
+   class="st8"
+   dy="1.2em"
+   x="35.740002">with ECC</tspan></text>		</g>
+		<g
+   transform="translate(505.067,-1255.44)"
+   v:groupContext="shape"
+   v:mID="169"
+   id="shape169-287">
+			<title
+   id="title796">Sheet.169</title>
+			<rect
+   id="rect798"
+   class="st5"
+   height="28.438499"
+   width="93.091003"
+   y="1519.5601"
+   x="0" />
+		</g>
+		<g
+   transform="translate(494.067,-1263.06)"
+   v:groupContext="shape"
+   v:mID="170"
+   id="shape170-289">
+			<title
+   id="title801">Sheet.170</title>
+			<desc
+   id="desc803">Safety DTK</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1978"
+   width="115.1"
+   cy="1541.4"
+   cx="57.546" />
+			<rect
+   id="rect805"
+   class="st2"
+   height="13.1978"
+   width="115.092"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text807"
+   v:langID="1033"
+   class="st10"
+   y="1544.4"
+   x="30.790001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Safety DTK</text>		</g>
+		<g
+   transform="translate(613.637,-1373.37)"
+   v:groupContext="shape"
+   v:mID="171"
+   id="shape171-292">
+			<title
+   id="title810">Sheet.171</title>
+			<rect
+   id="rect812"
+   class="st4"
+   height="81.499603"
+   width="235.355"
+   y="1466.5"
+   x="0" />
+		</g>
+		<g
+   transform="translate(633.482,-1438.15)"
+   v:groupContext="shape"
+   v:mID="172"
+   id="shape172-294">
+			<title
+   id="title815">Sheet.172</title>
+			<desc
+   id="desc817">Device Management</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="195.67"
+   cy="1541.4"
+   cx="97.8334" />
+			<rect
+   id="rect819"
+   class="st2"
+   height="13.1984"
+   width="195.66701"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text821"
+   v:langID="1033"
+   class="st9"
+   y="1544.4"
+   x="49.84"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Device Management</text>		</g>
+		<g
+   transform="translate(624.869,-1382.08)"
+   v:groupContext="shape"
+   v:mID="173"
+   id="shape173-297">
+			<title
+   id="title824">Sheet.173</title>
+			<rect
+   id="rect826"
+   class="st6"
+   height="52.701199"
+   width="101.083"
+   y="1495.3"
+   x="0" />
+		</g>
+		<g
+   transform="translate(740.207,-1382.08)"
+   v:groupContext="shape"
+   v:mID="174"
+   id="shape174-299">
+			<title
+   id="title829">Sheet.174</title>
+			<rect
+   id="rect831"
+   class="st5"
+   height="52.701199"
+   width="97.266701"
+   y="1495.3"
+   x="0" />
+		</g>
+		<g
+   transform="translate(742.803,-1401.83)"
+   v:groupContext="shape"
+   v:mID="182"
+   id="shape182-301">
+			<title
+   id="title834">Sheet.182</title>
+			<desc
+   id="desc836">64KB TCM with ECC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1978"
+   width="92.08"
+   cy="1541.4"
+   cx="46.0368" />
+			<rect
+   id="rect838"
+   class="st2"
+   height="13.1978"
+   width="92.0737"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text842"
+   v:langID="1033"
+   class="st10"
+   y="1538.4"
+   x="20.450001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />64KB TCM<v:newlineChar /><tspan
+   id="tspan840"
+   class="st8"
+   dy="1.2em"
+   x="24.23">with ECC</tspan></text>		</g>
+		<g
+   transform="translate(624.412,-1013.7)"
+   v:groupContext="shape"
+   v:mID="190"
+   id="shape190-305">
+			<title
+   id="title845">Sheet.190</title>
+			<rect
+   id="rect847"
+   class="st5"
+   height="29.950399"
+   width="215.679"
+   y="1518.05"
+   x="0" />
+		</g>
+		<g
+   transform="translate(738,-978.364)"
+   v:groupContext="shape"
+   v:mID="191"
+   id="shape191-307">
+			<title
+   id="title850">Sheet.191</title>
+			<rect
+   id="rect852"
+   class="st5"
+   height="28.078501"
+   width="102.09"
+   y="1519.92"
+   x="0" />
+		</g>
+		<g
+   transform="translate(610.182,-761.022)"
+   v:groupContext="shape"
+   v:mID="193"
+   id="shape193-309">
+			<title
+   id="title855">Sheet.193</title>
+			<rect
+   id="rect857"
+   class="st5"
+   height="22.1028"
+   width="73.075996"
+   y="1525.9"
+   x="0" />
+		</g>
+		<g
+   transform="translate(630.222,-764.85)"
+   v:groupContext="shape"
+   v:mID="194"
+   id="shape194-311">
+			<title
+   id="title860">Sheet.194</title>
+			<desc
+   id="desc862">ECC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="33"
+   cy="1541.4"
+   cx="16.4981" />
+			<rect
+   id="rect864"
+   class="st2"
+   height="13.1984"
+   width="32.996101"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text866"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="5.9400001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />ECC</text>		</g>
+		<g
+   transform="translate(646.541,-1022.07)"
+   v:groupContext="shape"
+   v:mID="195"
+   id="shape195-314">
+			<title
+   id="title869">Sheet.195</title>
+			<desc
+   id="desc871">3D Graphics Processing Unit</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="171.43"
+   cy="1541.4"
+   cx="85.7102" />
+			<rect
+   id="rect873"
+   class="st2"
+   height="13.1984"
+   width="171.42"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text875"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="21.52"><v:paragraph
+   v:horizAlign="1" /><v:tabList />3D Graphics Processing Unit</text>		</g>
+		<g
+   transform="translate(623.717,-1082.75)"
+   v:groupContext="shape"
+   v:mID="101"
+   id="shape101-317">
+			<title
+   id="title878">Sheet.101</title>
+			<rect
+   id="rect880"
+   class="st5"
+   height="29.950399"
+   width="102.306"
+   y="1518.05"
+   x="0" />
+		</g>
+		<g
+   transform="translate(636.225,-1091.12)"
+   v:groupContext="shape"
+   v:mID="103"
+   id="shape103-319">
+			<title
+   id="title883">Sheet.103</title>
+			<desc
+   id="desc885">H.264/H.265 Video Codec</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="77.3"
+   cy="1541.4"
+   cx="38.6455" />
+			<rect
+   id="rect887"
+   class="st2"
+   height="13.1984"
+   width="77.2911"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text891"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="10.57"><v:paragraph
+   v:horizAlign="1" /><v:tabList />H.264/H.265 <tspan
+   id="tspan889"
+   class="st8"
+   dy="1.2em"
+   x="10.01">Video Codec</tspan></text>		</g>
+		<g
+   transform="translate(623.717,-1049.7)"
+   v:groupContext="shape"
+   v:mID="99"
+   id="shape99-323">
+			<title
+   id="title894">Sheet.99</title>
+			<rect
+   id="rect896"
+   class="st5"
+   height="28.078501"
+   width="215.679"
+   y="1519.92"
+   x="0" />
+		</g>
+		<g
+   transform="translate(625.806,-1057.14)"
+   v:groupContext="shape"
+   v:mID="184"
+   id="shape184-325">
+			<title
+   id="title899">Sheet.184</title>
+			<desc
+   id="desc901">3x Display with OLDI/DPI/DSI</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="211.5"
+   cy="1541.4"
+   cx="105.75" />
+			<rect
+   id="rect903"
+   class="st2"
+   height="13.1984"
+   width="211.5"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text905"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="39.900002"><v:paragraph
+   v:horizAlign="1" /><v:tabList />3x Display with OLDI/DPI/DSI</text>		</g>
+		<g
+   transform="translate(613.637,-1286.5)"
+   v:groupContext="shape"
+   v:mID="396"
+   id="shape396-328">
+			<title
+   id="title908">Sheet.396</title>
+			<rect
+   id="rect910"
+   class="st11"
+   height="81.499603"
+   width="235.355"
+   y="1466.5"
+   x="0" />
+		</g>
+		<g
+   transform="translate(633.482,-1351.28)"
+   v:groupContext="shape"
+   v:mID="397"
+   id="shape397-330">
+			<title
+   id="title913">Sheet.397</title>
+			<desc
+   id="desc915">Run-time Management</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="195.67"
+   cy="1541.4"
+   cx="97.8334" />
+			<rect
+   id="rect917"
+   class="st2"
+   height="13.1984"
+   width="195.66701"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text919"
+   v:langID="1033"
+   class="st9"
+   y="1544.4"
+   x="44.610001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Run-time Management</text>		</g>
+		<g
+   transform="translate(624.083,-1295.21)"
+   v:groupContext="shape"
+   v:mID="398"
+   id="shape398-333">
+			<title
+   id="title922">Sheet.398</title>
+			<rect
+   id="rect924"
+   class="st6"
+   height="52.701199"
+   width="101.083"
+   y="1495.3"
+   x="0" />
+		</g>
+		<g
+   transform="translate(740.207,-1295.21)"
+   v:groupContext="shape"
+   v:mID="399"
+   id="shape399-335">
+			<title
+   id="title927">Sheet.399</title>
+			<rect
+   id="rect929"
+   class="st5"
+   height="52.701199"
+   width="97.266701"
+   y="1495.3"
+   x="0" />
+		</g>
+		<g
+   transform="translate(742.803,-1314.96)"
+   v:groupContext="shape"
+   v:mID="407"
+   id="shape407-337">
+			<title
+   id="title932">Sheet.407</title>
+			<desc
+   id="desc934">64KB TCM with ECC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1978"
+   width="92.08"
+   cy="1541.4"
+   cx="46.0368" />
+			<rect
+   id="rect936"
+   class="st2"
+   height="13.1978"
+   width="92.0737"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text940"
+   v:langID="1033"
+   class="st10"
+   y="1538.4"
+   x="20.450001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />64KB TCM<v:newlineChar /><tspan
+   id="tspan938"
+   class="st8"
+   dy="1.2em"
+   x="24.23">with ECC</tspan></text>		</g>
+		<g
+   transform="translate(623.933,-978.472)"
+   v:groupContext="shape"
+   v:mID="431"
+   id="shape431-341">
+			<title
+   id="title943">Sheet.431</title>
+			<rect
+   id="rect945"
+   class="st5"
+   height="27.862499"
+   width="102.09"
+   y="1520.14"
+   x="0" />
+		</g>
+		<g
+   transform="translate(745.05,-985.804)"
+   v:groupContext="shape"
+   v:mID="432"
+   id="shape432-343">
+			<title
+   id="title948">Sheet.432</title>
+			<desc
+   id="desc950">DOF</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="87.99"
+   cy="1541.4"
+   cx="43.9948" />
+			<rect
+   id="rect952"
+   class="st2"
+   height="13.1984"
+   width="87.989601"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text954"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="33.439999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />DOF</text>		</g>
+		<g
+   transform="translate(738,-945.389)"
+   v:groupContext="shape"
+   v:mID="433"
+   id="shape433-346">
+			<title
+   id="title957">Sheet.433</title>
+			<rect
+   id="rect959"
+   class="st5"
+   height="28.078501"
+   width="102.09"
+   y="1519.92"
+   x="0" />
+		</g>
+		<g
+   transform="translate(734.052,-952.829)"
+   v:groupContext="shape"
+   v:mID="434"
+   id="shape434-348">
+			<title
+   id="title962">Sheet.434</title>
+			<desc
+   id="desc964">4L CSI2-TX</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="109.99"
+   cy="1541.4"
+   cx="54.9935" />
+			<rect
+   id="rect966"
+   class="st2"
+   height="13.1984"
+   width="109.987"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text968"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="28.870001"><v:paragraph
+   v:horizAlign="1" /><v:tabList />4L CSI2-TX</text>		</g>
+		<g
+   transform="translate(398.726,-1399.1)"
+   v:groupContext="shape"
+   v:mID="444"
+   id="shape444-351">
+			<title
+   id="title971">Sheet.444</title>
+			<desc
+   id="desc973">Arm® Cortex®-A53</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="69.34"
+   cy="1541.4"
+   cx="34.6692" />
+			<rect
+   id="rect975"
+   class="st2"
+   height="13.1984"
+   width="69.338303"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text979"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="21.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Arm®<v:newlineChar /><tspan
+   id="tspan977"
+   class="st8"
+   dy="1.2em"
+   x="5.6999998">Cortex</tspan>®-A53</text>		</g>
+		<g
+   transform="translate(301.603,-1339.99)"
+   v:groupContext="shape"
+   v:mID="445"
+   id="shape445-355">
+			<title
+   id="title982">Sheet.445</title>
+			<desc
+   id="desc984">Arm® Cortex®-A53</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="69.34"
+   cy="1541.4"
+   cx="34.6692" />
+			<rect
+   id="rect986"
+   class="st2"
+   height="13.1984"
+   width="69.338303"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text990"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="21.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Arm®<v:newlineChar /><tspan
+   id="tspan988"
+   class="st8"
+   dy="1.2em"
+   x="5.6999998">Cortex</tspan>®-A53</text>		</g>
+		<g
+   transform="translate(398.726,-1339.99)"
+   v:groupContext="shape"
+   v:mID="446"
+   id="shape446-359">
+			<title
+   id="title993">Sheet.446</title>
+			<desc
+   id="desc995">Arm® Cortex®-A53</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="69.34"
+   cy="1541.4"
+   cx="34.6692" />
+			<rect
+   id="rect997"
+   class="st2"
+   height="13.1984"
+   width="69.338303"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1001"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="21.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Arm®<v:newlineChar /><tspan
+   id="tspan999"
+   class="st8"
+   dy="1.2em"
+   x="5.6999998">Cortex</tspan>®-A53</text>		</g>
+		<g
+   transform="translate(505.679,-1368.98)"
+   v:groupContext="shape"
+   v:mID="497"
+   id="shape497-363">
+			<title
+   id="title1004">Sheet.497</title>
+			<rect
+   id="rect1006"
+   class="st6"
+   height="52.701199"
+   width="91.794998"
+   y="1495.3"
+   x="0" />
+		</g>
+		<g
+   transform="translate(516.908,-1388.73)"
+   v:groupContext="shape"
+   v:mID="447"
+   id="shape447-365">
+			<title
+   id="title1009">Sheet.447</title>
+			<desc
+   id="desc1011">Arm® Cortex®-R5F</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="69.34"
+   cy="1541.4"
+   cx="34.6692" />
+			<rect
+   id="rect1013"
+   class="st2"
+   height="13.1984"
+   width="69.338303"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1017"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="21.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Arm®<v:newlineChar /><tspan
+   id="tspan1015"
+   class="st8"
+   dy="1.2em"
+   x="5.1500001">Cortex</tspan>®-R5F</text>		</g>
+		<g
+   transform="translate(640.741,-1401.83)"
+   v:groupContext="shape"
+   v:mID="448"
+   id="shape448-369">
+			<title
+   id="title1020">Sheet.448</title>
+			<desc
+   id="desc1022">Arm® Cortex®-R5F</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="69.34"
+   cy="1541.4"
+   cx="34.6692" />
+			<rect
+   id="rect1024"
+   class="st2"
+   height="13.1984"
+   width="69.338303"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1028"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="21.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Arm®<v:newlineChar /><tspan
+   id="tspan1026"
+   class="st8"
+   dy="1.2em"
+   x="5.1500001">Cortex</tspan>®-R5F</text>		</g>
+		<g
+   transform="translate(639.955,-1314.96)"
+   v:groupContext="shape"
+   v:mID="449"
+   id="shape449-373">
+			<title
+   id="title1031">Sheet.449</title>
+			<desc
+   id="desc1033">Arm® Cortex®-R5F</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="69.34"
+   cy="1541.4"
+   cx="34.6692" />
+			<rect
+   id="rect1035"
+   class="st2"
+   height="13.1984"
+   width="69.338303"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1039"
+   v:langID="1033"
+   class="st7"
+   y="1538.4"
+   x="21.82"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Arm®<v:newlineChar /><tspan
+   id="tspan1037"
+   class="st8"
+   dy="1.2em"
+   x="5.1500001">Cortex</tspan>®-R5F</text>		</g>
+		<g
+   transform="translate(281.807,-1155.8)"
+   v:groupContext="shape"
+   v:mID="460"
+   id="shape460-377">
+			<title
+   id="title1042">Sheet.460</title>
+			<rect
+   id="rect1044"
+   class="st4"
+   height="86.202698"
+   width="323.76599"
+   y="1461.8"
+   x="0" />
+		</g>
+		<g
+   transform="translate(447.641,-1159.52)"
+   v:groupContext="shape"
+   v:mID="486"
+   id="shape486-379">
+			<title
+   id="title1047">Box.10</title>
+			<v:userDefs>
+				<v:ud
+   v:val="VT0(14):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+				<v:ud
+   v:val="VT0(1):0"
+   v:prompt=""
+   v:nameU="DefaultWidth" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="DefaultHeight" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="ResizeTxtHeight" />
+				<v:ud
+   v:val="VT0(254):26"
+   v:nameU="msvThemeEffects" />
+			</v:userDefs>
+			<rect
+   id="rect1049"
+   class="st12"
+   height="78.75"
+   width="155.26801"
+   y="1469.25"
+   x="0" />
+		</g>
+		<g
+   transform="translate(442.025,-1224)"
+   v:groupContext="shape"
+   v:mID="425"
+   id="shape425-381">
+			<title
+   id="title1052">Text.12</title>
+			<desc
+   id="desc1054">Deep Learning Accelerator (2 TOPS)</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="11.25"
+   width="166.5"
+   cy="1542.38"
+   cx="83.25" />
+			<rect
+   id="rect1056"
+   class="st13"
+   height="11.25"
+   width="166.5"
+   y="1536.75"
+   x="0" />
+			<text
+   id="text1058"
+   v:langID="1033"
+   class="st14"
+   y="1545.0699"
+   x="9.4700003"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Deep Learning Accelerator (2 TOPS)</text>		</g>
+		<g
+   transform="translate(452.853,-1163.4)"
+   v:groupContext="shape"
+   v:mID="423"
+   id="shape423-384">
+			<title
+   id="title1061">TI Gray.9</title>
+			<desc
+   id="desc1063">2.25MB L2 SRAM with ECC</desc>
+			<v:userDefs>
+				<v:ud
+   v:val="VT0(14):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+				<v:ud
+   v:val="VT0(1):0"
+   v:prompt=""
+   v:nameU="DefaultWidth" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="DefaultHeight" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="ResizeTxtHeight" />
+				<v:ud
+   v:val="VT0(254):26"
+   v:nameU="msvThemeEffects" />
+			</v:userDefs>
+			<v:textBlock
+   v:margins="rect(2,2,2,2)" />
+			<v:textRect
+   height="23.125"
+   width="144.85"
+   cy="1536.44"
+   cx="72.4213" />
+			<rect
+   id="rect1065"
+   class="st15"
+   height="23.125"
+   width="144.843"
+   y="1524.88"
+   x="0" />
+			<text
+   id="text1067"
+   v:langID="1033"
+   class="st7"
+   y="1539.4399"
+   x="10.18"><v:paragraph
+   v:horizAlign="1" /><v:tabList />2.25MB L2 SRAM with ECC</text>		</g>
+		<g
+   transform="translate(284.473,-1159.52)"
+   v:groupContext="shape"
+   v:mID="487"
+   id="shape487-387">
+			<title
+   id="title1070">Box.428</title>
+			<v:userDefs>
+				<v:ud
+   v:val="VT0(14):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+				<v:ud
+   v:val="VT0(1):0"
+   v:prompt=""
+   v:nameU="DefaultWidth" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="DefaultHeight" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="ResizeTxtHeight" />
+				<v:ud
+   v:val="VT0(254):26"
+   v:nameU="msvThemeEffects" />
+			</v:userDefs>
+			<rect
+   id="rect1072"
+   class="st12"
+   height="78.75"
+   width="155.26801"
+   y="1469.25"
+   x="0" />
+		</g>
+		<g
+   transform="translate(289.985,-1163.4)"
+   v:groupContext="shape"
+   v:mID="427"
+   id="shape427-389">
+			<title
+   id="title1075">TI Gray.427</title>
+			<desc
+   id="desc1077">2.25MB L2 SRAM with ECC</desc>
+			<v:userDefs>
+				<v:ud
+   v:val="VT0(14):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+				<v:ud
+   v:val="VT0(1):0"
+   v:prompt=""
+   v:nameU="DefaultWidth" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="DefaultHeight" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="ResizeTxtHeight" />
+				<v:ud
+   v:val="VT0(254):26"
+   v:nameU="msvThemeEffects" />
+			</v:userDefs>
+			<v:textBlock
+   v:margins="rect(2,2,2,2)" />
+			<v:textRect
+   height="23.125"
+   width="144.23"
+   cy="1536.44"
+   cx="72.1125" />
+			<rect
+   id="rect1079"
+   class="st15"
+   height="23.125"
+   width="144.22501"
+   y="1524.88"
+   x="0" />
+			<text
+   id="text1081"
+   v:langID="1033"
+   class="st7"
+   y="1539.4399"
+   x="9.8699999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />2.25MB L2 SRAM with ECC</text>		</g>
+		<g
+   transform="translate(452.853,-1185.9)"
+   v:groupContext="shape"
+   v:mID="422"
+   id="shape422-392">
+			<title
+   id="title1084">TI Red.8</title>
+			<desc
+   id="desc1086">C7x DSP 256b + MMA</desc>
+			<v:userDefs>
+				<v:ud
+   v:val="VT0(14):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+				<v:ud
+   v:val="VT0(1):0"
+   v:prompt=""
+   v:nameU="DefaultWidth" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="DefaultHeight" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="ResizeTxtHeight" />
+				<v:ud
+   v:val="VT0(254):26"
+   v:nameU="msvThemeEffects" />
+			</v:userDefs>
+			<v:textBlock
+   v:margins="rect(2,2,2,2)" />
+			<v:textRect
+   height="36"
+   width="144.85"
+   cy="1530"
+   cx="72.4213" />
+			<rect
+   id="rect1088"
+   class="st16"
+   height="36"
+   width="144.843"
+   y="1512"
+   x="0" />
+			<text
+   id="text1090"
+   v:langID="1033"
+   class="st7"
+   y="1533"
+   x="21.98"><v:paragraph
+   v:horizAlign="1" /><v:tabList />C7x DSP 256b + MMA</text>		</g>
+		<g
+   transform="translate(289.985,-1185.9)"
+   v:groupContext="shape"
+   v:mID="426"
+   id="shape426-395">
+			<title
+   id="title1093">TI Red.426</title>
+			<desc
+   id="desc1095">C7x DSP 256b + MMA</desc>
+			<v:userDefs>
+				<v:ud
+   v:val="VT0(14):26"
+   v:prompt=""
+   v:nameU="visVersion" />
+				<v:ud
+   v:val="VT0(1):0"
+   v:prompt=""
+   v:nameU="DefaultWidth" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="DefaultHeight" />
+				<v:ud
+   v:val="VT0(0.625):0"
+   v:prompt=""
+   v:nameU="ResizeTxtHeight" />
+				<v:ud
+   v:val="VT0(254):26"
+   v:nameU="msvThemeEffects" />
+			</v:userDefs>
+			<v:textBlock
+   v:margins="rect(2,2,2,2)" />
+			<v:textRect
+   height="36"
+   width="144.25"
+   cy="1530"
+   cx="72.1219" />
+			<rect
+   id="rect1097"
+   class="st16"
+   height="36"
+   width="144.244"
+   y="1512"
+   x="0" />
+			<text
+   id="text1099"
+   v:langID="1033"
+   class="st7"
+   y="1533"
+   x="21.68"><v:paragraph
+   v:horizAlign="1" /><v:tabList />C7x DSP 256b + MMA</text>		</g>
+		<g
+   transform="translate(284.482,-1224)"
+   v:groupContext="shape"
+   v:mID="485"
+   id="shape485-398">
+			<title
+   id="title1102">Text.485</title>
+			<desc
+   id="desc1104">Deep Learning Accelerator (2 TOPS)</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="11.25"
+   width="155.25"
+   cy="1542.38"
+   cx="77.625" />
+			<rect
+   id="rect1106"
+   class="st13"
+   height="11.25"
+   width="155.25"
+   y="1536.75"
+   x="0" />
+			<text
+   id="text1108"
+   v:langID="1033"
+   class="st14"
+   y="1545.0699"
+   x="3.8399999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />Deep Learning Accelerator (2 TOPS)</text>		</g>
+		<g
+   transform="translate(292.045,-857.809)"
+   v:groupContext="shape"
+   v:mID="118"
+   id="shape118-401">
+			<title
+   id="title1111">Sheet.118</title>
+			<desc
+   id="desc1113">426KB SRAM with ECC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="139.5"
+   cy="1541.4"
+   cx="69.75" />
+			<rect
+   id="rect1115"
+   class="st2"
+   height="13.1984"
+   width="139.5"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1117"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="16.68"><v:paragraph
+   v:horizAlign="1" /><v:tabList />426KB SRAM with ECC</text>		</g>
+		<g
+   transform="translate(292.62,-1281.14)"
+   v:groupContext="shape"
+   v:mID="10"
+   id="shape10-404">
+			<title
+   id="title1120">Sheet.10</title>
+			<desc
+   id="desc1122">512KB Shared L2 with ECC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1991"
+   width="184.51"
+   cy="1541.4"
+   cx="92.25" />
+			<rect
+   id="rect1124"
+   class="st2"
+   height="13.1991"
+   width="184.5"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1126"
+   v:langID="1033"
+   class="st10"
+   y="1544.4"
+   x="30.32"><v:paragraph
+   v:horizAlign="1" /><v:tabList />512KB Shared L2 with ECC</text>		</g>
+		<g
+   transform="translate(619.985,-952.829)"
+   v:groupContext="shape"
+   v:mID="192"
+   id="shape192-407">
+			<title
+   id="title1129">Sheet.192</title>
+			<desc
+   id="desc1131">4x 4L CSI2-RX</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="109.99"
+   cy="1541.4"
+   cx="54.9935" />
+			<rect
+   id="rect1133"
+   class="st2"
+   height="13.1984"
+   width="109.987"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1135"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="21.65"><v:paragraph
+   v:horizAlign="1" /><v:tabList />4x 4L CSI2-RX</text>		</g>
+		<g
+   transform="translate(630.983,-985.5)"
+   v:groupContext="shape"
+   v:mID="102"
+   id="shape102-410">
+			<title
+   id="title1138">Sheet.102</title>
+			<desc
+   id="desc1140">RGB-IR VPAC</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="87.99"
+   cy="1541.4"
+   cx="43.9948" />
+			<rect
+   id="rect1142"
+   class="st2"
+   height="13.1984"
+   width="87.989601"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1144"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="11.49"><v:paragraph
+   v:horizAlign="1" /><v:tabList />RGB-IR VPAC</text>		</g>
+		<g
+   transform="translate(386.922,-1036.43)"
+   v:groupContext="shape"
+   v:mID="498"
+   id="shape498-413">
+			<title
+   id="title1147">Sheet.498</title>
+			<rect
+   id="rect1149"
+   class="st5"
+   height="24.766701"
+   width="93.378998"
+   y="1523.23"
+   x="0" />
+		</g>
+		<g
+   transform="translate(411.614,-1042.21)"
+   v:groupContext="shape"
+   v:mID="499"
+   id="shape499-415">
+			<title
+   id="title1152">Sheet.499</title>
+			<desc
+   id="desc1154">McASP</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="44"
+   cy="1541.4"
+   cx="21.9974" />
+			<rect
+   id="rect1156"
+   class="st2"
+   height="13.1984"
+   width="43.994801"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1158"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="5.3299999"><v:paragraph
+   v:horizAlign="1" /><v:tabList />McASP</text>		</g>
+		<g
+   transform="translate(738,-1082.75)"
+   v:groupContext="shape"
+   v:mID="502"
+   id="shape502-418">
+			<title
+   id="title1161">Sheet.502</title>
+			<rect
+   id="rect1163"
+   class="st5"
+   height="29.950399"
+   width="101.396"
+   y="1518.05"
+   x="0" />
+		</g>
+		<g
+   transform="translate(750.508,-1091.12)"
+   v:groupContext="shape"
+   v:mID="503"
+   id="shape503-420">
+			<title
+   id="title1166">Sheet.503</title>
+			<desc
+   id="desc1168">JPEG Encode</desc>
+			<v:textBlock
+   v:margins="rect(0,0,0,0)" />
+			<v:textRect
+   height="13.1984"
+   width="77.3"
+   cy="1541.4"
+   cx="38.6455" />
+			<rect
+   id="rect1170"
+   class="st2"
+   height="13.1984"
+   width="77.2911"
+   y="1534.8"
+   x="0" />
+			<text
+   id="text1172"
+   v:langID="1033"
+   class="st7"
+   y="1544.4"
+   x="7.2399998"><v:paragraph
+   v:horizAlign="1" /><v:tabList />JPEG Encode</text>		</g>
+	</g>
+</svg>

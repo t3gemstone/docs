@@ -2,3 +2,43 @@
 title: 'Mikroişlemci'
 description: 'Texas Instruments AM67A'
 ---
+
+Gemstone Obsdiyen (T3-GEM-O1) modelinde Texas Instruments'e ait AM67A mikroişlemcisi kullanılmıştır.
+System On Chip (SoC) ismi verilen bu çip kendi içerisinde bütünleşik olarak 4 çekirdekli ARM Cortex®-A53,
+2 çekirdekli Cortex®-R5 barındırmaktadır. Bu; hem A53 çekirdeklerde Linux gibi işletim sistemlerinin çalışabildiği
+hem de Cortex®-R5 üzerinde MCU projeleri (Baremetal, FreeRTOS, Zephyr RTOS) çalıştırılabileceği
+anlamına gelmektedir.
+
+<Tip>Örneğin A53 üzerinde Gemstone Linux ile ROS2, OpenVC, C++, Python projeleri, R5 çekirdeklerinde ise sistem emniyetini kontrol ederek MCU uygulamaları yazabilirsiniz.</Tip>
+
+AM67A modelinde C7x DSP isminde 2 çekirdekli harici bir çip bulunmaktadır ve Donanım, Derin Öğrenme
+hızlandırıcısı olarak kullanılmaktadır. Aşağıdaki görselde SoC'in bir takım özellikleri görülmektedir.
+
+<Frame caption="Texas AM67A">
+  <img height="400" width="600" src="/images/ti-am67a/soc.svg" />
+</Frame>
+
+Cortex®-R5 çekirdeklerinde çalışacak MCU yazılımları geliştirmek için Texas'ın sunmuş olduğu
+CCS Code Composer Studio kullanılmaktadır. Aşağıdaki tabloda mikroişlemci için en sık kullanılan kaynakların
+tablosu verilmiştir.
+
+| Web Sitesi | Açıklama |
+| :--------- | :------- |
+| https://www.ti.com/product/AM67A | Texas AM67A ürün sayfası |
+| https://www.ti.com/tool/PROCESSOR-SDK-AM67 | Texas AM67A SDK'sı |
+| https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/latest/exports/docs/devices/J7_Family/linux/index.html | SDK Dokümantasyonu |
+| https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/latest/exports/docs/psdk_rtos/docs/user_guide/index.html | AM67A içeren Jacinto modeli dokümantasyonu |
+| https://github.com/TexasInstruments/edgeai-tidl-tools | Edge-AI Yapay Zeka çalışmalarında kullanılan araçlar |
+| https://github.com/TexasInstruments/edgeai | Edge-AI github ana reposu |
+| https://software-dl.ti.com/jacinto7/esd/edgeai-sdk-j721e/latest/exports/docs/index.html | Edge-AI Dokümanları |
+
+<Warning>AM67A için firmanın web sitesinde belirtilen kabiliyet ve özelliklerinin bir kısmı henüz kullanılabilir durumda değildir. Yetersiz dokümantasyon ve destek sebebiyle eksiklikler kullanıcılar tarafından araştırılarak, deneme yanılma yoluyla çözülmektedir. Örneğin AM67A için Network Bootmodu olduğu belirtilmiş fakat nasıl yapıldığı ile ilgili herhangi bir doküman örnek kod paylaşılmamıştır.</Warning>
+
+<Check>Yukarıda bahsedilen eksiklikler için Gemstone geliştirme kartına yönelik çalışmalar T3 Vakfı Gemstone Toplululuğu tarafından yapılmakta ve Github repolarına yüklenmektedir.</Check>
+
+Texas Instruments, bu model için henüz stabil bir MCU SDK ve dokümantasyonu yayınlamadığı için çalışmalar çoğu zaman
+Jacinto isimli ürünü incelenerek yapılmaktadır. Bir MCU uygulamasının derlenerek Gemstone kartlarında nasıl
+çalıştırılacağı [Bileşenler](./boards/o1/peripherals/mcu) bölümünde izah edilmiştir. Görüş ve önerileriniz için
+[Gemstone Topluluk Forumlarını](https://community.t3gemstone.org/) kullanabilirsiniz.
+
+

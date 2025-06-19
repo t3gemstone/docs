@@ -62,8 +62,8 @@ olup; sistem bir araya getirilirken [Yocto Project](https://preprod.kureansiklop
 [Debootstrap](https://github.com/t3gemstone/debos) gibi araçlar kullanılmıştır.
 
 GNU/Linux dağıtımı ([Distro](https://github.com/t3gemstone/sdk/tree/main/distro)) olarak Debian, Ubuntu, Poky
-kullanılmıştır. Debian veya Ubuntu kullanınımı, kart ihtiyaçlarına göre değişkenlik gösterebileceği için farklı
-opsiyon olarak sunulmuştur.
+kullanılmıştır. Debian veya Ubuntu kullanınımı, kart ihtiyaçlarına göre değişkenlik gösterebileceği için seçilebilir
+olarak sunulmuştur.
 
 GNU/Linux işletim sistemlerinde yazılım güncellemeleri yapılabilmesi için çeşitli paket yönetim sistemleri
 kullanılmaktadır. Örneğin [Hızlı başlangıç](./quickstart#2-4-gemstone-işletim-sistemini-güncelle) bölümünde sistem
@@ -88,10 +88,10 @@ Yukarıda bahsedilen çekirdek, önyükleyici, dağıtım vb. bütün bileşenle
 derlenerek bir araya getirilmesi, imaj dosyaların oluşturulması için
 [T3 Gemstone SDK](https://github.com/t3gemstone/sdk) kullanılmaktadır. İlgili reponun README dosyasında
 nasıl kullanılacağı özet olarak belirtildiği gibi bu Dokümantasyonun [SDK](./sdk/introduction) bölümünde daha
-detaylı anlatımlar yapılmıştır. SDK çalışmasında [Devbox](https://www.jetify.com/devbox), [Distrobox](https://github.com/89luca89/distrobox), 
-[Debos](https://github.com/t3gemstone/debos), [Taskfile](https://taskfile.dev/) Her biri çok geniş bilgi
-gereksinimlerine ihtiyaç duyulan alanlar olduğu için ilgi alanınıza göre dokümantasyon sonunda
-yardımcı kaynaklar verilmiştir.
+detaylı anlatımlar yapılmıştır. SDK çalışmasında kullanılan [Devbox](https://www.jetify.com/devbox),
+[Distrobox](https://github.com/89luca89/distrobox), [Debos](https://github.com/t3gemstone/debos),
+[Taskfile](https://taskfile.dev/) gibi araçların her biri geniş bilgi gereksinimlerine ihtiyaç duyulan alanlar
+olduğu için ilgi alanınıza göre dokümantasyon sonunda yardımcı kaynaklar verilmiştir.
 
 ### 1.4. Github Reposu
 
@@ -99,29 +99,33 @@ T3 Gemstone Github reposunda bulunan projelerin kullanım amaçları aşağıdak
 
 | Proje          | Repo                                | Açıklama |
 | :------------- | :---------------------------------- | :------- |
-| SDK            | [t3gemstone/sdk](https://github.com/t3gemstone/sdk) | Kernel, U-Boot, Firmware, Driver, Initrd gibi bileşenleri derleyerek işletim sistemi imajı oluşturan yazılım geliştirme kiti |
-| Yocto          | [t3gemstone/meta-gemstone](https://github.com/t3gemstone/meta-gemstone) | Yocto projesi kodları |
-| Linux Kernel   | [t3gemstone/linux](https://github.com/t3gemstone/linux) | Geliştirme kartlarında kullanılan linux kodları |
+| SDK            | [t3gemstone/sdk](https://github.com/t3gemstone/sdk) | Kernel, U-Boot, Firmware, Driver, Initrd gibi bileşenleri derleyerek işletim sistemi imajı oluşturan yazılım geliştirme kitidir. |
+| Yocto          | [t3gemstone/meta-gemstone](https://github.com/t3gemstone/meta-gemstone) | Yocto projesi kodlarıdır. |
+| Linux Kernel   | [t3gemstone/linux](https://github.com/t3gemstone/linux) | Geliştirme kartlarında kullanılan linux kodlarıdır. |
 | Bootloder      | [t3gemstone/u-boot](https://github.com/t3gemstone/u-boot) | Geliştirme kartlarında kullanılan ön yükleyici (bootloader) kodları. Bootloader donanımın sağlık kontrollerini yaparak linux kernelini başlatan kod parçasıdır. |
-| Debos          | [t3gemstone/debos](https://github.com/t3gemstone/debos) | Debos isimli projenin klonlanarak bir takım ilave özelliklerin eklendiği dağıtım oluşturma aracı |
-| GemImager      | [t3gemstone/gem-imager](https://github.com/t3gemstone/gem-imager) | RpiImager isimli projenin klonlanarak Gemstone kartlarına göre özelleştirilmiş ilave özellikler eklenmiş imaj yazma aracı |
-| Hardware       | [t3gemstone/hardware](https://github.com/t3gemstone/hardware) | Gemstone kartlarının anakart vb. donanım bileşenlerinin PCB vb. tasarımları |
-| Toolchains     | [t3gemstone/toolchains](https://github.com/t3gemstone/toolchains) | C/C++ gibi projelerin farklı mimarilere göre derlenmesinde kullanılan araç |
-| Package Server | [t3gemstone/package-server](https://github.com/t3gemstone/package-server) | packages.t3gemstone.org adresinde bulunan Linux APT paket yönetim sunucusu/sistemi |
-| noVNC          | [t3gemstone/t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) | Tarayıcı üzerinden Gemstone'a uzak masaüstü bağlantısı imkanı veren yazılım |
-| Ardupilot      | [t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot) | Gemstone için uyarlanmış insansız araç otopilotu |
-| NuttX          | [t3gemstone/nuttx](https://github.com/t3gemstone/nuttx) | PX4 gibi MCU barındıran donanımlarda çalışan gerçek zamanlı işletim sistemi. İlerleyen süreçte Gemstone Obsidyen kartlarında bulunan R5 MCU çekirdeklerinde çalışması sağlanacaktır. |
+| Debos          | [t3gemstone/debos](https://github.com/t3gemstone/debos) | Debos isimli projenin klonlanarak bir takım ilave özelliklerin eklendiği dağıtım oluşturma aracıdır. |
+| GemImager      | [t3gemstone/gem-imager](https://github.com/t3gemstone/gem-imager) | rpi-imager isimli projenin klonlanarak Gemstone kartlarına göre özelleştirilmiş ilave özellikler eklenmiş imaj yazma aracıdır. |
+| Hardware       | [t3gemstone/hardware](https://github.com/t3gemstone/hardware) | Gemstone kartlarının anakart vb. donanım bileşenlerinin PCB vb. tasarımlarıdır. |
+| Toolchains     | [t3gemstone/toolchains](https://github.com/t3gemstone/toolchains) | C/C++ gibi projelerin farklı mimarilere göre derlenmesinde kullanılan araçtır. |
+| Package Server | [t3gemstone/package-server](https://github.com/t3gemstone/package-server) | packages.t3gemstone.org adresinde bulunan Linux APT paket yönetim sunucusu/sistemidir. |
+| noVNC          | [t3gemstone/t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) | Tarayıcı üzerinden Gemstone'a uzak masaüstü bağlantısı imkanı veren yazılımdır. |
+| Ardupilot      | [t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot) | Gemstone için uyarlanmış insansız araç otopilotudur. |
+| NuttX          | [t3gemstone/nuttx](https://github.com/t3gemstone/nuttx) | PX4 gibi MCU barındıran donanımlarda çalışan gerçek zamanlı işletim sistemidir. İlerleyen süreçte Gemstone Obsidyen kartlarında bulunan R5 MCU çekirdeklerinde çalışması sağlanacaktır. |
 
 # 2. Geliştirme
 
 Yazılım geliştirme süreçleri iki yöntemle yapılabilmektedir. Bunların ilki doğrudan kart üzerindeki derleme araçlarını
-kullanarak kart üzerinde yapılması iken ikinci yöntem Çapraz Derleme (Cross compilation) ismi verilen ve projeleri
-doğrudan kendi bilgisayarınız üzerinde derleyerek karta yüklediğiniz yöntemdir. Aşağıda her iki yöntem ve avantajları
+kullanarak kart üzerinde yapılması iken ikinci yöntem Çapraz Derleme (Cross Compilation) ismi verilen ve projeleri
+kendi bilgisayarınız üzerinde derleyerek karta yüklediğiniz yöntemdir. Aşağıda her iki yöntem ve avantajları
 anlatılmıştır.
+
+<Frame caption="Todo: Host (x86-64) ve Target (aarch64) kavramlarını özetleyen görsel">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
 
 ### 2.1. Kart üzerinde yazılım geliştirme
 
-Gemstone Obsidyen geliştirme kartının üzerinde bulunan sensör, haberleşme veri yolları, kamera, yapay zeka ve network
+Gemstone Obsidyen geliştirme kartının üzerinde bulunan sensör, haberleşme veri hatları, kamera, yapay zeka ve network
 gibi bileşenlerin nasıl kullanıldığına dair C/C++/Python örnek projeler https://github.com/t3gemstone/examples adresinde
 mevcuttur. Aşağıda kart üzerinde bu projenin indirilerek derleme işleminin yapılması anlatılmış her bir bileşen
 için ayrı ayrı açıklamalar Geliştirme kartları bölümünde izah edilmiştir.
@@ -131,28 +135,28 @@ Bu bölüm t3gemstone/examples isimli projeyi kart içerisine indirerek derleme 
 çalıştırmayı gösterir.
 </Tip>
 
-<Frame caption="Todo: Büyük resmi gösteren içerik">
+<Frame caption="Todo: Karta bağlanıp git clone işlemlerini gösteren ">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
 #### 2.1.1. Git clone işlemi ile örnek kodları indir
 
-<Frame caption="Todo: Büyük resmi gösteren içerik">
+<Frame caption="Todo: Git clone">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
 #### 2.1.1. İndirilen kodları derleyerek çalıştır
 
-<Frame caption="Todo: Büyük resmi gösteren içerik">
+<Frame caption="Todo: Task build">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
 ### 2.2. Geliştirici bilgisayarında yazılım geliştirme
 
-Bir önceki bölümdeki gibi projelerin kart üzerinde derlenmesi mümkünken kullanmakta olduğunuz Dizüstü, Masaüstü
+Yukarıda anlatılan şekilde projelerin kart üzerinde derlenmesi mümkünken kullanmakta olduğunuz Dizüstü, Masaüstü
 bilgisayarlardaki GNU/Linux işletim sistemini kullanarak derleme yapmanın bir takım avantajları vardır. Örneğin
-T3-GEM-O1 kartı 4GB Bellek'e sahipken Dizüstü bilgisayarınız 16/32GB ve daha gelişmiş İşlemciye sahip olabilir.
-Dolayısıyla derleme işlemlerini hızlandırmak için Cross Compile Toolchain (Çarpaz Derleme Araçları) kullanılmaktadır.
+T3-GEM-O1 kartı 4GB Bellek'e sahipken Dizüstü bilgisayarınız 16/32GB bellek'e ve daha gelişmiş İşlemciye sahip olabilir.
+Dolayısıyla derleme işlemlerini hızlandırmak için Cross Compile Toolchains (Çarpaz Derleme Araçları) kullanılmaktadır.
 
 <Note>
 Geliştirme kartları ekseriyetle ARM mimarili işlemcilere sahipken dizüstü, masaüstü bilgisayarlar yine ekseriyetle
@@ -160,6 +164,24 @@ Intel x86-64 mimarili işlemcilere sahiptir. Bu durumda farklı mimariler için 
 derleme araçlarıdır.
 </Note>
 
-<Frame caption="Todo: Büyük resmi gösteren içerik">
+<Frame caption="Todo: Host">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.2.1. Geliştirici (Host) Bilgisayarını Hazırla
+
+<Frame caption="Todo: Host Geliştirici Bilgisayarı Hazırlık">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.2.2. Geliştirici (Host) Bilgisayarında Proje Derle
+
+<Frame caption="Todo: Derle">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.2.3. Derlenen yazılımları Geliştirme Kartına (Target) yükle
+
+<Frame caption="Todo: Yükle">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>

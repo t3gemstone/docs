@@ -99,14 +99,17 @@
                   {
                     "group": "Bileşenler",
                     "pages": [
+                      "tr/boards/o1/peripherals/introduction",
                       "tr/boards/o1/peripherals/serial",
                       "tr/boards/o1/peripherals/canbus",
                       "tr/boards/o1/peripherals/gpio",
                       "tr/boards/o1/peripherals/i2c",
+                      "tr/boards/o1/peripherals/rtc",
                       "tr/boards/o1/peripherals/eeprom",
                       "tr/boards/o1/peripherals/imu",
                       "tr/boards/o1/peripherals/pwm",
                       "tr/boards/o1/peripherals/camera",
+                      "tr/boards/o1/peripherals/touchscreen",
                       "tr/boards/o1/peripherals/mcu"
                     ]
                   }
@@ -128,8 +131,8 @@
             "group": "İmaj Yazma Uygulaması",
             "pages": [
               "tr/imager/introduction",
-              "tr/imager/emmc",
-              "tr/imager/customization"
+              "tr/imager/customization",
+              "tr/imager/emmc"
             ]
           },
           {
@@ -228,17 +231,21 @@
                 "group": "T3-GEM-O1",
                 "pages": [
                   "en/boards/o1/introduction",
+                  "en/boards/o1/tiam67",
                   {
                     "group": "Components",
                     "pages": [
+                      "en/boards/o1/peripherals/introduction",
                       "en/boards/o1/peripherals/serial",
                       "en/boards/o1/peripherals/canbus",
                       "en/boards/o1/peripherals/gpio",
                       "en/boards/o1/peripherals/i2c",
+                      "en/boards/o1/peripherals/rtc",
                       "en/boards/o1/peripherals/eeprom",
                       "en/boards/o1/peripherals/imu",
                       "en/boards/o1/peripherals/pwm",
                       "en/boards/o1/peripherals/camera",
+                      "en/boards/o1/peripherals/touchscreen",
                       "en/boards/o1/peripherals/mcu"
                     ]
                   }
@@ -260,8 +267,8 @@
             "group": "Image Writer",
             "pages": [
               "en/imager/introduction",
-              "tr/imager/emmc",
-              "en/imager/customization"
+              "en/imager/customization",
+              "tr/imager/emmc"
             ]
           },
           {

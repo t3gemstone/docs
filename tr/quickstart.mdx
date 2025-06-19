@@ -12,9 +12,9 @@ irdelenecektir.
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız.
 
-* Gemstone Imager isimli yazılım yükleme uygulamasını indirme ve kullanma
-* Yeni bir Gemstone geliştirme kartını, gerekli yazılımları kurarak hazır hale getirme
-* Gemstone'a bağlanarak sistemi kullanma
+* Gemstone Imager isimli yazılım yükleme uygulamasını indirmek ve kullanmak.
+* Yeni bir Gemstone geliştirme kartını, gerekli yazılımları kurarak hazır hale getirmek.
+* Gemstone'a bağlanarak sistemi keşfetmek.
 </Tip>
 
 ### Kutu İçeriği
@@ -76,7 +76,7 @@ Aşağıda dört ana başlık halinde sıralanan işlemler yapılarak kartınız
 
 <Note>İmaj ifadesi genellikle .img uzantılı, içerisinde linux işletim sistemine ait dosyaların, sürücülerin
 bulunduğu kısacası kartın çalışması için gerekli her şeyi barındıran dosyayı ifade etmektedir.
-https://packages.t3gemstone.org/images/ubuntu/jammy/t3-gem-o1 adresindeki dosyalardan minimal isimli olanı
+https://packages.t3gemstone.org/images/ubuntu/jammy/t3-gem-o1 adresinden minimal isimli olanı
 indirerek inceleyebilirsiniz.</Note>
 
 <Steps>
@@ -126,7 +126,7 @@ okuyucu aracılığıyla bilgisayarınıza bağladıktan sonra Gemstone Imager u
 
 <Tabs>
   <Tab title="Windows">
-    Windows işletim sistemi kullanıyorsanız indirdiğiniz **.exe** uzantılı dosyaya çift tıklayarak kurulum yapınız.
+    Windows işletim sistemi kullanıyorsanız indirdiğiniz **.exe** uzantılı dosyaya çift tıklayarak kurulum yaparak Masaüstünden uygulamayı başlatınız.
   </Tab>
   <Tab title="Linux">
     Linux işletim sistemi için **.AppImage** uzantılı dosyayı indirdikten sonra sağ tıklayarak Properties/Özellikler ekranını açarak "Permissions" kısmından "Allow executing file as program" seçeneğini işaretleyiniz.
@@ -168,7 +168,7 @@ Ortamı (Vscode), Video Oynatıcı (VLC) gibi yazılımları barındıran, bilgi
 Aşağıdaki iki imaj türüne göre daha yüksek boyutludur. Çoğunlukla prototip, test vb. geliştirme faaliyetlerinde
 kullanılmaktadır. (Robotik çalışmalar için Minimal isimli imaj daha uygundur.)
 
-* **Kiosk:** İçerisinde Metin editörü gibi veya Desktop imajında bulunan uygulamaların, masaüstü ortamının **olmadığı**
+* **Kiosk:** İçerisinde Metin Editörü veya Desktop imajında bulunan uygulamaların, masaüstü ortamının **olmadığı**
 çoğunlukla dokunmatik panel gibi amaçlarla kullanılan grafik arayüzünü destekleyen imajdır. (Örneğin Tesla
 otomobillerinde Medya kontrolü için kullanılan dokunmatik panel veya Teknofest yarışmalarında binek araçların
 içerisinde bulunan kontrol ekranı gibi.)
@@ -194,10 +194,9 @@ ekran görüntüsündeki gibi ilgili aygıtı listeleyecektir.
 
 #### 1.2.6. Sistem Özelleştir
 
-Yukarıdaki seçimler tamamlandıktan sonra Next butonuna tıkladığınızda otomatik olarak Sistem Özelleştirme ekranı
+Yukarıdaki seçimler tamamlandıktan sonra Next butonuna tıkladığınızda otomatik olarak **Sistem Özelleştirme** ekranı
 açılacaktır. Bu ekran kurulumu yapılacak kartın giriş şifresi ve bir takım servislerin otomatik başlatılabilmesi
-için kullanılmakta olup dokümanın [ilerleyen bölümlerinde](./imager/introduction) detaylı açıklamalar yapılacaktır.
-Burada yalnızca kurulum için yeterli olduğu kadarına değinilmiştir. 
+için kullanılmaktadır.
 
 <Accordion title="Genel Ayarlar">
   <Frame>
@@ -235,12 +234,12 @@ Burada yalnızca kurulum için yeterli olduğu kadarına değinilmiştir.
 
 </Accordion>
 
-Özelleştirme işlemi sonrası **Save** butonuna tıkladığınızda imaj yazma işlemini otomatik olarak başlatılacaktır.
+Özelleştirme işlemi sonrası **Save** butonuna tıklayarak bir sonraki adıma geçiniz.
 
 #### 1.2.7. Yazma işlemini başlat
 
-Yukarıdaki bütün işlemler tamamlandıktan imaj yazma işlemine başlarken onay vermeniz istenecektir
-ve sdcard yazma işlemi başlatılacaktır.
+Yukarıdaki bütün işlemler tamamlandıktan sonra imaj yazma işlemine başlamanız için aşağıdaki gibi onay vermeniz
+istenecektir ve kopyalama işlemleri başlatılacaktır.
 
 <Accordion title="Yazma işlemini başlat">
   <Frame>
@@ -279,7 +278,7 @@ Bu bölümde yükleme işlemleri sdcard için anlatılacak olup ilerleyen bölü
 [eMMC (Kart üzerinde bulunan gömülü disk) kullanımına](./imager/emmc) değinilecektir.
 
 Sdcard çoğu zaman hızlı test ve geliştirme faaliyetleri için kolaylık sağladığı için tercih edilmektedir fakat
-üzerinde titreşim oluşabilecek hareketli sistemlerde zaman zaman veri okuma sorunları yaratabilmektedir. Şayet
+üzerinde titreşim oluşabilecek hareketli sistemlerde zaman zaman veri kaybı yaşanabilmektedir. Şayet
 hareketli bir platform üzerinde kartınızı kullanacaksanız eMMC tercih edilmesi daha uygun olacaktır.
 
 <Frame caption="Todo: Bootmode switch görseli">
@@ -295,8 +294,8 @@ hareketli bir platform üzerinde kartınızı kullanacaksanız eMMC tercih edilm
 
 ### 1.4. Kartı bilgisayara bağla
 
-Geliştirme kartınına, aşağıdaki fotoğrafta gösterildiği şekilde kutu içerisinden çıkan USB-C ve ethernet kablosunu
-bilgisayarınıza bağladıktan sonra kartı keşfetmek için hazırsınız!
+Aşağıdaki fotoğrafta gösterildiği şekilde kutu içerisinden çıkan Usb Type-C ve ethernet kablosunu
+bilgisayarınıza ve Geliştirme kartınına bağladıktan sonra kartı keşfetmek için hazırsınız!
 
 <Frame caption="Todo: Sdcard ve okuyucunun bilgisayara bağlanması">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -321,8 +320,9 @@ uygulaması örnek olarak verilebilir. Aşağıda örnek ekran görüntüsü ver
 
 Kurulum sonrası bağlamış olduğunuz Ethernet ve Usb Type-C aracılığıyla veya 
 [Sistem Özelleştir](./quickstart#1-2-6-sistem-özelleştir) bölümünde anlatıldığı üzere Wifi ayarları
-yapılmışsa, kartınızın ağ bağlantısının olup olmadığı yeşil ledin sürekli yanmasından anlayabilisiniz.
-Eğer ağ bağlantısı yoksa bu led yanıp sönecektir, IP adresi almışsa sürekli yanacaktır.
+yapıldığında, kartın ağ bağlantısının olup olmadığı 
+<Tooltip tip="Eğer IP adresi alınamamışsa bu led yanıp sönecektir, IP adresi almışsa sürekli yanacaktır.">yeşil ledin sürekli yanmasından</Tooltip>
+anlaşılabilmektedir.
 
 <Frame caption="Todo: Sdcard ve okuyucunun bilgisayara bağlanması">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -342,10 +342,11 @@ Eğer ağ bağlantısı yoksa bu led yanıp sönecektir, IP adresi almışsa sü
 
 ### 2.1. Seriport
 
-USB TTL dönüştürücü kablosu çoğu zaman ethernet bağlantısının olmadığı durumlarda seri port aracılığıyla karta bağlanmak içindir.
-Normal şartlarda Gemstone kartınızı Usb Type-C kablosu ile bilgisayarınıza bağladığınızda [Sistem Özelleştir](./quickstart#1-2-6-sistem-özelleştir)
-bölümünde bulunan Servisler alanındaki "Gadget"lar aktifleştirildiğinde TTL kablosuna gerek kalmadan seri port bağlantı imkanı
-olmaktadır. Fakat geliştirme sırasında beklenmedik bir durum söz konusu olduğunda bu özellikler çalışmazsa USB TTL
+USB TTL dönüştürücü kablosu çoğu zaman ethernet bağlantısının olmadığı durumlarda seri port aracılığıyla karta
+bağlanmak içindir. Normal şartlarda Gemstone kartınızı Usb Type-C kablosu ile bilgisayarınıza bağladığınızda
+[Sistem Özelleştir](./quickstart#1-2-6-sistem-özelleştir) bölümünde bulunan Servisler alanındaki "Gadget"lar
+işaretlenmiş ise TTL kablosuna gerek kalmadan seri port bağlantı imkanı olmaktadır. Fakat geliştirme
+sırasında beklenmedik bir durum söz konusu olduğunda bu özellikler çalışmazsa USB TTL
 kablosu ile de karta bağlanmak mümkündür.
 
 Bu yöntem ile bağlantı sağlamanın bir avantajı Gemstone kartlarında bulunan U-Boot ismi verilen ön yükleyicinin (Bootloader),
