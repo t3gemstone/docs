@@ -15,6 +15,7 @@ başlıklarını yazarak kısa bir araştırma yapınız.
 1. [Real-time Application of Embedded Systems Projects](https://mth.tc/mjBS)
 2. [Example of Embedded Systems](https://mth.tc/Q3ir3)
 3. [Example of IoT Projects](https://mth.tc/Sm3ZS)
+4. [Linux PREEMPT_RT Genel Amaçlı İşletim Sisteminden Gerçek Zamanlı Platforma Dönüşüm](https://preprod.kureansiklopedi.com/tr/detay/linux-preempt_rt-genel-amacli-isletim-sisteminden-)
 </Tip>
 
 Fabrika otomasyonu için robot bir kol çalışması yaptığınızı hayal ediniz. Hareketli bir üretim hattı
@@ -31,15 +32,17 @@ algılayarak rengine göre farklı kutulara yerleştiriyor olun. Kırmızı bir 
 ></iframe>
 
 Özellikle insansız araçlarda Gemstone kartına güç verildiği andan itibaren sistemin kaç saniyede
-açıldığı, yazmış olduğunuz uygulamaların beklenilen sürede tepki verip verip aksiyon aldığı çok önemlidir. Drone
-projelerinde bu gibi gömülü projeler geliştirilirken düşük boyutlu, deterministik, gerçek zamanlı işletim sistemleri
-kullanılmaktadır. Örneğin [PX4](https://mth.tc/gkgIy) isimli uçuş kontrolcüsünde 
-[Apache NuttX](https://github.com/t3gemstone/NuttX) işletim sistemi veya muhtelif sistemlerde FreeRTOS gibi işletim
-sistemleri tercih edilmektedir.
+açıldığı, yazmış olduğunuz uygulamaların beklenilen sürede tepki verip verip aksiyon alması çok önemlidir. 
+Drone projelerinde bu gibi gömülü projeler geliştirilirken düşük boyutlu, deterministik, gerçek zamanlı
+işletim sistemleri kullanılmaktadır. Örneğin [PX4](https://mth.tc/gkgIy) isimli uçuş kontrolcüsünde 
+[Apache NuttX](https://github.com/t3gemstone/NuttX) işletim sistemi veya muhtelif sistemlerde
+[FreeRTOS](https://www.freertos.org/Documentation/00-Overview) gibi işletim sistemleri tercih edilmektedir.
 
-Linux çekirdeği de NuttX, FreeRTOS, vxWorks, ZephyrRTOS gibi RT/Realtime/Gerçek Zamanlı çalışabilme özelliğine
-sahiptir ve sayılan bu sistemlerden farklı olarak yüzlerce açık kaynak kodlu projenin kullanılabilmesine imkan
-sağladığı için çok büyük bir avantajı vardır. (Örnek bir makale için [tıklayınız](https://mth.tc/jRzV))
+Linux çekirdeği de [Tübitak GzIS](https://preprod.kureansiklopedi.com/tr/detay/tubitak-gis-gercek-zamanli-isletim-sistemi-69507),
+NuttX, FreeRTOS, vxWorks, [Zephyr](https://www.zephyrproject.org/) gibi RT/Realtime/Gerçek Zamanlı
+çalışabilme özelliğine sahiptir ve sayılan bu sistemlerden farklı olarak yüzlerce açık kaynak kodlu projenin
+kullanılabilmesine imkan sağladığı için çok büyük bir avantajı vardır.
+(Örnek bir makale için [tıklayınız](https://mth.tc/jRzV))
 
 Gemstone Miminal isimli imaj; hızlı açılabilmesi (Boot süresi) ve deterministik bir yapıda olması için optimize
 edilmiştir ve içerisinde masaüstü ortamı, grafik arayüzü **bulunmamaktadır.** Yalnızca bir sistemin sağlıklı
@@ -50,9 +53,6 @@ olması daha hızlı açılabilmesine ve sistem kaynaklarının daha etkin kulla
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-Minimal isimli imaj özellikleri aşağıda listelenmiştir.
-
 1. Diğer imajlardaki gibi bütün donanım sürücüleri mevcuttur, yani Seriport, CanBUS, Ethernet vb. donanımlar
 kullanılabilir.
-2. Masaüstü ortamı bulunmadığı için tarayıcı üzerinden değil SSH, Terminal gibi yöntemlerle kullanılabilir.
-3. IoT, İnsansız araç projeleri, otomasyon projeleri gibi grafik gerektirmeyen alanlarda kullanılabilir.
+3. IoT, İnsansız araç, otomasyon gibi grafik gerektirmeyen projelere uygundur.
