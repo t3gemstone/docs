@@ -142,7 +142,8 @@
               "tr/projects/introduction",
               "tr/projects/ardupilot",
               "tr/projects/nuttx",
-              "tr/projects/autoware"
+              "tr/projects/autoware",
+              "tr/projects/preempt-rt"
             ]
           },
           {
@@ -278,7 +279,8 @@
               "en/projects/introduction",
               "en/projects/ardupilot",
               "en/projects/nuttx",
-              "en/projects/autoware"
+              "en/projects/autoware",
+              "en/projects/preempt-rt"
             ]
           },
           {
