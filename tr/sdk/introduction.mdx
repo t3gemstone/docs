@@ -4,8 +4,9 @@ description: 'Gemstone Development Kit'
 ---
 
 <Tip>
-Bu bölümde SDK projesi geliştirici bilgisayarına indirilerek ilk önce Gemstone imajları derlenecek akabinde parça
-parça derleme işlemini gerçekleştiren bileşenlerin neler olduğu, ne işe yaradıkları izah edilecektir.
+Bu bölümde SDK projesi geliştirici bilgisayarına indirilerek Gemstone imajları derlenecektir. Temel düzeyde
+yalnızca geliştirme işleminin nasıl olduğu tekrar edilecek olup bir sonraki bölümde bütün bileşenlerin,
+kullanılan araçların neler olduğu ve ne için kullanıldığına değinilecektir.
 
 Bölümü tamamladığınızda aşağıdaki konularda tecrübe edineceksiniz.
 
@@ -16,9 +17,9 @@ Bölümü tamamladığınızda aşağıdaki konularda tecrübe edineceksiniz.
 
 <Note>
 SDK projesi Gemstone projesinin yazılım altyapısını oluşturan ve en yoğun teknik bilgi içeren kısmıdır. Geliştirme
-kartını kullanarak uygulama derlemek, projeler geliştirmek **için gerekli olmayıp** doğrudan Gemstone'nun
-işletim sisteminin nasıl oluşturulduğun teknik açıklamaları izah edilmektedir. Gemstone kartları ile yalnızca
-proje geliştirmek istiyorsanız ve buradaki bilgilere ilginiz yoksa atlayabilirsiniz. Bu bölümün hedef kitlesi
+kartını kullanarak uygulama derlemek, projeler geliştirmek **için gerekli olmayıp** Gemstone'nun
+işletim sisteminin nasıl oluşturulduğu vb. teknik konular izah edilmektedir. Gemstone kartları ile yalnızca
+proje geliştirmek istiyorsanız ve buradaki konulara ilginiz yoksa atlayabilirsiniz. Bu bölümün hedef kitlesi
 Gemstone geliştiricisi olmak isteyenlerdir.
 </Note>
 
@@ -48,34 +49,34 @@ scriptini çalıştırma işlemini yapınız.
 
 <CodeGroup>
 
-```bash Komut lines
-git clone https://github.com/t3gemstone/sdk.git
-cd sdk
-./setup.sh
-```
+  ```bash Komut lines
+  git clone https://github.com/t3gemstone/sdk.git
+  cd sdk
+  ./setup.sh
+  ```
 
-```console Konsol Çıktıları lines
-🚀 T3 Gemstone Software Development Kit
+  ```console Konsol Çıktıları lines
+  🚀 T3 Gemstone Software Development Kit
 
-  This script downloads and installs T3 Gemstone Boards' required
-  packages 📦 for the development of its customized GNU/Linux Distro.
-  Powered by Jetify Devbox, Distrobox, Love and Passion.
+    This script downloads and installs T3 Gemstone Boards' required
+    packages 📦 for the development of its customized GNU/Linux Distro.
+    Powered by Jetify Devbox, Distrobox, Love and Passion.
 
-→ requirements...
-✓ requirements... [DONE]
-→ docker...
-✓ docker... [DONE]
-✓ docker-permissions... [DONE]
-→ devbox...
-✓ devbox... [DONE]
+  → requirements...
+  ✓ requirements... [DONE]
+  → docker...
+  ✓ docker... [DONE]
+  ✓ docker-permissions... [DONE]
+  → devbox...
+  ✓ devbox... [DONE]
 
-What's the next?
-  1. Learn how to build 🌍 a new world
-    Read the docs at https://docs.t3gemstone.org
+  What's the next?
+    1. Learn how to build 🌍 a new world
+      Read the docs at https://docs.t3gemstone.org
 
-  2. Get help and give feedback
-    Join our community at https://community.t3gemstone.org
-```
+    2. Get help and give feedback
+      Join our community at https://community.t3gemstone.org
+  ```
 
 </CodeGroup>
 
@@ -89,24 +90,24 @@ yapmayı unutmayınız.
 Gereksinim kurulum scriptini tamamladıktan sonra Terminal ekranından artık SDK içerisine girerek derleme adımlarına
 başlayabilirsiniz.
 
-#### 1.2.1 Devbox Konsolunu Aktifleştir
+#### 1.2.1. Devbox Konsolunu Aktifleştir
 
 <CodeGroup>
 
-```bash Komut lines
-# Git clone işlemini yaptığınız yerin klasör adresi
-cd sdk-klasoru-dosya-yolu
+  ```bash Komut lines
+  # Git clone işlemini yaptığınız yerin klasör adresi
+  cd sdk-klasoru-dosya-yolu
 
-# Devbox shell aktifleştir
-devbox shell
-```
+  # Devbox shell aktifleştir
+  devbox shell
+  ```
 
-```bash Konsol Çıktıları lines
-gem@ubuntu:~$ cd /space/pluton/gemstone/sdk/
-gem@ubuntu:sdk$ devbox shell
-Starting a devbox shell...
-📦 devbox:sdk>
-```
+  ```bash Konsol Çıktıları lines
+  gem@ubuntu:~$ cd /space/pluton/gemstone/sdk/
+  gem@ubuntu:sdk$ devbox shell
+  Starting a devbox shell...
+  📦 devbox:sdk>
+  ```
 
 </CodeGroup>
 
@@ -118,30 +119,30 @@ dosyasından inceleyebilirsiniz.
 
 <CodeGroup>
 
-```bash Komut lines
-task fetch
-```
+  ```bash Komut lines
+  task fetch
+  ```
 
-```bash Konsol Çıktıları lines
-gem@ubuntu:sdk$ devbox shell
-Starting a devbox shell...
-📦 devbox:sdk> task fetch 
-task: [fetch] vcs import . < repos.yml
-............
-=== ./src/cc33xx-fw (git) ===
-=== ./src/ti-img-rogue-umlibs (git) ===
-=== ./src/wl18xx-fw (git) ===
-=== ./yocto/meta-arm (git) ===
-=== ./yocto/meta-gemstone (git) ===
-=== ./yocto/meta-intel (git) ===
-=== ./yocto/meta-mingw (git) ===
-=== ./yocto/meta-openembedded (git) ===
-=== ./yocto/meta-qt6 (git) ===
-=== ./yocto/meta-ti (git) ===
-=== ./yocto/openembedded-core (git) ===
-=== ./yocto/poky (git) ===
-📦 devbox:sdk> 
-```
+  ```bash Konsol Çıktıları lines
+  gem@ubuntu:sdk$ devbox shell
+  Starting a devbox shell...
+  📦 devbox:sdk> task fetch 
+  task: [fetch] vcs import . < repos.yml
+  ............
+  === ./src/cc33xx-fw (git) ===
+  === ./src/ti-img-rogue-umlibs (git) ===
+  === ./src/wl18xx-fw (git) ===
+  === ./yocto/meta-arm (git) ===
+  === ./yocto/meta-gemstone (git) ===
+  === ./yocto/meta-intel (git) ===
+  === ./yocto/meta-mingw (git) ===
+  === ./yocto/meta-openembedded (git) ===
+  === ./yocto/meta-qt6 (git) ===
+  === ./yocto/meta-ti (git) ===
+  === ./yocto/openembedded-core (git) ===
+  === ./yocto/poky (git) ===
+  📦 devbox:sdk> 
+  ```
 
 </CodeGroup>
 
@@ -155,19 +156,20 @@ işlemleri gerekmektedir. Aşağıdaki komut aracılığıyla bu yetkiyi vererek
 
 <CodeGroup>
 
-```bash Komut lines
-task permissions
-```
+  ```bash Komut lines
+  task permissions
+  ```
 
-```bash Konsol Çıktıları lines
-📦 devbox:sdk> task permissions 
-task: [permissions] sudo cp .meta/bitbake-apparmor.conf /etc/apparmor.d/bitbake
-[sudo] password for vm: 
-task: [permissions] sudo apparmor_parser -r /etc/apparmor.d/bitbake
-task: [permissions] git config --global http.postBuffer 157286400
-task: [permissions] mkdir -p build src
-📦 devbox:sdk> 
-```
+  ```bash Konsol Çıktıları lines
+  📦 devbox:sdk> task permissions 
+  task: [permissions] sudo cp .meta/bitbake-apparmor.conf /etc/apparmor.d/bitbake
+  [sudo] password for vm: 
+  task: [permissions] sudo apparmor_parser -r /etc/apparmor.d/bitbake
+  task: [permissions] git config --global http.postBuffer 157286400
+  task: [permissions] mkdir -p build src
+  📦 devbox:sdk> 
+  ```
+
 </CodeGroup>
 
 #### 1.2.4. Derleme Ortamını Kur
@@ -177,68 +179,68 @@ aracılığıyla Distrobox imajını aktifleştirerek Yocto ve İmaj derlemesi y
 
 <CodeGroup>
 
-```bash Komut lines
-task box
-```
+  ```bash Komut lines
+  task box
+  ```
 
-```bash Konsol Çıktıları lines
-📦 devbox:sdk> task box
-task: [box] distrobox-list | grep -q 'gemstone-distrobox' || docker build -f Dockerfile -t t3gemstone/distrobox:latest .
-[+] Building 108.3s (5/12)                                                                                                                                                 docker:default
- => [internal] load build definition from Dockerfile                                                                                                                                 0.1s                                                                                                                                                0.0s
- => => transferring context: 2B                                                                                                                                                      0.0s
- => [1/8] FROM docker.io/library/ubuntu:22.04@sha256:01a3ee0b5e413cefaaffc6abe68c9c37879ae3cced56a8e088b1649e5b269eee                                                                6.2s
- => => extracting sha256:89dc6ea4eae2b38a3550534ece4983005a7d2e90e4fa503ed04dcfc58ee71159                                                                                            2.5s
- => [2/8] RUN apt-get update &&     apt-get upgrade -y &&     apt-get install -y         bash         binfmt-support         build-essential         ca-certificates         ccac  313.4s
- => [3/8] RUN sed -i 's/pam_unix\.so obscure/pam_unix.so minlen=1 obscure/' /etc/pam.d/common-password                                                                               0.6s
- => [4/8] RUN echo gemstone > /etc/hostname                                                                                                                                          0.9s
- => [5/8] RUN curl --location https://taskfile.dev/install.sh | sudo sh -s -- -d -b /usr/local/bin &&     task --completion bash > /etc/bash_completion.d/task                       4.9s
- => [6/8] RUN pip install vcstool --force-reinstall &&     cp /usr/local/share/vcstool-completion/vcs.bash /etc/bash_completion.d/vcs                                                4.7s
- => [7/8] RUN apt-get install -y         binfmt-support         bmap-tools         btrfs-progs         debian-archive-keyring         debian-keyring         dosfstools         e2  46.0s
- => [8/8] RUN cd /tmp &&     export GOPATH=/tmp/debos &&     go install -v github.com/t3gemstone/debos/cmd/debos@v1.1.3.6 &&     cp /tmp/debos/bin/debos /usr/local/bin &&     rm   44.7s
- => exporting to image                                                                                                                                                              10.0s
- => => naming to docker.io/t3gemstone/distrobox:latest                                                                                                                               0.0s
-task: [box] distrobox-assemble create --file distrobox.ini
- - Creating gemstone-distrobox...
-Creating 'gemstone-distrobox' using image t3gemstone/distrobox   [ OK ]
-Distrobox 'gemstone-distrobox' successfully created.
-To enter, run:
+  ```bash Konsol Çıktıları lines
+  📦 devbox:sdk> task box
+  task: [box] distrobox-list | grep -q 'gemstone-distrobox' || docker build -f Dockerfile -t t3gemstone/distrobox:latest .
+  [+] Building 108.3s (5/12)                                                                                                                                                 docker:default
+  => [internal] load build definition from Dockerfile                                                                                                                                 0.1s                                                                                                                                                0.0s
+  => => transferring context: 2B                                                                                                                                                      0.0s
+  => [1/8] FROM docker.io/library/ubuntu:22.04@sha256:01a3ee0b5e413cefaaffc6abe68c9c37879ae3cced56a8e088b1649e5b269eee                                                                6.2s
+  => => extracting sha256:89dc6ea4eae2b38a3550534ece4983005a7d2e90e4fa503ed04dcfc58ee71159                                                                                            2.5s
+  => [2/8] RUN apt-get update &&     apt-get upgrade -y &&     apt-get install -y         bash         binfmt-support         build-essential         ca-certificates         ccac  313.4s
+  => [3/8] RUN sed -i 's/pam_unix\.so obscure/pam_unix.so minlen=1 obscure/' /etc/pam.d/common-password                                                                               0.6s
+  => [4/8] RUN echo gemstone > /etc/hostname                                                                                                                                          0.9s
+  => [5/8] RUN curl --location https://taskfile.dev/install.sh | sudo sh -s -- -d -b /usr/local/bin &&     task --completion bash > /etc/bash_completion.d/task                       4.9s
+  => [6/8] RUN pip install vcstool --force-reinstall &&     cp /usr/local/share/vcstool-completion/vcs.bash /etc/bash_completion.d/vcs                                                4.7s
+  => [7/8] RUN apt-get install -y         binfmt-support         bmap-tools         btrfs-progs         debian-archive-keyring         debian-keyring         dosfstools         e2  46.0s
+  => [8/8] RUN cd /tmp &&     export GOPATH=/tmp/debos &&     go install -v github.com/t3gemstone/debos/cmd/debos@v1.1.3.6 &&     cp /tmp/debos/bin/debos /usr/local/bin &&     rm   44.7s
+  => exporting to image                                                                                                                                                              10.0s
+  => => naming to docker.io/t3gemstone/distrobox:latest                                                                                                                               0.0s
+  task: [box] distrobox-assemble create --file distrobox.ini
+  - Creating gemstone-distrobox...
+  Creating 'gemstone-distrobox' using image t3gemstone/distrobox   [ OK ]
+  Distrobox 'gemstone-distrobox' successfully created.
+  To enter, run:
 
-distrobox enter gemstone-distrobox
+  distrobox enter gemstone-distrobox
 
-Successfully copied 2.05kB to /tmp/gemstone-distrobox.os-release
-Starting container...                            [ OK ]
-Installing basic packages...                     [ OK ]
-Setting up devpts mounts...                      [ OK ]
-Setting up read-only mounts...                   [ OK ]
-Setting up read-write mounts...                  [ OK ]
-Setting up host's sockets integration...         [ OK ]
-Integrating host's themes, icons, fonts...       [ OK ]
-Setting up distrobox profile...                  [ OK ]
-Setting up sudo...                               [ OK ]
-Setting up user groups...                        [ OK ]
-Setting up user's group list...                  [ OK ]
-Adding user...                                   [ OK ]
-Ensuring user's access...                        [ OK ]
-Setting up skel...                               [ OK ]
-Executing init hooks...                          [ OK ]
-Setting up init system...                        [ OK ]
-Firing up init system...                         [ OK ]
+  Successfully copied 2.05kB to /tmp/gemstone-distrobox.os-release
+  Starting container...                            [ OK ]
+  Installing basic packages...                     [ OK ]
+  Setting up devpts mounts...                      [ OK ]
+  Setting up read-only mounts...                   [ OK ]
+  Setting up read-write mounts...                  [ OK ]
+  Setting up host's sockets integration...         [ OK ]
+  Integrating host's themes, icons, fonts...       [ OK ]
+  Setting up distrobox profile...                  [ OK ]
+  Setting up sudo...                               [ OK ]
+  Setting up user groups...                        [ OK ]
+  Setting up user's group list...                  [ OK ]
+  Adding user...                                   [ OK ]
+  Ensuring user's access...                        [ OK ]
+  Setting up skel...                               [ OK ]
+  Executing init hooks...                          [ OK ]
+  Setting up init system...                        [ OK ]
+  Firing up init system...                         [ OK ]
 
-Container Setup Complete!
-task: [box] distrobox-enter --additional-flags "--tty" --name gemstone-distrobox --no-workdir
-⚠️  First time user password setup ⚠️ 
-New password: 
-Retype new password: 
-passwd: password updated successfully
- _____ _____   _____                     _       _   _             
-|_   _|___ /  |  ___|__  _   _ _ __   __| | __ _| |_(_) ___  _ __  
-  | |   |_ \  | |_ / _ \| | | | '_ \ / _` |/ _` | __| |/ _ \| '_ \ 
-  | |  ___) | |  _| (_) | |_| | | | | (_| | (_| | |_| | (_) | | | |
-  |_| |____/  |_|  \___/ \__,_|_| |_|\__,_|\__,_|\__|_|\___/|_| |_|
-                                                                   
-🚀 distrobox:workdir> 
-```
+  Container Setup Complete!
+  task: [box] distrobox-enter --additional-flags "--tty" --name gemstone-distrobox --no-workdir
+  ⚠️  First time user password setup ⚠️ 
+  New password: 
+  Retype new password: 
+  passwd: password updated successfully
+  _____ _____   _____                     _       _   _             
+  |_   _|___ /  |  ___|__  _   _ _ __   __| | __ _| |_(_) ___  _ __  
+    | |   |_ \  | |_ / _ \| | | | '_ \ / _` |/ _` | __| |/ _ \| '_ \ 
+    | |  ___) | |  _| (_) | |_| | | | | (_| | (_| | |_| | (_) | | | |
+    |_| |____/  |_|  \___/ \__,_|_| |_|\__,_|\__,_|\__|_|\___/|_| |_|
+                                                                    
+  🚀 distrobox:workdir> 
+  ```
 
 </CodeGroup>
 
@@ -247,7 +249,7 @@ bir şifre vermeniz istenecektir. Derleme işlemlerini yaparken Terminalden hang
 ayırt edebilmeniz için bilgisayarınızın şifresinden farklı olarak 1 karakterlik şifre seçebilirsiniz.
 Son olarak `🚀 distrobox:workdir>` satırını gördüğünüzde artık Yocto ve İmaj derlemesi için hazırsınız!
 
-#### 1.2.4. Yocto ile Çekirdek bileşenleri derle
+#### 1.2.5. Yocto ile Çekirdek bileşenleri derle
 
 SDK yazılımcı kiti, farklı mimari ve işletim sistemlerine yönelik derleme yapabilmeniz için bir takım parametreler
 içermektedir. Örneğin Gemstone T3-GEM-O1 modeli aarch64 mimari bir hedef (target) iken kullandığınız
@@ -267,77 +269,80 @@ Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
 
 <CodeGroup>
 
-```bash Komut lines
-task yocto:build MACHINE=intel-corei7-64
-```
+  ```bash Komut lines
+  task yocto:build MACHINE=intel-corei7-64
+  ```
 
-```bash Konsol Çıktıları lines
-🚀 distrobox:workdir> task yocto:build MACHINE=intel-corei7-64
-task: [yocto:build] bash -c "TEMPLATECONF=/home/workdir/yocto/meta-gemstone/conf/templates/intel-corei7-64/ source /home/workdir/yocto/poky/oe-init-build-env /home/workdir/build/intel-corei7-64 && cd /home/workdir && bitbake gemstone-boot-files"
-Loading cache: 100% |                                                                                                                                                     | ETA:  --:--:--
-Loaded 0 entries from dependency cache.
-Parsing recipes: 100% |####################################################################################################################################################| Time: 0:00:23
-Parsing of 958 .bb files complete (0 cached, 958 parsed). 1921 targets, 322 skipped, 0 masked, 0 errors.
-NOTE: Resolving any missing task queue dependencies
+  ```bash Konsol Çıktıları lines
+  🚀 distrobox:workdir> task yocto:build MACHINE=intel-corei7-64
+  task: [yocto:build] bash -c "TEMPLATECONF=/home/workdir/yocto/meta-gemstone/conf/templates/intel-corei7-64/ source /home/workdir/yocto/poky/oe-init-build-env /home/workdir/build/intel-corei7-64 && cd /home/workdir && bitbake gemstone-boot-files"
+  Loading cache: 100% |                                                                                                                                                     | ETA:  --:--:--
+  Loaded 0 entries from dependency cache.
+  Parsing recipes: 100% |####################################################################################################################################################| Time: 0:00:23
+  Parsing of 958 .bb files complete (0 cached, 958 parsed). 1921 targets, 322 skipped, 0 masked, 0 errors.
+  NOTE: Resolving any missing task queue dependencies
 
-Build Configuration:
-BB_VERSION           = "2.8.0"
-BUILD_SYS            = "x86_64-linux"
-NATIVELSBSTRING      = "ubuntu-22.04"
-TARGET_SYS           = "x86_64-gemstone-linux-musl"
-MACHINE              = "intel-corei7-64"
-DISTRO               = "gemstone"
-DISTRO_VERSION       = "0.0.1"
-TUNE_FEATURES        = "m64 corei7"
-TARGET_FPU           = ""
-meta                 = "HEAD:62cb12967391db709315820d48853ffa4c6b4740"
-meta-gemstone        = "HEAD:f1532a1b4965e02070ff691950aa18faee3fa73f"
-meta-intel           = "HEAD:0be954e82f09d235d2b5e5ea01bb62ffa8d0b5f7"
+  Build Configuration:
+  BB_VERSION           = "2.8.0"
+  BUILD_SYS            = "x86_64-linux"
+  NATIVELSBSTRING      = "ubuntu-22.04"
+  TARGET_SYS           = "x86_64-gemstone-linux-musl"
+  MACHINE              = "intel-corei7-64"
+  DISTRO               = "gemstone"
+  DISTRO_VERSION       = "0.0.1"
+  TUNE_FEATURES        = "m64 corei7"
+  TARGET_FPU           = ""
+  meta                 = "HEAD:62cb12967391db709315820d48853ffa4c6b4740"
+  meta-gemstone        = "HEAD:f1532a1b4965e02070ff691950aa18faee3fa73f"
+  meta-intel           = "HEAD:0be954e82f09d235d2b5e5ea01bb62ffa8d0b5f7"
 
-Sstate summary: Wanted 928 Local 0 Mirrors 0 Missed 928 Current 162 (0% match, 14% complete)################################################################               | ETA:  0:00:00
-Initialising tasks: 100% |#################################################################################################################################################| Time: 0:00:03
-NOTE: Executing Tasks
-Setscene tasks: 1090 of 1090
-Currently  8 running tasks (1878 of 2435)  77% |#########################################################################################################                                |
-0: linux-intel-6.6.65+git-r0 do_fetch - 14m11s (pid 39218)  54% |##########################################################                                                   | 3.10 MiB/s
-1: gcc-cross-x86_64-13.3.0-r0 do_compile - 4m24s (pid 220797)
-2: ovmf-native-edk2-stable202402-r0 do_fetch - 4m21s (pid 222276)  36% |####################################                                                                  | 4.14 MiB/s
-3: ovmf-edk2-stable202402-r0 do_fetch - 4m13s (pid 226477)
-4: cpio-native-2.15-r0 do_configure - 1m47s (pid 271124)
-5: glib-2.0-native-1_2.78.6-r0 do_configure - 1m14s (pid 278327)
-6: groff-native-1.23.0-r0 do_compile - 37s (pid 293231)
-7: libx11-native-1_1.8.9-r0 do_compile - 30s (pid 298691)
-```
-
-</CodeGroup>
-
-#### 1.2.5. Debootstrap/Debos ile İşletim sistemi imajını derle
-
-<CodeGroup>
-
-```bash Komut lines
-task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
-```
-
-```bash Konsol Çıktıları lines
-
-```
+  Sstate summary: Wanted 928 Local 0 Mirrors 0 Missed 928 Current 162 (0% match, 14% complete)################################################################               | ETA:  0:00:00
+  Initialising tasks: 100% |#################################################################################################################################################| Time: 0:00:03
+  NOTE: Executing Tasks
+  Setscene tasks: 1090 of 1090
+  Currently  8 running tasks (1878 of 2435)  77% |#########################################################################################################                                |
+  0: linux-intel-6.6.65+git-r0 do_fetch - 14m11s (pid 39218)  54% |##########################################################                                                   | 3.10 MiB/s
+  1: gcc-cross-x86_64-13.3.0-r0 do_compile - 4m24s (pid 220797)
+  2: ovmf-native-edk2-stable202402-r0 do_fetch - 4m21s (pid 222276)  36% |####################################                                                                  | 4.14 MiB/s
+  3: ovmf-edk2-stable202402-r0 do_fetch - 4m13s (pid 226477)
+  4: cpio-native-2.15-r0 do_configure - 1m47s (pid 271124)
+  5: glib-2.0-native-1_2.78.6-r0 do_configure - 1m14s (pid 278327)
+  6: groff-native-1.23.0-r0 do_compile - 37s (pid 293231)
+  7: libx11-native-1_1.8.9-r0 do_compile - 30s (pid 298691)
+  ```
 
 </CodeGroup>
 
-#### 1.2.6. QEMU aracılığıyla derlenen imajı başlat
+#### 1.2.6. Debootstrap/Debos ile İşletim sistemi imajını derle
 
 <CodeGroup>
 
-```bash Komut lines
-task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD
-```
+  ```bash Komut lines
+  task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+  ```
 
-```bash Konsol çıktıları lines
+  ```bash Konsol Çıktıları lines
 
-```
+  ```
+
+</CodeGroup>
+
+#### 1.2.7. QEMU aracılığıyla derlenen imajı başlat
+
+<CodeGroup>
+
+  ```bash Komut lines
+  task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD
+  ```
+
+  ```bash Konsol çıktıları lines
+
+  ```
 
 </CodeGroup>
 
 ### 1.3. Sonuç
 
+Tebrikler! Bu aşamaya kadar gelerek işletim sistemini derleyip QEMU ile bu sistemi çalıştırarak 
+büyük bir yol katettiniz. Gemstone geliştiricilerinin sistemleri derlerken hangi araçları kullandıklarını
+ve süreçleri gördünüz. Bir sonraki bölümden itibaren bütün bu araçların detaylarını görmek için hazırsınız!
