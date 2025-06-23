@@ -3,15 +3,15 @@ title: 'Giriş'
 description: 'Gemstone Development Kit'
 ---
 
-<Tip>
 Bu bölümde SDK projesi geliştirici bilgisayarına indirilerek Gemstone imajları derlenecektir. Temel düzeyde
-yalnızca geliştirme işleminin nasıl olduğu tekrar edilecek olup bir sonraki bölümde bütün bileşenlerin,
+derleme işleminin nasıl yapıldığı örneklenecek olup bir sonraki bölümde bütün bileşenlerin,
 kullanılan araçların neler olduğu ve ne için kullanıldığına değinilecektir.
 
+<Tip>
 Bölümü tamamladığınızda aşağıdaki konularda tecrübe edineceksiniz.
 
 * Gemstone SDK ile Kernel, U-Boot, Firmware, İmaj derlemeleri yapmak
-* SDK bileşenlerinin temel kullanımı
+* SDK bileşenlerinin temel kullanımı deneyimlemek
 * Docker ve Distrobox gibi sistemleri kullanarak farklı GNU/Linux dağıtımlarını kendi bilgisayarınızda kullanmak.
 </Tip>
 
@@ -111,7 +111,7 @@ başlayabilirsiniz.
 
 </CodeGroup>
 
-#### 1.2.2. Harici bağımlılıkları indir
+#### 1.2.2. Harici Bağımlılıkları İndir
 
 Aşağıda bulunan `task fetch` komutu aracılığıyla SDK'nın derleme esnasında ihtiyaç duyduğu bütün kaynak kodların
 indirme işlemi otomatik yapılır. İndirilen bu projelerin neler olduğunu `sdk/repos.yml`
@@ -249,7 +249,7 @@ bir şifre vermeniz istenecektir. Derleme işlemlerini yaparken Terminalden hang
 ayırt edebilmeniz için bilgisayarınızın şifresinden farklı olarak 1 karakterlik şifre seçebilirsiniz.
 Son olarak `🚀 distrobox:workdir>` satırını gördüğünüzde artık Yocto ve İmaj derlemesi için hazırsınız!
 
-#### 1.2.5. Yocto ile Çekirdek bileşenleri derle
+#### 1.2.5. Yocto ile Çekirdek Bileşenleri Derle
 
 SDK yazılımcı kiti, farklı mimari ve işletim sistemlerine yönelik derleme yapabilmeniz için bir takım parametreler
 içermektedir. Örneğin Gemstone T3-GEM-O1 modeli aarch64 mimari bir hedef (target) iken kullandığınız
@@ -313,7 +313,7 @@ Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
 
 </CodeGroup>
 
-#### 1.2.6. Debootstrap/Debos ile İşletim sistemi imajını derle
+#### 1.2.6. Debootstrap/Debos ile İşletim Sistemi İmajını Derle
 
 <CodeGroup>
 
@@ -327,7 +327,7 @@ Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
 
 </CodeGroup>
 
-#### 1.2.7. QEMU aracılığıyla derlenen imajı başlat
+#### 1.2.7. QEMU Aracılığıyla Derlenen İmajı Çalıştır
 
 <CodeGroup>
 
