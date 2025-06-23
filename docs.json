@@ -153,6 +153,7 @@
             "icon": "laptop-code",
             "pages": [
               "tr/sdk/introduction",
+              "tr/sdk/components",
               "tr/sdk/distro",
               "tr/sdk/yocto",
               "tr/sdk/uboot",
@@ -293,6 +294,7 @@
             "icon": "laptop-code",
             "pages": [
               "en/sdk/introduction",
+              "en/sdk/components",
               "en/sdk/distro",
               "en/sdk/yocto",
               "en/sdk/uboot",
