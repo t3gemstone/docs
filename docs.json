@@ -140,12 +140,21 @@
             "icon": "code",
             "pages": [
               "tr/projects/introduction",
+              "tr/projects/preempt-rt",
               "tr/projects/cloud",
               "tr/projects/ardupilot",
               "tr/projects/nuttx",
               "tr/projects/autoware",
-              "tr/projects/preempt-rt",
               "tr/projects/vtol"
+            ]
+          },
+          {
+            "group": "Topluluk",
+            "icon": "layer-group",
+            "pages": [
+              "tr/community/introduction",
+              "tr/community/standards",
+              "tr/community/faq"
             ]
           },
           {
@@ -160,7 +169,7 @@
               "tr/sdk/kernel"
             ]
           },
-                    {
+          {
             "group": "Eğitim Kılavuzları",
             "icon": "books",
             "pages": [
@@ -169,15 +178,6 @@
               "tr/guides/medium",
               "tr/guides/advanced",
               "tr/guides/end"
-            ]
-          },
-          {
-            "group": "Topluluk",
-            "icon": "layer-group",
-            "pages": [
-              "tr/community/introduction",
-              "tr/community/standards",
-              "tr/community/faq"
             ]
           },
           {
@@ -281,12 +281,21 @@
             "icon": "code",
             "pages": [
               "en/projects/introduction",
+              "en/projects/preempt-rt",
               "en/projects/cloud",
               "en/projects/ardupilot",
               "en/projects/nuttx",
               "en/projects/autoware",
-              "en/projects/preempt-rt",
               "en/projects/vtol"
+            ]
+          },
+          {
+            "group": "Community",
+            "icon": "layer-group",
+            "pages": [
+              "en/community/introduction",
+              "en/community/standards",
+              "en/community/faq"
             ]
           },
           {
@@ -310,15 +319,6 @@
               "en/guides/medium",
               "en/guides/advanced",
               "en/guides/end"
-            ]
-          },
-          {
-            "group": "Community",
-            "icon": "layer-group",
-            "pages": [
-              "en/community/introduction",
-              "en/community/standards",
-              "en/community/faq"
             ]
           },
           {

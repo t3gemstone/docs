@@ -1,26 +1,26 @@
 ---
 title: 'Giriş'
-description: 'Gemstone Development Kit'
+description: 'Gemstone Sistem Derleme Kiti'
 ---
 
-Bu bölümde SDK projesi geliştirici bilgisayarına indirilerek Gemstone imajları derlenecektir. Temel düzeyde
-derleme işleminin nasıl yapıldığı örneklenecek olup bir sonraki bölümde bütün bileşenlerin,
-kullanılan araçların neler olduğu ve ne için kullanıldığına değinilecektir.
+Bu bölümde [SDK projesi](https://github.com/t3gemstone/sdk.git) geliştirici bilgisayarına indirilerek
+Gemstone imajları derlenecektir. Temel düzeyde derleme işleminin nasıl yapıldığı örneklenecek olup bir
+sonraki bölümde bütün bileşenlerin, kullanılan araçların neler olduğuna detaylıca değinilecektir.
 
 <Tip>
 Bölümü tamamladığınızda aşağıdaki konularda tecrübe edineceksiniz.
 
-* Gemstone SDK ile Kernel, U-Boot, Firmware, İmaj derlemeleri yapmak
 * SDK bileşenlerinin temel kullanımı deneyimlemek
+* Gemstone SDK ile Kernel, U-Boot, Firmware, İmaj derlemeleri yapmak
 * Docker ve Distrobox gibi sistemleri kullanarak farklı GNU/Linux dağıtımlarını kendi bilgisayarınızda kullanmak.
 </Tip>
 
 <Note>
-SDK projesi Gemstone projesinin yazılım altyapısını oluşturan ve en yoğun teknik bilgi içeren kısmıdır. Geliştirme
+SDK projesi Gemstone'un yazılım altyapısını oluşturan en yoğun teknik bilgi içeren kısmıdır. Geliştirme
 kartını kullanarak uygulama derlemek, projeler geliştirmek **için gerekli olmayıp** Gemstone'nun
-işletim sisteminin nasıl oluşturulduğu vb. teknik konular izah edilmektedir. Gemstone kartları ile yalnızca
+işletim sisteminin nasıl oluşturulduğu vb. teknik konular izah edilmektedir. Geliştirme kartları ile yalnızca
 proje geliştirmek istiyorsanız ve buradaki konulara ilginiz yoksa atlayabilirsiniz. Bu bölümün hedef kitlesi
-Gemstone geliştiricisi olmak isteyenlerdir.
+**Gemstone geliştiricisi** olmak isteyenlerdir.
 </Note>
 
 <Steps>
@@ -35,14 +35,22 @@ Gemstone geliştiricisi olmak isteyenlerdir.
   </Step>
 </Steps>
 
-### 1.1. Geliştirici Bilgisayarı Hazırlığı
+# 1. Hazırlık
 
 Geliştirme işlemleri Ubuntu 22.04 GNU/Linux dağıtımı ile yapıldı. Debian, Fedora, Pardus gibi dağıtımların da
 kullanılması mümkün olmakla birlikte ilk kez derleme işlemleri yapılıyorsa Ubuntu 22 veya Ubuntu 24 tavsiye edilir.
 
+### 1.1. Bilgisayar Gereksinimleri
+
+1. Ubuntu 22 veya Ubuntu 24 bilgisayar
+2. En az 16GB RAM
+3. En az 256GB kullanılabilir boş disk alanı
+
 İlk derleme işlemi için sisteminizde `Docker` ve `Jetify-Devbox` isimli araçların kurulu olması gerekmektedir. Aşağıdaki
 komutlarla SDK projesi klonlandıktan sonra içerisinde bulunan `setup.sh` isimli dosya bu kurulumları otomatik
 gerçekleştirmektedir.
+
+### 1.2. SDK'yı İndir ve İlk Kurulumu Yap
 
 Ubuntu üzerinde herhangi bir klasörde Terminal açarak aşağıdaki gibi proje indirme ve `setup.sh`
 scriptini çalıştırma işlemini yapınız.
@@ -85,12 +93,12 @@ Docker isimli uygulamayı sisteminize ilk kez kuruyorsanız, Bilgisayar kullanı
 yapmayı unutmayınız.
 </Warning>
 
-### 1.2. Derleme İşlemi
+# 2. Derleme Aşaması
 
 Gereksinim kurulum scriptini tamamladıktan sonra Terminal ekranından artık SDK içerisine girerek derleme adımlarına
 başlayabilirsiniz.
 
-#### 1.2.1. Devbox Konsolunu Aktifleştir
+### 2.1. Devbox Konsolunu Aktifleştir
 
 <CodeGroup>
 
@@ -111,11 +119,10 @@ başlayabilirsiniz.
 
 </CodeGroup>
 
-#### 1.2.2. Harici Bağımlılıkları İndir
+### 2.2. Harici Proje Kodlarını İndir
 
-Aşağıda bulunan `task fetch` komutu aracılığıyla SDK'nın derleme esnasında ihtiyaç duyduğu bütün kaynak kodların
-indirme işlemi otomatik yapılır. İndirilen bu projelerin neler olduğunu `sdk/repos.yml`
-dosyasından inceleyebilirsiniz.
+Aşağıda bulunan `task fetch` komutu aracılığıyla SDK'nın derleme esnasında ihtiyaç duyduğu bütün kaynak kodları
+indirme işlemi yapılır. İndirilen bu projelerin neler olduğunu `sdk/repos.yml` dosyasından inceleyebilirsiniz.
 
 <CodeGroup>
 
@@ -146,13 +153,13 @@ dosyasından inceleyebilirsiniz.
 
 </CodeGroup>
 
-#### 1.2.3. Yetkilendirme İşlemlerini Yap
+### 2.3. Yetkilendirme İşlemlerini Yap
 
 Yocto projesi ile işletim sistemi derleme işi doğrudan sizin bilgisayarınız yerine Distrobox denilen Docker kullanan
 bir araç ile yapılmaktadır. Bu aracın kullanılma sebebi Ubuntu 22/24 Debian veya muhtelif GNU/Linux dağıtımlarındaki
-versiyon değişikliklerinde ortak bir yapı kurabilmektir. Distrobox ile yocto kullanabilmek için ise bir takım yetkilendirme
-işlemleri gerekmektedir. Aşağıdaki komut aracılığıyla bu yetkiyi vererek derleme adımına geçebilirsiniz.
-
+versiyon değişikliklerinde kolay ve ortak bir yapı kullanabilmektir. Distrobox ile yocto kullanabilmek için ise
+bir takım yetkilendirme işlemleri gerekmektedir. Aşağıdaki komut aracılığıyla bu yetkiyi vererek derleme
+adımına geçebilirsiniz.
 
 <CodeGroup>
 
@@ -172,7 +179,7 @@ işlemleri gerekmektedir. Aşağıdaki komut aracılığıyla bu yetkiyi vererek
 
 </CodeGroup>
 
-#### 1.2.4. Derleme Ortamını Kur
+### 2.4. Derleme Ortamını Hazırla
 
 Sonraki bölümlerde kullanım amaçları açıklanacak olan bileşenlerden bir diğeri Distroboxdur. Aşağıdaki komut
 aracılığıyla Distrobox imajını aktifleştirerek Yocto ve İmaj derlemesi yapınız.
@@ -249,18 +256,14 @@ bir şifre vermeniz istenecektir. Derleme işlemlerini yaparken Terminalden hang
 ayırt edebilmeniz için bilgisayarınızın şifresinden farklı olarak 1 karakterlik şifre seçebilirsiniz.
 Son olarak `🚀 distrobox:workdir>` satırını gördüğünüzde artık Yocto ve İmaj derlemesi için hazırsınız!
 
-#### 1.2.5. Yocto ile Çekirdek Bileşenleri Derle
+### 2.5. Yocto ile Çekirdek Yazılımları Derle
 
 SDK yazılımcı kiti, farklı mimari ve işletim sistemlerine yönelik derleme yapabilmeniz için bir takım parametreler
 içermektedir. Örneğin Gemstone T3-GEM-O1 modeli aarch64 mimari bir hedef (target) iken kullandığınız
-Ubuntu (intel-x86_64) için QEMU ismi verilen bir hedef seçebilir ve derlediğiniz bütün her şeyi doğrudan kendi 
-bilgisayarınızda deneyebilirsiniz! Benzer şekilde işletim sistemi türü olarak Desktop, Minimal ve Kiosk seçimi
-mümkündür.
-
-Doküman boyunca QEMU ismi verilen sanallaştırma aracını deneyimlemeniz için Hedef makine (target) olarak 
-`intel-corei7-64` İşletim sistemi imaj türü olarak `Desktop` Distro olarak `Ubuntu Jammy` anlatılacaktır.
-Diğer bütün seçeneklerin ne olduğu ve neden kullanıldığı bir sonraki sayfadaki SDK Bileşenleri bölümünde
-izah edilecektir.
+Ubuntu bilgisayarı için `intel-corei7-64` seçerek oluşan imaj dosyalarını doğrudan kendi bilgisayarınızda
+çalıştırabilirsiniz. Aşağıdaki derleme işlemleri `intel-corei7-64` mimarisi için yapılmış olmuş QEMU isimli
+sanallaştırma uygulaması aracılığıyla bu imajları doğrudan kendi bilgisayarından başlatabileceğiniz biçimde
+anlatılmıştır.
 
 <Warning>
 Bu işlemler bilgisayarınızın performansına bağlı olarak yaklaşık 5 saat sürebilmektedir. Bütün aşamalar tamamlandığında
@@ -309,11 +312,20 @@ Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
   5: glib-2.0-native-1_2.78.6-r0 do_configure - 1m14s (pid 278327)
   6: groff-native-1.23.0-r0 do_compile - 37s (pid 293231)
   7: libx11-native-1_1.8.9-r0 do_compile - 30s (pid 298691)
+  Sstate summary: Wanted 41 Local 0 Mirrors 0 Missed 41 Current 1049 (0% match, 100% complete)#################################################################               | ETA:  0:00:00
+  Initialising tasks: 100% |################################################################################################################################################# | Time: 0:00:03
+  NOTE: Executing Tasks
+  NOTE: Executing Tasks
+  NOTE: Tasks Summary: Attempted 2435 tasks of which 2365 didn't need to be rerun and all succeeded.
   ```
 
 </CodeGroup>
 
-#### 1.2.6. Debootstrap/Debos ile İşletim Sistemi İmajını Derle
+### 2.6. Debootstrap/Debos ile İşletim Sistemi İmajını Derle
+
+Yukarıdaki bölümde Yocto derlemesi tamamlandığında Kernel, Bootloader, Firmware gibi çekirdek yazılımlar oluşur.
+Debootstrap/Debos ise Linux dağıtımını oluşturarak çekirdek yazılımlarla birleştirip **.img** uzantılı imaj
+dosyasını oluşturur.
 
 <CodeGroup>
 
@@ -322,12 +334,91 @@ Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
   ```
 
   ```bash Konsol Çıktıları lines
-
+  🚀 distrobox:workdir> task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+  task: [distro:permissions] sudo mkdir -p /home/workdir/build/debos
+  [sudo] password for vm: 
+  task: [distro:permissions] sudo chown $USER:$USER /home/workdir/build/debos
+  task: [distro:permissions] chmod +x /home/workdir/distro/scripts/*/*.sh
+  task: [distro:yocto:local-apt-server] pkill -f "python3 -m http.server" &>/dev/null || true
+  task: [distro:yocto:local-apt-server] bash -c "TEMPLATECONF=/home/workdir/yocto/meta-gemstone/conf/templates/intel-corei7-64/ source /home/workdir/yocto/poky/oe-init-build-env /home/workdir/build/intel-corei7-64 && cd /home/workdir && bitbake package-index"
+  Loading cache: 100% |######################################################################################################################################################| Time: 0:00:00
+  NOTE: Executing Tasks
+  NOTE: Running task 545 of 548 (/home/workdir/yocto/openembedded-core/meta/recipes-core/meta/package-index.bb:do_package_index)
+  NOTE: recipe package-index-1.0-r0: task do_package_index: Started
+  NOTE: recipe package-index-1.0-r0: task do_package_index: Succeeded
+  NOTE: Running noexec task 548 of 548 (/home/workdir/yocto/openembedded-core/meta/recipes-core/meta/package-index.bb:do_build)
+  NOTE: Tasks Summary: Attempted 548 tasks of which 546 didn't need to be rerun and all succeeded.
+  task: [distro:yocto:local-apt-server] bash -c "cd /home/workdir/build/tmp-musl/deploy/deb && python3 -m http.server 2>/dev/null" &
+  task: [distro:build] sudo mkdir -p /run/debos
+  task: [distro:build] cd /run/debos && sudo debos --disable-fakemachine --debug-shell --artifactdir=/home/workdir/build/debos --scratchdir=/home/workdir/build/debos --rootdir=/run/debos --template-var="workdir:/home/workdir" --template-var="machine:intel-corei7-64" --template-var="base:ubuntu" --template-var="type:desktop" --template-var="suite:jammy" --template-var="release:v2025.10" --template-var="image:gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img" --template-var="imagepath:/home/workdir/build/debos/gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img" --template-var="imagesize:6G" --template-var="arch:amd64" /home/workdir/distro/distro.yaml 2>&1 | tee -a /home/workdir/build/debos/log.txt
+  2025/06/23 13:24:46 ==== debootstrap ====
+  2025/06/23 13:24:46 Debootstrap | I: Retrieving InRelease 
+  2025/06/23 13:24:47 Debootstrap | I: Checking Release signature
+  2025/06/23 13:24:47 Debootstrap | I: Valid Release signature (key id F6ECB3762474EDA9D21B7022871920D1991BC93C)
+  2025/06/23 13:24:49 Debootstrap | I: Retrieving Packages 
+  2025/06/23 13:24:50 Debootstrap | I: Validating Packages 
+  2025/06/23 13:24:54 Debootstrap | I: Resolving dependencies of required packages...
+  2025/06/23 13:24:55 Debootstrap | I: Resolving dependencies of base packages...
+  2025/06/23 13:25:00 Debootstrap | I: Checking component main on https://archive.ubuntu.com/ubuntu...
+  2025/06/23 13:25:00 Debootstrap | I: Validating ...
+  2025/06/23 13:25:02 Debootstrap | I: Chosen extractor for .deb packages: dpkg-deb
+  2025/06/23 13:25:03 Debootstrap | I: Extracting ...
+  2025/06/23 13:25:04 Debootstrap | I: Installing core packages...
+  2025/06/23 13:25:05 Debootstrap | I: Unpacking required packages...
+  2025/06/23 13:25:08 Debootstrap | I: Configuring required packages...
+  2025/06/23 13:25:10 Debootstrap | I: Unpacking the base system...
+  2025/06/23 13:25:11 Debootstrap | I: Configuring the base system...
+  2025/06/23 13:25:14 Debootstrap | I: Base system installed successfully.
+  2025/06/23 13:25:14 ==== apt ===
+  2025/06/23 13:27:24 ==== Install PiXflat theme from deb ====
+  2025/06/23 13:27:24 cd $(mktemp -d)... | --2025-06-23 13:27:24--  http://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
+  2025/06/23 13:27:33 install-local-apt.sh intel-corei7-64 desktop false | Preparing to unpack .../0-kernel-6.6.65-intel-pk-standard_6.6.65+git0+9901a21dd1.a4ec5f44dc-r0_amd64.deb ...
+  2025/06/23 13:27:58 install-astral-uv.sh | downloading uv 0.7.13 x86_64-unknown-linux-gnu
+  2025/06/23 13:28:02 ==== overlay ====
+  2025/06/23 13:28:02 Overlaying /home/workdir/distro/overlays/desktop/all on /run/debos/root
+  2025/06/23 13:28:02 ==== overlay ====
+  2025/06/23 13:28:02 Overlaying /home/workdir/distro/overlays/desktop/intel-corei7-64 on /run/debos/root
+  2025/06/23 13:28:02 ==== run ====
+  2025/06/23 13:28:07 install-firefox.sh | 
+  2025/06/23 13:28:36 ==== run ====
+  2025/06/23 13:28:36 install-vscode.sh | 
+  2025/06/23 13:28:36 ==== run ====
+  2025/06/23 13:31:33 disable-services.sh desktop | Removed /etc/systemd/system/timers.target.wants/e2scrub_all.timer.
+  2025/06/23 13:31:34 ==== run ====
+  2025/06/23 13:31:34 setup-gemstone-apt.sh intel-corei7-64 jammy | deb [signed-by=/etc/apt/keyrings/gemstone-packages-keyring.gpg] https://packages.t3gemstone.org/apt/intel-corei7-64 jammy main
+  2025/06/23 13:31:34 ==== run ====
+  2025/06/23 13:31:34 setup-services.sh | Created symlink /etc/systemd/system/multi-user.target.wants/gem-first-boot.service → /etc/systemd/system/gem-first-boot.service.
+  2025/06/23 13:31:34 ==== run ====
+  2025/06/23 13:31:34 clean-up.sh desktop | apt-get remove
+  2025/06/23 13:31:41 ==== run ====
+  2025/06/23 13:31:41 ==== image-partition ====
+  2025/06/23 13:31:42 Formatting partition 1 | mkfs.fat: Warning: lowercase labels might not work properly on some systems
+  2025/06/23 13:31:42 Formatting partition 1 | mkfs.fat 4.2 (2021-01-31)
+  2025/06/23 13:31:42 Formatting partition 2 | mke2fs 1.46.5 (30-Dec-2021)
+  2025/06/23 13:31:42 Formatting partition 2 | Discarding device blocks:       0/1452632
+  2025/06/23 13:31:42 Formatting partition 2 | Creating filesystem with 1452632 4k blocks and 363600 inodes
+  2025/06/23 13:31:42 Formatting partition 2 | Filesystem UUID: b4f1ee1a-a1a5-4bd7-af4c-46fe7f25585f
+  2025/06/23 13:31:42 Formatting partition 2 | Superblock backups stored on blocks: 
+  2025/06/23 13:31:42 Formatting partition 2 | 	32768, 98304, 163840, 229376, 294912, 819200, 884736
+  2025/06/23 13:31:42 Formatting partition 2 | 
+  2025/06/23 13:31:42 Formatting partition 2 | Allocating group tables:  0/45 done                            
+  2025/06/23 13:31:42 Formatting partition 2 | Writing inode tables:  0/4 done                            
+  2025/06/23 13:31:42 Formatting partition 2 | Creating journal (16384 blocks): done
+  2025/06/23 13:31:42 Formatting partition 2 | Writing superblocks and filesystem accounting information:  0/4 done
+  2025/06/23 13:31:42 Formatting partition 2 | 
+  2025/06/23 13:31:42 ==== Deploying filesystem onto image ====
+  2025/06/23 13:33:03 Setting up fstab
+  2025/06/23 13:33:03 Setting up /etc/kernel/cmdline
+  2025/06/23 13:33:08 ==== Recipe done ====
+  task: [distro:build] sudo chown $USER:$USER /home/workdir/build/debos/gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img*
   ```
 
 </CodeGroup>
 
-#### 1.2.7. QEMU Aracılığıyla Derlenen İmajı Çalıştır
+### 2.7. QEMU Aracılığıyla Derlenen İmajı Çalıştır
+
+Oluşturduğunuz imaj dosyasını Gemstone kartlara yüklemeden Sanal Makine olarak QEMU aracılığıyla çalıştırmak için
+aşağıdaki komutu çalıştırınız ve işletim sistemi içerisinde geziniz!
 
 <CodeGroup>
 
@@ -336,12 +427,33 @@ Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
   ```
 
   ```bash Konsol çıktıları lines
-
+  🚀 distrobox:workdir> task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD
+  task: [yocto:runqemu] qemu-system-x86_64 -enable-kvm -machine pc -cpu host -smp $(nproc) -append 'root=/dev/vda2 rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200' \
+    -m 4G \
+    -netdev user,id=net0,hostfwd=tcp::10022-:22 \
+    -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:02 \
+    -object rng-random,filename=/dev/urandom,id=rng0 \
+    -device virtio-rng-pci,rng=rng0 \
+    -device virtio-blk-pci,drive=disk0 \
+    -drive id=disk0,file="/home/workdir/build/debos/gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img",format=raw,if=none \
+    -device qemu-xhci \
+    -device usb-tablet \
+    -device usb-kbd \
+    -device virtio-vga \
+    -serial stdio \
+    -initrd "/home/workdir/build/tmp-musl/deploy/images/intel-corei7-64/gemstone-image-rd-intel-corei7-64.cpio.gz" \
+    -kernel "/home/workdir/build/tmp-musl/deploy/images/intel-corei7-64/bzImage"
+  Gtk-Message: 14:13:08.868: Failed to load module "canberra-gtk-module"
+  Gtk-Message: 14:13:08.869: Failed to load module "canberra-gtk-module"
   ```
 
 </CodeGroup>
 
-### 1.3. Sonuç
+<Frame caption="QEMU ile Gemstone imajı çalıştırma">
+  <video controls className="w-full aspect-video" src="../../videos/gemstone-qemu.mp4"></video>
+</Frame>
+
+# 3. Sonuç
 
 Tebrikler! Bu aşamaya kadar gelerek işletim sistemini derleyip QEMU ile bu sistemi çalıştırarak 
 büyük bir yol katettiniz. Gemstone geliştiricilerinin sistemleri derlerken hangi araçları kullandıklarını
