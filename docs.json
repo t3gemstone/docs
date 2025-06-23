@@ -140,6 +140,7 @@
             "icon": "code",
             "pages": [
               "tr/projects/introduction",
+              "tr/projects/cloud",
               "tr/projects/ardupilot",
               "tr/projects/nuttx",
               "tr/projects/autoware",
@@ -165,7 +166,8 @@
               "tr/guides/introduction",
               "tr/guides/basic",
               "tr/guides/medium",
-              "tr/guides/advanced"
+              "tr/guides/advanced",
+              "tr/guides/end"
             ]
           },
           {
@@ -278,6 +280,7 @@
             "icon": "code",
             "pages": [
               "en/projects/introduction",
+              "en/projects/cloud",
               "en/projects/ardupilot",
               "en/projects/nuttx",
               "en/projects/autoware",
@@ -303,7 +306,8 @@
               "en/guides/introduction",
               "en/guides/basic",
               "en/guides/medium",
-              "en/guides/advanced"
+              "en/guides/advanced",
+              "en/guides/end"
             ]
           },
           {
