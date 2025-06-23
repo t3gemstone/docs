@@ -54,7 +54,7 @@ cd sdk
 ./setup.sh
 ```
 
-```bash Konsol Çıktıları lines
+```console Konsol Çıktıları lines
 🚀 T3 Gemstone Software Development Kit
 
   This script downloads and installs T3 Gemstone Boards' required
@@ -93,7 +93,7 @@ başlayabilirsiniz.
 
 <CodeGroup>
 
-```bash Komut
+```bash Komut lines
 # Git clone işlemini yaptığınız yerin klasör adresi
 cd sdk-klasoru-dosya-yolu
 
@@ -101,7 +101,7 @@ cd sdk-klasoru-dosya-yolu
 devbox shell
 ```
 
-```bash Konsol Çıktıları
+```bash Konsol Çıktıları lines
 gem@ubuntu:~$ cd /space/pluton/gemstone/sdk/
 gem@ubuntu:sdk$ devbox shell
 Starting a devbox shell...
@@ -118,11 +118,11 @@ dosyasından inceleyebilirsiniz.
 
 <CodeGroup>
 
-```bash Komut
+```bash Komut lines
 task fetch
 ```
 
-```bash Konsol Çıktıları
+```bash Konsol Çıktıları lines
 gem@ubuntu:sdk$ devbox shell
 Starting a devbox shell...
 📦 devbox:sdk> task fetch 
@@ -155,11 +155,11 @@ işlemleri gerekmektedir. Aşağıdaki komut aracılığıyla bu yetkiyi vererek
 
 <CodeGroup>
 
-```bash Komut
+```bash Komut lines
 task permissions
 ```
 
-```bash Konsol Çıktıları
+```bash Konsol Çıktıları lines
 📦 devbox:sdk> task permissions 
 task: [permissions] sudo cp .meta/bitbake-apparmor.conf /etc/apparmor.d/bitbake
 [sudo] password for vm: 
@@ -177,11 +177,11 @@ aracılığıyla Distrobox imajını aktifleştirerek Yocto ve İmaj derlemesi y
 
 <CodeGroup>
 
-```bash Komut
+```bash Komut lines
 task box
 ```
 
-```bash Konsol Çıktıları
+```bash Konsol Çıktıları lines
 📦 devbox:sdk> task box
 task: [box] distrobox-list | grep -q 'gemstone-distrobox' || docker build -f Dockerfile -t t3gemstone/distrobox:latest .
 [+] Building 108.3s (5/12)                                                                                                                                                 docker:default
@@ -267,12 +267,46 @@ Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
 
 <CodeGroup>
 
-```bash Komut
+```bash Komut lines
 task yocto:build MACHINE=intel-corei7-64
 ```
 
-```bash Konsol Çıktıları
+```bash Konsol Çıktıları lines
+🚀 distrobox:workdir> task yocto:build MACHINE=intel-corei7-64
+task: [yocto:build] bash -c "TEMPLATECONF=/home/workdir/yocto/meta-gemstone/conf/templates/intel-corei7-64/ source /home/workdir/yocto/poky/oe-init-build-env /home/workdir/build/intel-corei7-64 && cd /home/workdir && bitbake gemstone-boot-files"
+Loading cache: 100% |                                                                                                                                                     | ETA:  --:--:--
+Loaded 0 entries from dependency cache.
+Parsing recipes: 100% |####################################################################################################################################################| Time: 0:00:23
+Parsing of 958 .bb files complete (0 cached, 958 parsed). 1921 targets, 322 skipped, 0 masked, 0 errors.
+NOTE: Resolving any missing task queue dependencies
 
+Build Configuration:
+BB_VERSION           = "2.8.0"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "ubuntu-22.04"
+TARGET_SYS           = "x86_64-gemstone-linux-musl"
+MACHINE              = "intel-corei7-64"
+DISTRO               = "gemstone"
+DISTRO_VERSION       = "0.0.1"
+TUNE_FEATURES        = "m64 corei7"
+TARGET_FPU           = ""
+meta                 = "HEAD:62cb12967391db709315820d48853ffa4c6b4740"
+meta-gemstone        = "HEAD:f1532a1b4965e02070ff691950aa18faee3fa73f"
+meta-intel           = "HEAD:0be954e82f09d235d2b5e5ea01bb62ffa8d0b5f7"
+
+Sstate summary: Wanted 928 Local 0 Mirrors 0 Missed 928 Current 162 (0% match, 14% complete)################################################################               | ETA:  0:00:00
+Initialising tasks: 100% |#################################################################################################################################################| Time: 0:00:03
+NOTE: Executing Tasks
+Setscene tasks: 1090 of 1090
+Currently  8 running tasks (1878 of 2435)  77% |#########################################################################################################                                |
+0: linux-intel-6.6.65+git-r0 do_fetch - 14m11s (pid 39218)  54% |##########################################################                                                   | 3.10 MiB/s
+1: gcc-cross-x86_64-13.3.0-r0 do_compile - 4m24s (pid 220797)
+2: ovmf-native-edk2-stable202402-r0 do_fetch - 4m21s (pid 222276)  36% |####################################                                                                  | 4.14 MiB/s
+3: ovmf-edk2-stable202402-r0 do_fetch - 4m13s (pid 226477)
+4: cpio-native-2.15-r0 do_configure - 1m47s (pid 271124)
+5: glib-2.0-native-1_2.78.6-r0 do_configure - 1m14s (pid 278327)
+6: groff-native-1.23.0-r0 do_compile - 37s (pid 293231)
+7: libx11-native-1_1.8.9-r0 do_compile - 30s (pid 298691)
 ```
 
 </CodeGroup>
@@ -281,11 +315,11 @@ task yocto:build MACHINE=intel-corei7-64
 
 <CodeGroup>
 
-```bash Komut
+```bash Komut lines
 task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
 ```
 
-```bash Konsol Çıktıları
+```bash Konsol Çıktıları lines
 
 ```
 
@@ -295,14 +329,15 @@ task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu
 
 <CodeGroup>
 
-```bash Komut
+```bash Komut lines
 task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD
 ```
 
-```bash Konsol çıktıları
+```bash Konsol çıktıları lines
 
 ```
 
 </CodeGroup>
 
 ### 1.3. Sonuç
+
