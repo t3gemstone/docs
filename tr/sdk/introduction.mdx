@@ -37,8 +37,9 @@ proje geliştirmek istiyorsanız ve buradaki konulara ilginiz yoksa atlayabilirs
 
 # 1. Hazırlık
 
-Geliştirme işlemleri Ubuntu 22.04 GNU/Linux dağıtımı ile yapıldı. Debian, Fedora, Pardus gibi dağıtımların da
-kullanılması mümkün olmakla birlikte ilk kez derleme işlemleri yapılıyorsa Ubuntu 22 veya Ubuntu 24 tavsiye edilir.
+Derleme işlemleri Ubuntu 22.04 GNU/Linux dağıtımı içeren bilgisayar ile yapıldı. Debian, Fedora, Pardus gibi
+dağıtımların da kullanılması mümkün olmakla birlikte ilk kez buna benzer derleme araçları kullananlar için
+Ubuntu 22 veya Ubuntu 24 daha uygun olacaktır.
 
 ### 1.1. Bilgisayar Gereksinimleri
 
@@ -46,11 +47,11 @@ kullanılması mümkün olmakla birlikte ilk kez derleme işlemleri yapılıyors
 2. En az 16GB RAM
 3. En az 256GB kullanılabilir boş disk alanı
 
-İlk derleme işlemi için sisteminizde `Docker` ve `Jetify-Devbox` isimli araçların kurulu olması gerekmektedir. Aşağıdaki
-komutlarla SDK projesi klonlandıktan sonra içerisinde bulunan `setup.sh` isimli dosya bu kurulumları otomatik
-gerçekleştirmektedir.
+SDK kullanımı için `Docker` ve `Jetify-Devbox` isimli araçların bilgisayarınızda kurulu olması gerekmektedir.
+Aşağıdaki komutlarla SDK projesi klonlandıktan sonra içerisinde bulunan `setup.sh` isimli script bu kurulumları
+otomatik yapmaktadır.
 
-### 1.2. SDK'yı İndir ve İlk Kurulumu Yap
+### 1.2. SDK'yı İndir ve Kurulumu Başlat
 
 Ubuntu üzerinde herhangi bir klasörde Terminal açarak aşağıdaki gibi proje indirme ve `setup.sh`
 scriptini çalıştırma işlemini yapınız.
@@ -259,7 +260,7 @@ Son olarak `🚀 distrobox:workdir>` satırını gördüğünüzde artık Yocto 
 
 SDK yazılımcı kiti, farklı mimari ve işletim sistemlerine yönelik derleme yapabilmeniz için bir takım parametreler
 içermektedir. Örneğin Gemstone T3-GEM-O1 modeli aarch64 mimari bir hedef (target) iken kullandığınız
-Ubuntu bilgisayarı için `intel-corei7-64` seçerek oluşan imaj dosyalarını doğrudan kendi bilgisayarınızda
+Ubuntu bilgisayar için `intel-corei7-64` seçerek oluşan imaj dosyalarını doğrudan kendi bilgisayarınızda
 çalıştırabilirsiniz. Aşağıdaki derleme işlemleri `intel-corei7-64` mimarisi için yapılmış olup QEMU isimli
 sanallaştırma uygulaması aracılığıyla bu imajları doğrudan kendi bilgisayarından başlatabileceğiniz biçimde
 anlatılmıştır.
@@ -323,7 +324,7 @@ Bu işlemler bilgisayarınızın performansına bağlı olarak yaklaşık 5 saat
 
 Yukarıdaki bölümde Yocto derlemesi tamamlandığında Kernel, Bootloader, Firmware gibi çekirdek yazılımlar oluşur.
 Debos/Debootstrap ise Linux dağıtımını oluşturarak çekirdek yazılımlarla birleştirip **.img** uzantılı imaj
-dosyasını oluşturur.
+dosyasını hazırlar.
 
 <CodeGroup>
 
@@ -390,20 +391,8 @@ dosyasını oluşturur.
   2025/06/23 13:31:34 clean-up.sh desktop | apt-get remove
   2025/06/23 13:31:41 ==== run ====
   2025/06/23 13:31:41 ==== image-partition ====
-  2025/06/23 13:31:42 Formatting partition 1 | mkfs.fat: Warning: lowercase labels might not work properly on some systems
   2025/06/23 13:31:42 Formatting partition 1 | mkfs.fat 4.2 (2021-01-31)
   2025/06/23 13:31:42 Formatting partition 2 | mke2fs 1.46.5 (30-Dec-2021)
-  2025/06/23 13:31:42 Formatting partition 2 | Discarding device blocks:       0/1452632
-  2025/06/23 13:31:42 Formatting partition 2 | Creating filesystem with 1452632 4k blocks and 363600 inodes
-  2025/06/23 13:31:42 Formatting partition 2 | Filesystem UUID: b4f1ee1a-a1a5-4bd7-af4c-46fe7f25585f
-  2025/06/23 13:31:42 Formatting partition 2 | Superblock backups stored on blocks: 
-  2025/06/23 13:31:42 Formatting partition 2 | 	32768, 98304, 163840, 229376, 294912, 819200, 884736
-  2025/06/23 13:31:42 Formatting partition 2 | 
-  2025/06/23 13:31:42 Formatting partition 2 | Allocating group tables:  0/45 done                            
-  2025/06/23 13:31:42 Formatting partition 2 | Writing inode tables:  0/4 done                            
-  2025/06/23 13:31:42 Formatting partition 2 | Creating journal (16384 blocks): done
-  2025/06/23 13:31:42 Formatting partition 2 | Writing superblocks and filesystem accounting information:  0/4 done
-  2025/06/23 13:31:42 Formatting partition 2 | 
   2025/06/23 13:31:42 ==== Deploying filesystem onto image ====
   2025/06/23 13:33:03 Setting up fstab
   2025/06/23 13:33:03 Setting up /etc/kernel/cmdline
@@ -455,6 +444,11 @@ aşağıdaki komutu çalıştırınız ve işletim sistemi içerisinde geziniz!
 
 # 3. Sonuç
 
-Bu aşamaya kadar gelerek işletim sistemini derleyip QEMU ile bu sistemi çalıştırarak 
+Bu aşamaya kadar gelerek; işletim sistemini derleyip, QEMU ile bu sistemi çalıştırarak 
 büyük bir yol katettiniz. Gemstone geliştiricilerinin sistemleri derlerken hangi araçları kullandıklarını
 ve süreçleri gördünüz. Bir sonraki bölümde bütün bu araçların detaylarını öğrenmek için hazırsınız!
+
+<Check>
+Sonraki bölüme geçmeden önce yukarıda öğrendiğiniz bütün işlemleri bu sayfaya mümkün mertebe bakmadan
+tekrar hatırlamaya çalışarak derleme işlemi yapmayı deneyiniz.
+</Check>
