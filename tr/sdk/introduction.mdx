@@ -93,7 +93,7 @@ Docker isimli uygulamayı sisteminize ilk kez kuruyorsanız, Bilgisayar kullanı
 yapmayı unutmayınız.
 </Warning>
 
-# 2. Derleme Aşaması
+# 2. Derleme
 
 Gereksinim kurulum scriptini tamamladıktan sonra Terminal ekranından artık SDK içerisine girerek derleme adımlarına
 başlayabilirsiniz.
@@ -103,7 +103,7 @@ başlayabilirsiniz.
 <CodeGroup>
 
   ```bash Komut lines
-  # Git clone işlemini yaptığınız yerin klasör adresi
+  # Git clone işleminin yapıldığı klasör
   cd sdk-klasoru-dosya-yolu
 
   # Devbox shell aktifleştir
@@ -155,11 +155,10 @@ indirme işlemi yapılır. İndirilen bu projelerin neler olduğunu `sdk/repos.y
 
 ### 2.3. Yetkilendirme İşlemlerini Yap
 
-Yocto projesi ile işletim sistemi derleme işi doğrudan sizin bilgisayarınız yerine Distrobox denilen Docker kullanan
+Yocto projesi ile işletim sistemi derleme işi doğrudan kullandığınız Ubuntu üzerinde değil, Distrobox denilen
 bir araç ile yapılmaktadır. Bu aracın kullanılma sebebi Ubuntu 22/24 Debian veya muhtelif GNU/Linux dağıtımlarındaki
 versiyon değişikliklerinde kolay ve ortak bir yapı kullanabilmektir. Distrobox ile yocto kullanabilmek için ise
-bir takım yetkilendirme işlemleri gerekmektedir. Aşağıdaki komut aracılığıyla bu yetkiyi vererek derleme
-adımına geçebilirsiniz.
+bir takım yetkilendirme işlemleri gerekmektedir. Aşağıdaki komut aracılığıyla yetkilendirme yapınız.
 
 <CodeGroup>
 
@@ -182,7 +181,7 @@ adımına geçebilirsiniz.
 ### 2.4. Derleme Ortamını Hazırla
 
 Sonraki bölümlerde kullanım amaçları açıklanacak olan bileşenlerden bir diğeri Distroboxdur. Aşağıdaki komut
-aracılığıyla Distrobox imajını aktifleştirerek Yocto ve İmaj derlemesi yapınız.
+aracılığıyla Distrobox hazırlık işlemlerini gerçekleştiriniz.
 
 <CodeGroup>
 
@@ -261,13 +260,12 @@ Son olarak `🚀 distrobox:workdir>` satırını gördüğünüzde artık Yocto 
 SDK yazılımcı kiti, farklı mimari ve işletim sistemlerine yönelik derleme yapabilmeniz için bir takım parametreler
 içermektedir. Örneğin Gemstone T3-GEM-O1 modeli aarch64 mimari bir hedef (target) iken kullandığınız
 Ubuntu bilgisayarı için `intel-corei7-64` seçerek oluşan imaj dosyalarını doğrudan kendi bilgisayarınızda
-çalıştırabilirsiniz. Aşağıdaki derleme işlemleri `intel-corei7-64` mimarisi için yapılmış olmuş QEMU isimli
+çalıştırabilirsiniz. Aşağıdaki derleme işlemleri `intel-corei7-64` mimarisi için yapılmış olup QEMU isimli
 sanallaştırma uygulaması aracılığıyla bu imajları doğrudan kendi bilgisayarından başlatabileceğiniz biçimde
 anlatılmıştır.
 
 <Warning>
-Bu işlemler bilgisayarınızın performansına bağlı olarak yaklaşık 5 saat sürebilmektedir. Bütün aşamalar tamamlandığında
-Kernel, U-Boot, Firmware, İşletim sistemi derlemiş olacaksınız!
+Bu işlemler bilgisayarınızın performansına bağlı olarak yaklaşık 5 saat sürebilmektedir.
 </Warning>
 
 <CodeGroup>
@@ -457,6 +455,6 @@ aşağıdaki komutu çalıştırınız ve işletim sistemi içerisinde geziniz!
 
 # 3. Sonuç
 
-Tebrikler! Bu aşamaya kadar gelerek işletim sistemini derleyip QEMU ile bu sistemi çalıştırarak 
+Bu aşamaya kadar gelerek işletim sistemini derleyip QEMU ile bu sistemi çalıştırarak 
 büyük bir yol katettiniz. Gemstone geliştiricilerinin sistemleri derlerken hangi araçları kullandıklarını
 ve süreçleri gördünüz. Bir sonraki bölümden itibaren bütün bu araçların detaylarını görmek için hazırsınız!
