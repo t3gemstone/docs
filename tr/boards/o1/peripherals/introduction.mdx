@@ -9,3 +9,23 @@ Bütün örnekler Seriport bağlantısı kurularak Terminal/Konsol üzerinden ya
 kabul edilmektedir. İlgili kısımda anlatılan Desktop imajına tarayıcı ile bağlanma, SSH/Ethernet ile bağlanma
 veya Seriport üzerinden konsol ile bağlanma yöntemlerinden birini tercih edebilirsiniz.
 
+### Pinout
+
+<Frame caption="Todo: 40-Pin Header ile farklı özelliklerin eklenmesi">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+Kart üzerinde bulunan **40-pin expansion header** olarak isimlendirilen Giriş/Çıkış (I/O) pinleri; Seriport, i2C, Spi
+gibi arayüzleri sağlamaktadır. Örneğin GPIO-18 isimli pinler seriport olarak varsayılan konfigürasyon olarak belirlenmiş
+olup **Device Tree** ismi verilen dosyalarlada değişiklik yapılarak Mikroişlemcinin izin verdiği ölçüde SPI'ya
+dönüştürülebilmektedir. Benzer şekilde Gemstone VTOL projesinde Bluetooth ihtiyacı olmadığından, ilgili pinler devre
+dışı bırakılarak Seriport UART'a dönüştürülmüştür.
+
+Bu bölümde 40-pin giriş/çıkış portlarının kullanım amaçları ve hangi arayüzlere tahsis edildiği ve nasıl
+kullanılacağına değinilecek aşağıdaki bölümde ise pinlerin nasıl farklı kullanımlara açılabileceği izah edilecektir.
+
+### Device Tree
+
+<Frame caption="Todo: Device Tree">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
