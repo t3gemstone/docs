@@ -2,3 +2,44 @@
 title: 'Bileşenler'
 description: 'SDK Bileşenleri'
 ---
+
+Bu bölümde Gemstone SDK'sında bulunan bütün araçların kullanımı ve neden tercih edildiğine değinilecektir.
+
+<Tip>
+Bölümü tamamladığınızda aşağıdaki konularda tecrübe edineceksiniz.
+
+* SDK Projesinin işlevi ve klasör yapısı
+* Devbox, Distrobox, Taskfile, VCSTool, Debos, Debootstrap gibi araçların kullanımı.
+</Tip>
+
+# 1. SDK Bileşenleri
+
+Temel kullanım amacı Gemstone geliştirme kartlarında bulunan bütün çekirdek (Linux Kernel, Bootloader, Firmware, Driver)
+ve işletim sistemi (içerisinde kullandığınız bütün uygulamaları barındıran) imajlarını oluşturmak olan
+**Gemstone SDK'sında**; Linux dünyasındaki dağıtım çeşitliliğinin getirdiği uyumsuzlukların ortadan kaldırılması
+için bir takım yardımcı araçlardan yararlanılmıştır.
+
+```mermaid
+flowchart
+	n1@{ shape: "rounded", label: "Gemstone SDK" }
+	n1 --- n2["Devbox"]
+	n2 --- n3["Taskfile"]
+	n3 --- n4["Distrobox"]
+	n3 --- n5["VCS Tool"]
+	n4 --- n7["Yocto"]
+	n4 --- n8["Debos"]
+	n3 --- n6["APT Publish"]
+	style n1 color:#000000,fill:#FFDE59
+	style n7 stroke-width:1px,stroke-dasharray:5 5
+	style n8 stroke-width:1px,stroke-dasharray:5 5
+	style n5 stroke-width:1px,stroke-dasharray:5 5
+	style n6 stroke-width:1px,stroke-dasharray:5 5
+```
+
+### 1.1. Klasör Yapısı
+### 1.2. Devbox
+### 1.3. Taskfile
+### 1.4. Distrobox
+### 1.5. VcsTool
+### 1.6. Yocto
+### 1.7. Debos
