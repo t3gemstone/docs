@@ -3,7 +3,10 @@ title: 'Bileşenler'
 description: 'SDK Bileşenleri'
 ---
 
-Bu bölümde Gemstone SDK'sında bulunan bütün araçların detaylı kullanımına ve neden tercih edildiğine değinilecektir.
+<Note>
+Bu bölümde Gemstone [SDK](../community/faq#sdk-nedir)'sında bulunan bütün araçların detaylı kullanımına ve
+neden tercih edildiğine değinilecektir.
+</Note>
 
 <Tip>
 Bölümü bitiminde aşağıdaki konularda tecrübe edineceksiniz.
@@ -12,12 +15,66 @@ Bölümü bitiminde aşağıdaki konularda tecrübe edineceksiniz.
 * Devbox, Distrobox, Taskfile, VCSTool, Debos, Debootstrap gibi araçların kullanımı.
 </Tip>
 
+Bilindiği gibi Linux; açık kaynak kodlu bir işletim sistemi çekirdeğidir (Kernel). İşletim sistemi ise Kernel, Shell,
+Masaüstü uygulamaları, pencere yöneticisi, metin editörleri, tarayıcı, sistem araçları ve sistem servisleri
+gibi onlarca farklı uygulamayı barındıran bir bütündür. Windows gibi işletim sistemlerinin aksine tek bir üretici
+tarafından dağıtılmayıp farklı kuruluşlarca derlenerek toparlanıp farklı isimlerle özgürce yayınlanabilmektedir.
+Örneğin: [Ubuntu](https://ubuntu.com/), [Debian](https://www.debian.org/), [Pardus](https://pardus.org.tr/),
+[Fedora](https://www.fedoraproject.org/), [openSUSE](https://www.opensuse.org/) gibi işletim sistemlerinin hepsi
+Linux kerneli içermekle birlikte farklı GNU araçları, açık kaynak yazılım veya versiyonlar barındırmaktadır. 
+
+Linux içeren bu işletim sistemleri çoğunlukla [Distro](../community/faq#distro-nedir) (Dağıtım) olarak
+isimlendirilmektedir. İçerisinde bulunan açık kaynak kodlu yazılımların çoğununluğunun ise GNU (www.gnu.org)
+çalışmaları olması münasebetiyle GNU/Linux olarak anılması açık kaynak kod topluluğu tarafından tercih edilmektedir.
+
+Bu durum çok büyük bir çeşitlilik, özelleştirme imkanı ve güç ile birlikte farklı yazılım versiyonlarının
+kullanılması dolayısıyla uyumsuzluklara ve hatalara neden olabilmektedir. Söz gelimi; Ubuntu 22 ve 
+Ubuntu 24 sürümlerinde kullanılan bir metin editörünün kullandığı kütüphaneler
+[Fedora Workstation 42](https://fedoraproject.org/workstation/download) ile farklılık gösterebilmektedir.
+
+Gemstone SDK'sında kullanılan özellikle [Yocto](https://www.yoctoproject.org/) gibi araçlar ise belirli
+GNU/Linux dağıtımlarının versiyonlarına destek vermekte ve bu hususlar ilgili projelerin dokümanlarında belirtilmektedir.
+
+İşte bu gibi farklılıkların giriş seviyesindeki kullanıcılar için yarattığı karmaşıklığı azaltmak için Gemstone
+[SDK](../community/faq#sdk-nedir)'sında derleme araçları için Devbox ve Distrobox gibi çözümlerden faydalanılmıştır.
+Bu araçlar GNU/Linux dağıtımı veya dağıtımların versiyonları farketmeksizin ihtiyaç duyulan yazılımların
+uygun sürümlerini bütün sistemlerde aynı yapı ile kullanmaya imkan sağlar!
+
+<Tip>
+Bu duruma bir örnek vermek gerekirse Ubuntu 22.04 ile `sudo apt install libfmt-dev` komutuyla 
+[fmt](https://github.com/fmtlib/fmt) isimli kütüphaneyi kurduğunuzda sisteminizde bulunacak versiyon ile
+Fedora'da `sudo dnf install libfmt-dev` komutu ile kurulan farklı olabilir. Dolayısıyla sizler yazılım geliştirirken
+kodlarınızı indirip derleyen kişilerin uygun versiyonları temin etmesi gerekir.
+</Tip>
+
+[Devbox](https://www.jetify.com/devbox): bu gibi farklı versiyonların olası etkilerini ve karmaşıklığı azaltmak için
+oluşturulmuş açık kaynaklı bir paket yönetim sistemidir. Ubuntu, Fedora gibi dağıtımlarda aynı yazılım versiyonlarını
+kullanabilmeye olanak verir.
+
+<Tip>
+Devbox ile QEMU'nun 10.0 numaralı sürümünü kullanmak istiyorsanız ve Ubuntu, Pardus, Debian'ın varsayılan paket 
+yöneticilerinde farklı versiyonlar mevcut ise Devbox çok uygun yardımcı bir araç olmaktadır.
+</Tip>
+
+[Distrobox](https://distrobox.it/): Docker gibi konteynır teknolojilerinden faydalanarak farklı GNU/Linux
+dağıtımlarının istediğiniz versiyonunu yine kullandığınız GNU/Linux üzerinde çalıştırmayı sağlar.
+(Örneğin Fedora 42 kullanarak Distrobox aracılığıyla Terminal üzerinen Ubuntu 22.04 kullanabilirsiniz)
+
+Gemstone SDK'sında ihtiyaç duyulan yazılımların kurulumu için her bir dağıtıma özgü çalışma yapılmasına gerek bırakmamak
+adına Devbox kullanılmıştır ve `sdk/devbox.json` dosyasında hangi yazılımların kurulduğu mevcuttur.
+
+[Taskfile](https://taskfile.dev/): Betik komutları çalıştırırken çoğu zaman **.sh** uzantılı script adı verilen
+küçük uygulamalar kullanılmaktadır. Zaman içerisinde bu betik/shell script'lerinin artması ile karmaşıklık oluşmakta ve 
+kullanım zorluğu oluşmaktadır. Bu gibi zorlukları azaltmak için Task isminde bir araç kullanılmıştır ve çalıştırılacak
+scriptleri **.yml** uzantılı dosyalara küçük parçalar halinde yazmaya, sınıflandırmaya, Terminal'den `<tab>` tuşuna
+basıldığında otomatik tamamlama gibi ek özellikleri kullanmaya imkan sağlar. `sdk/Taskfile.yml` dosyasında
+SDK'nın temel Taskfile dosyası bulunmaktadır.
+
 # 1. SDK Bileşenleri
 
 Temel kullanım amacı Gemstone geliştirme kartlarında bulunan bütün çekirdek (Linux Kernel, Bootloader, Firmware, Driver)
 ve işletim sistemi (içerisinde kullandığınız bütün uygulamaları barındıran) imajlarını oluşturmak olan
-**Gemstone SDK'sında**; Linux dünyasındaki dağıtım çeşitliliğinin getirdiği uyumsuzlukların ortadan kaldırılması
-için bir takım yardımcı araçlardan yararlanılmıştır.
+**Gemstone SDK'sında**; aşağıdaki şemada bulunan araçlardan yararlanılmıştır.
 
 ```mermaid
 flowchart
