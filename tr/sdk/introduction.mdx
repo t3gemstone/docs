@@ -26,13 +26,16 @@ istiyorsanız ve buradaki konulara ilginiz yoksa atlayabilirsiniz. Bu bölümün
 
 <Steps>
   <Step title="SDK'yı indir">
-    Ubuntu üzerinde `git clone` işlemi yaparak SDK projesini indir.
+    Ubuntu üzerinde `git clone` işlemi yaparak SDK projesini indir
   </Step>
   <Step title="Gereksinimleri Kur">
-    Derleme işlemi yapabilmek için gereksinimleri `setup.sh` isimli scripti çalıştırarak kur.
+    Derleme işlemi yapabilmek için gereksinimleri `setup.sh` isimli scripti çalıştırarak kur
   </Step>
   <Step title="İmaj oluştur">
-    SDK içerisindeki araçları kullanarak Gemstone imajı oluştur.
+    SDK içerisindeki araçları kullanarak Gemstone imajı oluştur
+  </Step>
+  <Step title="QEMU kullan">
+    Oluşan imajı QEMU ile sanal makine olarak çalıştır
   </Step>
 </Steps>
 
@@ -51,6 +54,26 @@ Ubuntu 22 veya Ubuntu 24 daha uygun olacaktır.
 SDK kullanımı için `Docker` ve `Jetify-Devbox` isimli araçların bilgisayarınızda kurulu olması gerekmektedir.
 Aşağıdaki komutlarla SDK projesi klonlandıktan sonra içerisinde bulunan `setup.sh` isimli script bu kurulumları
 otomatik yapmaktadır.
+
+<Card>
+```mermaid
+flowchart
+	n1@{ shape: "diam", label: "git clone işlemi yap" }
+	n1@{ shape: "diam", label: "**1.2. SDK'yı indir**" } --- n2@{ label: "Gereksinimleri (setup.sh) Kur" }
+	n2@{ label: "**1.2.** Gereksinimleri Kur" } --- n3["Devbox Shell Aktifleştir"]@{ shape: "diam" }
+	n3 --- n4["**2.2.** Harici Kodları İndir"]
+	n3 --- n5@{ label: "**2.3.** Yetkilendirme Yap" }
+	n3@{ shape: "hex", label: "**2.1. Devbox Shell Aktifleştir**" } --- n6@{ shape: "hex", label: "**2.4.** Distrobox ile Yocto&Debos Ortamını Hazırla" }
+	n6@{ shape: "hex", label: "**2.4. Distrobox ile Yocto&Debos Ortamını Hazırla**" } --- n7["**2.5.** Yocto ile Çekirdek (Linux Kernel, U-Boot, Firmware, Driver) Derle"]
+	n1@{ shape: "rounded", label: "**1.2. SDK'yı indir**" }
+	n7["**2.5.** Yocto ile Kernel, U-Boot, Firmware, Drive Derle"]
+	n7 --- n10["**2.6.** Debos ile İmaj Oluştur"]
+	n10 --- n11["**2.7.** Qemu ile İşletim Sistemini Aç"]
+	style n1 fill:#FFDE59
+	style n3 stroke-width:0.5px,stroke:#000000
+	style n6 fill:#FFDE59
+```
+</Card>
 
 ### 1.2. SDK'yı İndir ve Kurulumu Başlat
 
