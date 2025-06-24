@@ -51,16 +51,15 @@ Ubuntu 22 veya Ubuntu 24 daha uygun olacaktır.
 2. En az 16GB RAM
 3. En az 256GB kullanılabilir boş disk alanı
 
-SDK kullanımı için `Docker` ve `Jetify-Devbox` isimli araçların bilgisayarınızda kurulu olması gerekmektedir.
-Aşağıdaki komutlarla SDK projesi klonlandıktan sonra içerisinde bulunan `setup.sh` isimli script bu kurulumları
-otomatik yapmaktadır.
+Gemstone SDK `Docker` ve `Jetify-Devbox` isimli araçlara ihtiyaç duymaktadır. Aşağıdaki komutlarla SDK
+projesi klonlandıktan sonra içerisinde bulunan `setup.sh` isimli script bu kurulumları otomatik yapmaktadır.
 
 <Card>
 ```mermaid
 flowchart
 	n1@{ shape: "diam", label: "git clone işlemi yap" }
-	n1@{ shape: "diam", label: "**1.2. SDK'yı indir**" } --- n2@{ label: "Gereksinimleri (setup.sh) Kur" }
-	n2@{ label: "**1.2.** Gereksinimleri Kur" } --- n3["Devbox Shell Aktifleştir"]@{ shape: "diam" }
+	n1@{ shape: "diam", label: "**1.2. SDK'yı indir**" } --- n2@{ label: "**1.3.** Gereksinimleri Kur" }
+	n2@{ label: "**1.3.** Gereksinimleri Kur" } --- n3["Devbox Shell Aktifleştir"]@{ shape: "diam" }
 	n3 --- n4["**2.2.** Harici Kodları İndir"]
 	n3 --- n5@{ label: "**2.3.** Yetkilendirme Yap" }
 	n3@{ shape: "hex", label: "**2.1. Devbox Shell Aktifleştir**" } --- n6@{ shape: "hex", label: "**2.4.** Distrobox ile Yocto&Debos Ortamını Hazırla" }
@@ -75,17 +74,14 @@ flowchart
 ```
 </Card>
 
-### 1.2. SDK'yı İndir ve Kurulumu Başlat
+### 1.2. SDK'yı İndir
 
-Ubuntu üzerinde herhangi bir klasörde Terminal açarak aşağıdaki gibi proje indirme ve `setup.sh`
-scriptini çalıştırma işlemini yapınız.
+Ubuntu üzerinde herhangi bir klasörde Terminal açarak aşağıdaki gibi `git clone` komutu ile projeyi klonlayınız.
 
 <CodeGroup>
 
   ```bash Terminal lines
   git clone https://github.com/t3gemstone/sdk.git
-  cd sdk
-  ./setup.sh
   ```
 
   ```bash Terminal Çıktıları lines
@@ -97,6 +93,23 @@ scriptini çalıştırma işlemini yapınız.
   remote: Total 2871 (delta 122), reused 107 (delta 78), pack-reused 2700 (from 2)
   Receiving objects: 100% (2871/2871), 25.23 MiB | 5.52 MiB/s, done.
   Resolving deltas: 100% (1100/1100), done.
+  gem@ubuntu:~$
+  ```
+</CodeGroup>
+
+### 1.3. Gereksinimleri Kur
+
+Klonlama işlemi sonrası aynı terminal ekranından `cd sdk` komutu ile klasöre girerek `setup.sh`
+scriptini çalıştırma işlemini yapınız.
+
+<CodeGroup>
+
+  ```bash Terminal lines
+  cd sdk
+  ./setup.sh
+  ```
+
+  ```bash Terminal Çıktıları lines
   gem@ubuntu:~$ cd sdk/
   gem@ubuntu:sdk$ ./setup.sh 
 
@@ -121,17 +134,16 @@ scriptini çalıştırma işlemini yapınız.
     2. Get help and give feedback
       Join our community at https://community.t3gemstone.org
   ```
-
 </CodeGroup>
 
 <Warning>
-Docker isimli uygulamayı sisteminize ilk kez kuruyorsanız, Bilgisayar kullanıcı oturumunu kapatarak yeniden giriş
-yapmayı unutmayınız.
+Docker isimli uygulama daha önce sisteminizde kurulu değilse; ilk kez kuruyorsanız, Bilgisayar kullanıcı oturumunu
+kapatarak yeniden giriş yapmayı unutmayınız.
 </Warning>
 
 # 2. Derleme
 
-Gereksinim kurulum scriptini tamamladıktan sonra aşağıdaki şekilde Terminal ekranından SDK içerisine girerek
+Gereksinim kurulum scriptini tamamladıktan sonra Terminal'den sdk klasörü içerisindeyken Devbox Shell aktifleştirerek
 derleme adımlarına başlayabilirsiniz.
 
 ### 2.1. Devbox Konsolunu Aktifleştir
@@ -139,15 +151,12 @@ derleme adımlarına başlayabilirsiniz.
 <CodeGroup>
 
   ```bash Terminal lines
-  # Git clone işleminin yapıldığı klasör
-  cd sdk-klasoru-dosya-yolu
-
   # Devbox shell aktifleştir
   devbox shell
   ```
 
   ```bash Terminal Çıktıları lines
-  gem@ubuntu:~$ cd /home/gem/sdk
+  gem@ubuntu:~$ cd sdk
   gem@ubuntu:sdk$ devbox shell
   Starting a devbox shell...
   📦 devbox:sdk>
