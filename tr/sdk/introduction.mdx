@@ -80,7 +80,7 @@ Ubuntu üzerinde herhangi bir klasörde Terminal açarak aşağıdaki gibi `git 
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   git clone https://github.com/t3gemstone/sdk.git
   ```
 
@@ -104,7 +104,7 @@ scriptini çalıştırma işlemini yapınız.
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   cd sdk
   ./setup.sh
   ```
@@ -148,10 +148,12 @@ derleme adımlarına başlayabilirsiniz.
 
 ### 2.1. Devbox Konsolunu Aktifleştir
 
+Ubuntu paketlerinden farklı versiyonlar içerebilen yazılım paket yönetim sistemi olan **Devbox**'ı aktifleştirerek
+Gemstone SDK'sı için gerekli indirme işlemlerini ve kurulumları tamamlanmasını sağlayınız.
+
 <CodeGroup>
 
-  ```bash Terminal lines
-  # Devbox shell aktifleştir
+  ```bash Komut lines
   devbox shell
   ```
 
@@ -171,7 +173,7 @@ indirme işlemi yapılır. İndirilen bu projelerin neler olduğunu `sdk/repos.y
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   task fetch
   ```
 
@@ -205,7 +207,7 @@ bir araç ile yapılmaktadır. Distrobox içerisinde yocto kullanabilmek aşağ�
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   task permissions
   ```
 
@@ -227,7 +229,7 @@ Aşağıdaki komut aracılığıyla Distrobox kurulum işlemini gerçekleştirin
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   task box
   ```
 
@@ -312,7 +314,7 @@ Bu işlemler bilgisayarınızın performansına bağlı olarak yaklaşık 5 saat
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   task yocto:build MACHINE=intel-corei7-64
   ```
 
@@ -369,7 +371,7 @@ dosyasını hazırlar.
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
   ```
 
@@ -450,7 +452,7 @@ aşağıdaki komutu çalıştırınız ve işletim sistemi içerisinde geziniz!
 
 <CodeGroup>
 
-  ```bash Terminal lines
+  ```bash Komut lines
   task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD
   ```
 
