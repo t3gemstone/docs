@@ -85,7 +85,8 @@
             "pages": [
               "tr/introduction",
               "tr/quickstart",
-              "tr/development"
+              "tr/development",
+              "tr/academy"
             ]
           },
           {
@@ -226,7 +227,8 @@
             "pages": [
               "en/introduction",
               "en/quickstart",
-              "en/development"
+              "en/development",
+              "en/academy"
             ]
           },
           {
@@ -273,7 +275,7 @@
             "pages": [
               "en/imager/introduction",
               "en/imager/customization",
-              "tr/imager/emmc"
+              "en/imager/emmc"
             ]
           },
           {

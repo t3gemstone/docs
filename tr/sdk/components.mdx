@@ -3,7 +3,7 @@ title: 'Bileşenler'
 description: 'SDK Bileşenleri'
 ---
 
-Bu bölümde Gemstone SDK'sında bulunan bütün araçların kullanımı ve neden tercih edildiğine değinilecektir.
+Bu bölümde Gemstone SDK'sında bulunan bütün araçların detaylı kullanımına ve neden tercih edildiğine değinilecektir.
 
 <Tip>
 Bölümü tamamladığınızda aşağıdaki konularda tecrübe edineceksiniz.
@@ -37,6 +37,42 @@ flowchart
 ```
 
 ### 1.1. Klasör Yapısı
+
+```bash
+├── build
+├── devbox.json
+├── distro
+│   ├── distro.yaml
+│   ├── overlays
+│   │   ├── desktop
+│   │   ├── kiosk
+│   │   └── minimal
+│   ├── scripts
+│   └── Taskfile.yml
+├── distrobox.ini
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── repos.yml
+├── setup.sh
+├── src
+│   ├── cc33xx-fw
+│   ├── ti-img-rogue-umlibs
+│   └── wl18xx-fw
+├── Taskfile.yml
+├── utils
+│   └── Taskfile.yml
+└── yocto
+    ├── meta-arm
+    ├── meta-gemstone
+    ├── meta-intel
+    ├── meta-openembedded
+    ├── meta-ti
+    ├── openembedded-core
+    ├── poky
+    └── Taskfile.yml
+```
+
 ### 1.2. Devbox
 ### 1.3. Taskfile
 ### 1.4. Distrobox
