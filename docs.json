@@ -155,7 +155,8 @@
             "pages": [
               "tr/community/introduction",
               "tr/community/standards",
-              "tr/community/faq"
+              "tr/community/faq",
+              "tr/community/roadmap"
             ]
           },
           {
@@ -297,7 +298,8 @@
             "pages": [
               "en/community/introduction",
               "en/community/standards",
-              "en/community/faq"
+              "en/community/faq",
+              "en/community/roadmap"
             ]
           },
           {
