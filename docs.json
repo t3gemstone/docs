@@ -150,16 +150,6 @@
             ]
           },
           {
-            "group": "Topluluk",
-            "icon": "layer-group",
-            "pages": [
-              "tr/community/introduction",
-              "tr/community/standards",
-              "tr/community/faq",
-              "tr/community/roadmap"
-            ]
-          },
-          {
             "group": "Sdk",
             "icon": "laptop-code",
             "pages": [
@@ -187,7 +177,9 @@
             "pages": [
               "tr/changelog",
               "tr/troubleshoting",
-              "tr/license"
+              "tr/license",
+              "tr/faq",
+              "tr/roadmap"
             ]
           }
         ]
@@ -293,16 +285,6 @@
             ]
           },
           {
-            "group": "Community",
-            "icon": "layer-group",
-            "pages": [
-              "en/community/introduction",
-              "en/community/standards",
-              "en/community/faq",
-              "en/community/roadmap"
-            ]
-          },
-          {
             "group": "Sdk",
             "icon": "laptop-code",
             "pages": [
@@ -330,7 +312,9 @@
             "pages": [
               "en/changelog",
               "en/troubleshoting",
-              "en/license"
+              "en/license",
+              "en/faq",
+              "en/roadmap"
             ]
           }
         ]
