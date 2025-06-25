@@ -175,10 +175,10 @@
           {
             "group": "Diğer",
             "pages": [
-              "tr/changelog",
+              "tr/faq",
               "tr/troubleshoting",
               "tr/license",
-              "tr/faq",
+              "tr/changelog",
               "tr/roadmap"
             ]
           }
@@ -310,10 +310,10 @@
           {
             "group": "Other",
             "pages": [
-              "en/changelog",
+              "en/faq",
               "en/troubleshoting",
               "en/license",
-              "en/faq",
+              "en/changelog",
               "en/roadmap"
             ]
           }
