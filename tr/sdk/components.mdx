@@ -12,7 +12,7 @@ neden tercih edildiğine değinilecektir.
 Bölüm bitiminde aşağıdaki konularda tecrübe edineceksiniz.
 
 * SDK Projesinin işlevi ve klasör yapısı
-* Devbox, Distrobox, Taskfile, VCSTool, Debos, Debootstrap gibi araçların kullanımı.
+* Devbox, Distrobox, Taskfile, VCS Tool, Debos, Debootstrap gibi araçların kullanımı.
 </Tip>
 
 Bilindiği gibi Linux; açık kaynak kodlu bir işletim sistemi çekirdeğidir (Kernel). İşletim sistemi ise Kernel, Shell,
@@ -40,21 +40,21 @@ GNU/Linux dağıtımlarının versiyonlarına destek vermekte ve bu hususlar ilg
 Bu araçlar GNU/Linux dağıtımı veya dağıtımların versiyonları farketmeksizin ihtiyaç duyulan yazılımların
 uygun sürümlerini bütün sistemlerde aynı yapı ile kullanmaya imkan sağlar!
 
-<Tip>
+<Info>
 Bu duruma bir örnek vermek gerekirse Ubuntu 22.04 ile `sudo apt install libfmt-dev` komutuyla 
 [fmt](https://github.com/fmtlib/fmt) isimli kütüphaneyi kurduğunuzda sisteminizde bulunacak versiyon ile
 Fedora'da `sudo dnf install libfmt-dev` komutu ile kurulan farklı olabilir. Dolayısıyla sizler yazılım geliştirirken
 kodlarınızı indirip derleyen kişilerin uygun versiyonları temin etmesi gerekir.
-</Tip>
+</Info>
 
 [Devbox](https://www.jetify.com/devbox): bu gibi farklı versiyonların olası etkilerini ve karmaşıklığı azaltmak için
 oluşturulmuş açık kaynaklı bir paket yönetim sistemidir. Ubuntu, Fedora gibi dağıtımlarda aynı yazılım versiyonlarını
 kullanabilmeye olanak verir.
 
-<Tip>
+<Info>
 Devbox ile QEMU'nun 10.0 numaralı sürümünü kullanmak istiyorsanız ve Ubuntu, Pardus, Debian'ın varsayılan paket 
 yöneticilerinde farklı versiyonlar mevcut ise Devbox çok uygun yardımcı bir araç olmaktadır.
-</Tip>
+</Info>
 
 [Distrobox](https://distrobox.it/): Docker gibi konteynır teknolojilerinden faydalanarak farklı GNU/Linux
 dağıtımlarının istediğiniz versiyonunu yine kullandığınız GNU/Linux üzerinde çalıştırmayı sağlar.
@@ -155,21 +155,25 @@ olan **Distrobox, Taskfile, VSCTool, Qemu** paketlerini indirerek `sdk/.devbox` 
 yazılımları kullanabilmeniz için shell aktifleştirir. Temel kullanım amacı farklı GNU/Linux dağıtımlarında aynı
 versiyona sahip yardımcı uygulamaların, paketlerin ortak bir sistemle kurulması ve kullanılabilmesidir.
 
+<Tip>
 [Bu adrese](https://www.jetify.com/docs/devbox/quickstart/) tıklayarak alıştırmalar yapınız ve akabinde `sdk/devbox.json`
 dosyasını inceleyiniz.
+</Tip>
 
 ### 1.3. Taskfile
 
-Gemtone SDK'sını kullanırken Terminalden `task fetch`, `task yocto:build` veya `task distro:build` gibi komutları
-çalıştırdığınızda `sdk/Taskfile.yml`, `sdk/yocto/Taskfile.yml` veya `sdk/distro/Taskfile.yml` dosyalarında tanımlı
+Gemtone SDK'sını kullanırken Terminalden `task fetch yocto:build distro:build` gibi komutları
+çalıştırdığınızda `sdk/Taskfile.yml sdk/yocto/Taskfile.yml sdk/distro/Taskfile.yml` dosyalarında tanımlı
 olan fonksiyonlar icra edilir.
 
 <Note>
 Taskfile isimli uygulama, devbox.json dosyasında tanımlandığı için Devbox tarafından sisteminize kurulur.
 </Note>
 
+<Tip>
 [Bu adrese](https://taskfile.dev/installation/) tıklayarak alıştırmalar yapınız ve
 akabinde `sdk/distro/Taskfile.yml` dosyasını inceleyiniz.
+</Tip>
 
 Aşağıdaki şemalarda SDK'nın kullandığı bütün Task fonksiyonlarının özeti verilmiştir.
 
@@ -239,7 +243,56 @@ task: [box] distrobox-enter --additional-flags "--tty" --name gemstone-sdk --no-
 🚀 distrobox:workdir> task distro:build
 ```
 
-### 1.4. VCSTool
+### 1.4. VCS Tool
+
+SDK'nın ihtiyaç duyduğu harici git repoları, kaynak kodları için Bash Shell scripti yazmak ve bu işlemleri manuel
+yapmak yerine `repos.yml` isimli dosyaya projeler tanımlanarak bunların düzenli bir şekilde indirilebilmesini
+sağlamaktadır. `vcs import . < repos.yml` komutu çalıştırıldığında ilgili dosyada tanımlı olan projeleri
+otomatik indirmeyi veya varsa güncelleme yapılmasını sağlar.
+
+<Note>
+[VCS (Version Control System) Tool](https://github.com/dirk-thomas/vcstool) isimli uygulama, devbox.json
+dosyasında tanımlandığı için Devbox tarafından sisteminize kurulur.
+</Note>
+
 ### 1.5. Distrobox
-### 1.6. Yocto
-### 1.7. Debos
+
+SDK klasörü içerisinde `Dockerfile` isimli bir dosya mevcuttur. Normal şartlarda bu dosyayı kullanarak Docker
+aracılığıyla imaj oluşturularak ve içerisindeki sistem kullanılabilmektedir fakat Docker mimarisi gereği imaj
+içerisinde değişiklik yapıldığında, dosya yüklenip silindiğinde bunları tekrar başlatma sonrası silmektedir
+ve kalıcı dosya sistemi kullanımı zahmetlidir.
+
+Distrobox ise Docker aracılığıyla oluşturulan imajların içerisine girdikten sonra değişiklik yapıp dosya yükledikten
+sonra bunları kalıcı olarak saklanmasına imkan sağladığı için tercih edilmiştir.
+
+<Tip>
+[Bu adrese](https://distrobox.it/) tıklayarak alıştırmalar yapınız, akabinde `sdk/distrobox.ini` ve `sdk/Dockerfile`
+dosyalarını inceleyiniz.
+</Tip>
+
+### 1.6. Debos
+
+Kullanmakta olduğunuz Ubuntu veya Debian gibi dağıtımların kurulumu ilgili web sitelerinden indirildiğinde bir bütün
+olarak içerisinde bütün yazılımları, sürücüleri barındırır ve çok yüksek boyutlu bir işletim sistemi oluşur. Gömülü
+Linux çalışmalarında da Ubuntu, Debian gibi dağıtımlar kullanılabilmektedir fakat özelleştirilmesi gereksiz uygulama
+ve kütüphanelerin silinmektesi gerekmektedir. Söz gelimi kullandığınız Ubuntu 22.04 25GB'lık bir alan kullanıyorsa
+bunu _T3-GEM-O1_ gibi kartlarda kullanmak mümkün değildir.
+
+[Debootstrap](https://wiki.debian.org/Debootstrap) isimli araç Ubuntu Debian gibi dağıtımların barındırdıkları paketler
+arasından istenilenlerin seçilmesi ve özelleştirilmiş dağıtımlar hazırlanmasına imkan verir. Örneğin ihtiyaç duyulmayan
+kütüphanelerin, grafik arayüzlerinin bulunmadığı çok küçük boyutlu bir ubuntu/debian sürümü oluşturarak _T3-GEM-O1_
+gibi gömülü linux kartlarında kullanmaya imkan sağlar.
+
+[Debos](https://github.com/t3gemstone/debos) ise [Debootstrap](https://gist.github.com/varqox/42e213b6b2dde2b636ef)
+isimli aracı kullanmakla birlikte komut satırından karmaşık işlemlerle imaj oluşturmak yerine `.yaml` uzantılı
+dosyalarla çok daha anlaşılabilir, sınıflandırılmış dağıtım oluşturmaya imkan sağlayan Go diliyle yazılmış bir projedir.
+
+<Tip>
+[Bu adrese](https://pkg.go.dev/github.com/go-debos/debos/actions/) tıklayarak inceleme yapınız, akabinde
+`sdk/distro.yaml` dosyasını inceleyiniz.
+</Tip>
+
+Gemstone SDK ile oluşturulan Minimal, Kiosk, Desktop imajları Debos ile oluşturulmuş olup opsiyonel olarak Ubuntu
+ve Debian'nın bir kaç sürümüne sahiptir. _T3-GEM-O1_, Beagley-AI, Intel-Core-I7 makinelerine göre farklı mimarilerde
+çalışacak biçimde konfigüre edilmiştir.
+
