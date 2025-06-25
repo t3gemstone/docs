@@ -9,7 +9,7 @@ neden tercih edildiğine değinilecektir.
 </Note>
 
 <Tip>
-Bölümü bitiminde aşağıdaki konularda tecrübe edineceksiniz.
+Bölüm bitiminde aşağıdaki konularda tecrübe edineceksiniz.
 
 * SDK Projesinin işlevi ve klasör yapısı
 * Devbox, Distrobox, Taskfile, VCSTool, Debos, Debootstrap gibi araçların kullanımı.
@@ -65,7 +65,7 @@ adına Devbox kullanılmıştır ve `sdk/devbox.json` dosyasında hangi yazılı
 
 [Taskfile](https://taskfile.dev/): Betik komutları çalıştırırken çoğu zaman **.sh** uzantılı script adı verilen
 küçük uygulamalar kullanılmaktadır. Zaman içerisinde bu betik/shell script'lerinin artması ile karmaşıklık oluşmakta ve 
-kullanım zorluğu oluşmaktadır. Bu gibi zorlukları azaltmak için Task isminde bir araç kullanılmıştır ve çalıştırılacak
+kullanım zorluğu oluşmaktadır. Bu gibi zorlukları azaltmak için Task isimli bir araç kullanılmıştır ve çalıştırılacak
 scriptleri **.yml** uzantılı dosyalara küçük parçalar halinde yazmaya, sınıflandırmaya, Terminal'den `<tab>` tuşuna
 basıldığında otomatik tamamlama gibi ek özellikleri kullanmaya imkan sağlar. `sdk/Taskfile.yml` dosyasında
 SDK'nın temel Taskfile dosyası bulunmaktadır.
@@ -95,7 +95,7 @@ flowchart
 
 ### 1.1. Klasör Yapısı
 
-```bash
+```bash highlight={2,4,10,21,32}
 |-- build
 |-- devbox.json
 |-- distro
