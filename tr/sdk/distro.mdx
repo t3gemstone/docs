@@ -1,15 +1,126 @@
 ---
 title: 'Distro'
-description: 'GNU/Linux Dağıtımı Oluşturma'
+description: 'Gemstone için GNU/Linux Dağıtımı Oluşturma'
 ---
 
 <Note>
 Bu bölümde Gemstone geliştirme kartlarında bulunan imajların derlenmesi için kullanılan Debos isimli aracın
 konfigürasyon dosya yapısı ele alınacaktır. Bölüme başlamadan önce [Bileşenler](./components#3-6-debos) kısmını
-okuyarak aşağıdaki dosyaları incelediğinize emin olunuz.
+okumuş olmanız gerekmektedir.
+</Note>
+
+<Tip>
+Devam etmeden önce aşağıdaki dosyaları incelemiş olduğunuza emin olunuz.
 
 * [sdk/distrobox.ini](https://github.com/t3gemstone/sdk/blob/main/distrobox.ini)
 * [sdk/Dockerfile](https://github.com/t3gemstone/sdk/blob/main/Dockerfile)
 * [sdk/distro/distro.yaml](https://github.com/t3gemstone/sdk/blob/main/distro/distro.yaml)
 * [sdk/distro/Taskfile.yml](https://github.com/t3gemstone/sdk/blob/main/distro/Taskfile.yml) 
-</Note>
+</Tip>
+
+Gemstone geliştirme kartlarında, dokümanın yazıldığı tarih itibariyle
+<Tooltip tip="ubuntu-22, ubuntu-24, debian-11, debian-12">4 Dağıtım</Tooltip> bulunmaktadır.
+<Tooltip tip="Desktop, Kiosk, Minimal">3 İmaj Türü</Tooltip>
+<Tooltip tip="beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64">4 Makine</Tooltip>
+Her bir İmaj, Makine ve Dağıtımın kendine özgü farklılıkları, özelleştirme ayarları mevcuttur.
+
+Dağıtım oluşturulurken sıra ile `devbox shell` --> `task box` --> `task distro:build` komutları çağrıldığında 
+Debos; Docker içerisinden başlatılarak parametre olarak verilen değişkenlere göre özelleştirmeler yapılır, 
+[gerekli dosyalar kopyalanır](https://github.com/t3gemstone/sdk/blob/main/distro/overlays) ve
+[kurulum scriptleri](https://github.com/t3gemstone/sdk/blob/main/distro/scripts) çalıştırılır.
+
+```bash Örnek
+task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+```
+
+## 1. Parametreler
+
+Özet olarak bir kaç parametre açıklanmış olup geri kalanlar için 
+[sdk/Taskfile.yml](https://github.com/t3gemstone/sdk/blob/main/Taskfile.yml) dosyasındaki `vars` bölümü incelenmelidir.
+
+<ParamField body="MACHINE" default="t3-gem-o1" required>
+  `beagley-ai` `intel-corei7-64` `t3-gem-o1` `qemuarm64`
+</ParamField>
+
+<ParamField body="DISTRO_TYPE" default="desktop" required>
+  `minimal` `desktop` `kiosk`
+</ParamField>
+
+<ParamField body="DISTRO_BASE" default="ubuntu" required>
+  `ubuntu` `debian`
+</ParamField>
+
+<ParamField body="DISTRO_SUITE" default="jammy" required>
+  `jammy` `noble` `bullseye` `bookworm`
+</ParamField>
+
+<ParamField body="DISTRO_ARCH" default="amd64" required>
+  `amd64` `arm64`
+</ParamField>
+
+<ParamField body="IMG_SIZE" default="4GB">
+  Derleme sonucu oluşan **.img** uzantılı imaj dosyasının boyutudur.
+</ParamField>
+
+## 2. Dağıtımlar
+
+Gemstone Imager uygulaması ile yeni bir karta imaj yükleme sürecinde, yukarıdaki dağıtımlar seçilebilmektedir.
+Varsayılan olarak Gemstone geliştirme kartında **Ubuntu 22.04** dağıtımı tercih edilmekle birlikte farklı
+projelerdeki ihtiyaçlar göz önüne alınarak Debian 11 ve 12 imajları da desteklenmiştir.
+
+<Tip>
+Debian dağıtımlarında (kabaca ifade edilecek olursa) temel ilke; **güvenlik ve kararlılık** iken Ubuntu
+dağıtımlarında; aynı ilke birlikte daha sık güncelleme ve işletim sistemininde bulunan paketlerin yeni versiyonlarını
+son kullanıcıya ulaştırma denilebilir. Kullanıcıların tercih sebebi ise tamamen sistemleri tanımları ve ihtiyaçları
+ile ilgilidir. 
+</Tip>
+
+<ParamField body="Ubuntu 22" type="DISTRO_BASE=ubuntu DISTRO_SUITE=jammy">
+Ubuntu'nun en güncel LTS (Long-term support) sürümü 24.04'tür fakat özellikle ROS, Yocto gibi projelerde çeşitli
+problemler yaşanabildiği için 22.04 tercih edilmektedir. 
+</ParamField>
+
+<ParamField body="Ubuntu 24" type="DISTRO_BASE=ubuntu DISTRO_SUITE=noble">
+En güncel kütüphaneler ve uygulamalar için tercih edilmektedir. 
+</ParamField>
+
+<ParamField body="Debian 11" type="DISTRO_BASE=debian DISTRO_SUITE=bullseye">
+Mevcut kodları Debian 11 için stabil olan projelerde tercih edilmektedir.
+</ParamField>
+
+<ParamField body="Debian 12" type="DISTRO_BASE=debian DISTRO_SUITE=bookworm">
+Debian'ın en güncel sürümüdür.
+</ParamField>
+
+## 3. İmajlar
+
+<ParamField body="Minimal" type="DISTRO_TYPE=minimal">
+IoT, Gerçek Zamanlı Sistemler, Network Uygulamaları, Gömülü Yazılım, İnsanlı ve İnsansız Araçlar,
+Akıllı ev uygulamaları, Otopilot vb. alanlarda kullanılabilir.
+</ParamField>
+
+<ParamField body="Desktop" type="DISTRO_TYPE=desktop">
+Test, Prototip, Geliştirme, Eğitim vb. amaçlarla veya küçük bir bilgisayar olarak kullanılabilir.
+</ParamField>
+
+<ParamField body="Kiosk" type="DISTRO_TYPE=kiosk">
+Üzerine dokunmatik ekran bulunan Kiosk, Otonom Araç Paneli, Komuta Kontrol Paneli gibi projelerde kullanılabilir. 
+</ParamField>
+
+## 4. Makineler
+
+<ParamField body="t3-gem-o1" type="MACHINE=t3-gem-o1 DISTRO_ARCH=arm64">
+T3 Gemstone Obsidyen geliştirme kartına ait makine türüdür.
+</ParamField>
+
+<ParamField body="intel-corei7-64" type="MACHINE=intel-corei7-64 DISTRO_ARCH=amd64">
+QEMU ile sanal olarak kullanmak için tercih edilmektedir.
+</ParamField>
+
+<ParamField body="beagley-ai" type="MACHINE=beagley-ai DISTRO_ARCH=arm64">
+Oluşturulan imajlar aynı zamanda BeagleY-AI geliştirme kartında kullanılabilmektedir.
+</ParamField>
+
+<ParamField body="qemuarm64" type="MACHINE=qemuarm64 DISTRO_ARCH=arm64">
+QEMU ile sanal olarak kullanmak için tercih edilmektedir.
+</ParamField>
