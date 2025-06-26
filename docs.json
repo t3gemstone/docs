@@ -155,7 +155,7 @@
             "pages": [
               "tr/sdk/introduction",
               "tr/sdk/components",
-              "tr/sdk/distro",
+              "tr/sdk/debos",
               "tr/sdk/yocto",
               "tr/sdk/uboot",
               "tr/sdk/kernel"
@@ -290,7 +290,7 @@
             "pages": [
               "en/sdk/introduction",
               "en/sdk/components",
-              "en/sdk/distro",
+              "en/sdk/debos",
               "en/sdk/yocto",
               "en/sdk/uboot",
               "en/sdk/kernel"
