@@ -111,7 +111,8 @@
                       "tr/boards/o1/peripherals/pwm",
                       "tr/boards/o1/peripherals/camera",
                       "tr/boards/o1/peripherals/touchscreen",
-                      "tr/boards/o1/peripherals/mcu"
+                      "tr/boards/o1/peripherals/mcu",
+                      "tr/boards/o1/peripherals/jtag"
                     ]
                   }
                 ]
@@ -246,7 +247,8 @@
                       "en/boards/o1/peripherals/pwm",
                       "en/boards/o1/peripherals/camera",
                       "en/boards/o1/peripherals/touchscreen",
-                      "en/boards/o1/peripherals/mcu"
+                      "en/boards/o1/peripherals/mcu",
+                      "en/boards/o1/peripherals/jtag"
                     ]
                   }
                 ]
