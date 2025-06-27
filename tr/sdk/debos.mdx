@@ -128,24 +128,24 @@ QEMU ile sanal olarak kullanmak için tercih edilmektedir.
 ## 5. Konfigürasyon Dosyası
 
 Debos isimli araç [sdk/distro/distro.yaml](https://github.com/t3gemstone/sdk/blob/main/distro/distro.yaml)
-isimli dosyayı okuyarak 4 aşamalı bir çalışma gerçekleştirir.
+isimli dosyayı okuyarak 4 aşamalı bir işlem gerçekleştirerek `.img` dosyasını/dağıtımı oluşturur.
 
-<ParamField body="1. Aşama" type="Debootstrap/Apt">
-Parametre olarak verilen Dağıtım türüne göre (Ubuntu veya Debian) debootstrap aracıyla ilgili dağıtımların
-paket (apt) sunucularından **.deb** uzantılı bütün paketleri indirir.
-</ParamField>
-
-<ParamField body="2. Aşama" type="Paketlerin Kurulumu">
-İndirilen **.deb** uzantılı paketlerin kurulumu için `rootfs` ismi verilen bir klasör yapısı oluşturarak GNU/Linux
-işletim sistemi gereksinimlerini ayarlayarak paketlerin kurulumunu `rootfs` içerisine `chroot` yöntemi ile yapar.
-</ParamField>
-
-<ParamField body="3. Aşama" type="Özelleştirme İşlemleri">
-Deb paketlerinin kurulumu tamamlandıktan sonra `yaml` dosyasında bulunan `overlay` ve `run` türündeki tanımlamalarla
-imajın içerisine yüklenecek dosyalar kopyalanır ve kurulum scriptleri çalıştırılır.
-</ParamField>
-
-<ParamField body="4. Aşama" type="İmaj Dosyası Oluşturma">
-Yukarıdaki bütün işlemler başarılı bir biçimde tamamlandıktan sonra `image-partition` türündeki tanımlamaya göre
-boot, rootfs disk bölümlendirmeleri yapılır, **.img** uzantılı dosya oluşturulur ve bütün dosyalar içerisine taşınır.
-</ParamField>
+<Steps>
+  <Step title="Debootstrap/Apt">
+    Parametre olarak verilen Dağıtım türüne göre (Ubuntu veya Debian) debootstrap aracıyla ilgili dağıtımların
+    paket (apt) sunucularından **.deb** uzantılı bütün paketleri indirir.
+  </Step>
+  <Step title="Paketlerin Kurulumu">
+    İndirilen **.deb** uzantılı paketlerin kurulumu için `rootfs` ismi verilen bir klasör yapısı
+    oluşturarak GNU/Linux işletim sistemi gereksinimlerini ayarlayarak paketlerin kurulumunu `rootfs`
+    içerisine `chroot` yöntemi ile yapar.
+  </Step>
+  <Step title="Özelleştirme İşlemleri">
+    Deb paketlerinin kurulumu tamamlandıktan sonra `yaml` dosyasında bulunan `overlay` ve `run` türündeki tanımlamalarla
+    imajın içerisine yüklenecek dosyalar kopyalanır ve kurulum scriptleri çalıştırılır.
+  </Step>
+  <Step title="İmaj Dosyası Oluşturma">
+    Yukarıdaki bütün işlemler başarılı bir biçimde tamamlandıktan sonra `image-partition` türündeki tanımlamaya
+    göre boot, rootfs disk bölümlendirmeleri yapılır, **.img** uzantılı dosya oluşturulur ve bütün dosyalar içerisine taşınır.
+  </Step>
+</Steps>
