@@ -1,4 +1,149 @@
 ---
 title: 'Debos'
-description: 'Create Gemstone Images'
+description: 'Gemstone Image Creation'
 ---
+
+<Note>
+This section covers the configuration file structure of the tool called Debos, which is used to compile images for 
+Gemstone development boards. Before starting this section, you should have read the 
+[Components](./components#3-6-debos) section.
+</Note>
+
+<Tip>
+Before proceeding, make sure you have reviewed the following files:
+
+* [sdk/distrobox.ini](https://github.com/t3gemstone/sdk/blob/main/distrobox.ini)
+* [sdk/Dockerfile](https://github.com/t3gemstone/sdk/blob/main/Dockerfile)
+* [sdk/distro/distro.yaml](https://github.com/t3gemstone/sdk/blob/main/distro/distro.yaml)
+* [sdk/distro/Taskfile.yml](https://github.com/t3gemstone/sdk/blob/main/distro/Taskfile.yml) 
+</Tip>
+
+As of the date this document was written, Gemstone development boards support 
+<Tooltip tip="ubuntu-22, ubuntu-24, debian-11, debian-12">4 Distributions</Tooltip>, 
+<Tooltip tip="Desktop, Kiosk, Minimal">3 Image Types</Tooltip>, and 
+<Tooltip tip="beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64">4 Machines</Tooltip>.
+Each Image, Machine, and Distribution has its own unique differences and customization settings.
+
+When creating a distribution, the commands `devbox shell` --> `task box` --> `task distro:build` are called sequentially. 
+Debos is then launched inside Docker, where customizations are made based on the provided variables, 
+[necessary files are copied](https://github.com/t3gemstone/sdk/blob/main/distro/overlays), and 
+[installation scripts](https://github.com/t3gemstone/sdk/blob/main/distro/scripts) are executed.
+
+```bash Example
+task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+```
+
+## 1. Parameters
+
+A few parameters are summarized here. For the rest, refer to the `vars` section in the 
+[sdk/Taskfile.yml](https://github.com/t3gemstone/sdk/blob/main/Taskfile.yml) file.
+
+<ParamField body="MACHINE" default="t3-gem-o1" required>
+  `beagley-ai` `intel-corei7-64` `t3-gem-o1` `qemuarm64`
+</ParamField>
+
+<ParamField body="DISTRO_TYPE" default="desktop" required>
+  `minimal` `desktop` `kiosk`
+</ParamField>
+
+<ParamField body="DISTRO_BASE" default="ubuntu" required>
+  `ubuntu` `debian`
+</ParamField>
+
+<ParamField body="DISTRO_SUITE" default="jammy" required>
+  `jammy` `noble` `bullseye` `bookworm`
+</ParamField>
+
+<ParamField body="DISTRO_ARCH" default="amd64" required>
+  `amd64` `arm64`
+</ParamField>
+
+<ParamField body="IMG_SIZE" default="4GB">
+  The size of the resulting **.img** file after building.
+</ParamField>
+
+## 2. Distributions
+
+During the process of uploading an image to a new board using the Gemstone Imager application, the above 
+distributions can be selected. By default, **Ubuntu 22.04** is preferred on Gemstone development boards, 
+but Debian 11 and 12 images are also supported to meet the needs of different projects.
+
+<Tip>
+In Debian distributions (roughly speaking), the core principle is **security and stability**, while Ubuntu 
+distributions prioritize the same principles along with more frequent updates and delivering newer versions of 
+packages to end-users. Users' preferences depend entirely on their system definitions and needs.
+</Tip>
+
+<ParamField body="Ubuntu 22" type="DISTRO_BASE=ubuntu DISTRO_SUITE=jammy">
+Ubuntu's latest LTS (Long-term support) version is 24.04, but 22.04 is preferred due to various issues encountered 
+in projects like ROS and Yocto.
+</ParamField>
+
+<ParamField body="Ubuntu 24" type="DISTRO_BASE=ubuntu DISTRO_SUITE=noble">
+Preferred for the latest libraries and applications.
+</ParamField>
+
+<ParamField body="Debian 11" type="DISTRO_BASE=debian DISTRO_SUITE=bullseye">
+Used in projects where the current code is stable for Debian 11.
+</ParamField>
+
+<ParamField body="Debian 12" type="DISTRO_BASE=debian DISTRO_SUITE=bookworm">
+The latest version of Debian.
+</ParamField>
+
+## 3. Images
+
+<ParamField body="Minimal" type="DISTRO_TYPE=minimal">
+Can be used in IoT, Real-Time Systems, Network Applications, Embedded Software, Manned and Unmanned Vehicles, 
+Smart Home Applications, Autopilot, etc.
+</ParamField>
+
+<ParamField body="Desktop" type="DISTRO_TYPE=desktop">
+Can be used for testing, prototyping, development, education, or as a small computer.
+</ParamField>
+
+<ParamField body="Kiosk" type="DISTRO_TYPE=kiosk">
+Can be used in projects like touchscreen Kiosks, Autonomous Vehicle Panels, Command Control Panels, etc.
+</ParamField>
+
+## 4. Machines
+
+<ParamField body="Gemstone Obsidian" type="MACHINE=t3-gem-o1 DISTRO_ARCH=arm64">
+The machine type for the T3 Gemstone Obsidian development board.
+</ParamField>
+
+<ParamField body="Intel Core-i7" type="MACHINE=intel-corei7-64 DISTRO_ARCH=amd64">
+Preferred for virtual use with QEMU.
+</ParamField>
+
+<ParamField body="BeagleY AI" type="MACHINE=beagley-ai DISTRO_ARCH=arm64">
+The created images can also be used on the BeagleY-AI development board.
+</ParamField>
+
+<ParamField body="Qemu ARM64" type="MACHINE=qemuarm64 DISTRO_ARCH=arm64">
+Preferred for virtual use with QEMU.
+</ParamField>
+
+## 5. Configuration File
+
+The Debos tool reads the [sdk/distro/distro.yaml](https://github.com/t3gemstone/sdk/blob/main/distro/distro.yaml) 
+file and performs a 4-step process to create the `.img` file/distribution.
+
+<Steps>
+  <Step title="Debootstrap/Apt">
+    Based on the specified Distribution (Ubuntu or Debian), it downloads all **.deb** packages from the respective 
+    distribution's APT servers using the `debootstrap` tool.
+  </Step>
+  <Step title="Package Installation">
+    Creates a folder structure called `rootfs` to meet GNU/Linux operating system requirements and installs the 
+    downloaded **.deb** packages into `rootfs` using the `chroot` method.
+  </Step>
+  <Step title="Customization Processes">
+    After the installation of deb packages is complete, files to be included in the image are copied, and 
+    installation scripts are executed based on the `overlay` and `run` definitions in the `yaml` file.
+  </Step>
+  <Step title="Image File Creation">
+    After all the above steps are successfully completed, the boot and rootfs disk partitions are created 
+    according to the `image-partition` definition, the **.img** file is generated, and all files are moved into it.
+  </Step>
+</Steps>

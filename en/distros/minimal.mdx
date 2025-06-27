@@ -2,3 +2,56 @@
 title: 'Minimal'
 description: 'Minimal Image'
 ---
+
+<Note>
+Before reading this section, please do a quick search using these keywords:
+"Realtime Embedded Systems", "What is determinism in operating systems", 
+"Realtime operating systems", "IOT projects"
+</Note>
+
+<Tip>
+Example resources:
+
+1. [Real-time Application of Embedded Systems Projects](https://mth.tc/mjBS)
+2. [Example of Embedded Systems](https://mth.tc/Q3ir3)
+3. [Example of IoT Projects](https://mth.tc/Sm3ZS)
+4. [Linux PREEMPT_RT: Transforming General Purpose OS to Real-Time Platform](https://preprod.kureansiklopedi.com/tr/detay/linux-preempt_rt-genel-amacli-isletim-sisteminden-)
+</Tip>
+
+Imagine you're working on a robotic arm for factory automation. On a moving production line, 
+products of different colors pass by, and your system detects these products using cameras 
+and sensors on the robotic arm, then sorts them into different boxes based on color. 
+What would be the impact if your robotic arm responded 1 second late when detecting a red product?
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/sLKXQvUkWAU"
+  title="Robotic Arm Demo"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+For unmanned vehicles especially, it's crucial that the system boots quickly after powering on 
+the Gemstone board and that your applications respond and take action within expected timeframes. 
+When developing such embedded projects for drone applications, low-footprint, deterministic, 
+real-time operating systems are typically used. For example, the [PX4](https://mth.tc/gkgIy) 
+flight controller uses [Apache NuttX](https://github.com/t3gemstone/NuttX) OS, while other 
+systems often prefer operating systems like [FreeRTOS](https://www.freertos.org/Documentation/00-Overview).
+
+The Linux kernel also has real-time capabilities like 
+[Tübitak GzIS](https://preprod.kureansiklopedi.com/tr/detay/tubitak-gis-gercek-zamanli-isletim-sistemi-69507), 
+NuttX, FreeRTOS, vxWorks, and [Zephyr](https://www.zephyrproject.org/). Unlike these systems, 
+Linux offers the significant advantage of supporting hundreds of open-source projects. 
+(See example article [here](https://mth.tc/jRzV))
+
+The Gemstone Minimal image is optimized for fast boot times and deterministic behavior. 
+It does **not** include a desktop environment or graphical interface - only the essential 
+packages and drivers required for system operation are installed. This optimization reduces 
+the image size, enables faster boot times, and allows more efficient use of system resources.
+
+<Frame caption="Todo: Selecting minimal image in Gemstone Imager application">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+1. Contains all hardware drivers like other images - serial ports, CANBUS, Ethernet etc. are fully supported
+2. Ideal for projects without graphical requirements like IoT, unmanned vehicles, and automation systems

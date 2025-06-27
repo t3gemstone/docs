@@ -2,3 +2,46 @@
 title: 'Microprocessor'
 description: 'Texas Instruments AM67A'
 ---
+
+The Gemstone Obsidian (_T3-GEM-O1_) model uses the Texas Instruments AM67A microprocessor. 
+This System on Chip (SoC) integrates a quad-core ARM Cortex®-A53 and dual-core Cortex®-R5. 
+This means you can run operating systems like Linux on the A53 cores while simultaneously 
+running MCU projects (Baremetal, FreeRTOS, Zephyr RTOS) on the Cortex®-R5 cores.
+
+<Tip>For example, you can develop ROS2, OpenCV, C++, Python projects on the A53 with Gemstone Linux, 
+while writing MCU applications on the R5 cores that handle system safety and control.</Tip>
+
+The AM67A model features a dual-core C7x DSP chip that serves as a hardware accelerator 
+for deep learning. The image below shows some key features of this SoC.
+
+<Frame caption="Texas AM67A">
+  <img height="400" width="600" src="/images/ti-am67a/soc.svg" />
+</Frame>
+
+For developing MCU software to run on the Cortex®-R5 cores, Texas Instruments' 
+CCS Code Composer Studio is used. The table below lists the most commonly used resources 
+for this microprocessor.
+
+| Website    | Description |
+| :--------- | :---------- |
+| https://www.ti.com/product/AM67A | Texas AM67A product page |
+| https://www.ti.com/tool/PROCESSOR-SDK-AM67 | Texas AM67A SDK |
+| https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/latest/exports/docs/devices/J7_Family/linux/index.html | SDK Documentation |
+| https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/latest/exports/docs/psdk_rtos/docs/user_guide/index.html | Documentation for Jacinto models including AM67A |
+| https://github.com/TexasInstruments/edgeai | Edge-AI main github repo |
+| https://github.com/TexasInstruments/edgeai-tidl-tools | Tools for Edge-AI artificial intelligence projects |
+| https://github.com/TexasInstruments/edgeai-robotics-sdk | Edge-AI Robotics SDK |
+| https://software-dl.ti.com/jacinto7/esd/edgeai-sdk-j721e/latest/exports/docs/index.html | Edge-AI Documentation |
+
+<Warning>Some of the capabilities and features listed for AM67A on the manufacturer's website 
+are not yet available. Due to insufficient documentation and support, users must research 
+and solve these limitations through trial and error. For example, while Network Bootmode 
+is mentioned for AM67A, no documentation or sample code has been provided.</Warning>
+
+<Check>The T3 Foundation Gemstone Community is working to address these limitations 
+for the Gemstone development board, with updates being published to Github repositories.</Check>
+
+Since Texas Instruments hasn't released a stable MCU SDK or complete documentation for this model, 
+development often references the Jacinto product line. The [Components](./boards/o1/peripherals/mcu) 
+section explains how to compile and run an MCU application on Gemstone boards. 
+For feedback and suggestions, please use the [Gemstone Community Forums](https://community.t3gemstone.org/).

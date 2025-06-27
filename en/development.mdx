@@ -1,5 +1,184 @@
 ---
 title: 'Development'
-description: 'Software Development and the Ecosystem'
+description: 'Ecosystem and Development'
 icon: "gear-code"
 ---
+
+This section contains information about the scope of the T3 Gemstone Project, what kind of work can be done, methods 
+for software development, and an introduction to the ecosystem.
+
+<Tip>
+By the end of this section, you will have knowledge about the following topics:
+
+* The components of the Gemstone development board's Hardware and Software studies.
+* Methods for compiling software on the board or on a Ubuntu computer.
+* What the projects in the Github repositories are.
+</Tip>
+
+# 1. Ecosystem
+
+The Gemstone project is entirely composed of open-source software and hardware components. This means you can
+redesign your own systems using the electronic designs of the development board and freely use the software
+components and codes by making changes, as outlined in the [End User License](./license) section regarding what
+considerations should be taken into account.
+
+<Frame caption="Todo: Content showing the big picture">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+To exemplify the projects in which the development boards can be used, a list is provided below, and your
+contributions on what else can be added are welcome!
+
+1. Flight control and auxiliary mission computer for unmanned aerial, ground, and underwater vehicles.
+2. Agricultural vehicles, virtual reality glasses, smart home studies, IoT, Robotics, Industrial arms.
+3. Camera systems using image processing and artificial intelligence together.
+4. Embedded computer for autonomous robotics studies.
+5. Touch panels and kiosk screens in command and control systems.
+
+Dozens of different examples of the studies listed and new technology news are regularly published on the
+[Community Forums](https://community.t3gemstone.org/c/blog/71).
+
+### 1.1. Development Board / Embedded Computer
+
+Gemstone products are mostly used in embedded technology studies and are equipped with various sensors and 
+peripheral devices. It is possible to create projects such as processing data from sensors and cameras via 
+communication methods like serial port, CanBUS, I2C, SPI, Ethernet, and controlling various motors 
+and actuators.
+
+The hardware designs (PCB, etc.) of the _T3-GEM-O1_ development board are available 
+[at this address](http://github.com/t3gemstone/hardware). Examples of how to use the hardware on it are explained 
+in the later ([Development Boards](./boards/o1/introduction)) sections.
+
+<Frame caption="Todo: Image summarizing the board design process with software like PCB and KiCAD">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+### 1.2. Operating System
+
+Gemstone runs on a GNU/Linux operating system. It includes components such as the 
+[Kernel](https://github.com/t3gemstone/linux), [Bootloader (U-Boot)](https://github.com/t3gemstone/u-boot), 
+[Distribution (Distro)](https://github.com/t3gemstone/sdk/tree/main/distro), and Firmware. Tools like 
+[Yocto Project](https://preprod.kureansiklopedi.com/tr/detay/yocto-projesi-the-yocto-project-b9e7e) and 
+[Debootstrap](https://github.com/t3gemstone/debos) were used to assemble the system.
+
+As GNU/Linux distributions ([Distro](https://github.com/t3gemstone/sdk/tree/main/distro)), Debian, Ubuntu, 
+and Poky are used. The use of Debian or Ubuntu is offered as selectable, as it may vary depending on the board's needs.
+
+Various package management systems are used to perform software updates in GNU/Linux operating systems. For 
+example, in the [Quick Start](./quickstart#2-4-update-the-gemstone-operating-system) section, an Ubuntu 
+update example was given for system updates.
+
+Similarly, the https://packages.t3gemstone.org/apt package management system is used for all customized kernel, 
+driver, etc., software for T3 Gemstone boards. When you run the update command, the latest packages
+— _if available_ — are downloaded from the servers.
+
+<Tip>The operating system distribution used for Gemstone can also be used for BeagleBoard's BeagleY-AI. If you select 
+BeagleY-AI as the Board in the GemImager application, the created SD card can be used on the BeagleY-AI board. 
+Gemstone's operating system distribution is more powerful and up-to-date than what Beagleboard offers.</Tip>
+
+For faster boot times, various customizations in the Linux kernel and Device Tree changes for driver selections of the 
+hardware included in the development boards are available in the 
+[github repository](https://github.com/t3gemstone/linux/tree/v6.1.83-ti-rt-arm64-r67-t3-gem-o1).
+
+### 1.3. SDK (Software Development Kit)
+
+The [T3 Gemstone SDK](https://github.com/t3gemstone/sdk) is used to compile and assemble all the components 
+mentioned above — _kernel, bootloader, distribution, etc._ — tools, packages, and software, and to create image files. 
+While the README file of the relevant repository briefly explains how to use it, more detailed explanations are 
+provided in the [SDK](./sdk/introduction) section of this Documentation. Tools such as 
+[Devbox](https://www.jetify.com/devbox), [Distrobox](https://github.com/89luca89/distrobox), 
+[Debos](https://github.com/t3gemstone/debos), and [Taskfile](https://taskfile.dev/) used in the SDK work are 
+areas that require extensive knowledge, so helpful resources are provided at the end of the documentation based 
+on your interests.
+
+### 1.4. Github Repository
+
+The purposes of the projects in the T3 Gemstone Github repository are listed in the table below.
+
+| Project          | Repo                                | Description |
+| :--------------- | :---------------------------------- | :---------- |
+| SDK              | [t3gemstone/sdk](https://github.com/t3gemstone/sdk) | Software development kit that compiles components like Kernel, U-Boot, Firmware, Driver, Initrd to create an operating system image. |
+| Documentation    | [t3gemstone/docs](https://github.com/t3gemstone/docs) | Mintlify source codes of this documentation you are reading. |
+| Yocto            | [t3gemstone/meta-gemstone](https://github.com/t3gemstone/meta-gemstone) | Codes of the Yocto project. |
+| Linux Kernel     | [t3gemstone/linux](https://github.com/t3gemstone/linux) | Linux codes used on the development boards. |
+| Bootloader       | [t3gemstone/u-boot](https://github.com/t3gemstone/u-boot) | Bootloader codes used on the development boards. Bootloader performs hardware health checks and starts the Linux kernel. |
+| Debos            | [t3gemstone/debos](https://github.com/t3gemstone/debos) | A cloned version of the Debos project with additional features for creating distributions. |
+| GemImager        | [t3gemstone/gem-imager](https://github.com/t3gemstone/gem-imager) | A customized version of the rpi-imager project with additional features for writing images to Gemstone boards. |
+| Hardware         | [t3gemstone/hardware](https://github.com/t3gemstone/hardware) | PCB designs of hardware components like motherboards for Gemstone boards. |
+| Toolchains       | [t3gemstone/toolchains](https://github.com/t3gemstone/toolchains) | Tools used for compiling C/C++ projects for different architectures. |
+| Package Server   | [t3gemstone/package-server](https://github.com/t3gemstone/package-server) | Linux APT package management server/system located at packages.t3gemstone.org. |
+| noVNC            | [t3gemstone/t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) | Software that allows remote desktop connection to Gemstone via a browser. |
+| Ardupilot        | [t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot) | Adapted autopilot for unmanned vehicles for Gemstone. |
+| NuttX            | [t3gemstone/nuttx](https://github.com/t3gemstone/nuttx) | Real-time operating system running on hardware with MCUs like PX4. It will be made to work on the R5 MCU cores in Gemstone Obsidian boards in the future. |
+
+# 2. Development
+
+Software development processes can be done in two ways. The first is compiling directly on the board using the 
+compilation tools on the board, while the second method is called Cross Compilation, where you compile projects 
+on your own computer and then upload them to the board. Both methods and their advantages are explained below.
+
+<Frame caption="Todo: Image summarizing Host (x86-64) and Target (aarch64) concepts">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+### 2.1. Software Development on the Board
+
+Example projects in C/C++/Python on how to use the components such as sensors, communication data lines, cameras, 
+artificial intelligence, and network on the Gemstone Obsidian development board are available at 
+https://github.com/t3gemstone/examples. Below, the process of downloading and compiling this project on 
+the board is explained, and each component is separately described in the Development boards section.
+
+<Tip>
+This section shows how to download the t3gemstone/examples project onto the board, compile it, and run the examples.
+</Tip>
+
+<Frame caption="Todo: Showing git clone operations on the board">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.1.1. Download Example Codes with Git Clone
+
+<Frame caption="Todo: Git clone">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.1.2. Compile and Run the Downloaded Codes
+
+<Frame caption="Todo: Task build">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+### 2.2. Software Development on the Developer's Computer
+
+While it is possible to compile projects on the board as described above, compiling on your Laptop or Desktop 
+GNU/Linux operating system has some advantages. For example, while the _T3-GEM-O1_ board has 4GB of Memory, your 
+Laptop may have 16/32GB of Memory and a more advanced Processor. Therefore, Cross Compile Toolchains are used to 
+speed up compilation processes.
+
+<Note>
+Development boards mostly have ARM architecture processors, laptops and desktops mostly have Intel x86-64 
+architecture processors. In this case, Cross Compilation tools provide the ability to compile for different 
+architectures.
+</Note>
+
+<Frame caption="Todo: Host">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.2.1. Prepare the Developer (Host) Computer
+
+<Frame caption="Todo: Host Developer Computer Preparation">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.2.2. Compile the Project on the Developer (Host) Computer
+
+<Frame caption="Todo: Compile">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+#### 2.2.3. Upload the Compiled Software to the Development Board (Target)
+
+<Frame caption="Todo: Upload">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
