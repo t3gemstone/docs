@@ -1,4 +1,61 @@
 ---
 title: 'MCU'
-description: 'MCU'
+description: 'Texas AM67 Cortex-R5, C7x (DSP)'
 ---
+
+import SnippetBootflow from '/snippets/boards/o1/bootflow.mdx';
+
+**T3-GEM-O1** geliştirme kartının birincil odak noktası Linux olmakla birlikte, üzerinde bulunan Texas AM67
+mikroişlemcisinin barındırdığı R5 ve C7x çekirdeklerinin de gücünden faydalanılmaktadır. Bu bölümde R5 çekirdekleri
+için nasıl yazılım derleneceği, debug yapılacağı vb. konular irdelenecektir.
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda bilgi ve deneyim kazanacaksınız.
+
+* Texas AM67 MCU yazılımı derleyerek Gemstone Obsidyen üzerinde çalıştırmak
+* Geliştirme kartına ilk güç verildiğinde hangi aşamalarla sistemin başladığını öğrenmek
+</Tip>
+
+## 1. MCU Yazılım Geliştirme
+
+<Frame caption="Todo: Gereksinimler">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+## 2. Boot Diyagramı
+
+Aşağıda belirtilen akış şeması (veya akış diyagramı) Gemstone Obsidyen geliştirme kartı için olmakla birlikte
+bir çok ARM mimarili gömülü Linux geliştirme kartlarında benzer bir yapı bulunmaktadır.
+
+<SnippetBootflow/>
+
+### 2.1. ROM Bootloader (RBL)
+
+Üreticiler tarafından çoğu zaman kaynak kodları verilmeden sadece çalıştırılabilir binary olarak dağıtılan
+RBL (Room Bootloader)'in temel amacı; karta ilk enerji verildiğinde bir takım donanım sağlık kontrolleri ve
+ilklendirme işlemleri yaparak kaynak kodları değiştirilebilir olan SBL (Secondary Bootloader) isimli ikinci
+Bootloader'a geçiş yapmaktır. SBL'in nereden okunarak başlatılacağı ise RBL tarafından Bootmode switchlerinden
+tespit edilir.
+
+### 2.2. Secondary Bootloader (SBL)
+
+Üretici tarafından kodları dağıtılan Secondary Boot Loader'un _T3-GEM-O1_ geliştirme kartlarındaki kullanım amacı
+U-Boot isimli daha gelişmiş Bootloader'ı başlatmak ve eMMC'ye imaj yazma işlemini gerçekleştirmektir.
+
+Linux Kernel içeren gömülü kartlarda çoğunlukla U-Boot tercih edilmektedir. SBL gibi ön yükleyiciler daha temel seviyede
+ilklendirme işlemleri yapabilirken, U-Boot çok daha gelişmiş özelliklere sahiptir. Örneğin U-Boot kendi Terminal/Konsol
+arayüzüne ve SBL'de mümkün olmayan bir çok sürücüye sahip olduğu için daha gelişmiş özelleştirmelere imkan sağlar.
+
+### 2.3. U-Boot
+### 2.4. Linux Kernel
+### 2.5. Initial RAM Disk (Initrd)
+### 2.6. Root Filesystem (Rootfs)
+
+## 3. Son
+
+<Tip>
+Boot süreci hakkında bir kaç makale örneği aşağıda verilmiştir.
+
+- [BeagleBone Black Linux Boot Süreci](https://serbayozkan.medium.com/embedded-linux-boot-s%C3%BCreci-beagle-bone-black-ba9d378bd3bd)
+- [Booting Embedded Linux On BeagleBone](https://medium.com/@kshitijvaze/booting-embedded-linux-on-beaglebone-black-a-look-beyond-the-code-20854568fb66)
+</Tip>
