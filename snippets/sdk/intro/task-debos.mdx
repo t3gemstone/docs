@@ -1,0 +1,75 @@
+<CodeGroup>
+
+  ```bash Terminal lines
+  task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+  ```
+
+  ```bash Output lines
+  🚀 distrobox:workdir> task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+  task: [distro:permissions] sudo mkdir -p /home/workdir/build/debos
+  [sudo] password for vm: 
+  task: [distro:permissions] sudo chown $USER:$USER /home/workdir/build/debos
+  task: [distro:permissions] chmod +x /home/workdir/distro/scripts/*/*.sh
+  task: [distro:yocto:local-apt-server] pkill -f "python3 -m http.server" &>/dev/null || true
+  task: [distro:yocto:local-apt-server] bash -c "TEMPLATECONF=/home/workdir/yocto/meta-gemstone/conf/templates/intel-corei7-64/ source /home/workdir/yocto/poky/oe-init-build-env /home/workdir/build/intel-corei7-64 && cd /home/workdir && bitbake package-index"
+  Loading cache: 100% |######################################################################################################################################################| Time: 0:00:00
+  NOTE: Executing Tasks
+  NOTE: Running task 545 of 548 (/home/workdir/yocto/openembedded-core/meta/recipes-core/meta/package-index.bb:do_package_index)
+  NOTE: recipe package-index-1.0-r0: task do_package_index: Started
+  NOTE: recipe package-index-1.0-r0: task do_package_index: Succeeded
+  NOTE: Running noexec task 548 of 548 (/home/workdir/yocto/openembedded-core/meta/recipes-core/meta/package-index.bb:do_build)
+  NOTE: Tasks Summary: Attempted 548 tasks of which 546 didn't need to be rerun and all succeeded.
+  task: [distro:yocto:local-apt-server] bash -c "cd /home/workdir/build/tmp-musl/deploy/deb && python3 -m http.server 2>/dev/null" &
+  task: [distro:build] sudo mkdir -p /run/debos
+  task: [distro:build] cd /run/debos && sudo debos --disable-fakemachine --debug-shell --artifactdir=/home/workdir/build/debos --scratchdir=/home/workdir/build/debos --rootdir=/run/debos --template-var="workdir:/home/workdir" --template-var="machine:intel-corei7-64" --template-var="base:ubuntu" --template-var="type:desktop" --template-var="suite:jammy" --template-var="release:v2025.10" --template-var="image:gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img" --template-var="imagepath:/home/workdir/build/debos/gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img" --template-var="imagesize:6G" --template-var="arch:amd64" /home/workdir/distro/distro.yaml 2>&1 | tee -a /home/workdir/build/debos/log.txt
+  2025/06/23 13:24:46 ==== debootstrap ====
+  2025/06/23 13:24:46 Debootstrap | I: Retrieving InRelease 
+  2025/06/23 13:24:47 Debootstrap | I: Checking Release signature
+  2025/06/23 13:24:47 Debootstrap | I: Valid Release signature (key id F6ECB3762474EDA9D21B7022871920D1991BC93C)
+  2025/06/23 13:24:49 Debootstrap | I: Retrieving Packages 
+  2025/06/23 13:24:50 Debootstrap | I: Validating Packages 
+  2025/06/23 13:24:54 Debootstrap | I: Resolving dependencies of required packages...
+  2025/06/23 13:24:55 Debootstrap | I: Resolving dependencies of base packages...
+  2025/06/23 13:25:00 Debootstrap | I: Checking component main on https://archive.ubuntu.com/ubuntu...
+  2025/06/23 13:25:00 Debootstrap | I: Validating ...
+  2025/06/23 13:25:02 Debootstrap | I: Chosen extractor for .deb packages: dpkg-deb
+  2025/06/23 13:25:03 Debootstrap | I: Extracting ...
+  2025/06/23 13:25:04 Debootstrap | I: Installing core packages...
+  2025/06/23 13:25:05 Debootstrap | I: Unpacking required packages...
+  2025/06/23 13:25:08 Debootstrap | I: Configuring required packages...
+  2025/06/23 13:25:10 Debootstrap | I: Unpacking the base system...
+  2025/06/23 13:25:11 Debootstrap | I: Configuring the base system...
+  2025/06/23 13:25:14 Debootstrap | I: Base system installed successfully.
+  2025/06/23 13:25:14 ==== apt ===
+  2025/06/23 13:27:24 ==== Install PiXflat theme from deb ====
+  2025/06/23 13:27:24 cd $(mktemp -d)... | --2025-06-23 13:27:24--  http://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
+  2025/06/23 13:27:33 install-local-apt.sh intel-corei7-64 desktop false | Preparing to unpack .../0-kernel-6.6.65-intel-pk-standard_6.6.65+git0+9901a21dd1.a4ec5f44dc-r0_amd64.deb ...
+  2025/06/23 13:27:58 install-astral-uv.sh | downloading uv 0.7.13 x86_64-unknown-linux-gnu
+  2025/06/23 13:28:02 ==== overlay ====
+  2025/06/23 13:28:02 Overlaying /home/workdir/distro/overlays/desktop/all on /run/debos/root
+  2025/06/23 13:28:02 ==== overlay ====
+  2025/06/23 13:28:02 Overlaying /home/workdir/distro/overlays/desktop/intel-corei7-64 on /run/debos/root
+  2025/06/23 13:28:02 ==== run ====
+  2025/06/23 13:28:07 install-firefox.sh | 
+  2025/06/23 13:28:36 ==== run ====
+  2025/06/23 13:28:36 install-vscode.sh | 
+  2025/06/23 13:28:36 ==== run ====
+  2025/06/23 13:31:33 disable-services.sh desktop | Removed /etc/systemd/system/timers.target.wants/e2scrub_all.timer.
+  2025/06/23 13:31:34 ==== run ====
+  2025/06/23 13:31:34 setup-gemstone-apt.sh intel-corei7-64 jammy | deb [signed-by=/etc/apt/keyrings/gemstone-packages-keyring.gpg] https://packages.t3gemstone.org/apt/intel-corei7-64 jammy main
+  2025/06/23 13:31:34 ==== run ====
+  2025/06/23 13:31:34 setup-services.sh | Created symlink /etc/systemd/system/multi-user.target.wants/gem-first-boot.service → /etc/systemd/system/gem-first-boot.service.
+  2025/06/23 13:31:34 ==== run ====
+  2025/06/23 13:31:34 clean-up.sh desktop | apt-get remove
+  2025/06/23 13:31:41 ==== run ====
+  2025/06/23 13:31:41 ==== image-partition ====
+  2025/06/23 13:31:42 Formatting partition 1 | mkfs.fat 4.2 (2021-01-31)
+  2025/06/23 13:31:42 Formatting partition 2 | mke2fs 1.46.5 (30-Dec-2021)
+  2025/06/23 13:31:42 ==== Deploying filesystem onto image ====
+  2025/06/23 13:33:03 Setting up fstab
+  2025/06/23 13:33:03 Setting up /etc/kernel/cmdline
+  2025/06/23 13:33:08 ==== Recipe done ====
+  task: [distro:build] sudo chown $USER:$USER /home/workdir/build/debos/gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img*
+  ```
+
+</CodeGroup>

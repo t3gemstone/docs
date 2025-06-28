@@ -1,0 +1,20 @@
+```bash Terminal highlight={4,17}
+gem@ubuntu:~$ cd sdk/
+gem@ubuntu:sdk$ devbox shell
+Starting a devbox shell...
+📦 devbox:sdk> task box
+task: [box] distrobox-list | grep -q 'gemstone-sdk' || docker build -f Dockerfile -t gemstone-sdk:latest .
+task: [box] distrobox-assemble create --file distrobox.ini
+ - Creating gemstone-sdk...
+gemstone-sdk already exists
+task: [box] distrobox-enter --additional-flags "--tty" --name gemstone-sdk --no-workdir
+ _____ _____   _____                     _       _   _             
+|_   _|___ /  |  ___|__  _   _ _ __   __| | __ _| |_(_) ___  _ __  
+  | |   |_ \  | |_ / _ \| | | | '_ \ / _` |/ _` | __| |/ _ \| '_ \ 
+  | |  ___) | |  _| (_) | |_| | | | | (_| | (_| | |_| | (_) | | | |
+  |_| |____/  |_|  \___/ \__,_|_| |_|\__,_|\__,_|\__|_|\___/|_| |_|
+                                                                   
+🚀 distrobox:workdir> 
+🚀 distrobox:workdir> task yocto:build
+🚀 distrobox:workdir> task distro:build
+```

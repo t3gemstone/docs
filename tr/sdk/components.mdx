@@ -3,6 +3,9 @@ title: 'Bileşenler'
 description: 'SDK Bileşenleri'
 ---
 
+import SnippetSdkCompDirLayout from '/snippets/sdk/comp/dir-layout.mdx';
+import SnippetSdkCompExampleCmd from '/snippets/sdk/comp/example-cmd.mdx';
+
 <Note>
 Bu bölümde Gemstone [SDK](../faq#sdk-nedir)'sında bulunan bütün araçların detaylı kullanımına ve
 neden tercih edildiğine değinilecektir.
@@ -102,36 +105,7 @@ flowchart
 
 ### 3.1. Klasör Yapısı
 
-```bash highlight={2,4,10,18,28} lines
-|-- build
-|-- devbox.json
-|-- distro
-|   |-- distro.yaml
-|   |-- overlays
-|   |   |-- desktop
-|   |   |-- kiosk
-|   |   |-- minimal
-|   |-- scripts
-|   |-- Taskfile.yml
-|-- distrobox.ini
-|-- Dockerfile
-|-- LICENSE
-|-- README.md
-|-- repos.yml
-|-- setup.sh
-|-- src
-|-- Taskfile.yml
-|-- utils
-|-- yocto
-    |-- meta-arm
-    |-- meta-gemstone
-    |-- meta-intel
-    |-- meta-openembedded
-    |-- meta-ti
-    |-- openembedded-core
-    |-- poky
-    |-- Taskfile.yml
-```
+<SnippetSdkCompDirLayout />
 
 | Klasör              | Açıklama |
 | :--------------     | :------- |
@@ -176,26 +150,7 @@ Taskfile isimli uygulama, devbox.json dosyasında tanımlandığı için Devbox 
 
 Aşağıdaki şemalarda SDK'nın kullandığı bütün Task fonksiyonlarının özeti verilmiştir.
 
-```bash Örnek Kullanım highlight={4,17}
-gem@ubuntu:~$ cd sdk/
-gem@ubuntu:sdk$ devbox shell
-Starting a devbox shell...
-📦 devbox:sdk> task box
-task: [box] distrobox-list | grep -q 'gemstone-sdk' || docker build -f Dockerfile -t gemstone-sdk:latest .
-task: [box] distrobox-assemble create --file distrobox.ini
- - Creating gemstone-sdk...
-gemstone-sdk already exists
-task: [box] distrobox-enter --additional-flags "--tty" --name gemstone-sdk --no-workdir
- _____ _____   _____                     _       _   _             
-|_   _|___ /  |  ___|__  _   _ _ __   __| | __ _| |_(_) ___  _ __  
-  | |   |_ \  | |_ / _ \| | | | '_ \ / _` |/ _` | __| |/ _ \| '_ \ 
-  | |  ___) | |  _| (_) | |_| | | | | (_| | (_| | |_| | (_) | | | |
-  |_| |____/  |_|  \___/ \__,_|_| |_|\__,_|\__,_|\__|_|\___/|_| |_|
-                                                                   
-🚀 distrobox:workdir> 
-🚀 distrobox:workdir> task yocto:build
-🚀 distrobox:workdir> task distro:build
-```
+<SnippetSdkCompExampleCmd />
 
 #### 3.3.1. Temel Fonksiyonlar
 

@@ -1,0 +1,28 @@
+<CodeGroup>
+
+  ```bash Terminal lines
+  task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD
+  ```
+
+  ```bash Output lines
+  🚀 distrobox:workdir> task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD
+  task: [yocto:runqemu] qemu-system-x86_64 -enable-kvm -machine pc -cpu host -smp $(nproc) -append 'root=/dev/vda2 rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200' \
+    -m 4G \
+    -netdev user,id=net0,hostfwd=tcp::10022-:22 \
+    -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:02 \
+    -object rng-random,filename=/dev/urandom,id=rng0 \
+    -device virtio-rng-pci,rng=rng0 \
+    -device virtio-blk-pci,drive=disk0 \
+    -drive id=disk0,file="/home/workdir/build/debos/gemstone-desktop-v2025.10-ubuntu-jammy-intel-corei7-64.img",format=raw,if=none \
+    -device qemu-xhci \
+    -device usb-tablet \
+    -device usb-kbd \
+    -device virtio-vga \
+    -serial stdio \
+    -initrd "/home/workdir/build/tmp-musl/deploy/images/intel-corei7-64/gemstone-image-rd-intel-corei7-64.cpio.gz" \
+    -kernel "/home/workdir/build/tmp-musl/deploy/images/intel-corei7-64/bzImage"
+  Gtk-Message: 14:13:08.868: Failed to load module "canberra-gtk-module"
+  Gtk-Message: 14:13:08.869: Failed to load module "canberra-gtk-module"
+  ```
+
+</CodeGroup>
