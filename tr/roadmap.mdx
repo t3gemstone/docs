@@ -4,39 +4,38 @@ description: 'Planlanan Projeler ve Aşamaları'
 icon: "location-crosshairs"
 ---
 
+<Tip>
 Bu bölümde Gemstone ile yapılması planlanan yeni projeler ve tamamlanma aşamaları bulunmaktadır.
+İlgili projelerde görev alarak katkıda bulunmak için Github sayfalarını veya topluluk forumlarını
+ziyaret ediniz. 
+</Tip>
 
 ### Apache Nuttx
 
-<Frame>
-**Devam Ediyor (%10)**
-</Frame>
-
-<Columns cols={2}>
-  <Frame>
-    ![](/images/apache-nuttx.png)
-  </Frame>
-  <Frame>
-    ![](/images/px4-autopilot.png)
-  </Frame>
-</Columns>
+<sup>`Devam Ediyor` `%20`</sup>
 
 Pixhawk
 [Uçuş Kontrolcü (Flight Controller)](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
-donanımı, çoğunlukla Cortex-M mimarili STM32 içermektedir. PX4 isimli otopilot ise
-[Apache Nuttx](https://github.com/t3gemstone/NuttX) isimli gerçek zamanlı işletim sisteminde çalışmakta olup
-Texas AM67a için desteği bulunmamaktadır.
+donanımı, çoğunlukla Cortex-M mimarili STM32 içermektedir. PX4 isimli otopilot ise Apache Nuttx isimli gerçek
+zamanlı işletim sisteminde çalışmakta olup Texas AM67a için desteği bulunmamaktadır.
 
-Bu proje, [Apache Nuttx](https://github.com/t3gemstone/NuttX) isimli işletim sisteminin T3-GEM-O1 geliştirme
-kartlarında bulunan Cortex-R5 çekirdeklerinde çalıştırılabilmesi, Linux ve Nuttx'in birlikte çalıştırılarak
-haberleştirilmesi üzerinedir.
+<Columns cols={2}>
+  <Card title="Apache Nuttx RTOS" href="https://github.com/t3gemstone/NuttX">
+    <img src="/images/apache-nuttx.png" noZoom />
+  </Card>
+  <Card title="PX4 Autopilot" href="https://github.com/t3gemstone/PX4-Autopilot">
+    <img src="/images/px4-autopilot.png" noZoom />
+  </Card>
+</Columns>
 
-<Note>
-Aşağıda tamamlanan veya yapılması planlanan işler için katkıda bulunabilir, Topluluk forumlarına danışabilirsiniz.  
-</Note>
+Bu projede, Apache Nuttx ve PX4'ün; T3-GEM-O1 geliştirme kartlarında bulunan Cortex-R5 çekirdeklerinde çalıştırılması
+hedeflenmektedir. Aşağıdaki tabloda güncel durum ve yapılacaklar bulunmaktadır.
 
-- [X] R5 çekirdeklerde NuttX çalıştırma (Tamamlandı)
-- [X] JTAG ile debug desteği (Tamamlandı)
-- [ ] GPIO kullanımı (Devam Ediyor)
-- [ ] Seriport sürücü desteği (Gönüllü Geliştirici Bekleniyor)
+|               |                  |
+| :------------ | ---------------: |
+| R5 çekirdeklerde NuttX çalıştırma | `Tamamlandı` |
+| JTAG ile debug desteği | `Tamamlandı` |
+| GPIO kullanımı | **Devam Ediyor** |  
+| Seriport sürücü desteği | Gönüllü Geliştirici Bekleniyor |
+| NuttX (Cortex-R5) ve Linux (Cortex A57)'un IPC ile haberleştirilmesi | Gönüllü Geliştirici Bekleniyor |
 

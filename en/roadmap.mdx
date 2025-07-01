@@ -1,5 +1,37 @@
 ---
 title: 'Roadmap'
-description: 'Planned, Ongoing Projects and Completion Status'
+description: 'Planned Projects and Phases'
 icon: "location-crosshairs"
 ---
+
+<Tip>
+This section contains new projects planned with Gemstone and their completion phases.
+To contribute by taking part in related projects, visit the Github pages or community forums.
+</Tip>
+
+### Apache Nuttx
+
+<sup>`In Progress` `%20`</sup>
+
+Pixhawk
+[Flight Controller](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
+hardware mostly includes STM32 with Cortex-M architecture. The autopilot named PX4 runs on the real-time operating system called Apache Nuttx and does not have support for Texas AM67a.
+
+<Columns cols={2}>
+  <Card title="Apache Nuttx RTOS" href="https://github.com/t3gemstone/NuttX">
+    <img src="/images/apache-nuttx.png" noZoom />
+  </Card>
+  <Card title="PX4 Autopilot" href="https://github.com/t3gemstone/PX4-Autopilot">
+    <img src="/images/px4-autopilot.png" noZoom />
+  </Card>
+</Columns>
+
+In this project, the goal is to run Apache Nuttx and PX4 on Cortex-R5 cores found in T3-GEM-O1 development boards. The current status and pending tasks are listed in the table below.
+
+|               |                  |
+| :------------ | ---------------: |
+| Running NuttX on R5 cores | `Completed` |
+| Debug support via JTAG | `Completed` |
+| GPIO usage | **In Progress** |  
+| Serial port driver support | Volunteer Developer Needed |
+| IPC communication between NuttX (Cortex-R5) and Linux (Cortex A57) | Volunteer Developer Needed |
