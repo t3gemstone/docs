@@ -31,22 +31,43 @@ bir çok ARM mimarili gömülü Linux geliştirme kartlarında benzer bir yapı 
 
 ### 2.1. ROM Bootloader (RBL)
 
-Üreticiler tarafından çoğu zaman kaynak kodları verilmeden sadece çalıştırılabilir binary olarak dağıtılan
-RBL (Room Bootloader)'in temel amacı; karta ilk enerji verildiğinde bir takım donanım sağlık kontrolleri ve
-ilklendirme işlemleri yaparak kaynak kodları değiştirilebilir olan SBL (Secondary Bootloader) isimli ikinci
+Üreticiler tarafından çoğu zaman kaynak kodları verilmeden sadece derlenmiş program olarak dağıtılan
+RBL (Room Bootloader)'in temel amacı; karta ilk enerji verildiğinde donanım sağlık kontrolleri ve
+ilklendirme vb. işlemleri yaparak, kaynak kodları değiştirilebilir olan SBL (Secondary Bootloader) isimli ikinci
 Bootloader'a geçiş yapmaktır. SBL'in nereden okunarak başlatılacağı ise RBL tarafından Bootmode switchlerinden
 tespit edilir.
 
 ### 2.2. Secondary Bootloader (SBL)
 
-Üretici tarafından kodları dağıtılan Secondary Boot Loader'un _T3-GEM-O1_ geliştirme kartlarındaki kullanım amacı
-U-Boot isimli daha gelişmiş Bootloader'ı başlatmak ve eMMC'ye imaj yazma işlemini gerçekleştirmektir.
+Secondary Boot Loader'un _T3-GEM-O1_ geliştirme kartlarındaki kullanım amacı
+U-Boot isimli daha gelişmiş Bootloader'ı başlatmak ve Gemstone Imager isimli uygulama aracılığıyla imajların
+[eMMC'ye yazılmasını](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319) sağlamaktır.
 
 Linux Kernel içeren gömülü kartlarda çoğunlukla U-Boot tercih edilmektedir. SBL gibi ön yükleyiciler daha temel seviyede
 ilklendirme işlemleri yapabilirken, U-Boot çok daha gelişmiş özelliklere sahiptir. Örneğin U-Boot kendi Terminal/Konsol
 arayüzüne ve SBL'de mümkün olmayan bir çok sürücüye sahip olduğu için daha gelişmiş özelleştirmelere imkan sağlar.
 
 ### 2.3. U-Boot
+
+SBL sonrası geliştirme kartının kontrolünü devralan U-Boot, [Device Tree'de](../../../faq#device-tree-nedir) 
+tanımlanmış olan konfigürasyonlara göre ilgili donanımların sürücülerini aktifleştirir ve ön tanımlı bir takım komutları
+çalıştırarak Linux Kernel, Initrd gibi bileşenleri RAM'e yükleyerek kontrolü Linux Kernel'e devreder.
+
+#### 2.3.1. U-Boot Konsol Alıştırmaları
+
+<Tip>
+Bu kısımda Gemstone geliştirme kartına TTL aracılığıyla bağlanılıp U-Boot konsol kullanımı gösterilmiştir.
+Aşağıda bulunan dokümanlara hızlıca göz gezdirebilirsiniz.
+
+- https://cm.e-ale.org/2018/u-boot/u-boot.pdf
+- [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
+
+</Tip>
+
+<Frame caption="Todo: U-Boot TTL">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
 ### 2.4. Linux Kernel
 ### 2.5. Initial RAM Disk (Initrd)
 ### 2.6. Root Filesystem (Rootfs)
