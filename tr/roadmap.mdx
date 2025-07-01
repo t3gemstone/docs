@@ -10,9 +10,17 @@ Bu bölümde Gemstone ile yapılması planlanan yeni projeler ve tamamlanma aşa
 ziyaret ediniz. 
 </Tip>
 
-### Apache Nuttx
+<Card horizontal title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
+`Devam Ediyor` `%20`
+</Card>
+<Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
+`Henüz Başlamadı` `0%`
+</Card>
+<Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
+`Henüz Başlamadı` `0%`
+</Card>
 
-<sup>`Devam Ediyor` `%20`</sup>
+## Apache Nuttx
 
 Pixhawk
 [Uçuş Kontrolcü (Flight Controller)](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
@@ -20,12 +28,16 @@ donanımı, çoğunlukla Cortex-M mimarili STM32 içermektedir. PX4 isimli otopi
 zamanlı işletim sisteminde çalışmakta olup Texas AM67a için desteği bulunmamaktadır.
 
 <Columns cols={2}>
-  <Card title="Apache Nuttx RTOS" href="https://github.com/t3gemstone/NuttX">
+  <Frame caption="Apache Nuttx RTOS">
+  <a href="https://github.com/t3gemstone/NuttX" target="_blank">
     <img src="/images/apache-nuttx.png" noZoom />
-  </Card>
-  <Card title="PX4 Autopilot" href="https://github.com/t3gemstone/PX4-Autopilot">
+  </a>
+  </Frame>
+  <Frame caption="PX4 Autopilot">
+  <a href="https://github.com/t3gemstone/PX4-Autopilot" target="_blank">
     <img src="/images/px4-autopilot.png" noZoom />
-  </Card>
+  </a>
+  </Frame>
 </Columns>
 
 Bu projede, Apache Nuttx ve PX4'ün; T3-GEM-O1 geliştirme kartlarında bulunan Cortex-R5 çekirdeklerinde çalıştırılması
@@ -39,3 +51,27 @@ hedeflenmektedir. Aşağıdaki tabloda güncel durum ve yapılacaklar bulunmakta
 | Seriport sürücü desteği | Gönüllü Geliştirici Bekleniyor |
 | NuttX (Cortex-R5) ve Linux (Cortex A57)'un IPC ile haberleştirilmesi | Gönüllü Geliştirici Bekleniyor |
 
+## PX4 Autopilot
+
+PX4 otopilotunun Gemstone Linux üzerinde (NuttX olmadan) çalıştırılması hedeflenmektedir.
+
+<Columns cols={1}>
+  <Frame caption="PX4 Autopilot">
+  <a href="https://github.com/t3gemstone/PX4-Autopilot" target="_blank">
+    <img src="/images/px4-autopilot-b.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+## Phoenix RTOS
+
+<sup>`Henüz Başlamadı` `0%`</sup>
+
+Mikrokernel mimari açık kaynak kodlu Phoenix isimli gerçek zamanlı işletim sisteminin Gemstone üzerinde
+çalıştırılması hedeflenmektedir.
+
+<Frame caption="Phoenix RTOS">
+  <a href="https://github.com/t3gemstone/phoenix-rtos-project" target="_blank">
+    <img src="/images/phoenix-rtos.png" noZoom />
+  </a>
+</Frame>
