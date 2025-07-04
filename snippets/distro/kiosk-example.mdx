@@ -1,0 +1,130 @@
+<CodeGroup>
+  ```bash Terminal lines
+  git clone https://github.com/t3gemstone/examples.git
+  cd examples
+  devbox shell
+  devbox run build
+  ```
+
+  ```bash Output lines
+  gem@ubuntu:~$ git clone https://github.com/t3gemstone/examples.git
+  Cloning into 'examples'...
+  remote: Enumerating objects: 590, done.
+  remote: Counting objects: 100% (590/590), done.
+  remote: Compressing objects: 100% (357/357), done.
+  remote: Total 590 (delta 316), reused 496 (delta 222), pack-reused 0 (from 0)
+  Receiving objects: 100% (590/590), 530.28 KiB | 2.57 MiB/s, done.
+  Resolving deltas: 100% (316/316), done.
+  gem@ubuntu:~$ cd examples/
+  gem@ubuntu:examples$ devbox shell
+  Info: Ensuring packages are installed.
+  ✓ Computed the Devbox environment.
+  Starting a devbox shell...
+  Using CPython 3.12.10
+  Creating virtual environment at: .venv
+  Resolved 64 packages in 2ms
+  Installed 58 packages in 8.24s
+  + altgraph==0.17.4
+  + anyio==4.9.0
+  + click==8.2.1
+  + contourpy==1.3.2
+  + cycler==0.12.1
+  + docstring-to-markdown==0.17
+  + docutils==0.21.2
+  + fonttools==4.58.0
+  + gpio==1.0.0
+  + gpiod==2.3.0
+  + h11==0.16.0
+  + idna==3.10
+  + importlib-metadata==8.7.0
+  + itsdangerous==2.2.0
+  + jedi==0.19.2
+  + kiwisolver==1.4.8
+  + loro==1.5.1
+  + marimo==0.13.11
+  + markdown==3.8
+  + matplotlib==3.10.3
+  + narwhals==1.40.0
+  + numpy==2.2.6
+  + opencv-python==4.11.0.86
+  + packaging==25.0
+  + pandas==2.2.3
+  + parso==0.8.4
+  + pillow==11.2.1
+  + pluggy==1.6.0
+  + polars==1.30.0
+  + psutil==7.0.0
+  + pygments==2.19.1
+  + pyinstaller==6.13.0
+  + pyinstaller-hooks-contrib==2025.4
+  + pymdown-extensions==10.15
+  + pyparsing==3.2.3
+  + pyqt6==6.9.0
+  + pyqt6-qt6==6.9.0
+  + pyqt6-sip==13.10.2
+  + pyqtgraph==0.13.7
+  + pyserial==3.5
+  + python-dateutil==2.9.0.post0
+  + python-lsp-jsonrpc==1.1.2
+  + python-lsp-server==1.12.2
+  + pytz==2025.2
+  + pyyaml==6.0.2
+  + ruff==0.11.11
+  + seaborn==0.13.2
+  + setuptools==80.8.0
+  + six==1.17.0
+  + sniffio==1.3.1
+  + starlette==0.46.2
+  + tomlkit==0.13.2
+  + typing-extensions==4.13.2
+  + tzdata==2025.2
+  + ujson==5.10.0
+  + uvicorn==0.34.2
+  + websockets==15.0.1
+  + zipp==3.21.0
+  📦 devbox:examples> ls gui/
+  total 16K
+  -rw-rw-r--  1 vm vm 7,2K Tem  4 10:05 gcs.py
+  📦 devbox:examples> devbox run build 
+  Info: Running script "build" on /home/gem/examples
+  202 INFO: PyInstaller: 6.13.0, contrib hooks: 2025.4
+  202 INFO: Python: 3.12.10
+  205 INFO: Platform: Linux-6.8.0-60-generic-x86_64-with-glibc2.35
+  205 INFO: Python environment: /home/gem/examples/.venv
+  205 INFO: wrote build/gcs.spec
+  207 INFO: Module search paths (PYTHONPATH):
+  719 INFO: checking Analysis
+  719 INFO: Building Analysis because Analysis-00.toc is non existent
+  719 INFO: Running Analysis Analysis-00.toc
+  719 INFO: Target bytecode optimization level: 0
+  719 INFO: Initializing module dependency graph...
+  720 INFO: Initializing module graph hook caches...
+  726 INFO: Analyzing modules for base_library.zip ...
+  3255 INFO: Caching module dependency graph...
+  3292 INFO: Looking for Python shared library...
+  3298 INFO: Using Python shared library: /home/gem/.local/share/uv/python/cpython-3.12.10-linux-x86_64-gnu/lib/libpython3.12.so.1.0
+  3298 INFO: Analyzing /home/gem/examples/gui/gcs.py
+  21855 INFO: Warnings written to /home/gem/examples/build/gcs/warn-gcs.txt
+  21893 INFO: Graph cross-reference written to /home/gem/examples/build/gcs/xref-gcs.html
+  21921 INFO: checking PYZ
+  21922 INFO: Building PYZ because PYZ-00.toc is non existent
+  21922 INFO: Building PYZ (ZlibArchive) /home/gem/examples/build/gcs/PYZ-00.pyz
+  23330 INFO: Building PYZ (ZlibArchive) /home/gem/examples/build/gcs/PYZ-00.pyz completed successfully.
+  23358 INFO: checking PKG
+  23358 INFO: Building PKG because PKG-00.toc is non existent
+  23358 INFO: Building PKG (CArchive) gcs.pkg
+  61376 INFO: Building PKG (CArchive) gcs.pkg completed successfully.
+  61382 INFO: Bootloader /home/gem/examples/.venv/lib/python3.12/site-packages/PyInstaller/bootloader/Linux-64bit-intel/run
+  61382 INFO: checking EXE
+  61382 INFO: Building EXE because EXE-00.toc is non existent
+  61382 INFO: Building EXE from EXE-00.toc
+  61382 INFO: Copying bootloader EXE to /home/gem/examples/dist/gcs
+  61382 INFO: Appending PKG archive to custom ELF section in EXE
+  62847 INFO: Building EXE from EXE-00.toc completed successfully.
+  62854 INFO: Build complete! The results are available in: /home/gem/examples/dist
+  📦 devbox:examples> 
+  📦 devbox:examples> file /home/gem/examples/dist/gcs 
+  /home/gem/examples/dist/gcs: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=4457c553620a25b2fdf6b49658b64edb4cd3f053, stripped
+  ```
+
+</CodeGroup>

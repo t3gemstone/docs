@@ -3,6 +3,9 @@ title: 'Kiosk'
 description: 'Dokunmatik paneller için kiosk imajı'
 ---
 
+import SnippetOpenBox from '/snippets/distro/openbox.mdx';
+import SnippetKioskExample from '/snippets/distro/kiosk-example.mdx';
+
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız.
 
@@ -51,6 +54,48 @@ ekranları, ATM ekranları, sıramatikler vs. örnek olarak verilebilir.
 Bu bölümde Gemstone geliştirme kartına Kiosk imajı yükleyerek, derlediğiniz bir uygulamanın karta güç
 verildikten sonra nasıl otomatik olarak başlatılacağı ve teknik detaylar anlatılacaktır. 
 
-### 1. Kiosk İmajı Kurulumu
+## 1. Kiosk İmajı Kurulumu
 
-### 2. Grafik Arayüz Uygulamasının Otomatik Başlatılması
+[Hızlı Başlangıç](../quickstart#1-kurulum) bölümündeki anlatıldığı şekilde Gemstone'u bilgisayarınıza 
+bağlayarak Gemstone Imager isimli uygulamayı başlatarak **Operating System** bölümüne tıklayınız.
+
+<Frame>
+  <img src="/images/gem-imager/select-os.png" />
+</Frame>
+
+Operating System seçim ekranında Ubuntu veya Debian imajlarına tıkladığınızda aşağıdaki gibi Desktop,
+Kiosk ve Minimal seçenekleri listelenecektir. Kiosk imajını seçerek yazma işlemini tamamlayınız.
+
+<Frame>
+  <img src="/images/gem-imager/select-kiosk.png" />
+</Frame>
+
+## 2. Grafik Arayüz Uygulamasının Otomatik Başlatılması
+
+İmaj yükleme işlemi tamamlandıktan sonra Gemstone'a güç verdiğinizde varsayılan olarak aşağıdaki 
+gibi **Demo** uygulaması açılacaktır.
+
+<Frame caption="Todo: Kiosk GCS">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+Bu bölümde Demo uygulamasının nasıl başlatıldığı ve yazmış olduğunuz başka bir grafik uygulamasının nasıl otomatik
+başlatılacağı incelenecektir.
+
+#### 2.1. Terminal Aracılığıyla Openbox İlklendirme Süreci
+
+Gemstone'a [Seriport, TTL, SSH veya VNC](../quickstart#2-1-seriport) aracılığıyla bağlandıktan sonra Terminal
+üzerinden aşağıdaki komutları çalıştırınız.
+
+<SnippetOpenBox />
+
+#### 2.2. Yeni bir Grafik Uygulamasının Yüklenmesi
+
+Aşağıda bulunan derleme işlemlerini, kullanmakta olduğunuz Geliştirici bilgisayarında yapınız.
+
+<SnippetKioskExample />
+
+## 3. Son
+
+Desktop imajına kullanıcı adı ve şifre ile giriş yapılabilirken, Kiosk isimli imaj yalnızca belirlediğiniz uygulamanın
+otomatik başlatıldığı ve sisteme ekran üzerinden erişim imkanının olmadığı imaj türüdür.
