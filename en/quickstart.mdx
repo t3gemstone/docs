@@ -161,9 +161,23 @@ Click the "Gemstone board / Choose Device" button to select the development boar
 After selecting the development board (Gemstone board / Choose Device), click the **Operating System / Choose OS** 
 button for the next step.
 
-<Frame caption="Operating system image type">
-  <img src="/images/gem-imager/c-select-image.png" />
-</Frame>
+<Tabs>
+  <Tab title="Default Operating System">
+    <Frame>
+      <img src="/images/gem-imager/c-select-image.png" />
+    </Frame>
+  </Tab>
+  <Tab title="Other Operating Systems">
+    <Columns cols={2}>
+      <Card>
+        <img src="/images/gem-imager/select-os.png" />
+      </Card>
+      <Card>
+        <img src="/images/gem-imager/select-kiosk.png" />
+      </Card>
+    </Columns>
+  </Tab>
+</Tabs>
 
 Gemstone uses a Ubuntu/Debian-based operating system, with different variations available depending on project 
 needs. While the [later sections](./distros/introduction) of the documentation explain which version to use for 
