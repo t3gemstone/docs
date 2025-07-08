@@ -106,13 +106,13 @@ T3 Gemstone Github reposunda bulunan projelerin kullanım amaçları aşağıdak
 | Yocto          | [t3gemstone/meta-gemstone](https://github.com/t3gemstone/meta-gemstone) | Yocto projesi kodlarıdır. |
 | Linux Kernel   | [t3gemstone/linux](https://github.com/t3gemstone/linux) | Geliştirme kartlarında kullanılan linux kodlarıdır. |
 | Bootloder      | [t3gemstone/u-boot](https://github.com/t3gemstone/u-boot) | Geliştirme kartlarında kullanılan ön yükleyici (bootloader) kodları. Bootloader donanımın sağlık kontrollerini yaparak linux kernelini başlatan kod parçasıdır. |
-| Debos          | [t3gemstone/debos](https://github.com/t3gemstone/debos) | Debos isimli projenin klonlanarak bir takım ilave özelliklerin eklendiği dağıtım oluşturma aracıdır. |
+| Debos          | [t3gemstone/debos](https://github.com/t3gemstone/debos) | Debos isimli projenin klonlanarak bir takım ilave özelliklerin eklendiği debian tabanlı dağıtım oluşturma aracıdır. |
 | GemImager      | [t3gemstone/gem-imager](https://github.com/t3gemstone/gem-imager) | rpi-imager isimli projenin klonlanarak Gemstone kartlarına göre özelleştirilmiş ilave özellikler eklenmiş imaj yazma aracıdır. |
 | Hardware       | [t3gemstone/hardware](https://github.com/t3gemstone/hardware) | Gemstone kartlarının anakart vb. donanım bileşenlerinin PCB vb. tasarımlarıdır. |
 | Toolchains     | [t3gemstone/toolchains](https://github.com/t3gemstone/toolchains) | C/C++ gibi projelerin farklı mimarilere göre derlenmesinde kullanılan araçtır. |
 | Package Server | [t3gemstone/package-server](https://github.com/t3gemstone/package-server) | packages.t3gemstone.org adresinde bulunan Linux APT paket yönetim sunucusu/sistemidir. |
 | noVNC          | [t3gemstone/t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) | Tarayıcı üzerinden Gemstone'a uzak masaüstü bağlantısı imkanı veren yazılımdır. |
-| Ardupilot      | [t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot) | Gemstone için uyarlanmış insansız araç otopilotudur. |
+| Ardupilot      | [t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot) | Gemstone için uyarlanmış insanlı/insansız hava, kara ve deniz araçlarından, helikopter ve uçaklara hatta deniz araçlarına kadar akla gelebilecek her araç için kullanılabilecek bir otopilot yazılımıdır. |
 | NuttX          | [t3gemstone/nuttx](https://github.com/t3gemstone/nuttx) | PX4 gibi MCU barındıran donanımlarda çalışan gerçek zamanlı işletim sistemidir. İlerleyen süreçte Gemstone Obsidyen kartlarında bulunan R5 MCU çekirdeklerinde çalışması sağlanacaktır. |
 </Accordion>
 
@@ -164,8 +164,8 @@ Dolayısıyla derleme işlemlerini hızlandırmak için Cross Compile Toolchains
 
 <Note>
 Geliştirme kartları ekseriyetle ARM mimarili işlemcilere sahipken dizüstü, masaüstü bilgisayarlar yine ekseriyetle
-Intel x86-64 mimarili işlemcilere sahiptir. Bu durumda farklı mimariler için derleme imkanını sağlayan Cross (Çarpaz)
-derleme araçlarıdır.
+Intel x86-64 mimarili işlemcilere sahiptir. Bu durumda bir mimarili bilgisayardan başka mimarili bir cihazda çalışmak üzere derleme 
+yapma imkanını sağlayan programlar Cross (Çarpaz) derleme araçlarıdır.
 </Note>
 
 <Frame caption="Todo: Host">
