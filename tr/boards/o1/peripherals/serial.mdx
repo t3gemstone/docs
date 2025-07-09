@@ -1,4 +1,78 @@
 ---
 title: 'Seri Port'
-description: 'Seri Port'
+description: 'Seri Port kullanımı'
 ---
+
+Seri port, bilgisayarlar ve mikrodenetleyiciler gibi cihazlar arasında veri iletimini sağlayan, 
+basit ama etkili bir iletişim yoludur. Bu iletişim genellikle **UART (Universal Asynchronous Receiver-Transmitter)** 
+protokolü üzerinden gerçekleşir ve düşük hızda veri iletimi için kullanılır.
+
+Bu haberleşme protokolünün daha iyi anlaşılabilmesi için, bir **USB-TTL UART dönüştürücüsü** aracılığıyla Gemstone geliştirme kartı ile 
+bir Linux sistemi arasında nasıl iletişim kurulacağına dair bir örnek üzerinden ilerlenmiştir.
+
+
+### Gerekli Donanımlar
+
+<Frame caption="Gerekli donanımlar görseli">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+Seri port haberleşmesi için ihtiyaç duyulan donanımlar aşağıda belirtilmiştir.
+
+<AccordionGroup>
+
+  <Accordion title="Usb Type-C kablosu">
+    <Frame>
+      <img height="600" width="800" src="/images/usb-type-c-cable.jpg" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Ethernet kablosu">
+    <Frame caption="Bilgisayar ve Gemstone kartını birbirine bağlayacak ethernet kablosu">
+      <img height="600" width="800" src="/images/ethernet-cable-wire.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="USB TTL dönüştürücü">
+    <Frame>
+      <img height="600" width="800" src="/images/pl2303-ta-usb-ttl-seri.jpg" />
+    </Frame>
+  </Accordion>
+
+</AccordionGroup>
+
+### Seri Port Haberleşmesi
+
+[Hızlı Başlangıç](../../../quickstart) sayfasındaki [İmaj yazma işlemi](../../../quickstart#1-2-i̇maj-yazma-işlemi) kısmında anlatıldığı gibi 
+Gemstone'a başarılı bir şekilde **Minimal** imaj yazma işlemi tamamlandıktan sonra [Gemstone'u Keşfet](../../../quickstart#2-gemstone’u-keşfet)  
+bölümünde anlatıldığı gibi SSH ile Gemstone işletim sistemi komut satırına giriş yapılması gerekmektedir.
+**sudo apt update && sudo apt upgrade** komutu ile işletim sistemini güncelleme işlemi bittikten sonra
+
+```bash
+sudo apt install picocom
+```
+
+komutu ile **picocom** isimli minimal terminal programının kurulması gerekmektedir. Sonrasında aşağıdaki
+komut ile ttyS2 seri portunun açılması gerekmektedir.
+
+```bash
+sudo picocom --baud 115200 /dev/ttyS2
+```
+
+<Note>Neden ttyS2?</Note>
+
+Kullanıcı bilgisayarında [Terminal/Konsol Uygulaması](../../../quickstart#2-1-1-terminal%2Fkonsol-uygulaması) bölümünde
+anlatılan **Tabby.sh** isimli terminal uygulamasında ilgili seri portun açılması gerekmektedir.
+
+<Frame caption="Tabby.sh isimli terminalde seri portun açılması">
+  <video controls className="w-full aspect-video" src="../../../../videos/open-tabby-terminal.mp4"></video>
+</Frame>
+
+İki uçtanda seri port cihazı açıldığına göre karşılıklı olarak **Teknofest** metnini göndererek haberleşmenin 
+gerçekleştiğini görebiliriz.
+
+<Frame caption="Seri port haberleşmesi">
+  <video controls className="w-full aspect-video" src=""></video>
+</Frame>
+
+

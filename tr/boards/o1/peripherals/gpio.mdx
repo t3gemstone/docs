@@ -2,3 +2,42 @@
 title: 'GPIO'
 description: 'General Purpose Input Output (GPIO)'
 ---
+
+GPIO (General Purpose Input/Output), mikrodenetleyicilerde ve geliştirme kartlarında genel amaçlı giriş ve çıkış 
+işlemleri için kullanılan pinlerdir. Bu pinler, hem dijital veri almak (giriş) hem de dijital sinyal 
+göndermek (çıkış) için yapılandırılabilir. Gemstone üzerinde bulunan ledler GPIO pinleri aracılığıyla kontrol 
+edilebilir.
+
+Gerekli malzemeler [Seri Port](./serial) sayfasında belirtilen malzemelere ek olarak bir led ve bir direnç gerekmektedir.
+
+<AccordionGroup>
+
+  <Accordion title="Led">
+    <Frame>
+      <img height="600" width="800" src="" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Direnç">
+    <Frame>
+      <img height="600" width="800" src="" />
+    </Frame>
+  </Accordion>
+
+</AccordionGroup>
+
+<Note>Gemstone işletim sistemine bağlanma tercihine göre USB-TTL uart dönüştürücü ya da Ethernet kablosu 
+kullanılması yeterlidir.</Note>
+
+Gemstone üzerinde Input/Output olarak kullanılabilir durumda olan GPIOX'e aşağıda gösterildiği gibi 
+led bağlantıları yapılır.
+
+<Frame caption="Led Bağlantısı">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+<Frame caption="Led blinking">
+  <video controls className="w-full aspect-video" src=""></video>
+</Frame>
+
+
