@@ -172,19 +172,67 @@ yapma imkanını sağlayan programlar Cross (Çarpaz) derleme araçlarıdır.
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-#### 2.2.1. Geliştirici (Host) Bilgisayarını Hazırla
+#### 2.2.1. Kartı ağa bağla
+
+Ethernet kablosunun bir ucunu geliştirme kartınıza diğer ucunu ise bilgisayarınıza bağlayınız.
+Ardından bilgisayarınıza aşağıdaki şekilde statik IP adresi ataması yapınız.
+
+<Tabs>
+  <Tab title="Windows">
+    <Frame caption="Todo: Denetim Masasından IP adresi ata">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Tab>
+  <Tab title="Linux">
+    <Frame caption="Todo: Terminalden veya gnome-settings GUI üzerinden IP ata">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Tab>
+  <Tab title="macOS">
+    <Frame caption="Todo: Ayarlar uygulamasından IP adresi ata">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Tab>
+</Tabs>
+
+Bilgisayarınıza statik IP adresini atadıktan sonra seri port üzerinden kartın
+konsoluna erişip aşağıdaki komutları çalıştırınız.
+
+```bash
+# eth0-static adinda yeni bir konfigurasyon olusturuyoruz
+sudo nmcli connection add \
+  con-name "eth0-static" \
+  ifname eth0 type ethernet \
+  ip4 10.0.0.1/24 \
+  connection.autoconnect yes
+
+# yeni olusturdugumuz konfigurasyonu DHCP konfigurasyonuna gore daha
+# oncelikli yapiyoruz ki IP adresini otomatik olarak almaya calismak
+# yerine bizim verdigimiz IP adresini atasin
+sudo nmcli connection modify "eth0-static" connection.autoconnect-priority 10
+sudo nmcli connection modify "eth0-dhcp" connection.autoconnect-priority 20
+```
+
+IP adresleri atandıktan sonra bilgisayarınız ve geliştirme kartınız arasındaki
+haberleşmenin başarılı olduğunu görebilmek için aşağıdaki komutu çalıştırınız.
+
+```bash
+ping 10.0.0.2
+```
+
+#### 2.2.2. Geliştirici (Host) Bilgisayarını Hazırla
 
 <Frame caption="Todo: Host Geliştirici Bilgisayarı Hazırlık">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-#### 2.2.2. Geliştirici (Host) Bilgisayarında Proje Derle
+#### 2.2.3. Geliştirici (Host) Bilgisayarında Proje Derle
 
 <Frame caption="Todo: Derle">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-#### 2.2.3. Derlenen yazılımları Geliştirme Kartına (Target) yükle
+#### 2.2.4. Derlenen yazılımları Geliştirme Kartına (Target) yükle
 
 <Frame caption="Todo: Yükle">
   <img height="200" width="200" src="/images/under-construction.png" />

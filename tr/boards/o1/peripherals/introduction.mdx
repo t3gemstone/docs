@@ -1,6 +1,6 @@
 ---
 title: 'Giriş'
-description: 'Bileşen, Çervesel Aygıtlar ve Kullanım Örnekleri'
+description: 'Bileşen, Çevresel Aygıtlar ve Kullanım Örnekleri'
 ---
 
 Bu bölümde, kart üzerinde bulunan Sensörlerin, veri hatlarının kullanımlarına dair örnekler gösterilecektir.
@@ -26,6 +26,75 @@ kullanılacağına değinilecek aşağıdaki bölümde ise pinlerin nasıl farkl
 
 ### Device Tree
 
-<Frame caption="Todo: Device Tree">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+Kart üzerindeki 40-pin giriş/çıkış portlarının kullanılabileceği konfigürasyonlar (UART, PWM, I2C, GPIO, ...)
+**device tree overlay** adı verilen dosyalarda tanımlanmıştır. İstenen konfigürasyonun/konfigürasyonların aktif
+edilebilmesi için ilgili overlay dosyalarının bulunup, bootloader'a liste olarak verilmesi gerekmektedir.
+
+Texas Instruments ARM64 tabanlı SoC'ler için tüm overlay dosyalarının kaynak kodları
+[t3gemstone/linux](https://github.com/t3gemstone/linux) projesi içerisinde `arch/arm64/boot/dts/ti`
+dizini altında yer almaktadır. T3-GEM-O1 kartı için olanlar `k3-am67a-t3-gem-o1-<overlay_adi>.dtso` biçiminde
+isimlendirilmiştir. Her bir overlay dosyasının başında hangi amaçla oluşturulduğuna dair bilgi yer almaktadır.
+
+#### Örnek: UART6 sinyallerinin 40-pin HAT'e yönlendirilmesi
+
+T3-GEM-O1'in 40-pin HAT'i üzerinde varsayılan olarak sadece 1 adet seri port bulunmaktadır. Birden fazla seri
+porta ihtiyaç duyan projeler için 40-pin HAT üzerindeki başka pinlerin de seri porta dönüştürülmesi gerekmektedir.
+
+<Steps>
+  <Step title="Pinout'un İncelenmesi">
+    T3-GEM-O1'in pinout'u incelendiğinde HAT üzerindeki 7 ve 11 numaralı pinlerin UART6_RX ve UART6_TX olarak
+    kullanılabileceği görülmektedir.
+  </Step>
+  <Step title="İlgili Overlay Dosyasının Bulunması">
+    Sonraki aşamada istenen konfigürasyonu hangi device tree overlay dosyasının yaptığının
+    bulunması gerekmektedir.
+    Device tree overlay dosyalarının tümü geliştirme kartının içerisindeki `/boot/overlays` klasöründe bulunmaktadır.
+    `ls /boot/overlays` komutu çalıştırılarak hepsi listelenebilir.
+
+    ```bash
+    |-- boot
+    |   |-- overlays
+    |   |   |-- k3-am67a-t3-gem-o1-csi0-imx219.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-disable-imu.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-disable-leds.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-dsi-rpi-7inch-panel.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-gpio-fan.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-i2c1-400000.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio20.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-spi0-1cs.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-spi0-2cs.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-spidev0.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-uart-ttyama0.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-uart-ttys0.dtbo
+    |   |   |-- k3-am67a-t3-gem-o1-uart-ttys6.dtbo
+    ```
+
+  </Step>
+  <Step title="uEnv.txt Dosyasının Güncellenmesi">
+    Bu örnekte `k3-am67a-t3-gem-o1-uart-ttys6.dtbo` adlı overlay dosyası kullanılacaktır. Bootloader'ın bu dosyayı
+    işletim sistemi başlatılmadan önce yükleyebilmesi için `/boot/uEnv.txt` dosyasındaki `overlays` kısmına
+    aşağıdaki gibi eklenmelidir. Overlay dosya adları arasında bir boşluk kalacak şekilde ekleme yapılmaktadır.
+
+    <code>overlays=k3-am67a-t3-gem-o1-uart-ttyama0.dtbo k3-am67a-t3-gem-o1-spidev0.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
+  </Step>
+  <Step title="Kontrol">
+    Değişiklikleri kaydettikten sonra kart `reboot` komutuyla yeniden başlatılmalıdır.
+    Ardından `ls /proc/device-tree/chosen/overlays` komutuyla ilgili overlay'in eklenip
+    eklenmediği kontrol edilmelidir.
+
+    ```txt highlight=3
+    k3-am67a-t3-gem-o1-spidev0.kernel
+    k3-am67a-t3-gem-o1-uart-ttyama0.kernel
+    k3-am67a-t3-gem-o1-uart-ttys6.kernel
+    ...
+    ```
+  </Step>
+</Steps>
+
+Yukarıdaki aşamalar başarıyla tamamlandıktan sonra `/dev/ttyS6` cihazı oluşmuş olacaktır.

@@ -326,7 +326,7 @@ hareketli bir platform üzerinde kartınızı kullanacaksanız eMMC tercih edilm
 ### 1.4. Kartı bilgisayara bağla
 
 Aşağıdaki fotoğrafta gösterildiği şekilde kutu içerisinden çıkan Usb Type-C ve ethernet kablosunu
-bilgisayarınıza ve Geliştirme kartınına bağladıktan sonra kartı keşfetmek için hazırsınız!
+bilgisayarınıza ve Geliştirme kartınıza bağladıktan sonra kartı keşfetmek için hazırsınız!
 
 <Frame caption="Todo: Sdcard ve okuyucunun bilgisayara bağlanması">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -407,11 +407,49 @@ Kurulumu tamamladıktan sonra çalıştırınız ve aşağıdaki ekran görünt�
 
 ### 2.2. VNC ile tarayıcıdan uzak masaüstü bağlantısı
 
-Browser
+<Note>
+VNC servisi yalnızca [Desktop imajıyla](./distros/desktop) kullanılabilmektedir.
+</Note>
+
+Gemstone geliştirme kartınızı USB Type-C kablosuyla bilgisayarınıza bağladıktan sonra aşağıdaki
+bağlantıyı kullanarak tarayıcı üzerinden masaüstüne erişebilirsiniz.
+
+<Tip>
+[https://192.168.7.1:8443/vnc.html](https://192.168.7.1:8443/vnc.html)
+</Tip>
+
+<Frame caption="Todo: Microsoft Edge ile VNC sertifika doğrulama görüntüsü">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+<Note>
+Bağlantı kurulduğunda tarayıcı sertifika hatası verecektir. Self-signed sertifika
+kullanıldığı için bu durum normaldir. Devam edebilirsiniz.
+</Note>
+
+<Frame caption="Todo: Şifre ekranı">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+Şifre kutusuna Gemstone Imager ile imaj oluşturma esnasında verdiğiniz VNC şifresini giriniz.
+
+<Frame caption="Todo: Masaüstü görüntüsü">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
 
 ### 2.3. SSH ile network üzerinden bağlantı
 
-Ethernet
+<Note>
+Daha hızlı ve daha stabil bir konsol deneyimi için seri port üzerinden konsol
+kullanmak yerine SSH üzerinden konsol kullanmanız tavsiye edilir.
+</Note>
+
+Gemstone geliştirme kartınızı USB Type-C kablosuyla bilgisayarınıza bağladıktan sonra aşağıdaki
+komutu terminalde çalıştırınız.
+
+```bash
+ssh gemstone@192.168.7.1
+```
 
 ### 2.4. Gemstone işletim sistemini güncelle
 
