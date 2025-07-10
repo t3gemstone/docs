@@ -2,3 +2,109 @@
 title: 'U-Boot'
 description: 'Bootloader'
 ---
+
+Yocto buildi başlatıldığında Gemstone kartlarında kullanılan [U-Boot](https://github.com/t3gemstone/u-boot)
+otomatik olarak indirilir, derlenir ve çıktıları paketlenir. Dolayısıyla ek olarak bir komut çalıştırmaya
+gerek yoktur.
+
+U-Boot'u tekrar derlemeyi gerektirecek bir durum varsa (örneğin, işletim sistemini SSD üzerinden boot
+etme desteği getirme gibi) aşağıdaki adımlar izlenebilir.
+
+<Note>
+Kernel parametrelerini değiştirme, device-tree overlay ekleme gibi bazı işlemler U-Boot'u tekrar derlemeye
+gerek kalmadan da -`/boot/uEnv.txt` dosyasını güncelleyerek de- yapılabilir.
+</Note>
+
+<Warning>
+Aşağıda yer alan komutların hepsi distrobox içerisinde çalıştırılacaktır. Dolayısıyla ilk olarak
+`devbox shell` --> `task box` komutlarını çalıştırmalısınız.
+</Warning>
+
+### Menuconfig ile Konfigürasyon Güncelleme
+
+Kaynak kodlarda değişiklik yapmak yerine sadece bir özelliği aktif/deaktif edecekseniz (TFTP komutunu
+aktif etme gibi) menuconfig'e aşağıdaki komutlarla ulaşabilirsiniz.
+
+<Note>
+Bu örnekte T3-GEM-O1 kartı üzerinden anlatım yapılacaktır. Farklı bir makine için
+yapılanları uygulayacaksanız makine ismini uygun şekilde değiştiriniz.
+</Note>
+
+<AccordionGroup>
+
+  <Accordion title="Menuconfig ekranının açılması">
+    ```bash
+    m:oeinit t3-gem-o1
+
+    bitbake -c menuconfig virtual/bootloader
+    ```
+
+    <Frame caption="Todo: menuconfig penceresi">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Değişikliklerin kaydedilmesi">
+    İşlemlerinizi tamamladıktan sonra `ESC` tuşuna arka arkaya basın ve değişiklikleri kaydedin.
+
+    <Frame caption="Todo: değişiklikleri kaydet ekranı">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Değişikliklerin kalıcı hale getirilmesi">
+    Bu aşamada U-Boot'u tekrar derleyebilirsiniz ancak yaptığınız değişiklikler sadece
+    sizin bilgisayarınızda kalır ve build klasörünü temizlemeniz durumunda kaybolurlar.
+    Bunu engellemek için aşağıdaki adımları takip ediniz.
+
+    ```bash
+    bitbake -c diffconfig virtual/bootloader
+    cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/u-boot-t3-gem-o1/2025.04+git/fragment.cfg \
+       /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files/fragment.config
+    ```
+
+    `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files` dizininde bulunan
+    `fragment.config` dosyasının adını `.config` uzantısını değiştirmeden yaptığınız değişikliği açıklayan bir isimle
+    değiştiriniz. Sonrasında bu adı `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/u-boot-t3-gem-o1_2025.04.bb`
+    dosyasındaki `SRC_URI` değişkenine ekleyiniz. Örnek için dosya adını `fragment-enable-tftp.config` yaptığımızı
+    varsayalım.
+
+    ```bash highlight=5
+    SRC_URI:append:t3-gem-o1 = " \
+        file://uEnv-desktop.txt \
+        file://uEnv-rd.txt \
+        file://fragment-mmc-env.config \
+        file://fragment-enable-tftp.config \
+    "
+    ```
+
+  </Accordion>
+
+  <Accordion title="U-Boot'un yeniden derlenmesi">
+    ```bash
+    bitbake -c clean virtual/bootloader
+    bitbake virtual/bootloader
+    ```
+
+    Yukarıdaki komutlar başarıyla tamamlandıysa `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`
+    dizininde u-boot.img ve u-boot-spl.bin dosyaları oluşacaktır.
+  </Accordion>
+
+</AccordionGroup>
+
+### Kaynak Kodlarında Değişiklik Yapılması
+
+Metin editörünüzde `<sdk-dizini>/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/u-boot-t3-gem-o1/2025.04+git/git`
+klasörünü açınız. İstediğiniz kısımları değiştirdikten sonra aşağıdaki komutlarla U-Boot'u derleyiniz. Yaptığınız
+değişiklikleri kaybetmemek adına [T3 Gemstone U-Boot reposu](https://github.com/t3gemstone/u-boot) için kendi
+forkunuzu oluşturup oraya gönderebilirsiniz.
+
+```bash
+m:oeinit t3-gem-o1
+
+bitbake virtual/bootloader
+```
+
+Derleme bittikten sonra `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images` dizininde oluşan dosyaları
+SD kartta `/boot` dizinine kopyalayınız. Değişikliklerinizi tamamladıktan sonra
+[T3 Gemstone U-Boot reposuna](https://github.com/t3gemstone/u-boot) pull request oluşturabilirsiniz.
