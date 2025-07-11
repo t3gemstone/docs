@@ -2,3 +2,62 @@
 title: 'Özelleştirme'
 description: 'Sistem özelleştirme'
 ---
+
+<Tip>
+  Bu bölümün sonunda Gemstone Imager uygulamasının özelleştirme menülerindeki alanların ne işe yaradığını öğreneceksiniz.
+</Tip>
+
+Gemstone Imager uygulamasında kart, işletim sistemi ve depolama seçeneklerini seçip `Next` tuşuna basıldığında karşımıza `OS Customisation` menüsü çıkar.
+Bu menüde `General`, `Services` ve `Options` isminde 3 adet sekme bulunur.
+
+
+## General (Genel) Sekmesi
+
+<img src="/images/gem-imager/general-tab.png"/>
+
+### Hostname ve Şifre Alanı
+
+- Ayarın kutucuğu işaretlenerek aktif hale getirilir.
+- `Set Hostname` alanı kartın adını ayarlamak için kullanılır. Varsayılan ad `gemstone`
+- `Password` alanı varsayılan kullanıcı olan `gemstone` kullanıcısının şifresini belirler. Varsayılan değeri yoktur girilmesi zorunludur. 
+
+### Configure wireless LAN Alanı
+
+- Ayarın kutucuğu işaretlenerek aktif hale getirilir.
+- `SSID` alanına bağlanılacak ağın ismi girilir.
+- `Password` alanına bağlanılacak ağın şifresi girilir.
+- Eğer bağlanılacak ağ gizli bir ağ ise `Hidden SSID` kutucuğu işaretlenmelidir.
+- `Wireless LAN country` alanı ise bulunulan ülkenin harf kodu seçilmelidir.
+
+### Set Locale Settings Alanı
+
+- Ayarın kutucuğu işaretlenerek aktif hale getirilir.
+- `Time Zone` kutusuna tıklayarak açılır menüden bulunulan zaman dilimi seçilir.
+- `Keyboard layout` kutusuna tıklayarak açılır menüden istenilen klavye düzeni seçilir. 
+
+### Set Disk Encryption (Cryptsetup)
+
+- Ayarın kutucuğu işaretlenerek aktif hale getirilir. Diskin şifrelenerek her açılışta şifre sorulmadan sistemin açılmamasını sağlar.
+- `Disk Password` alanına şifre girilir.
+
+### Write sdcard's image to eMMC on first boot
+
+- Ayarın kutucuğu işaretlenerek aktif hale getirilir. İlk bootta sd kartta bulunan imajı kart üzerindeki yerleşik depolamaya (eMMC) yazarak
+kartın yerleşik depolamadan boot edilebilmesini sağlar.
+
+## Services (Servisler) Sekmesi
+
+<img src="/images/gem-imager/services-tab.png"/>
+
+### Enable SSH Alanı
+
+### Enable VNC Alanı
+
+### Gadgets (Araçlar) Alanı
+
+
+## Options (Ayarlar) Alanı
+
+<img src="/images/gem-imager/options-tab.png"/>
+
+
