@@ -3,7 +3,7 @@ title: 'U-Boot'
 description: 'Bootloader'
 ---
 
-Yocto buildi başlatıldığında Gemstone kartlarında kullanılan [U-Boot](https://github.com/t3gemstone/u-boot)
+Yocto buildi başlatıldığında [Gemstone kartlarında kullanılan U-Boot](https://github.com/t3gemstone/u-boot)
 otomatik olarak indirilir, derlenir ve çıktıları paketlenir. Dolayısıyla ek olarak bir komut çalıştırmaya
 gerek yoktur.
 
@@ -17,12 +17,13 @@ gerek kalmadan da -`/boot/uEnv.txt` dosyasını güncelleyerek de- yapılabilir.
 
 <Warning>
 Aşağıda yer alan komutların hepsi distrobox içerisinde çalıştırılacaktır. Dolayısıyla ilk olarak
-`devbox shell` --> `task box` komutlarını çalıştırmalısınız.
+`devbox shell` --> `task box` komutlarını çalıştırmalısınız. Ayrıca Yocto ortamına geçiş yapabilmek
+için `m:oeinit t3-gem-o1` komutunu çalıştırmalısınız.
 </Warning>
 
 ### Menuconfig ile Konfigürasyon Güncelleme
 
-Kaynak kodlarda değişiklik yapmak yerine sadece bir özelliği aktif/deaktif edecekseniz (TFTP komutunu
+Kaynak kodlarında değişiklik yapmak yerine çeşitli özellikleri aktif/deaktif edecekseniz (TFTP komutunu
 aktif etme gibi) menuconfig'e aşağıdaki komutlarla ulaşabilirsiniz.
 
 <Note>
@@ -34,18 +35,15 @@ yapılanları uygulayacaksanız makine ismini uygun şekilde değiştiriniz.
 
   <Accordion title="Menuconfig ekranının açılması">
     ```bash
-    m:oeinit t3-gem-o1
-
     bitbake -c menuconfig virtual/bootloader
     ```
 
     <Frame caption="Todo: menuconfig penceresi">
       <img height="200" width="200" src="/images/under-construction.png" />
     </Frame>
-  </Accordion>
 
-  <Accordion title="Değişikliklerin kaydedilmesi">
-    İşlemlerinizi tamamladıktan sonra `ESC` tuşuna arka arkaya basın ve değişiklikleri kaydedin.
+    İstediğiniz ayarları değiştirdikten sonra aşağıdaki pencere açılana kadar
+    `ESC` tuşuna basınız. Ardından "Yes" butonunu seçiniz.
 
     <Frame caption="Todo: değişiklikleri kaydet ekranı">
       <img height="200" width="200" src="/images/under-construction.png" />
@@ -100,11 +98,10 @@ değişiklikleri kaybetmemek adına [T3 Gemstone U-Boot reposu](https://github.c
 forkunuzu oluşturup oraya gönderebilirsiniz.
 
 ```bash
-m:oeinit t3-gem-o1
-
 bitbake virtual/bootloader
 ```
 
 Derleme bittikten sonra `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images` dizininde oluşan dosyaları
-SD kartta `/boot` dizinine kopyalayınız. Değişikliklerinizi tamamladıktan sonra
-[T3 Gemstone U-Boot reposuna](https://github.com/t3gemstone/u-boot) pull request oluşturabilirsiniz.
+SD kartta `/boot` dizinine kopyalayınız. Bir problemi çözdüyseniz veya yeni bir özellik eklediyseniz
+topluluğun da faydalanabilmesi için [T3 Gemstone U-Boot reposuna](https://github.com/t3gemstone/u-boot)
+pull request oluşturabilirsiniz.

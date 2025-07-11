@@ -14,3 +14,96 @@ Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
 * Gemstone Linux Kernel derlemek
 * Yeni donanım sürücüsü aktifleştirmek
 </Tip>
+
+Gemstone kartları için Linux kernel de tıpkı U-Boot gibi Yocto tarafından derlenmektedir.
+meta-gemstone katmanı içerisinde [T3 Gemstone Linux Git reposunu](https://github.com/t3gemstone/linux)
+kullanan `linux-t3-gem-o1-rt_6.1.bb` isminde bir tarif bulunmaktadır. Daha eski veya yeni bir versiyona
+geçilecekse ilgili versiyonun commit ID'si alınıp tarif içerisinde yer alan `SRCREV` değişkeni
+güncellendikten sonra aşağıdaki komutlar çalıştırılarak derleme başlatılabilir.
+
+<Warning>
+Aşağıda yer alan komutların hepsi distrobox içerisinde çalıştırılacaktır. Dolayısıyla ilk olarak
+`devbox shell` --> `task box` komutlarını çalıştırmalısınız. Ayrıca Yocto ortamına geçiş yapabilmek
+için `m:oeinit t3-gem-o1` komutunu çalıştırmalısınız.
+</Warning>
+
+<Note>
+Bu bölümde T3-GEM-O1 kartı üzerinden anlatım yapılacaktır. Farklı bir makine için
+yapılanları uygulayacaksanız makine ismini uygun şekilde değiştiriniz.
+</Note>
+
+```bash
+bitbake virtual/kernel
+```
+
+Yukarıdaki işlemler tamamlandıktan sonra `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images` klasöründeki
+`Image` isimli dosyayı karttaki `/boot` klasörüne kopyalayarak geliştirme kartı üzerinde testlerinizi
+yapabilirsiniz.
+
+### Menuconfig ile Konfigürasyon Güncelleme
+
+Çeşitli donanım sürücülerini aktif/deaktif edecekseniz veya kernel konfigürasyonunu değiştirecekseniz
+(kısacası Kconfig ile tanımlanmış özellikleri değiştirecekseniz) menuconfig arayüzünü kullanabilirsiniz.
+
+<AccordionGroup>
+
+  <Accordion title="Menuconfig ekranının açılması">
+    ```bash
+    bitbake -c menuconfig virtual/kernel
+    ```
+
+    <Frame caption="Todo: menuconfig penceresi">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+
+    İstediğiniz ayarları değiştirdikten sonra aşağıdaki pencere açılana kadar
+    `ESC` tuşuna basınız. Ardından "Yes" butonunu seçiniz.
+
+    <Frame caption="Todo: değişiklikleri kaydet ekranı">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Değişikliklerin kalıcı hale getirilmesi">
+    Bu aşamada kerneli tekrar derleyebilirsiniz ancak yaptığınız değişiklikler sadece
+    sizin bilgisayarınızda kalır ve build klasörünü temizlemeniz durumunda kaybolurlar.
+    Bunu engellemek için aşağıdaki adımları takip ediniz.
+
+    ```bash
+    bitbake -c savedefconfig virtual/kernel
+    cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/linux-t3-gem-o1-rt/6.1.83+git/defconfig \
+       /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/
+    ```
+
+    Yukarıdaki komutlar sayesinde menuconfig ekranında yaptığınız değişiklikler
+    `yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/` dizinindeki
+    `defconfig` dosyasına kaydedilmiş olacaktır
+  </Accordion>
+
+  <Accordion title="Kernelin yeniden derlenmesi">
+    ```bash
+    bitbake -c clean virtual/kernel
+    bitbake virtual/kernel
+    ```
+
+    Yukarıdaki komutlar başarıyla tamamlandıysa `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`
+    dizininde Image dosyası oluşacaktır.
+  </Accordion>
+
+</AccordionGroup>
+
+### Kaynak Kodlarında Değişiklik Yapılması
+
+Metin editörünüzde `<sdk-dizini>/build/tmp-musl/work-shared/t3-gem-o1/kernel-source`
+klasörünü açınız. İstediğiniz kısımları değiştirdikten sonra aşağıdaki komutlarla kerneli derleyiniz. Yaptığınız
+değişiklikleri kaybetmemek adına [T3 Gemstone Linux reposu](https://github.com/t3gemstone/linux) için kendi
+forkunuzu oluşturup oraya gönderebilirsiniz.
+
+```bash
+bitbake virtual/kernel
+```
+
+Derleme bittikten sonra `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images` dizininde oluşan dosyaları
+SD kartta `/boot` dizinine kopyalayınız. Bir problemi çözdüyseniz veya yeni bir özellik eklediyseniz
+topluluğun da faydalanabilmesi için [T3 Gemstone Linux reposuna](https://github.com/t3gemstone/linux)
+pull request oluşturabilirsiniz.
