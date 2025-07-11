@@ -2,3 +2,157 @@
 title: 'EEPROM'
 description: 'Elektriksel Olarak Silinebilir Programlanabilir Salt Okunur Bellek'
 ---
+
+<Tip>
+Bu bölümün sonunda kart üzerinde kullanıcıya ayrılan eepromun teknik özellikleri, kullanım alanları ve çeşitli kullanım şekilleri
+hakkında bilgi sahibi olacaksınız.
+</Tip>
+
+EEPROMlar genelde dosya sistemi içermemeleri, boot esnasında hemen erişilebilir olmaları, yazılan veriyi çok uzun yıllar bozulmadan saklayabilmesi gibi
+sebeplerle bulundukları kartta ayarlanabilecek donanımsal veya yazılımsal parametreleri, karta özel bilgileri (ürün tipi, ürün seri numarası vb.) veya
+firmwareleri (BIOS vb.) depolamak için kullanılırlar.
+
+<Note>
+SD Kartlar ve USB Flash bellekler içinde depolanan veriyi 10 yıla kadar bozulmadan saklayabilirken AT24C512C model eeprom 40 yıl bozulmadan saklayabilir.
+</Note>
+
+## EEPROM Kullanımı
+
+Kart üzerinde AT24C512C modelli 512-Kbit (64KiB'ye tekabül eder) bir eeprom bulunuyor. SOC'ye I2C hattı üzerinden bağlı. Linux üzerinde kullanılabilmesi
+için gerekli sürücüler yüklü olarak geliyor. Linux device treede aşağıdaki gibi tanımlandı.
+
+```c++
+&wkup_i2c0 {
+  ...
+
+	eeprom@51 {
+		compatible = "atmel,24c512";
+		reg = <0x51>;
+	};
+
+  ...
+
+}
+```
+
+Kartın terminaline bağlandıktan sonra aşağıdaki komut çalıştırıldığında `2-0051` isimli klasörü görmemiz gerekir.
+
+```bash
+gemstone@t3-gem-o1:~$ ls /sys/bus/i2c/drivers/at24/
+total 0
+drwxr-xr-x  2 root root    0 Apr  7  2022 ./
+drwxr-xr-x 66 root root    0 Apr  7  2022 ../
+lrwxrwxrwx  1 root root    0 Jul  9 14:35 2-0051 -> '../../../../devices/platform/bus@f0000/bus@f0000:bus@b00000/2b200000.i2c/i2c-2/2-0051'/
+lrwxrwxrwx  1 root root    0 Jul  9 14:35 module -> ../../../../module/at24/
+--w-------  1 root root 4.0K Jul  9 14:35 bind
+--w-------  1 root root 4.0K Apr  7  2022 uevent
+--w-------  1 root root 4.0K Jul  9 14:35 unbind
+```
+
+<Note>
+Klasör ismindeki `2` eepromun 2 numaralı i2c hattında (yani wkup_i2c0) olduğunu `0051` ise i2c adresinin 0x51 olduğunu göstermektedir.
+</Note>
+
+Bu klasörün altında bulunana dosyaları incelediğimizde ise altında `eeprom` isminde bir dosya görmemiz gerekir. Bu dosya `at24` sürücüsü tarafından 
+üretilir ve eeproma sanki normal bir dosyaymış gibi yazıp okuyabilmemize imkan sağlar.
+
+```bash
+gemstone@t3-gem-o1:~$ ls /sys/bus/i2c/drivers/at24/2-0051/
+total 0
+drwxr-xr-x 4 root root    0 Apr  7  2022 ./
+drwxr-xr-x 7 root root    0 Apr  7  2022 ../
+drwxr-xr-x 3 root root    0 Apr  7  2022 2-00511/
+lrwxrwxrwx 1 root root    0 Jul  9 14:54 driver -> ../../../../../../../bus/i2c/drivers/at24/
+lrwxrwxrwx 1 root root    0 Jul  9 14:54 of_node -> '../../../../../../../firmware/devicetree/base/bus@f0000/bus@b00000/i2c@2b200000/eeprom@51'/
+drwxr-xr-x 2 root root    0 Jul  9 14:54 power/
+lrwxrwxrwx 1 root root    0 Apr  7  2022 subsystem -> ../../../../../../../bus/i2c/
+lrwxrwxrwx 1 root root    0 Jul  9 14:54 supplier:regulator:regulator.0 -> ../../../../../../virtual/devlink/regulator:regulator.0--i2c:2-0051/
+-rw------- 1 root root 4.0K Jul  9 14:54 eeprom
+-r--r--r-- 1 root root 4.0K Jul  9 14:54 modalias
+-r--r--r-- 1 root root 4.0K Apr  7  2022 name
+-rw-r--r-- 1 root root 4.0K Apr  7  2022 uevent
+```
+
+### Terminal Üzerinden EEPROM Kullanımı
+
+Aşağıdaki komut ile eepromu tamamen temizleyelim.
+
+<Note>
+T3-GEM-O1 kartta kullanılan eeprom 512 kilobitlik (64KiB) olduğu için count (yazılacak bayt sayısı) 65536(64 x 1024) verildi.
+</Note>
+
+```bash
+gemstone@t3-gem-o1:~$ sudo dd if=/dev/zero of=/sys/bus/i2c/drivers/at24/2-0051/eeprom bs=1 count=65536 status=progress
+[sudo] password for gemstone: 
+65493 bytes (65 kB, 64 KiB) copied, 356 s, 0.2 kB/s
+65536+0 records in
+65536+0 records out
+65536 bytes (66 kB, 64 KiB) copied, 356.235 s, 0.2 kB/s
+```
+
+<Note>
+`dd` çıktısından görüldüğü üzere eeprom yazma hızı `0.2 kB/s` yani saniyede 200 bayt yazabiliriz. Eepromların bir dezavantajları da yazma
+hızlarının çok düşük olmasıdır.
+</Note>
+
+Aşağıdaki komutla eeproma veri yazabiliriz.
+
+```bash
+gemstone@t3-gem-o1:~$ echo "Gemstone EEPROM" | sudo tee /sys/bus/i2c/drivers/at24/2-0051/eeprom
+[sudo] password for gemstone: 
+Gemstone EEPROM
+```
+
+Okuma işlemi için aşağıdaki komut çalıştırılabilir.
+
+```bash
+gemstone@t3-gem-o1:~$ sudo cat /sys/bus/i2c/drivers/at24/2-0051/eeprom
+Gemstone EEPROM
+```
+
+Herhangi bir programlama diliyle de sanki normal bir text dosyasından okuma yazma yapılıyormuş gibi eeproma veri yazma okuma yapabiliriz.
+Aşağıda Python ve C ile kullanım örnekleri verildi. Burada dikkat edilmesi gereken tek şey yazma yapmak için yalnızca yazma
+modunu seçmemiz gerekir. `"w+"`,`"r+"` vb. gibi hibrit yazma modlarını eepromlar desteklemez.
+
+<Accordion title="Python">
+```Python
+eeprom_yolu = "/sys/bus/i2c/drivers/at24/2-0051/eeprom"
+eeprom_boyut = 65536
+
+# Yaz
+with open(eeprom_yolu, "w") as eeprom:
+    eeprom.write("Python ile eeproma veri yazma okuma ornegi")
+
+# Oku
+with open(eeprom_yolu, "r") as eeprom:
+    eeprom_veri = eeprom.read(eeprom_boyut)
+    print("eeprom veri:", eeprom_veri)
+```
+</Accordion>
+
+<Accordion title="C">
+```C
+#include <stdio.h>
+
+#define eeprom_boyut 65536
+const char* eeprom_yolu = "/sys/bus/i2c/drivers/at24/2-0051/eeprom";
+
+int main()
+{
+    char eeprom_buffer[eeprom_boyut] = {0};
+    
+    // Yaz
+    FILE* eeprom = fopen(eeprom_yolu, "w");
+    fprintf(eeprom, "C ile eeprom veri yazma okuma ornegi!\n");
+    fclose(eeprom);
+    
+    // Oku
+    eeprom = fopen(eeprom_yolu, "r");
+    fread(eeprom_buffer, 1, eeprom_boyut, eeprom);
+    printf("eeprom veri: %s\n", eeprom_buffer);
+    fclose(eeprom);
+    
+    return 0;
+}
+```
+</Accordion>
