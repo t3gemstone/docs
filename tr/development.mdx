@@ -136,24 +136,38 @@ için ayrı ayrı açıklamalar Geliştirme kartları bölümünde izah edilmiş
 
 <Tip>
 Bu bölüm t3gemstone/examples isimli projeyi kart içerisine indirerek derleme işlemi yapıp örnekleri
-çalıştırmayı gösterir.
+çalıştırmayı gösterir. Detaylı bilgi için t3gemstone/examples projesinin README.md dosyasını inceleyebilirsiniz.
 </Tip>
 
-<Frame caption="Todo: Karta bağlanıp git clone işlemlerini gösteren ">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.1.1. Git clone işlemi ile örnek projeleri indir
 
-#### 2.1.1. Git clone işlemi ile örnek kodları indir
+```bash
+gemstone@t3-gem-o1:~$ git clone https://github.com/t3gemstone/examples.git
+gemstone@t3-gem-o1:~$ cd examples
+```
 
-<Frame caption="Todo: Git clone">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.1.2. Derleme için gerekli araçları ve kütüphaneleri kur
 
-#### 2.1.1. İndirilen kodları derleyerek çalıştır
+```bash
+gemstone@t3-gem-o1:examples$ sudo apt install -y build-essential libncurses-dev libgpiod-dev
+gemstone@t3-gem-o1:examples$ ./setup.sh
+gemstone@t3-gem-o1:examples$ devbox shell
+gemstone@t3-gem-o1:examples$ task fetch
+```
 
-<Frame caption="Todo: Task build">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.1.3. Örnek bir projeyi derle
+
+```bash
+gemstone@t3-gem-o1:examples$ CROSS_COMPILE=false PROJECT=magnetometer task build
+```
+
+#### 2.1.4. Derlenmiş projeyi çalıştır
+
+```bash
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/c/magnetometer
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/cpp/magnetometer
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/python/magnetometer
+```
 
 ### 2.2. Geliştirici bilgisayarında yazılım geliştirme
 
@@ -168,11 +182,7 @@ Intel x86-64 mimarili işlemcilere sahiptir. Bu durumda bir mimarili bilgisayard
 yapma imkanını sağlayan programlar Cross (Çarpaz) derleme araçlarıdır.
 </Note>
 
-<Frame caption="Todo: Host">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
-
-#### 2.2.1. Kartı ağa bağla
+#### 2.2.1. Gemstone kartını ve bilgisayarınızı Ethernet ile birbirine bağlayın
 
 Ethernet kablosunun bir ucunu geliştirme kartınıza diğer ucunu ise bilgisayarınıza bağlayınız.
 Ardından bilgisayarınıza aşağıdaki şekilde statik IP adresi ataması yapınız.
@@ -195,45 +205,58 @@ Ardından bilgisayarınıza aşağıdaki şekilde statik IP adresi ataması yap�
   </Tab>
 </Tabs>
 
-Bilgisayarınıza statik IP adresini atadıktan sonra seri port üzerinden kartın
-konsoluna erişip aşağıdaki komutları çalıştırınız.
+Bilgisayarınıza statik IP adresini atadıktan sonra seriport üzerinden kartın
+konsoluna erişip aşağıdaki komutları çalıştırınız. `nmcli` aracı kullanılarak yeni
+statik IP bağlantısı oluşturulup bu bağlantının önceliği DHCP'den daha yüksek
+olacak şekilde ayarlanacaktır. Bu sayede otomatik olarak statik IP ataması yapılacaktır.
 
 ```bash
-# eth0-static adinda yeni bir konfigurasyon olusturuyoruz
-sudo nmcli connection add \
+gemstone@t3-gem-o1:~$ sudo nmcli connection add \
   con-name "eth0-static" \
   ifname eth0 type ethernet \
   ip4 10.0.0.1/24 \
   connection.autoconnect yes
-
-# yeni olusturdugumuz konfigurasyonu DHCP konfigurasyonuna gore daha
-# oncelikli yapiyoruz ki IP adresini otomatik olarak almaya calismak
-# yerine bizim verdigimiz IP adresini atasin
-sudo nmcli connection modify "eth0-static" connection.autoconnect-priority 10
-sudo nmcli connection modify "eth0-dhcp" connection.autoconnect-priority 20
+gemstone@t3-gem-o1:~$ sudo nmcli connection modify "eth0-static" connection.autoconnect-priority 10
+gemstone@t3-gem-o1:~$ sudo nmcli connection modify "eth0-dhcp" connection.autoconnect-priority 20
 ```
 
-IP adresleri atandıktan sonra bilgisayarınız ve geliştirme kartınız arasındaki
-haberleşmenin başarılı olduğunu görebilmek için aşağıdaki komutu çalıştırınız.
+Statik IP adresi atandıktan sonra bağlantıyı test etmek için aşağıdaki komutu çalıştırınız.
+Eğer yanıt alabiliyorsanız Ethernet bağlantısı başarılıdır.
 
 ```bash
-ping 10.0.0.2
+gemstone@t3-gem-o1:~$ ping 10.0.0.2
 ```
 
-#### 2.2.2. Geliştirici (Host) Bilgisayarını Hazırla
+#### 2.2.2. Git clone işlemi ile örnek projeleri indir
 
-<Frame caption="Todo: Host Geliştirici Bilgisayarı Hazırlık">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+```bash
+host@pc:~$ git clone https://github.com/t3gemstone/examples.git
+host@pc:~$ cd examples
+```
 
-#### 2.2.3. Geliştirici (Host) Bilgisayarında Proje Derle
+#### 2.2.3. Derleme için gerekli araçları ve toolchain'i kur
 
-<Frame caption="Todo: Derle">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+```bash
+host@pc:examples$ ./setup.sh
+host@pc:examples$ devbox shell
+host@pc:examples$ task fetch
+```
+#### 2.2.4. Örnek bir projeyi toolchain'i kullanarak çapraz derle
 
-#### 2.2.4. Derlenen yazılımları Geliştirme Kartına (Target) yükle
+```bash
+host@pc:examples$ PROJECT=magnetometer task build
+```
 
-<Frame caption="Todo: Yükle">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.2.5. Derlenen projeyi geliştirme kartına yükle
+
+```bash
+host@pc:examples$ scp -r build/examples gemstone@10.0.0.1:build
+```
+
+#### 2.2.6. Derlenmiş projeyi çalıştır
+
+```bash
+gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/c/magnetometer
+gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/cpp/magnetometer
+gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/python/magnetometer
+```

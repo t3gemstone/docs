@@ -134,23 +134,38 @@ the board is explained, and each component is separately described in the Develo
 
 <Tip>
 This section shows how to download the t3gemstone/examples project onto the board, compile it, and run the examples.
+For more detailed information check out the README.md file of t3gemstone/examples project.
 </Tip>
 
-<Frame caption="Todo: Showing git clone operations on the board">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.1.1. Clone example projects with Git
 
-#### 2.1.1. Download Example Codes with Git Clone
+```bash
+gemstone@t3-gem-o1:~$ git clone https://github.com/t3gemstone/examples.git
+gemstone@t3-gem-o1:~$ cd examples
+```
 
-<Frame caption="Todo: Git clone">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.1.2. Install libraries and additional tools needed for compilation
 
-#### 2.1.2. Compile and Run the Downloaded Codes
+```bash
+gemstone@t3-gem-o1:examples$ sudo apt install -y build-essential libncurses-dev libgpiod-dev
+gemstone@t3-gem-o1:examples$ ./setup.sh
+gemstone@t3-gem-o1:examples$ devbox shell
+gemstone@t3-gem-o1:examples$ task fetch
+```
 
-<Frame caption="Todo: Task build">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.1.3. Compile an example project
+
+```bash
+gemstone@t3-gem-o1:examples$ CROSS_COMPILE=false PROJECT=magnetometer task build
+```
+
+#### 2.1.4. Run the compiled project
+
+```bash
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/c/magnetometer
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/cpp/magnetometer
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/python/magnetometer
+```
 
 ### 2.2. Software Development on the Developer's Computer
 
@@ -165,24 +180,81 @@ architecture processors. In this case, Cross Compilation tools provide the abili
 architectures.
 </Note>
 
-<Frame caption="Todo: Host">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+#### 2.2.1. Establish Ethernet connection between Gemstone board and your computer
 
-#### 2.2.1. Prepare the Developer (Host) Computer
+Connect one end of Ethernet cable to Gemstone board and the other end to your computer.
+After that set static IP to your computer as shown below.
 
-<Frame caption="Todo: Host Developer Computer Preparation">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+<Tabs>
+  <Tab title="Windows">
+    <Frame caption="Todo: Set IP address from Control Panel">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Tab>
+  <Tab title="Linux">
+    <Frame caption="Todo: Set IP address from CLI or gnome-settings GUI">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Tab>
+  <Tab title="macOS">
+    <Frame caption="Todo: Set IP address from settings app">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Tab>
+</Tabs>
 
-#### 2.2.2. Compile the Project on the Developer (Host) Computer
+After setting your computer's IP, get a shell from Gemstone board via serial port and run the commands below.
+A new connection for static IP will be created and its priority will be set higher than DHCP via `nmcli` tool. That way 
+static IP will be assigned automatically.
 
-<Frame caption="Todo: Compile">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+```bash
+gemstone@t3-gem-o1:~$ sudo nmcli connection add \
+  con-name "eth0-static" \
+  ifname eth0 type ethernet \
+  ip4 10.0.0.1/24 \
+  connection.autoconnect yes
+gemstone@t3-gem-o1:~$ sudo nmcli connection modify "eth0-static" connection.autoconnect-priority 10
+gemstone@t3-gem-o1:~$ sudo nmcli connection modify "eth0-dhcp" connection.autoconnect-priority 20
+```
 
-#### 2.2.3. Upload the Compiled Software to the Development Board (Target)
+After static IP is assigned, run the command below to test the connection. If you get a reply Ethernet connection is
+successful.
 
-<Frame caption="Todo: Upload">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+```bash
+gemstone@t3-gem-o1:~$ ping 10.0.0.2
+```
+
+#### 2.2.2. Clone example projects with Git
+
+```bash
+host@pc:~$ git clone https://github.com/t3gemstone/examples.git
+host@pc:~$ cd examples
+```
+
+#### 2.2.3. Install toolchain and additional tools needed for compilation
+
+```bash
+host@pc:examples$ ./setup.sh
+host@pc:examples$ devbox shell
+host@pc:examples$ task fetch
+```
+
+#### 2.2.4. Cross compile an example project using the toolchain
+
+```bash
+host@pc:examples$ PROJECT=magnetometer task build
+```
+
+#### 2.2.5. Upload compiled project into the development board
+
+```bash
+host@pc:examples$ scp -r build/examples gemstone@10.0.0.1:build
+```
+
+#### 2.2.6. Run the compiled project
+
+```bash
+gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/c/magnetometer
+gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/cpp/magnetometer
+gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/python/magnetometer
+```
