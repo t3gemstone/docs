@@ -1,4 +1,69 @@
 ---
-title: 'CanBus'
-description: 'CanBus'
+title: 'CAN Bus'
+description: 'Controller Area Network (CAN)'
 ---
+
+<Tip>
+Bölüm bitiminde Gemstone geliştirme kartında sanal CAN arayüzü oluşturma hakkında bilgi sahibi olacaksınız.
+</Tip>
+
+Controller Area Network (CAN) protokolü, özellikle otomotiv ve endüstriyel otomasyon alanlarında yaygın olarak 
+kullanılan bir iletişim standardıdır. CAN protokolü, yüksek güvenilirlik ve düşük maliyet veri iletimi 
+gibi avantajları ile dikkat çekmektedir. 
+
+### CAN Bus Kullanımı
+
+Gemstone işletim sisteminde sanal CAN arayüzü oluşturularak herhangi ilave donanıma gerek kalmadan bu arayüz üzerinden 
+veri iletişimi sağlanabilmektedir.
+
+* Gemstone işletim sistemine bağlandıktan sonra sanal CAN arayüzü oluşturabilmek için `kernel-module-vcan-6.1.83-ti` 
+modülünü kurunuz.
+
+```bash
+sudo apt install picocom kernel-module-vcan-6.1.83-ti
+```
+* `modprobe` komutu ile kurulan modülü aktif ediniz.
+
+```bash
+sudo modprobe vcan
+```
+* Aşağıdaki komutları takip ederek sanal CAN arayüzünü oluşturunuz.
+
+```bash
+sudo ip link add dev vcan0 type vcan
+sudo ip link set up vcan0
+```
+
+* Script dosyasını oluşturunuz ve dosyayı açınız.
+```bash
+touch can_test.sh
+nano can_test.sh
+```
+
+* Aşağıdaki kodu kopyalayıp ``can_test.sh`` dosyasına yapıştırınız. Dosyayı kaydedip kapatınız.
+```bash
+#!/bin/bash
+
+while :
+do
+   cansend vcan0 123#AABBCCDDEE112233
+   sleep 1
+done
+```
+
+* `cansend` ve `candump` gibi CAN paketleri gönderim alım komutlarını kullanabilmek için `can-utils`
+paketini kurunuz.
+
+```bash
+sudo apt install can-utils
+```
+İki adet terminal açıp bir terminalden `candump vcan0` komutu ile CAN arayüzünü dinleme işlemini başlatıp
+diğer terminaldende `./can_test.sh` komutu ile gönderim işlemini başlatabilirsiniz.
+
+
+<Note> Bu örnekte birden fazla terminal açılması gerektiği için `Desktop` imajının kullanılması tercih edilmiştir.</Note>
+
+
+<Frame caption="Sanal CAN arayüzü üzerinden haberleşme">
+  <video controls className="w-full aspect-video" src="/videos/can-test.mp4"></video>
+</Frame>
