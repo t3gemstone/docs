@@ -3,26 +3,178 @@ title: 'Giriş'
 description: 'Bileşen, Çevresel Aygıtlar ve Kullanım Örnekleri'
 ---
 
-Bu bölümde, kart üzerinde bulunan Sensörlerin, veri hatlarının kullanımlarına dair örnekler gösterilecektir.
-Bütün örnekler Seriport bağlantısı kurularak Terminal/Konsol üzerinden yapılacağı için
+Bu bölümde, kart üzerinde bulunan sensörlerin ve veri hatlarının kullanımlarına dair örnekler gösterilecektir.
+Bütün örnekler seri port bağlantısı kurularak Terminal/Konsol üzerinden yapılacağı için
 [Hızlı Başlangıç](../../../quickstart) bölümünde Terminal kullanımına dair açıklamaları okumuş olduğunuz
 kabul edilmektedir. İlgili kısımda anlatılan Desktop imajına tarayıcı ile bağlanma, SSH/Ethernet ile bağlanma
-veya Seriport üzerinden konsol ile bağlanma yöntemlerinden birini tercih edebilirsiniz.
+veya seri port üzerinden konsol ile bağlanma yöntemlerinden birini tercih edebilirsiniz.
 
 ### Pinout
 
-<Frame caption="Todo: 40-Pin Header ile farklı özelliklerin eklenmesi">
-  <img height="200" width="200" src="/images/under-construction.png" />
-</Frame>
+Kart üzerinde bulunan **40-pin expansion header** olarak isimlendirilen Giriş/Çıkış (I/O) pinleri; UART (seri port), I2C ,
+SPI, PWM ve PCM gibi arayüzleri sağlamaktadır.
 
-Kart üzerinde bulunan **40-pin expansion header** olarak isimlendirilen Giriş/Çıkış (I/O) pinleri; Seriport, i2C, Spi
-gibi arayüzleri sağlamaktadır. Örneğin GPIO-18 isimli pinler seriport olarak varsayılan konfigürasyon olarak belirlenmiş
-olup **Device Tree** ismi verilen dosyalarlada değişiklik yapılarak Mikroişlemcinin izin verdiği ölçüde SPI'ya
-dönüştürülebilmektedir. Benzer şekilde Gemstone VTOL projesinde Bluetooth ihtiyacı olmadığından, ilgili pinler devre
-dışı bırakılarak Seriport UART'a dönüştürülmüştür.
+Bu bölümde 40-pin giriş/çıkış portlarının kullanım amaçları ve varsayılan konfigürasyonda hangi arayüzlere tahsis
+edildiğine değinilecek, sonraki bölümde ise **Device Tree Overlay** dosyaları ile pinlerin nasıl farklı kullanımlara
+açılabileceği izah edilecektir.
 
-Bu bölümde 40-pin giriş/çıkış portlarının kullanım amaçları ve hangi arayüzlere tahsis edildiği ve nasıl
-kullanılacağına değinilecek aşağıdaki bölümde ise pinlerin nasıl farklı kullanımlara açılabileceği izah edilecektir.
+Örneğin `GPIO-7` isimli pin varsayılan konfigürasyonda `SPI-MCU0 CS1` olarak belirlenmiş
+olup **Device Tree Overlay** ismi verilen dosya aktif edilerek `UART-WKUP0 RX` fonksiyonuna dönüştürülebilmektedir.
+Benzer şekilde Gemstone VTOL projesinde Bluetooth ihtiyacı olmadığından, ilgili pinler devre
+dışı bırakılarak `UART-MAIN6`'ya dönüştürülmüştür.
+
+| FONKSİYON               | PİNLER        | PİNLER       | FONKSİYON               |
+|------------------------:|:-------------:|:------------:|:------------------------|
+| 3v3 Power               | **3v3 Power** | **5v Power** | 5v Power                |
+| I2C-MCU0 SDA            | **GPIO-2**    | **5v Power** | 5v Power                |
+| I2C-MCU0 SCL            | **GPIO-3**    | **GND**      | GND                     |
+|                         | **GPIO-4**    | **GPIO-14**  | UART-MAIN1 TX           |
+| GND                     | **GND**       | **GPIO-15**  | UART-MAIN1 RX           |
+|                         | **GPIO-17**   | **GPIO-18**  | PCM-McASP0 CLK          |
+|                         | **GPIO-27**   | **GND**      | GND                     |
+|                         | **GPIO-22**   | **GPIO-23**  |                         |
+| 3v3 Power               | **3v3 Power** | **GPIO-24**  |                         |
+| SPI-MCU0 MOSI           | **GPIO-10**   | **GND**      | GND                     |
+| SPI-MCU0 MISO           | **GPIO-9**    | **GPIO-25**  |                         |
+| SPI-MCU0 SCLK           | **GPIO-11**   | **GPIO-8**   | SPI-MCU0 CS0            |
+| GND                     | **GND**       | **GPIO-7**   | SPI-MCU0 CS1            |
+| I2C-WKUP0 SDA (rezerve) | **GPIO-0**    | **GPIO-1**   | I2C-WKUP0 SCL (rezerve) |
+|                         | **GPIO-5**    | **GND**      | GND                     |
+|                         | **GPIO-6**    | **GPIO-12**  | PWM-ECAP0               |
+| PWM-1B                  | **GPIO-13**   | **GND**      | GND                     |
+| PCM-McASP0 FS           | **GPIO-19**   | **GPIO-16**  |                         |
+|                         | **GPIO-26**   | **GPIO-20**  | PCM-McASP0 DIN          |
+| GND                     | **GND**       | **GPIO-21**  | PCM-McASP0 DOUT         |
+
+#### UART-MAIN1
+
+Bu UART arayüzüne Gemstone kartta yer alan `/dev/ttyS3` cihazı üzerinden erişilebilmektedir.
+
+Komut satırından UART hattını test etmek için `picocom` programından yararlanabilirsiniz.
+`picocom` seri terminal uygulamasıdır, belirtilen seri porta anlık olarak klavyeden basılan karakterleri
+gönderirken karşı taraftan gelen verileri de ekrana basar.
+`TX` ve `RX` pinlerini jumper kablo yardımıyla birbirine bağladıktan sonra
+aşağıdaki komutu çalıştırabilirsiniz. Eğer bağlantılar düzgünse klavyede anlık bastığınız karakterleri ekranınızda
+görmeniz gerekmektedir.
+
+```bash
+gemstone@t3-gem-o1:~$ picocom -b 115200 /dev/ttyS3
+# picocom v3.1
+#
+# port is        : /dev/ttyS6
+# flowcontrol    : none
+# baudrate is    : 115200
+# parity is      : none
+# databits are   : 8
+# stopbits are   : 1
+# escape is      : C-a
+# local echo is  : no
+# noinit is      : no
+# noreset is     : no
+# hangup is      : no
+# nolock is      : no
+# send_cmd is    : sz -vv
+# receive_cmd is : rz -vv -E
+# imap is        :
+# omap is        :
+# emap is        : crcrlf,delbs,
+# logfile is     : none
+# initstring     : none
+# exit_after is  : not set
+# exit is        : no
+#
+# Type [C-a] [C-h] to see available commands
+# Terminal ready
+# Hello World
+```
+
+#### I2C-MCU0
+
+Bu I2C arayüzüne Gemstone kartta yer alan `/dev/i2c-1` cihazı üzerinden erişilebilmektedir.
+
+Hatta bağlı çevre birimleri görüntülemek için `i2cdetect` komutundan yararlanabilirsiniz.
+Örnek bir çıktı aşağıda verilmiştir.
+Komutun çıktısında `UU` ile belirtilen adreslerdeki (`0x30`) çevre birimler I2C hattına bağlı fakat Linux kernel tarafından
+kullanılmakta, doğrudan adres numarası yazan (`0x6b`) çevre birimler ise I2C hattına bağlı ve boşta anlamına gelmektedir.
+
+```bash
+gemstone@t3-gem-o1:~$ i2cdetect -r -y 1
+#      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+# 00:                         -- -- -- -- -- -- -- --
+# 10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# 20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# 30: UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# 40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# 50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+# 60: -- -- -- -- -- -- -- -- -- -- -- 6b -- -- -- --
+# 70: -- -- -- -- -- -- -- --
+```
+
+#### I2C-WKUP0
+
+<Warning>
+Bu I2C arayüzü karta **40-pin expansion header** üzerinden bağlanan **Hardware Attached on Top (HAT)** cihazları tanımlamak için
+kullanılır. Boot esnasında HAT üzerinde yer alan EEPROM sorgulanır ve cihaz bilgisi okunur. Eğer karta HAT
+bağlanmayacaksa bu pinler boşta bırakılmalıdır.
+</Warning>
+
+#### SPI-MCU0
+
+Bu SPI arayüzüne Gemstone kartta yer alan `/dev/spidev0.0` ve `/dev/spidev0.1` cihazları üzerinden erişilebilmektedir.
+`/dev/spidev0.0` cihazı SPI-MCU0 CS0, `/dev/spidev0.1` cihazı ise SPI-MCU0 CS1'e karşılık gelmektedir.
+
+Komut satırından SPI hattını test etmek için `spi-pipe` programından yararlanabilirsiniz.
+`spi-pipe` programı stdin'den gelen verileri `--device` ayarıyla belirtilen SPI hattına basıp, hattan gelen veriyi de
+stdout'a basmaktadır.
+`MOSI` ve `MISO` pinlerini jumper kablo yardımıyla birbirine bağladıktan sonra
+aşağıdaki komutu çalıştırabilirsiniz. Eğer bağlantılar düzgünse ekranda "Hello World" yazısını görmeniz gerekmektedir.
+
+```bash
+gemstone@t3-gem-o1:~$ printf '\x48\x65\x6c\x6c\x6f\x20\x57\x6f\x72\x6c\x64' | spi-pipe --device /dev/spidev0.0 --speed 1000000
+# Hello World
+```
+
+#### PWM-1B
+
+Bu PWM arayüzüne Gemstone kartta yer alan `/sys/class/pwm/pwmchip5/pwm1` cihazı üzerinden erişilebilmektedir.
+
+Bu cihazın oluşması için öncelikle `export` komutu çalıştırılmalıdır.
+Ardından nanosaniye cinsinden `period` ve `duty_cycle` değerleri aşağıdaki örnekte gösterildiği şekilde istenen
+değerlere ayarlanıp cihaza `enable` komutu verildikten sonra PWM çıktısı alınabilir.
+
+```bash
+gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip5/export
+# 1
+gemstone@t3-gem-o1:~$ echo 2000000 | sudo tee /sys/class/pwm/pwmchip5/pwm1/period     # 500 Hz
+# 2000000
+gemstone@t3-gem-o1:~$ echo 1000000 | sudo tee /sys/class/pwm/pwmchip5/pwm1/duty_cycle # 50%
+# 1000000
+gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip5/pwm1/enable
+# 1
+```
+
+#### PWM-ECAP0
+
+Bu PWM arayüzüne Gemstone kartta yer alan `/sys/class/pwm/pwmchip0/pwm0` cihazı üzerinden erişilebilmektedir.
+
+```bash
+gemstone@t3-gem-o1:~$ echo 0 | sudo tee /sys/class/pwm/pwmchip0/export
+# 0
+gemstone@t3-gem-o1:~$ echo 2000000 | sudo tee /sys/class/pwm/pwmchip0/pwm0/period     # 500 Hz
+# 2000000
+gemstone@t3-gem-o1:~$ echo 1000000 | sudo tee /sys/class/pwm/pwmchip0/pwm0/duty_cycle # 50%
+# 1000000
+gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip0/pwm0/enable
+# 1
+```
+
+#### PCM-McASP0
+
+Pulse-code Modulation (PCM) ya da Texas Instruments SoC'lerindeki adıyla Multichannel Audio Serial Port (McASP), düşük
+gecikmeli ve yüksek kaliteli dijital ses akışı gerektiren gerçek zamanlı ses işleme uygulamalarında kullanılabilmektedir.
+`FS` pini DAC gibi harici bir ses cihazına frame-sync sinyali sağlarken `CLK` pini de benzer şekilde clock sinyali sağlar.
+`DIN` pini sayesinde I2S mikrofon gibi bir dijital ses cihazından veri girişi, `DOUT`
+pini sayesinde de DAC gibi bir dijital ses cihazına veri çıkışı sağlanabilmektedir.
 
 ### Device Tree
 
