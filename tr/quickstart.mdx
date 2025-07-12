@@ -416,26 +416,24 @@ Gemstone geliştirme kartınızı USB Type-C kablosuyla bilgisayarınıza bağla
 bağlantıyı kullanarak tarayıcı üzerinden masaüstüne erişebilirsiniz.
 
 <Tip>
-[https://192.168.7.1:8443/vnc.html](https://192.168.7.1:8443/vnc.html)
+[https://192.168.7.2:8443/vnc.html](https://192.168.7.2:8443/vnc.html)
 </Tip>
 
-<Frame caption="Todo: Microsoft Edge ile VNC sertifika doğrulama görüntüsü">
-  <img height="200" width="200" src="/images/under-construction.png" />
+<Frame caption="Sertifika Hatası Ekranı (Advanced kısmından devam edebilirsiniz)">
+  <img src="/images/vnc-cert.png" />
 </Frame>
 
 <Note>
-Bağlantı kurulduğunda tarayıcı sertifika hatası verecektir. Self-signed sertifika
-kullanıldığı için bu durum normaldir. Devam edebilirsiniz.
+Bağlantı kurulduğunda tarayıcının sertifika hatası vermesinin sebebi VNC sunucusunda
+self-signed sertifika kullanılmış olmasıdır. Bu durum normaldir.
 </Note>
 
-<Frame caption="Todo: Şifre ekranı">
-  <img height="200" width="200" src="/images/under-construction.png" />
+<Frame caption="Şifre Ekranı (Gemstone Imager üzerinden verdiğiniz VNC şifresini giriniz)">
+  <img src="/images/vnc-pass.png" />
 </Frame>
 
-Şifre kutusuna Gemstone Imager ile imaj oluşturma esnasında verdiğiniz VNC şifresini giriniz.
-
-<Frame caption="Todo: Masaüstü görüntüsü">
-  <img height="200" width="200" src="/images/under-construction.png" />
+<Frame>
+  <img src="/images/vnc-desktop.png" />
 </Frame>
 
 ### 2.3. SSH ile network üzerinden bağlantı
@@ -449,7 +447,7 @@ Gemstone geliştirme kartınızı USB Type-C kablosuyla bilgisayarınıza bağla
 komutu terminalde çalıştırınız.
 
 ```bash
-ssh gemstone@192.168.7.1
+ssh gemstone@192.168.7.2
 ```
 
 ### 2.4. Gemstone işletim sistemini güncelle
