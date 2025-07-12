@@ -2,3 +2,62 @@
 title: 'Preempt-RT'
 description: 'Realtime Embedded Linux'
 ---
+
+This section will discuss determinism, real-time systems, and Linux's position in real-time systems, followed by an introduction to a real-time Linux application developed in C that utilizes these features.
+
+### Determinism and Real-Time Systems
+
+Determinism refers to a system consistently producing the same results for the same inputs and executing them within predictable time constraints. This concept is critically important in **real-time systems**, as producing correct results alone is insufficient—these results must also be delivered within specific time limits.
+
+The traditional Linux kernel is designed to optimize **throughput** and overall system performance. This approach ensures fair sharing of CPU time and achieves high efficiency across the system but does not guarantee deterministic behavior. The kernel itself is designed as **non-preemptible**, meaning that when a process is running in kernel mode, even a higher-priority process cannot interrupt it. This leads to unpredictable execution times for interrupt handlers and system calls.
+
+### Preempt-RT
+
+Preempt-RT is a patchset that adapts the Linux kernel for real-time applications. This patch makes nearly the entire kernel **preemptible**, allowing high-priority processes to interrupt lower-priority ones running in kernel mode. The primary goal of Preempt-RT is to minimize **latency** across the system and provide deterministic behavior guarantees for real-time processes. While this approach slightly reduces system throughput, it delivers the predictable performance required for time-critical applications. The Gemstone Minimal image uses the Preempt-RT Linux kernel by default.
+
+### Example Application
+
+The `preempt-rt` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository is a benchmarking tool designed to test real-time task performance on the Linux Preempt-RT kernel. The program's main purpose is to measure **latency** and **jitter**—critical metrics in real-time systems—to analyze system performance. The application simulates a task running at a 1-millisecond period, evaluating how consistently and predictably it executes.
+
+The program works by first creating a real-time thread using the `SCHED_FIFO` scheduling policy and assigning it a high priority (priority 80). This thread simulates a task that should run every 1ms, using the `clock_nanosleep()` function for precise timing. Additionally, the program locks memory pages in RAM using `mlockall()` to prevent page faults and reduce delays. Over 10,000 iterations, it collects performance data, measuring the difference between expected and actual wake-up times (latency) and the consistency of the period (jitter).
+
+```bash
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/preempt-rt/preempt-rt
+# Linux Preempt-RT Real-Time Task Example
+# ========================================
+# Real-time kernel: YES
+# Creating RT task with priority 80...
+# RT task created successfully
+# Running for 10000 iterations (period: 1.000 ms)...
+# Press Ctrl+C to stop early
+# 
+# RT Task started (TID: 900)
+# RT Task completed 10000 iterations
+# 
+# === REAL-TIME PERFORMANCE STATISTICS ===
+# Total iterations: 10000
+# Task period: 1000000 ns (1.000 ms)
+# 
+# LATENCY STATISTICS:
+#   Min latency:        10190 ns (10.190 μs)
+#   Max latency:        76534 ns (76.534 μs)
+#   Avg latency:      11667.5 ns (11.668 μs)
+#   Std deviation:      696.9 ns ( 0.697 μs)
+# 
+# JITTER STATISTICS:
+#   Min jitter:             2 ns ( 0.002 μs)
+#   Max jitter:         64724 ns (64.724 μs)
+#   Avg jitter:         158.2 ns ( 0.158 μs)
+# 
+# LATENCY DISTRIBUTION:
+#   < 1 μs:          0 (  0.0%)
+#   1-10 μs:         0 (  0.0%)
+#   10-100 μs:   10000 (100.0%)
+#   100-1000 μs:     0 (  0.0%)
+#   > 1000 μs:       0 (  0.0%)
+# 
+# === SYSTEM INFORMATION ===
+# Process PID: 899
+# Scheduling policy: SCHED_FIFO
+# RT Priority: 80
+```

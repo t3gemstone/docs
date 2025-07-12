@@ -3,4 +3,84 @@ title: 'Preempt-RT'
 description: 'Realtime Gömülü Linux'
 ---
 
-Bu bölümde Gemstone Minimal imajı üzerinde deterministik, gerçek zamanlı C/C++ projesi örneği anlatılacaktır.
+Bu bölümde determinizm, gerçek zamanlı (real-time) sistemler ve Linux'un gerçek zamanlı sistemlerde nasıl bir konumda 
+yer aldığından bahsedilecek ardından C dilinde geliştirilmiş gerçek zamanlı Linux özelliklerini kullanan uygulama 
+tanıtılacaktır.
+
+### Determinizm ve Gerçek Zamanlı Sistemler
+
+Determinizm, bir sistemin aynı girdiler verildiğinde her zaman aynı sonuçları üretmesi ve bunları öngörülebilir zaman
+sınırları içinde gerçekleştirmesi anlamına gelir. **Gerçek zamanlı sistemlerde** bu kavram kritik öneme sahiptir, çünkü bu
+sistemlerde sadece doğru sonuç üretmek yeterli değildir; bu sonuçların belirli zaman sınırları içinde üretilmesi de
+şarttır. 
+
+Geleneksel Linux çekirdeği, **throughput (işlem hacmi)** ve genel sistem performansını optimize etmek için
+tasarlanmıştır. Bu yaklaşım, işlemci zamanının adil paylaşımını sağlar ve sistem genelinde yüksek verimlilik elde eder,
+ancak deterministik davranış konusunda garanti vermez. Çekirdeğin kendisi **kesilemez (non-preemptible)** olarak
+tasarlanmıştır, yani bir işlem çekirdek modunda çalışırken, daha yüksek öncelikli bir işlem bile onu bölemez. Bu durum,
+interrupt handler'ların ve sistem çağrılarının öngörülemeyen sürelerde çalışmasına neden olur.
+
+### Preempt-RT
+
+Preempt-RT, Linux çekirdeğini gerçek zamanlı uygulamalar için uygun hale getiren bir yama setidir. Bu yama, çekirdeğin
+neredeyse tamamını **kesilebilir (preemptible)** hale getirerek, yüksek öncelikli işlemlerin çekirdek modunda çalışan düşük
+öncelikli işlemleri bölebilmesini sağlar. Preempt-RT'nin temel amacı, sistem genelinde **latency (gecikme)**
+değerini minimize etmek ve gerçek zamanlı işlemler için deterministik davranış garantisi sunmaktır. Bu yaklaşım, sistem
+throughput'unu bir miktar azaltsa da, kritik zamanlı uygulamalar için gerekli olan öngörülebilir performansı sağlar.
+Gemstone Minimal imajında Preempt-RT Linux kerneli tercih edilmiştir.
+
+### Örnek Uygulama
+
+[t3gemstone/examples](https://github.com/t3gemstone/examples) reposunda yer alan `preempt-rt` projesi
+Linux Preempt-RT çekirdeğinde gerçek zamanlı görev performansını test etmeye yönelik bir benchmark aracıdır. Programın
+temel amacı, gerçek zamanlı sistemlerde kritik olan **latency** ve **jitter** değerlerini ölçerek sistem
+performansını analiz etmektir. Uygulama, 1 milisaniye periyotta çalışan bir görevi simüle ederek, bu görevin ne kadar
+tutarlı ve öngörülebilir şekilde çalıştığını değerlendirir. 
+
+Program çalışma mantığı olarak öncelikle `SCHED_FIFO`
+scheduling policy kullanarak gerçek zamanlı bir thread oluşturur ve buna yüksek öncelik (priority 80) atar. 
+Bu thread, her 1ms'de bir çalışması gereken görevi simüle eder ve `clock_nanosleep()` fonksiyonu ile hassas zamanlama yapar. 
+Program ayrıca mlockall() ile bellek sayfalarını RAM'de kilitleyerek page fault'ları önler ve gecikmeleri azaltır.
+10,000 iterasyon boyunca performans verisi toplayarak, beklenen uyanma zamanı ile gerçek uyanma zamanı arasındaki farkı
+(latency) ve periyodun tutarlılığını (jitter) ölçer.
+
+```bash
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/preempt-rt/preempt-rt
+# Linux Preempt-RT Real-Time Task Example
+# ========================================
+# Real-time kernel: YES
+# Creating RT task with priority 80...
+# RT task created successfully
+# Running for 10000 iterations (period: 1.000 ms)...
+# Press Ctrl+C to stop early
+# 
+# RT Task started (TID: 900)
+# RT Task completed 10000 iterations
+# 
+# === REAL-TIME PERFORMANCE STATISTICS ===
+# Total iterations: 10000
+# Task period: 1000000 ns (1.000 ms)
+# 
+# LATENCY STATISTICS:
+#   Min latency:        10190 ns (10.190 μs)
+#   Max latency:        76534 ns (76.534 μs)
+#   Avg latency:      11667.5 ns (11.668 μs)
+#   Std deviation:      696.9 ns ( 0.697 μs)
+# 
+# JITTER STATISTICS:
+#   Min jitter:             2 ns ( 0.002 μs)
+#   Max jitter:         64724 ns (64.724 μs)
+#   Avg jitter:         158.2 ns ( 0.158 μs)
+# 
+# LATENCY DISTRIBUTION:
+#   < 1 μs:          0 (  0.0%)
+#   1-10 μs:         0 (  0.0%)
+#   10-100 μs:   10000 (100.0%)
+#   100-1000 μs:     0 (  0.0%)
+#   > 1000 μs:       0 (  0.0%)
+# 
+# === SYSTEM INFORMATION ===
+# Process PID: 899
+# Scheduling policy: SCHED_FIFO
+# RT Priority: 80
+```
