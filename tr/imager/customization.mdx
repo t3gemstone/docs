@@ -7,13 +7,15 @@ description: 'Sistem özelleştirme'
   Bu bölümün sonunda Gemstone Imager uygulamasının özelleştirme menülerindeki alanların ne işe yaradığını öğreneceksiniz.
 </Tip>
 
-Gemstone Imager uygulamasında kart, işletim sistemi ve depolama seçeneklerini seçip `Next` tuşuna basıldığında karşımıza `OS Customisation` menüsü çıkar.
+Gemstone Imager uygulamasında kart, işletim sistemi ve depolama seçeneklerini seçilip `Next` tuşuna basıldığında karşımıza `OS Customisation` menüsü çıkar.
 Bu menüde `General`, `Services` ve `Options` isminde 3 adet sekme bulunur.
 
 
 ## General (Genel) Sekmesi
 
+<Frame>
 <img src="/images/gem-imager/general-tab.png"/>
+</Frame>
 
 ### Hostname ve Şifre Alanı
 
@@ -47,17 +49,61 @@ kartın yerleşik depolamadan boot edilebilmesini sağlar.
 
 ## Services (Servisler) Sekmesi
 
+<Frame>
 <img src="/images/gem-imager/services-tab.png"/>
+</Frame>
 
 ### Enable SSH Alanı
 
+- Ayarın kutucuğu işaretlenerek aktif hale getirilir. Karta ağ üzerinden terminal bağlantısı yapmaya olanak tanır.
+- Aktif edildiğinde varsayılan seçenek olarak `Use password authentication` seçeneği seçili gelir. Bu seçenek şifreyi bilen herkesin
+karta bağlantı yapabilmesine sebep olur. `Allow public-key authentication only` seçeneği seçilirse yalnızca burada sağlanılacak olan
+anahtara sahip cihazlar bağlanabilir. 
+
 ### Enable VNC Alanı
+
+- Ayarın kutucuğu işaretlenerek aktif hale getirilir. Sadece tarayıcı kullanarak karta masaüstü grafik arayüzüne bağlantı yapmaya olanak tanır.
+
+<Frame caption="Todo: Screenshot taken from VNC connection">
+<img height="200" width="200" src="/images/under-construction.png"/>  
+</Frame>
+
+- Ayar aktifleştirildiğinde `Password` alanına şifre girilmesi zorunludur varsayılan bir şifre atanmaz. 
+
+<Note>
+Şifre maksimum 8 haneli olmalı daha uzun şifreler 8. haneden sonrası atılarak kabul edilir.
+</Note>
 
 ### Gadgets (Araçlar) Alanı
 
+- T3-GEM-O1 kart type-c portu üzerinden bağlantı yapıldığı bilgisayara sanal ethernet, seri port ve depolama aygıtı bağlantısı sağlayabilir.
+Bunları aktifleştirmek için ayarın kutucuğu işaretlenmelidir.
+
+- `Enable Storage Gadget` sanal depolama cihazını aktif eder.
+
+- `Enable Ethernet Gadget` sanal ethernet cihazını aktif eder.
+
+- `Enable Serial Gadget` sanal seri port cihazını aktif eder.
+
+<Note>
+Windows host bilgisayara bağlantı yapıldığında gadget özelliğinin kullanılabilmesi için bazı sürücülerin kurulu olması gerekmektedir.
+Talimatlar için [tıklayınız](https://www.diodes-delight.com/docs/piunora/usb-gadget/).
+</Note>
 
 ## Options (Ayarlar) Alanı
 
+<Frame>
 <img src="/images/gem-imager/options-tab.png"/>
+</Frame>
 
+- `Play Sound when finished` kutucuğu işaretlendiğinde yazma işlemi tamamlandığında uyarı sesi ile bildirim yapılır.
+
+- `Eject media when finished` kutucuğu işaretlendiğinde eğer yazma işlemi SD Karta yapılıyorsa işlem tamamlandığında veri kaybı
+olmaması için SD Kart güvenle çıkarma işlemi otomatik yapılır. Yerkeşik depolamaya (eMMC) yazma işleminde etkisizdir.
+
+- `Serial Port` alanı eğer yazma işlemi kartın eMMCsine yapılıyorsa karta bağlı olan seri port seçilmelidir. SD Karta yazma işleminde
+etkisizdir.
+
+- `Ethernet` alanı eğer yazma işlemi kartın eMMCsine yapılıyorsa karta bağlı olan ethernet portu seçilmelidir. SD Karta yazma işleminde
+etkisizdir.
 
