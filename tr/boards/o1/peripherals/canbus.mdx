@@ -16,6 +16,8 @@ gibi avantajları ile dikkat çekmektedir.
 Gemstone işletim sisteminde sanal CAN arayüzü oluşturularak herhangi ilave donanıma gerek kalmadan bu arayüz üzerinden 
 veri iletişimi sağlanabilmektedir.
 
+<Note> Bu örnekte birden fazla terminal açılması gerektiği için `Desktop` imajının kullanılması tercih edilmiştir.</Note>
+
 * Gemstone işletim sistemine bağlandıktan sonra sanal CAN arayüzü oluşturabilmek için `kernel-module-vcan-6.1.83-ti` 
 modülünü kurunuz.
 
@@ -58,12 +60,17 @@ paketini kurunuz.
 ```bash
 sudo apt install can-utils
 ```
-İki adet terminal açıp bir terminalden `candump vcan0` komutu ile CAN arayüzünü dinleme işlemini başlatıp
-diğer terminaldende `./can_test.sh` komutu ile gönderim işlemini başlatabilirsiniz.
+1. İki adet terminal açınız. 
 
+2. İlk terminalden CAN arayüzünü dinleme işlemini başlatınız.
+```bash
+candump vcan0
+```
 
-<Note> Bu örnekte birden fazla terminal açılması gerektiği için `Desktop` imajının kullanılması tercih edilmiştir.</Note>
-
+3. İkinci terminalden cant_test.sh scriptini çalıştırınız.
+```bash
+./can_test.sh
+```
 
 <Frame caption="Sanal CAN arayüzü üzerinden haberleşme">
   <video controls className="w-full aspect-video" src="/videos/can-test.mp4"></video>

@@ -2,3 +2,148 @@
 title: 'GPIO'
 description: 'General Purpose Input Output (GPIO)'
 ---
+
+<Tip>
+By the end of this section, you will have learned about GPIO usage on the Gemstone development board.
+</Tip>
+
+GPIO (General Purpose Input/Output) refers to pins on microcontrollers and development boards that can be used 
+for general-purpose input and output operations. These pins can be configured to either receive digital data (input) 
+or send digital signals (output). Below is an example of an LED blink operation performed using the GPIO pins on the Gemstone board.
+
+In addition to the materials listed on the [Quick Start](/en/quickstart) page, you will need an LED, a button, and a resistor.
+
+<AccordionGroup>
+
+  <Accordion title="Led">
+    <Frame>
+      <img height="500" width="800" src="/images/led.jpg" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Button">
+    <Frame>
+      <img height="500" width="800" src="/images/button.jpeg" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Resistor">
+    <Frame>
+      <img height="500" width="800" src="/images/resistor.jpg" />
+    </Frame>
+  </Accordion>
+
+</AccordionGroup>
+
+### Blinking an LED
+
+On the Gemstone board, GPIOX can be used as an Input/Output pin. Connect the LED as shown below.
+
+<Frame caption="LED Connection">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+Once the connections are complete, write and execute a script to blink the LED.
+
+* Create the script file:
+
+```bash
+touch led_blink.sh
+```
+
+* Open the led_blink.sh file using the `nano` editor.
+
+```bash
+nano led_blink.sh
+```
+
+* Copy and paste the following code into the `led_blink.sh` file:
+
+```bash
+#!/bin/bash
+
+while :
+do
+      gpioset $(gpiofind GPIOX)=1
+      sleep 1
+      gpioset $(gpiofind GPIOX)=0
+      sleep 1
+done
+```
+
+* Press `CTRL+X`, then press `Y` to save and exit the nano editor.
+
+* Use the `chmod` command to make the `led_blink.sh` file executable:
+```bash
+chmod +x led_blink.sh
+```
+
+* Run the `led_blink.sh` script.
+```bash
+./led_blink.sh
+```
+
+As a result, you will see the LED blinking at 1-second intervals, as shown in the video below.
+
+<Frame caption="LED Blink Demonstration">
+  <video controls className="w-full aspect-video" src=""></video>
+</Frame>
+
+
+### LED Control with Button
+
+The GPIOX pin on the Gemstone board can be used as an Input/Output for the LED, 
+while the GPIOY pin can be connected to a button as shown below.
+
+<Frame caption="LED and Button Connection">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+After completing the connections, write and execute a script to control the 
+LED based on the button state.
+
+* Create the script file.
+```bash
+touch butyon_led.sh
+```
+
+* Open the `button_led.sh` file using the `nano` editor
+```bash
+nano button_led.sh
+```
+
+* Copy and paste the following code into the `button_led.sh` file.
+```bash
+#!/bin/bash
+
+while :
+do
+   if (( $(gpioget --bias=pull-up $(gpiofind GPIOY)) == 0))
+   then
+      gpioset $(gpiofind GPIOX)=1
+   else
+      gpioset $(gpiofind GPIOX)=0
+   fi
+done
+```
+
+* Press `CTRL+X`, then `Y` to save and exit the nano editor.
+
+* Make the `button_led.sh` file executable using the `chmod` command.
+
+```bash
+chmod +x button_led.sh
+```
+
+* Run the `button_led.sh` script.
+
+```bash
+./button_led.sh
+```
+
+As a result, you will see that the LED turns on while the button is pressed, 
+as demonstrated in the video below.
+
+<Frame caption="LED Control with Button">
+  <video controls className="w-full aspect-video" src=""></video>
+</Frame>
