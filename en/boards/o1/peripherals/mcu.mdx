@@ -1,4 +1,161 @@
 ---
 title: 'MCU'
-description: 'MCU'
+description: 'Texas AM67 Cortex-R5, C7x (DSP)'
 ---
+
+import SnippetBootflow from '/snippets/boards/o1/bootflow.mdx';
+
+While Linux is the primary focus of the **T3-GEM-O1** development board, it also leverages the power of the R5 and C7x
+cores embedded in the Texas Instruments AM67 microprocessor. This section will explore topics such as compiling software
+for the R5 cores, debugging, and related procedures.
+
+<Tip>
+By the end of this section, you will gain knowledge and experience in the following areas:
+
+* Compiling Texas AM67 MCU software and running it on the Gemstone Obsidian
+* Understanding the boot sequence stages when the development board is first powered on
+</Tip>
+
+## 1. MCU Software Development
+
+The necessary tools for compiling MCU projects are listed below:
+
+1. Texas Instruments Processor SDK RTOS J722S
+2. Texas Instruments Sysconfig
+3. Texas Instruments Code Generation Tools C7000
+4. Texas Instruments Code Generation Tools ARM LLVM
+
+Since downloading and installing these individually from the Texas Instruments website is cumbersome,
+the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository provides a preconfigured setup with all required tools to compile MCU projects.
+
+### 1.1. Clone example projects with Git
+
+```bash
+pc@host:~$ git clone https://github.com/t3gemstone/examples.git
+pc@host:~$ cd examples
+```
+
+### 1.2. Install the required tools and libraries for compilation
+
+```bash
+pc@host:examples$ ./setup.sh
+pc@host:examples$ devbox shell
+pc@host:examples$ task fetch-ti
+```
+
+### 1.3. Create template project
+
+The `mcu` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository contains sample applications running on two R5F real-time cores and two C7x DSP cores. Similar examples can be found in the directory:
+`build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples`
+
+We recommend finding a sample project matching your requirements, copying it to the `mcu` project directory, and developing on top of it.
+
+Each sample project contains subdirectories for different processor cores. For example, the `hello_world` project includes:
+1. `c75ss0-0_freertos`
+2. `c75ss1-0_freertos`
+3. `main-r5fss0-0_freertos` and
+4. `mcu-r5fss0-0_freertos` directories.
+
+Development should be done in the directory corresponding to the target core (one of these four), and the compiled outputs from that specific directory should be used.
+
+MCU projects to be compiled are defined in the `.env` file through the `MCU_TARGETS` variable. To compile a project, add either the absolute or relative path to its `makefile` directory to the `MCU_TARGETS` variable. Below is an example configuration for the `mcu-r5fss0-0_freertos` core of the `hello_world` project:
+
+```bash
+MCU_TARGETS="
+ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000
+ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000
+ipc_rpmsg_echo_linux/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang
+ipc_rpmsg_echo_linux/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang
+hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang
+"
+```
+
+### 1.4. Configure peripherals with SysConfig
+
+The project's peripheral configurations (GPIO, I2C, UART, etc.) are defined in the `.syscfg` file.
+
+To add new peripherals or modify existing Pin Mux settings, use the SysConfig GUI tool. To launch SysConfig for an MCU project:
+
+- Set the `SYSCONFIG_TARGET` variable to your target project.
+   - You can either edit this variable directly in the `.env` file, or
+   - Pass it as an environment variable to the `task` program.
+
+```bash
+SYSCONFIG_TARGET=hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang task sysconfig
+```
+
+After saving your changes with the `Ctrl + S` shortcut, you can close the SysConfig interface.
+
+<Warning>
+The remoteproc infrastructure is used to enable remote software loading onto R5F and C7x cores from Linux. For a
+compiled `.out` file to be loadable via remoteproc, certain configurations must be set in the SysConfig interface. After
+copying a new project, follow these steps:
+
+1. Open the `IPC` tab under `TI DRIVERS`.
+2. Click the `ADD` button.
+3. Ensure the `Linux A53 IPC RP Message` setting is enabled.
+4. Save the `.syscfg` file with `Ctrl + S` and exit.
+</Warning>
+
+### 1.5. Compile the project
+
+```bash
+pc@host:examples$ PROJECT=mcu task clean build
+```
+
+### 1.6. Upload compiled project into the development board
+
+```bash
+pc@host:examples$ scp mcu/hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.out gemstone@10.0.0.1:
+```
+
+### 1.7. Run the compiled project
+
+For loading `.out` files onto cores via remoteproc, the firmware files must be copied to `/lib/firmware` with specific predefined names. The firmware naming convention for each core is shown in the table below:
+
+| Core          | Firmware Name        |
+|---------------|----------------------|
+| mcu-r5fss0-0  | j722s-mcu-r5f0_0-fw  |
+| main-r5fss0-0 | j722s-main-r5f0_0-fw |
+| c7xss0-0      | j722s-c71_0-fw       |
+| c7xss1-0      | j722s-c71_1-fw       |
+
+To verify firmware names and their corresponding remoteproc devices, use `head /sys/class/remoteproc/remoteproc*/firmware` command.
+After each boot, cores may be assigned to different remoteproc devices, so this verification step is essential for proper operation.
+
+```bash
+gemstone@t3-gem-o1:~$ head /sys/class/remoteproc/remoteproc*/firmware
+# ==> /sys/class/remoteproc/remoteproc0/firmware <==
+# j722s-mcu-r5f0_0-fw
+#
+# ==> /sys/class/remoteproc/remoteproc1/firmware <==
+# j722s-main-r5f0_0-fw
+#
+# ==> /sys/class/remoteproc/remoteproc2/firmware <==
+# j722s-c71_0-fw
+#
+# ==> /sys/class/remoteproc/remoteproc3/firmware <==
+# j722s-c71_1-fw
+gemstone@t3-gem-o1:~$ echo stop | sudo tee /sys/class/remoteproc0/state
+# [ 1920.592397] remoteproc remoteproc0: stopped remote processor 79000000.r5f
+gemstone@t3-gem-o1:~$ sudo cp hello_world.release.out /lib/firmware/j722s-mcu-r5f0_0-fw
+gemstone@t3-gem-o1:~$ echo start | sudo tee /sys/class/remoteproc0/state
+# [ 1928.127331] remoteproc remoteproc0: powering up 79000000.r5f
+# [ 1928.133194] remoteproc remoteproc0: Booting fw image j722s-mcu-r5f0_0-fw, size 45492
+# [ 1928.173034] remoteproc remoteproc0: remote processor 79000000.r5f is now up
+```
+
+<Warning>
+The above procedure ensures graceful shutdown and restart of remote cores. In some cases, the graceful shutdown process may fail. If this occurs, we recommend:
+
+1. Place new firmware binaries in `/lib/firmware`.
+2. Perform a full board reboot.
+
+During system startup, remoteproc will automatically load the firmware to the appropriate cores.
+
+**Note:** This approach is particularly useful when:
+
+- Core crashes occur
+- IPC communication fails
+- Unexpected behavior is observed during dynamic loading
+</Warning>
