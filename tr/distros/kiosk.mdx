@@ -51,10 +51,38 @@ ekranları, ATM ekranları, sıramatikler vs. örnek olarak verilebilir.
 
 </AccordionGroup>
 
-Bu bölümde Gemstone geliştirme kartına Kiosk imajı yükleyerek, derlediğiniz bir uygulamanın karta güç
-verildikten sonra nasıl otomatik olarak başlatılacağı ve teknik detaylar anlatılacaktır. 
+## 1. Özellikler
 
-## 1. Kiosk İmajı Kurulumu
+Linux sistemlerde grafik uygulamalarını çalıştırmak için birden fazla yöntem ve grafik alt sistemi bulunur. Bu
+yöntemler, uygulamaların görsel içeriği işleme ve ekrana yansıtma şekillerine göre farklılık gösterir. 
+
+- **X11 (X Window System)**, geleneksel ve en yaygın kullanılan pencere sistemidir; istemci-sunucu mimarisiyle çalışır
+  ve ağ üzerinden uygulamaların görüntülenmesine izin verir. 
+- **Wayland** ise X11'in yerini almak üzere tasarlanan modern bir
+  protokoldür ve daha basit, performans odaklı bir yapı sunar; doğrudan çekirdek modülü olan DRM/KMS ile iletişim kurarak
+  daha az gecikmeli bir deneyim sağlar. 
+- **DirectFB**, gömülü sistemlerde sıklıkla tercih edilen hafif bir grafik
+  kütüphanesidir ve doğrudan framebuffer üzerinden çizim yapar, bu da X11 veya Wayland gibi karmaşık
+  katmanlar olmadan hızlı grafik işleme imkanı tanır.
+- **LinuxFB**, doğrudan
+  Linux çekirdeğinin framebuffer aygıtına erişen basit bir yöntemdir ve özellikle düşük kaynaklı sistemlerde
+  kullanışlıdır, ancak gelişmiş grafik özelliklerinden yoksundur. 
+
+Bunların haricinde GUI projelerinde kullanılan 
+Qt veya GTK gibi grafik araçları da çeşitli grafik sistemleriyle entegre çalışabilir. Örneğin, Qt uygulamaları 
+**eglfs (Embedded OpenGL Full Screen)** gibi platform eklentileriyle doğrudan framebuffer veya Wayland üzerinde 
+çalıştırılabilir.
+
+Her bir yöntem, farklı kullanım senaryolarına hitap eder ve performans, uyumluluk veya kaynak kullanımı gibi faktörlere
+göre seçilebilir. Gemstone Kiosk imajında **X11** tercih edilmiştir. Bu seçimde X11'in en yaygın grafik sistemi olması
+ve birçok yazılımla uyumlu olması etkili olmuştur. 
+
+X11 üzerinde kiosk uygulamasını tam ekran göstermek için son derece
+konfigüre edilebilir olan ve az sistem kaynağı kullanan **Openbox** pencere yöneticisi tercih edilmiştir. 
+Openbox ayarlarından (`$HOME/.config/openbox/rc.xml`) pencere kenarlıkları, pencere başlığı, pencere yönetim tuşları, pencere
+sürükleme, klavye kısayol tuşları vb. işlevler devre dışı bırakılmıştır. 
+
+## 2. Kurulum
 
 [Hızlı Başlangıç](../quickstart#1-kurulum) bölümündeki anlatıldığı şekilde Gemstone'u bilgisayarınıza 
 bağlayarak Gemstone Imager isimli uygulamayı başlatarak **Operating System** bölümüne tıklayınız.
@@ -70,8 +98,6 @@ Kiosk ve Minimal seçenekleri listelenecektir. Kiosk imajını seçerek yazma i�
   <img src="/images/gem-imager/select-kiosk.png" />
 </Frame>
 
-## 2. Grafik Arayüz Uygulamasının Otomatik Başlatılması
-
 İmaj yükleme işlemi tamamlandıktan sonra Gemstone'a güç verdiğinizde varsayılan olarak aşağıdaki 
 gibi **Demo** uygulaması açılacaktır.
 
@@ -79,23 +105,78 @@ gibi **Demo** uygulaması açılacaktır.
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-Bu bölümde Demo uygulamasının nasıl başlatıldığı ve yazmış olduğunuz başka bir grafik uygulamasının nasıl otomatik
-başlatılacağı incelenecektir.
+## 3. Konfigürasyon
 
-#### 2.1. Terminal Aracılığıyla Openbox İlklendirme Süreci
+Gemstone karta [seri port ya da SSH](../quickstart#2-1-seriport) aracılığıyla bağlandıktan sonra gerekli ayarları 
+`$HOME/kiosk.environment` dosyasından çevre değişkenler yardımıyla yapabilirsiniz. Bu dosyada yer alan çevre değişkenler 
+ve işlevleri aşağıdaki tabloda listelenmiştir.
 
-Gemstone'a [Seriport, TTL, SSH veya VNC](../quickstart#2-1-seriport) aracılığıyla bağlandıktan sonra Terminal
-üzerinden aşağıdaki komutları çalıştırınız.
+| Çevre Değişken             | Varsayılan Değer                  | İşlev                                                      |
+|----------------------------|-----------------------------------|------------------------------------------------------------|
+| `PATH`                     | `$HOME/bin:$PATH`                 | Uygulamaların aranacağı dizinler                           |
+| `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Dinamik kütüphanelerin (.so) aranacağı dizinler            |
+| `KIOSK_RESOLUTION`         | `800x600`                         | Ekran çözünürlüğü                                          |
+| `KIOSK_REFRESH_RATE`       | `60`                              | Ekran yenileme hızı                                        |
+| `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Uygulama stdout ve stderr çıktılarının kaydedileceği dizin |
+| `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Byte cinsinden log dosyasının maksimum boyutu              |
+| `KIOSK_BIN`                | `kiosk`                           | Çalıştırılacak uygulama                                    |
 
-<SnippetOpenBox />
+Ayarlarda yapılan değişikliklerin geçerli olması için aşağıdaki komut yardımıyla Openbox oturumunu yeniden 
+başlatmanız yeterlidir.
 
-#### 2.2. Yeni bir Grafik Uygulamasının Yüklenmesi
+```bash
+gemstone@t3-gem-o1:~$ DISPLAY=:0.0 openbox --exit
+```
 
-Aşağıda bulunan derleme işlemlerini, kullanmakta olduğunuz Geliştirici bilgisayarında yapınız.
+Kiosk uygulaması varsayılan olarak `$HOME/bin/kiosk` dizininde yer alır. Uygulamayı değiştirmek ya da güncellemek için 
+aşağıda gösterildiği şekilde
+`scp` ile bu dizine yeni uygulamayı gönderdikten sonra Openbox oturumunu yeniden başlatınız.
 
-<SnippetKioskExample />
+```bash
+pc@host:~$ scp kiosk gemstone@10.0.0.1:bin/kiosk
+pc@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 openbox --exit
+```
 
-## 3. Son
+Ekranınız için geçerli çözünürlük ve yenileme hızı değerlerini aşağıdaki komut ile listeleyebilirsiniz.
+
+```bash
+pc@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
+# Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 8096 x 8096
+# HDMI-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 527mm x 296mm
+#    1920x1080     60.00*+  50.00    59.94
+#    1680x1050     59.88
+#    1600x900      60.00
+#    1280x1024     75.02    60.02
+#    1440x900      59.90
+#    1366x768      59.79
+#    1152x864      75.00
+#    1280x720      60.00    50.00    59.94
+#    1024x768      75.03    70.07    60.00
+#    832x624       74.55
+#    800x600       72.19    75.00    60.32    56.25
+#    720x576       50.00
+#    720x480       60.00    59.94
+#    640x480       75.00    72.81    60.00    59.94
+#    720x400       70.08
+```
+
+## 4. Mimari
+Gemstone karta güç verilmesinden kiosk uygulamasının gösterilmesine kadar gerçekleşen aşamalar aşağıda listelenmiştir.
+
+1. Systemd `getty@tty1` servisini başlatır. Bu servis tty1 isimli terminalden `gemstone` kullanıcısına otomatik login 
+   olur.
+2. `gemstone` kullanıcısının varsayılan shell'i yani `/bin/bash` başlatılır.
+3. Bash shell tarafından `$HOME/.profile` scripti çalıştırılır. Bu script içinde X11'in görüntü sunucusu olan **Xserver**'ı
+   başlatan `startx` komutu yer alır. Xserver herhangi bir sebeple çökerse durum systemd journal'a `kiosk` etiketi ile
+   kaydedilir ve `startx` tekrar çalıştırılır.
+4. Xserver tarafından `$HOME/.xinitrc` scripti çalıştırılır. Bu script içinde Openbox oturumunu başlatan `exec openbox-session` 
+   komutu yer alır.
+5. Openbox tarafından `$HOME/.config/openbox/autostart` scripti çalıştırılır. Bu script içinde `KIOSK_BIN` çevre değişkeni
+   ile tanımlanan uygulama çalıştırılır. Bu uygulamanın stdout ve stderr çıktıları `KIOSK_LOG_PATH`
+   çevre değişkeni ile tanımlanan dosyaya kaydedilir. Kiosk uygulaması herhangi bir sebeple çökerse durum systemd
+   journal'a `kiosk` etiketi ile kaydedilir ve uygulama tekrar çalıştırılır.
+
+## 5. Son
 
 Desktop imajına kullanıcı adı ve şifre ile giriş yapılabilirken, Kiosk isimli imaj yalnızca belirlediğiniz uygulamanın
 otomatik başlatıldığı ve sisteme ekran üzerinden erişim imkanının olmadığı imaj türüdür.
