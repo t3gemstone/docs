@@ -114,6 +114,11 @@ Herhangi bir programlama diliyle de sanki normal bir text dosyasından okuma yaz
 Aşağıda Python ve C ile kullanım örnekleri verildi. Burada dikkat edilmesi gereken tek şey yazma yapmak için yalnızca yazma
 modunu seçmemiz gerekir. `"w+"`,`"r+"` vb. gibi hibrit yazma modlarını eepromlar desteklemez.
 
+<Note>
+  Verilen kodlar sadece örnek amaçlı oluşturulmuştur. Canlı bir sistemde kullanılmaya uygun değildir. 
+  (Doğru kullanım için araştırınız: Memory Mapped File, mmap)
+</Note>
+
 <Accordion title="Python">
 ```Python
 eeprom_yolu = "/sys/bus/i2c/drivers/at24/2-0051/eeprom"
