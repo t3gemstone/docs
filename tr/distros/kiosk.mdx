@@ -3,9 +3,6 @@ title: 'Kiosk'
 description: 'Dokunmatik paneller için kiosk imajı'
 ---
 
-import SnippetOpenBox from '/snippets/distro/openbox.mdx';
-import SnippetKioskExample from '/snippets/distro/kiosk-example.mdx';
-
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız.
 
@@ -99,13 +96,31 @@ Kiosk ve Minimal seçenekleri listelenecektir. Kiosk imajını seçerek yazma i�
 </Frame>
 
 İmaj yükleme işlemi tamamlandıktan sonra Gemstone'a güç verdiğinizde varsayılan olarak aşağıdaki 
-gibi **Demo** uygulaması açılacaktır.
+gibi **Demo** uygulaması açılacaktır. Demo uygulaması PyQt6 ile geliştirilmiştir. Kaynak kodlarına
+[t3gemstone/examples](https://github.com/t3gemstone/examples/tree/main/gui) reposundan erişebilirsiniz.
 
 <Frame caption="Todo: Kiosk GCS">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
 ## 3. Konfigürasyon
+
+<Note>
+X11 istemcileri `DISPLAY` çevre değişkenini kullanarak görüntünün nerede gösterileceğine karar verir.
+Seri terminal ya da SSH ile bağlanıldığında `DISPLAY` çevre değişkeninin manuel olarak ayarlanması gerekir. 
+Bu değişkenin formatı `<host adı>:<görüntü sunucusu numarası>.<ekran numarası>` şeklindedir. 
+Görüntü sunucusu localhost'ta çalışıyorsa host adı boş bırakılır. Aşağıda örnek kullanıma yer verilmiştir.
+Uç durumlar haricinde `DISPLAY=:0.0` kullanımı yaygındır.
+
+```bash
+ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
+```
+
+- Görüntü sunucusu Gemstone kart içinde çalıştığından biz de SSH ile bu karta bağlandığımızdan host adı boş bırakılmıştır. 
+- Modern sistemlerde tek görüntü sunucusu çalıştığı için `0` numaralı sunucuya bağlanılmıştır.
+- Modern sistemlerde çoklu monitör kullanılsa bile tek sanal ekran şeklinde ayarlandığı için `0` numaralı ekrana 
+  bağlanılmıştır.
+</Note>
 
 Gemstone karta [seri port ya da SSH](../quickstart#2-1-seriport) aracılığıyla bağlandıktan sonra gerekli ayarları 
 `$HOME/kiosk.environment` dosyasından çevre değişkenler yardımıyla yapabilirsiniz. Bu dosyada yer alan çevre değişkenler 
@@ -161,6 +176,7 @@ ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
 ```
 
 ## 4. Mimari
+
 Gemstone karta güç verilmesinden kiosk uygulamasının gösterilmesine kadar gerçekleşen aşamalar aşağıda listelenmiştir.
 
 1. Systemd `getty@tty1` servisini başlatır. Bu servis tty1 isimli terminalden `gemstone` kullanıcısına otomatik login 
