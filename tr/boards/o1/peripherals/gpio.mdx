@@ -58,7 +58,7 @@ direnç gerekmektedir.
 
 ## 1. Led Yakma
 
-#### 1.1. GPIO Bağlantıları
+### 1.1. GPIO Bağlantıları
 
 Gemstone üzerinde Input/Output olarak kullanılabilir durumda olan GPIOX'e aşağıda gösterildiği gibi 
 led bağlantıları yapılır.
@@ -67,7 +67,7 @@ led bağlantıları yapılır.
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-#### 1.2. Shell Script Oluşturulması
+### 1.2. Shell Script Oluşturulması
 
 Gemstone'a bağlandıktan sonra led blink işlemi için bir script dosyası oluşturunuz.
 
@@ -97,7 +97,7 @@ done
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız. 
 
-#### 1.3. Shell Scriptinin Çalıştırılması
+### 1.3. Shell Scriptinin Çalıştırılması
 
 `chmod` komutu ile `led-blink.sh` dosyasını çalıştırılabilir hale getiriniz.
 
@@ -119,7 +119,7 @@ Son olarak aşağıdaki videoda gösterildiği gibi 1 saniye aralıklarda ledin 
 
 ## 2. Buton Okuma ve Led Yakma
 
-#### 2.1. GPIO Bağlantıları
+### 2.1. GPIO Bağlantıları
 
 Gemstone üzerinde Input/Output olarak kullanılabilir durumda olan GPIOX pinine led ve GPIOY pinine buton 
 bağlantıları aşağıda gösterildiği gibi yapılır.
@@ -128,21 +128,21 @@ bağlantıları aşağıda gösterildiği gibi yapılır.
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-#### 2.2. Shell Script Oluşturulması
+### 2.2. Shell Script Oluşturulması
 
 Script dosyasını oluşturunuz.
 
 ```bash
-touch buton-led.sh
+touch button-led.sh
 ```
 
-Terminal arayüzünden `nano` metin editörünü kullanarak `buton-led.sh` dosyasını açınız.
+Terminal arayüzünden `nano` metin editörünü kullanarak `button-led.sh` dosyasını açınız.
 
 ```bash
-nano buton-led.sh
+nano button-led.sh
 ```
 
-Aşağıdaki kodu kopyalayıp `buton-led.sh` dosyasına yapıştırınız.
+Aşağıdaki kodu kopyalayıp `button-led.sh` dosyasına yapıştırınız.
 
 ```bash lines
 #!/bin/bash
@@ -160,18 +160,18 @@ done
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız. 
 
-#### 2.3. Shell Scriptinin Çalıştırılması
+### 2.3. Shell Scriptinin Çalıştırılması
 
-`chmod` komutu ile `buton-led.sh` dosyasını çalıştırılabilir hale getiriniz.
+`chmod` komutu ile `button-led.sh` dosyasını çalıştırılabilir hale getiriniz.
 
 ```bash
-chmod +x buton-led.sh
+chmod +x button-led.sh
 ```
 
-`buton-led.sh` scriptini çalıştırınız.
+`button-led.sh` scriptini çalıştırınız.
 
 ```bash
-./buton-led.sh
+./button-led.sh
 ```
 
 Son olarak aşağıdaki videoda gösterildiği gibi butona basılan süre boyunca ledin yandığını gözlemleyiniz.
