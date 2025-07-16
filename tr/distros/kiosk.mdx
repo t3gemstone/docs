@@ -133,14 +133,14 @@ aşağıda gösterildiği şekilde
 `scp` ile bu dizine yeni uygulamayı gönderdikten sonra Openbox oturumunu yeniden başlatınız.
 
 ```bash
-pc@host:~$ scp kiosk gemstone@10.0.0.1:bin/kiosk
-pc@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 openbox --exit
+ubuntu@host:~$ scp kiosk gemstone@10.0.0.1:bin/kiosk
+ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 openbox --exit
 ```
 
 Ekranınız için geçerli çözünürlük ve yenileme hızı değerlerini aşağıdaki komut ile listeleyebilirsiniz.
 
 ```bash
-pc@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
+ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
 # Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 8096 x 8096
 # HDMI-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 527mm x 296mm
 #    1920x1080     60.00*+  50.00    59.94

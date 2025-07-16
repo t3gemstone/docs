@@ -1,0 +1,74 @@
+<CodeGroup>
+
+  ```bash Terminal lines
+  sudo apt install -y build-essential libncurses-dev libgpiod-dev
+  ./setup.sh
+  devbox shell
+  task fetch
+  ```
+
+  ```bash Output lines
+  gemstone@t3-gem-o1:examples:~$ sudo apt install -y build-essential libncurses-dev libgpiod-dev
+  [sudo] password for gemstone: 
+  Reading package lists... Done
+  Building dependency tree... Done
+  Reading state information... Done
+  build-essential is already the newest version (12.9ubuntu3).
+  Suggested packages:
+    libgpiod-doc ncurses-doc
+  The following NEW packages will be installed:
+    libgpiod-dev libgpiod2 libncurses-dev
+  0 upgraded, 3 newly installed, 0 to remove and 7 not upgraded.
+  Need to get 484 kB of archives.
+  After this operation, 2.899 kB of additional disk space will be used.
+  Fetched 484 kB in 0s (1.039 kB/s)       
+  Selecting previously unselected package libgpiod2:arm64.
+  (Reading database ... 60%
+  (Reading database ... 270804 files and directories currently installed.)
+  Preparing to unpack .../libgpiod2_1.6.3-1build1_arm64.deb ...
+  Unpacking libgpiod2:arm64 (1.6.3-1build1) ...
+  Selecting previously unselected package libgpiod-dev:arm64.
+  Preparing to unpack .../libgpiod-dev_1.6.3-1build1_arm64.deb ...
+  Unpacking libgpiod-dev:arm64 (1.6.3-1build1) ...
+  Selecting previously unselected package libncurses-dev:arm64.
+  Preparing to unpack .../libncurses-dev_6.3-2ubuntu0.1_arm64.deb ...
+  Unpacking libncurses-dev:arm64 (6.3-2ubuntu0.1) ...
+  Setting up libncurses-dev:arm64 (6.3-2ubuntu0.1) ...
+  Setting up libgpiod2:arm64 (1.6.3-1build1) ...
+  Setting up libgpiod-dev:arm64 (1.6.3-1build1) ...
+  Processing triggers for man-db (2.10.2-1) ...
+  Processing triggers for libc-bin (2.35-0ubuntu3.10) ...
+  gemstone@t3-gem-o1:examples:~$ 
+  gemstone@t3-gem-o1:examples:~$ ./setup.sh
+
+    🚀 T3 Gemstone Board Examples
+
+      This script downloads and installs T3 Gemstone Board's required packages 📦 for the development of examples.
+      Powered by Devbox, uv, Love and Passion.
+
+    → requirements...
+    ✓ requirements... [DONE]
+    → devbox...
+    ✓ devbox... [DONE]
+
+    What's the next?
+      1. Learn how to build 🌍 a new world
+         Read the docs at https://docs.t3gemstone.org
+      2. Get help and give feedback
+         Join our community at https://community.t3gemstone.org
+
+  gemstone@t3-gem-o1:examples:~$
+  gemstone@t3-gem-o1:examples:~$ devbox shell
+  Info: Ensuring packages are installed.
+  ✓ Computed the Devbox environment.
+  Starting a devbox shell...
+  Using CPython 3.12.10
+  Creating virtual environment at: .venv
+  Resolved 65 packages in 19ms
+  Installed 59 packages in 20.55s
+  📦 devbox:examples> 
+  📦 devbox:examples> task fetch
+  t3gemstone-toolchain  100%[=============================================================================================>] 225,19M  5,82MB/s    eta 10s    ^s/build/downloads/t3gemstone-toolchains-ubuntu-jammy.  87%[=======================================================================================================>               ] 249,76M  6,15MB/s    eta 6s     
+  ```
+
+</CodeGroup>

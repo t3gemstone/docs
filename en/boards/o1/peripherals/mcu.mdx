@@ -31,16 +31,16 @@ the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository pro
 ### 1.1. Clone example projects with Git
 
 ```bash
-pc@host:~$ git clone https://github.com/t3gemstone/examples.git
-pc@host:~$ cd examples
+ubuntu@host:~$ git clone https://github.com/t3gemstone/examples.git
+ubuntu@host:~$ cd examples
 ```
 
 ### 1.2. Install the required tools and libraries for compilation
 
 ```bash
-pc@host:examples$ ./setup.sh
-pc@host:examples$ devbox shell
-pc@host:examples$ task fetch-ti
+ubuntu@host:examples$ ./setup.sh
+ubuntu@host:examples$ devbox shell
+ubuntu@host:examples$ task fetch-ti
 ```
 
 ### 1.3. Create template project
@@ -100,13 +100,13 @@ copying a new project, follow these steps:
 ### 1.5. Compile the project
 
 ```bash
-pc@host:examples$ PROJECT=mcu task clean build
+ubuntu@host:examples$ PROJECT=mcu task clean build
 ```
 
 ### 1.6. Upload compiled project into the development board
 
 ```bash
-pc@host:examples$ scp mcu/hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.out gemstone@10.0.0.1:
+ubuntu@host:examples$ scp mcu/hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.out gemstone@10.0.0.1:
 ```
 
 ### 1.7. Run the compiled project

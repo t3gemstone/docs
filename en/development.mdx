@@ -227,28 +227,28 @@ gemstone@t3-gem-o1:~$ ping 10.0.0.2
 #### 2.2.2. Clone example projects with Git
 
 ```bash
-pc@host:~$ git clone https://github.com/t3gemstone/examples.git
-pc@host:~$ cd examples
+ubuntu@host:~$ git clone https://github.com/t3gemstone/examples.git
+ubuntu@host:~$ cd examples
 ```
 
 #### 2.2.3. Install toolchain and additional tools needed for compilation
 
 ```bash
-pc@host:examples$ ./setup.sh
-pc@host:examples$ devbox shell
-pc@host:examples$ task fetch
+ubuntu@host:examples$ ./setup.sh
+ubuntu@host:examples$ devbox shell
+ubuntu@host:examples$ task fetch
 ```
 
 #### 2.2.4. Cross compile an example project using the toolchain
 
 ```bash
-pc@host:examples$ PROJECT=magnetometer task build
+ubuntu@host:examples$ PROJECT=magnetometer task build
 ```
 
 #### 2.2.5. Upload compiled project into the development board
 
 ```bash
-pc@host:examples$ scp -r build/examples gemstone@10.0.0.1:build
+ubuntu@host:examples$ scp -r build/examples gemstone@10.0.0.1:build
 ```
 
 #### 2.2.6. Run the compiled project

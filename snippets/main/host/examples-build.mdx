@@ -1,0 +1,37 @@
+<CodeGroup>
+
+  ```bash Terminal lines
+  CROSS_COMPILE=true PROJECT=magnetometer task build
+  ```
+
+  ```bash Output lines
+  📦 devbox:examples> CROSS_COMPILE=true PROJECT=magnetometer task build
+  task: [build] if [ "${CROSS_COMPILE}" == "true" ]; then
+    pushd "/home/ubuntu/examples/build/${DISTRO_BASE}-${DISTRO_SUITE}" >/dev/null && source ./env && popd >/dev/null
+  fi
+  make -C "${PROJECT}"
+
+  ======================
+  T3 Gemstone Toolchains
+  ======================
+  Distro=ubuntu-jammy
+  Version=1.0.5
+  Timestamp=2025-07-07 11:54:12Z
+  make: Entering directory '/home/ubuntu/examples/magnetometer'
+  make -C c
+  make[1]: Entering directory '/home/ubuntu/examples/magnetometer/c'
+  make[1]: '/home/ubuntu/examples/build/examples/magnetometer/c/magnetometer' is up to date.
+  make[1]: Leaving directory '/home/ubuntu/examples/magnetometer/c'
+  make -C cpp
+  make[1]: Entering directory '/home/ubuntu/examples/magnetometer/cpp'
+  make[1]: '/home/ubuntu/examples/build/examples/magnetometer/cpp/magnetometer' is up to date.
+  make[1]: Leaving directory '/home/ubuntu/examples/magnetometer/cpp'
+  make -C python
+  make[1]: Entering directory '/home/ubuntu/examples/magnetometer/python'
+  make[1]: '/home/ubuntu/examples/build/examples/magnetometer/python/magnetometer' is up to date.
+  make[1]: Leaving directory '/home/ubuntu/examples/magnetometer/python'
+  make: Leaving directory '/home/ubuntu/examples/magnetometer'
+
+  ```
+
+</CodeGroup>

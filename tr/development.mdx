@@ -4,6 +4,15 @@ description: 'Ekosistem ve Geliştirme'
 icon: "gear-code"
 ---
 
+import SnippetExamplesTargetClone from '/snippets/main/target/examples-clone.mdx';
+import SnippetExamplesTargetInstallDeps from '/snippets/main/target/examples-install-deps.mdx';
+import SnippetExamplesTargetBuild from '/snippets/main/target/examples-build.mdx';
+import SnippetExamplesTargetRun from '/snippets/main/target/examples-run.mdx';
+import SnippetExamplesHostClone from '/snippets/main/host/examples-clone.mdx';
+import SnippetExamplesHostInstallDeps from '/snippets/main/host/examples-install-deps.mdx';
+import SnippetExamplesHostBuild from '/snippets/main/host/examples-build.mdx';
+import SnippetExamplesHostRun from '/snippets/main/host/examples-run.mdx';
+
 Bu bölümde T3 Gemstone Projesinin kapsamının ne olduğu, ne gibi çalışmalar yapılabileceği,
 yazılım geliştirmek için yöntemler ve ekosistemin tanıtımına yönelik bilgiler bulunmaktadır.
 
@@ -135,39 +144,27 @@ mevcuttur. Aşağıda kart üzerinde bu projenin indirilerek derleme işleminin 
 için ayrı ayrı açıklamalar Geliştirme kartları bölümünde izah edilmiştir.
 
 <Tip>
-Bu bölüm t3gemstone/examples isimli projeyi kart içerisine indirerek derleme işlemi yapıp örnekleri
-çalıştırmayı gösterir. Detaylı bilgi için t3gemstone/examples projesinin README.md dosyasını inceleyebilirsiniz.
+Aşağıdaki adımlar t3gemstone/examples isimli projeyi kart içerisine indirerek derleme işlemi yapıp örnekleri
+çalıştırmayı gösterir. Gemstone geliştirme kartına 
+[Seri port](./quickstart.mdx#21-seriport), [SSH](./quickstart.mdx#23-ssh-ile-network-üzerinden-bağlantı) veya
+[VNC](./quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) ile bağlantı kurduktan sonra işlemlerini uygulayınız.
 </Tip>
 
 #### 2.1.1. Git clone işlemi ile örnek projeleri indir
 
-```bash
-gemstone@t3-gem-o1:~$ git clone https://github.com/t3gemstone/examples.git
-gemstone@t3-gem-o1:~$ cd examples
-```
+<SnippetExamplesTargetClone />
 
 #### 2.1.2. Derleme için gerekli araçları ve kütüphaneleri kur
 
-```bash
-gemstone@t3-gem-o1:examples$ sudo apt install -y build-essential libncurses-dev libgpiod-dev
-gemstone@t3-gem-o1:examples$ ./setup.sh
-gemstone@t3-gem-o1:examples$ devbox shell
-gemstone@t3-gem-o1:examples$ task fetch
-```
+<SnippetExamplesTargetInstallDeps />
 
 #### 2.1.3. Örnek bir projeyi derle
 
-```bash
-gemstone@t3-gem-o1:examples$ CROSS_COMPILE=false PROJECT=magnetometer task build
-```
+<SnippetExamplesTargetBuild />
 
 #### 2.1.4. Derlenmiş projeyi çalıştır
 
-```bash
-gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/c/magnetometer
-gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/cpp/magnetometer
-gemstone@t3-gem-o1:examples$ sudo ./build/examples/magnetometer/python/magnetometer
-```
+<SnippetExamplesTargetRun />
 
 ### 2.2. Geliştirici bilgisayarında yazılım geliştirme
 
@@ -229,34 +226,22 @@ gemstone@t3-gem-o1:~$ ping 10.0.0.2
 
 #### 2.2.2. Git clone işlemi ile örnek projeleri indir
 
-```bash
-pc@host:~$ git clone https://github.com/t3gemstone/examples.git
-pc@host:~$ cd examples
-```
+<SnippetExamplesHostClone />
 
 #### 2.2.3. Derleme için gerekli araçları ve toolchain'i kur
 
-```bash
-pc@host:examples$ ./setup.sh
-pc@host:examples$ devbox shell
-pc@host:examples$ task fetch
-```
+<SnippetExamplesHostInstallDeps />
+
 #### 2.2.4. Örnek bir projeyi toolchain'i kullanarak çapraz derle
 
-```bash
-pc@host:examples$ PROJECT=magnetometer task build
-```
+<SnippetExamplesHostBuild />
 
 #### 2.2.5. Derlenmiş projeyi geliştirme kartına yükle
 
 ```bash
-pc@host:examples$ scp -r build/examples gemstone@10.0.0.1:build
+ubuntu@host:examples$ scp -r build/examples gemstone@10.0.0.1:build
 ```
 
 #### 2.2.6. Derlenmiş projeyi çalıştır
 
-```bash
-gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/c/magnetometer
-gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/cpp/magnetometer
-gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/python/magnetometer
-```
+<SnippetExamplesHostRun />

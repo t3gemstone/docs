@@ -1,0 +1,36 @@
+<CodeGroup>
+
+  ```bash Terminal lines
+  CROSS_COMPILE=false PROJECT=magnetometer task build
+  ```
+
+  ```bash Output lines
+  📦 devbox:examples> CROSS_COMPILE=false PROJECT=magnetometer task build
+  task: [build] if [ "${CROSS_COMPILE}" == "true" ]; then
+    pushd "/home/gemstone/examples/build/${DISTRO_BASE}-${DISTRO_SUITE}" >/dev/null && source ./env && popd >/dev/null
+  fi
+  make -C "${PROJECT}"
+  make: Entering directory '/home/gemstone/examples/magnetometer'
+  make -C c
+  make[1]: Entering directory '/home/gemstone/examples/magnetometer/c'
+  gcc --std=gnu11 -pedantic -Wall -Werror -Wextra -Wfloat-equal -Wno-error=unused-parameter -Wpointer-arith -Wshadow -Wswitch-enum -Wundef -Wwrite-strings -c MMC5603.c -o /home/gemstone/examples/build/examples/magnetometer/c/MMC5603.o
+  gcc --std=gnu11 -pedantic -Wall -Werror -Wextra -Wfloat-equal -Wno-error=unused-parameter -Wpointer-arith -Wshadow -Wswitch-enum -Wundef -Wwrite-strings -c main.c -o /home/gemstone/examples/build/examples/magnetometer/c/main.o
+  gcc --std=gnu11 -pedantic -Wall -Werror -Wextra -Wfloat-equal -Wno-error=unused-parameter -Wpointer-arith -Wshadow -Wswitch-enum -Wundef -Wwrite-strings -o /home/gemstone/examples/build/examples/magnetometer/c/magnetometer /home/gemstone/examples/build/examples/magnetometer/c/MMC5603.o /home/gemstone/examples/build/examples/magnetometer/c/main.o -lm
+  make[1]: Leaving directory '/home/gemstone/examples/magnetometer/c'
+  make -C cpp
+  make[1]: Entering directory '/home/gemstone/examples/magnetometer/cpp'
+  g++ --std=c++17 -pedantic -Wall -Weffc++ -Werror -Wextra -Wno-error=effc++ -Wno-error=unused-parameter -c MMC5603.cpp -o /home/gemstone/examples/build/examples/magnetometer/cpp/MMC5603.o
+  g++ --std=c++17 -pedantic -Wall -Weffc++ -Werror -Wextra -Wno-error=effc++ -Wno-error=unused-parameter -c main.cpp -o /home/gemstone/examples/build/examples/magnetometer/cpp/main.o
+  g++ --std=c++17 -pedantic -Wall -Weffc++ -Werror -Wextra -Wno-error=effc++ -Wno-error=unused-parameter -o /home/gemstone/examples/build/examples/magnetometer/cpp/magnetometer /home/gemstone/examples/build/examples/magnetometer/cpp/MMC5603.o /home/gemstone/examples/build/examples/magnetometer/cpp/main.o -lm
+  make[1]: Leaving directory '/home/gemstone/examples/magnetometer/cpp'
+  make -C python
+  make[1]: Entering directory '/home/gemstone/examples/magnetometer/python'
+  cp MMC5603.py /home/gemstone/examples/build/examples/magnetometer/python/MMC5603.py
+  cp main.py /home/gemstone/examples/build/examples/magnetometer/python/main.py
+  cp /home/gemstone/examples/build/examples/magnetometer/python/main.py /home/gemstone/examples/build/examples/magnetometer/python/magnetometer
+  make[1]: Leaving directory '/home/gemstone/examples/magnetometer/python'
+  make: Leaving directory '/home/gemstone/examples/magnetometer'
+
+  ```
+
+</CodeGroup>

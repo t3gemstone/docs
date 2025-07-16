@@ -1,0 +1,42 @@
+<CodeGroup>
+
+  ```bash Terminal lines
+  ./setup.sh
+  devbox shell
+  task fetch
+  ```
+
+  ```bash Output lines
+  ubuntu@host:examples:~$ ./setup.sh
+
+    🚀 T3 Gemstone Board Examples
+
+      This script downloads and installs T3 Gemstone Board's required packages 📦 for the development of examples.
+      Powered by Devbox, uv, Love and Passion.
+
+    → requirements...
+    ✓ requirements... [DONE]
+    → devbox...
+    ✓ devbox... [DONE]
+
+    What's the next?
+      1. Learn how to build 🌍 a new world
+         Read the docs at https://docs.t3gemstone.org
+      2. Get help and give feedback
+         Join our community at https://community.t3gemstone.org
+
+  ubuntu@host:examples:~$
+  ubuntu@host:examples:~$ devbox shell
+  Info: Ensuring packages are installed.
+  ✓ Computed the Devbox environment.
+  Starting a devbox shell...
+  Using CPython 3.12.10
+  Creating virtual environment at: .venv
+  Resolved 65 packages in 19ms
+  Installed 59 packages in 20.55s
+  📦 devbox:examples> 
+  📦 devbox:examples> task fetch
+  t3gemstone-toolchain  100%[=============================================================================================>] 225,19M  5,82MB/s    eta 10s    ^s/build/downloads/t3gemstone-toolchains-ubuntu-jammy.  87%[=======================================================================================================>               ] 249,76M  6,15MB/s    eta 6s     
+  ```
+
+</CodeGroup>
