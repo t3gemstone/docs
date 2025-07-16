@@ -3,41 +3,63 @@ title: 'Seri Port'
 description: 'Seri Port kullanımı'
 ---
 
+import SnippetExamplesSerial from '/snippets/boards/o1/examples-serial.mdx';
+
 <Tip>
-Bölüm bitiminde Gemstone geliştirme kartında seri port kullanımı hakkında bilgi sahibi olacaksınız.
+Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
+
+- USB TTL kablosu aracılığıyla Geliştirici bilgisayarı ve Gemstone arasında seriport bağlantısı kurmak.
+- Terminal aracılığıyla her iki bilgisayarı haberleştirmek.
+- [t3gemstone/examples/serial](https://github.com/t3gemstone/examples/tree/main/serial) projesi için ön hazırlık.
 </Tip>
 
 Seri port, bilgisayarlar ve mikrodenetleyiciler gibi cihazlar arasında veri iletimini sağlayan, 
-basit ama etkili bir iletişim yoludur. Bu iletişim genellikle `UART (Universal Asynchronous Receiver-Transmitter)` 
-protokolü üzerinden gerçekleşir ve düşük hızda veri iletimi için kullanılır.
+bir iletişim yoludur. Bu iletişim genellikle `UART (Universal Asynchronous Receiver-Transmitter)` 
+protokolü üzerinden gerçekleşir ve düşük hızda veri iletimi için idealdir. Örneğin GPS, Radio Transmitter 
+gibi harici modüllerle haberleşme kurulurken çoğu zaman Seriport tercih edilir.
 
-Bu haberleşme protokolünün daha iyi anlaşılabilmesi için, bir `USB-TTL UART dönüştürücüsü` aracılığıyla Gemstone geliştirme kartı ile 
-bir Linux sistemi arasında nasıl iletişim kurulacağına dair bir örnek üzerinden ilerlenmiştir.
+<Steps>
+  <Step title="SSH/VNC Bağlantısı">
+  [SSH](../../..//quickstart.mdx#23-ssh-ile-network-üzerinden-bağlantı) veya
+  [VNC](../../..//quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle Geliştirme kartına
+  bağlan.    
+  </Step>
+  <Step title="Picocom ve Shell">
+  Terminal haberleşme uygulamasını kur ve Bash Shell scriptlerini oluştur.
+  </Step>
+  <Step title="TTL ve Terminal">
+  TTL kablosu ile Geliştirici bilgisayarı ve Gemstone kartını bağlayarak Tabby.sh isimli terminal aracılığıyla
+  veri alışverişi gerçekleştir.
+  </Step>
+</Steps>
 
-### Seri Port Haberleşmesi
+### 1. Picocom Kurulumu
 
-[Hızlı Başlangıç](/tr/quickstart) sayfasındaki [İmaj yazma işlemi](/tr/quickstart#1-2-i̇maj-yazma-işlemi) kısmında anlatıldığı gibi 
-Gemstone'a başarılı bir şekilde `Minimal` imaj yazma işlemi tamamlanır. USB-TTL UART dönüştürücü aracılığıyla GPIO14 ve GPIO15 UART1 
-pin bağlantıları yapılır. Sonrasında [Gemstone'u Keşfet](/tr/quickstart#2-gemstone’u-keşfet) bölümünde anlatıldığı gibi SSH ile 
-Gemstone işletim sistemi komut satırına giriş yapılması gerekmektedir.
+Aşağıdaki komut ile `picocom` isimli minimal terminal aracını Geliştirme kartına kurunuz.
 
-* Aşağıdaki komut ile `picocom` isimli minimal terminal programının kurunuz.
 ```bash
 sudo apt install picocom
 ```
 
-* Seri port açma ve veri gönderme işlemleri için script dosyası oluşturunuz.
+### 2. Shell Script Oluşturulması
+
+Seri port açma ve veri gönderme işlemleri için script dosyası oluşturunuz.
+
 ```bash
-touch serial_test.sh
+touch serial-test.sh
 ```
 
-* `nano` editörünü kullanarak `serial_test.sh` dosyasını açınız.
+### 3. Metin Editörü Kullanımı
+
+Terminal arayüzünden `nano` isimli metin editörünü kullanarak `serial-test.sh` dosyasını açınız.
+
 ```bash
-nano serial_test.sh
+nano serial-test.sh
 ```
 
-* Aşağıdaki kodu kopyalayıp `serial_test.sh` dosyasına yapıştırınız.
-```bash
+Aşağıdaki kodu kopyaladıktan sonra `serial-test.sh` dosyasına yapıştırınız.
+
+```bash lines
 #!/bin/bash
 
 SERIAL_PORT="/dev/ttyS3"
@@ -51,25 +73,16 @@ while true; do
 done
 ```
 
-* `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız. 
+`CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız.
 
-* `chmod` komutu ile `serial_test.sh` dosyasını çalıştırılabilir hale getiriniz.
-```bash
-chmod +x serial_test.sh
-```
+### 4. Shell Scriptinin Çalıştırılması
 
-<Note> GPIO14 ve GPIO15 pinlerine takılan USB-TTL UART dönüştürücü cihazı Gemstone işletim sisteminde 
-`/dev/ttyS3` cihazını oluşturmaktadır.</Note>
+`chmod` komutu ile `serial-test.sh` dosyasını çalıştırılabilir hale getirerek başlatınız.
 
-* Kullanıcı bilgisayarında [Terminal/Konsol Uygulaması](/tr/quickstart#2-1-1-terminal%2Fkonsol-uygulaması) bölümünde
-anlatılan `Tabby.sh` isimli terminal uygulamasında ilgili seri portun açılması gerekmektedir.
+<SnippetExamplesSerial />
 
-<Frame caption="Tabby.sh isimli terminalde seri portun açılması">
-  <video controls className="w-full aspect-video" src="/videos/open-tabby-light.mp4"></video>
-</Frame>
+### 5. Haberleşme
 
-* `./serial_test.sh` komutu ile scripti çalıştırarak haberleşmenin gerçekleştiğini görebilirsiniz.
-
-<Frame caption="Seri port haberleşmesi">
-  <video controls className="w-full aspect-video" src="/videos/seri-test.mp4"></video>
+<Frame>
+  <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>

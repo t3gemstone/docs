@@ -3,20 +3,20 @@ title: 'Giriş'
 description: 'Bileşen, Çevresel Aygıtlar ve Kullanım Örnekleri'
 ---
 
+import SnippetDeviceTreeOverlays from '/snippets/boards/o1/dt-overlays.mdx';
+
 Bu bölümde, kart üzerinde bulunan sensörlerin ve veri hatlarının kullanımlarına dair örnekler gösterilecektir.
 Bütün örnekler seri port bağlantısı kurularak Terminal/Konsol üzerinden yapılacağı için
 [Hızlı Başlangıç](../../../quickstart) bölümünde Terminal kullanımına dair açıklamaları okumuş olduğunuz
 kabul edilmektedir. İlgili kısımda anlatılan Desktop imajına tarayıcı ile bağlanma, SSH/Ethernet ile bağlanma
 veya seri port üzerinden konsol ile bağlanma yöntemlerinden birini tercih edebilirsiniz.
 
-### Pinout
+## 1. Pinout
 
-Kart üzerinde bulunan **40-pin expansion header** olarak isimlendirilen Giriş/Çıkış (I/O) pinleri; UART (seri port), I2C ,
-SPI, PWM ve PCM gibi arayüzleri sağlamaktadır.
-
-Bu bölümde 40-pin giriş/çıkış portlarının kullanım amaçları ve varsayılan konfigürasyonda hangi arayüzlere tahsis
-edildiğine değinilecek, sonraki bölümde ise **Device Tree Overlay** dosyaları ile pinlerin nasıl farklı kullanımlara
-açılabileceği izah edilecektir.
+Kart üzerinde bulunan **40-pin expansion header** olarak isimlendirilen Giriş/Çıkış (I/O) pinleri; UART (seri port), I2C,
+SPI, PWM ve PCM gibi arayüzleri sağlamaktadır. 40-pin giriş/çıkış portlarının kullanım amaçları ve varsayılan
+konfigürasyonda hangi arayüzlere tahsis edildiğine değinilecek, sonraki bölümde ise **Device Tree Overlay**
+dosyaları ile pinlerin nasıl farklı kullanımlara açılabileceği izah edilecektir.
 
 Örneğin `GPIO-7` isimli pin varsayılan konfigürasyonda `SPI-MCU0 CS1` olarak belirlenmiş
 olup **Device Tree Overlay** ismi verilen dosya aktif edilerek `UART-WKUP0 RX` fonksiyonuna dönüştürülebilmektedir.
@@ -46,16 +46,15 @@ dışı bırakılarak `UART-MAIN6`'ya dönüştürülmüştür.
 |                         | **GPIO-26**   | **GPIO-20**  | PCM-McASP0 DIN          |
 | GND                     | **GND**       | **GPIO-21**  | PCM-McASP0 DOUT         |
 
-#### UART-MAIN1
+#### 1.1. UART-MAIN1
 
 Bu UART arayüzüne Gemstone kartta yer alan `/dev/ttyS3` cihazı üzerinden erişilebilmektedir.
 
 Komut satırından UART hattını test etmek için `picocom` programından yararlanabilirsiniz.
 `picocom` seri terminal uygulamasıdır, belirtilen seri porta anlık olarak klavyeden basılan karakterleri
-gönderirken karşı taraftan gelen verileri de ekrana basar.
-`TX` ve `RX` pinlerini jumper kablo yardımıyla birbirine bağladıktan sonra
-aşağıdaki komutu çalıştırabilirsiniz. Eğer bağlantılar düzgünse klavyede anlık bastığınız karakterleri ekranınızda
-görmeniz gerekmektedir.
+gönderirken karşı taraftan gelen verileri de ekrana basar. `TX` ve `RX` pinlerini jumper kablo yardımıyla
+birbirine bağladıktan sonra aşağıdaki komutu çalıştırabilirsiniz. Eğer bağlantılar düzgünse klavyede anlık
+bastığınız karakterleri ekranınızda görmeniz gerekmektedir.
 
 ```bash
 gemstone@t3-gem-o1:~$ picocom -b 115200 /dev/ttyS3
@@ -88,14 +87,14 @@ gemstone@t3-gem-o1:~$ picocom -b 115200 /dev/ttyS3
 # Hello World
 ```
 
-#### I2C-MCU0
+#### 1.2. I2C-MCU0
 
 Bu I2C arayüzüne Gemstone kartta yer alan `/dev/i2c-1` cihazı üzerinden erişilebilmektedir.
 
 Hatta bağlı çevre birimleri görüntülemek için `i2cdetect` komutundan yararlanabilirsiniz.
-Örnek bir çıktı aşağıda verilmiştir.
-Komutun çıktısında `UU` ile belirtilen adreslerdeki (`0x30`) çevre birimler I2C hattına bağlı fakat Linux kernel tarafından
-kullanılmakta, doğrudan adres numarası yazan (`0x6b`) çevre birimler ise I2C hattına bağlı ve boşta anlamına gelmektedir.
+Örnek bir çıktı aşağıda verilmiştir. Komutun çıktısında `UU` ile belirtilen adreslerdeki (`0x30`) çevre birimler
+I2C hattına bağlı fakat Linux kernel tarafından kullanılmakta, doğrudan adres numarası yazan (`0x6b`) çevre birimler
+ise I2C hattına bağlı ve boşta anlamına gelmektedir.
 
 ```bash
 gemstone@t3-gem-o1:~$ i2cdetect -r -y 1
@@ -110,23 +109,22 @@ gemstone@t3-gem-o1:~$ i2cdetect -r -y 1
 # 70: -- -- -- -- -- -- -- --
 ```
 
-#### I2C-WKUP0
+#### 1.3. I2C-WKUP0
 
 <Warning>
-Bu I2C arayüzü karta **40-pin expansion header** üzerinden bağlanan **Hardware Attached on Top (HAT)** cihazları tanımlamak için
-kullanılır. Boot esnasında HAT üzerinde yer alan EEPROM sorgulanır ve cihaz bilgisi okunur. Eğer karta HAT
-bağlanmayacaksa bu pinler boşta bırakılmalıdır.
+Bu I2C arayüzü karta **40-pin expansion header** üzerinden bağlanan **Hardware Attached on Top (HAT)** cihazları 
+tanımlamak için kullanılır. Boot esnasında HAT üzerinde yer alan EEPROM sorgulanır ve cihaz bilgisi okunur.
+Eğer karta HAT bağlanmayacaksa bu pinler boşta bırakılmalıdır.
 </Warning>
 
-#### SPI-MCU0
+#### 1.4. SPI-MCU0
 
 Bu SPI arayüzüne Gemstone kartta yer alan `/dev/spidev0.0` ve `/dev/spidev0.1` cihazları üzerinden erişilebilmektedir.
 `/dev/spidev0.0` cihazı SPI-MCU0 CS0, `/dev/spidev0.1` cihazı ise SPI-MCU0 CS1'e karşılık gelmektedir.
 
 Komut satırından SPI hattını test etmek için `spi-pipe` programından yararlanabilirsiniz.
 `spi-pipe` programı stdin'den gelen verileri `--device` ayarıyla belirtilen SPI hattına basıp, hattan gelen veriyi de
-stdout'a basmaktadır.
-`MOSI` ve `MISO` pinlerini jumper kablo yardımıyla birbirine bağladıktan sonra
+stdout'a basmaktadır. `MOSI` ve `MISO` pinlerini jumper kablo yardımıyla birbirine bağladıktan sonra
 aşağıdaki komutu çalıştırabilirsiniz. Eğer bağlantılar düzgünse ekranda "Hello World" yazısını görmeniz gerekmektedir.
 
 ```bash
@@ -134,7 +132,7 @@ gemstone@t3-gem-o1:~$ printf '\x48\x65\x6c\x6c\x6f\x20\x57\x6f\x72\x6c\x64' | sp
 # Hello World
 ```
 
-#### PWM-1B
+#### 1.5. PWM-1B
 
 Bu PWM arayüzüne Gemstone kartta yer alan `/sys/class/pwm/pwmchip5/pwm1` cihazı üzerinden erişilebilmektedir.
 
@@ -153,7 +151,7 @@ gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip5/pwm1/enable
 # 1
 ```
 
-#### PWM-ECAP0
+#### 1.6. PWM-ECAP0
 
 Bu PWM arayüzüne Gemstone kartta yer alan `/sys/class/pwm/pwmchip0/pwm0` cihazı üzerinden erişilebilmektedir.
 
@@ -168,7 +166,7 @@ gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip0/pwm0/enable
 # 1
 ```
 
-#### PCM-McASP0
+#### 1.7. PCM-McASP0
 
 Pulse-code Modulation (PCM) ya da Texas Instruments SoC'lerindeki adıyla Multichannel Audio Serial Port (McASP), düşük
 gecikmeli ve yüksek kaliteli dijital ses akışı gerektiren gerçek zamanlı ses işleme uygulamalarında kullanılabilmektedir.
@@ -176,7 +174,7 @@ gecikmeli ve yüksek kaliteli dijital ses akışı gerektiren gerçek zamanlı s
 `DIN` pini sayesinde I2S mikrofon gibi bir dijital ses cihazından veri girişi, `DOUT`
 pini sayesinde de DAC gibi bir dijital ses cihazına veri çıkışı sağlanabilmektedir.
 
-### Device Tree
+## 2. Device Tree
 
 Kart üzerindeki 40-pin giriş/çıkış portlarının kullanılabileceği konfigürasyonlar (UART, PWM, I2C, GPIO, ...)
 **device tree overlay** adı verilen dosyalarda tanımlanmıştır. İstenen konfigürasyonun/konfigürasyonların aktif
@@ -187,66 +185,44 @@ Texas Instruments ARM64 tabanlı SoC'ler için tüm overlay dosyalarının kayna
 dizini altında yer almaktadır. T3-GEM-O1 kartı için olanlar `k3-am67a-t3-gem-o1-<overlay_adi>.dtso` biçiminde
 isimlendirilmiştir. Her bir overlay dosyasının başında hangi amaçla oluşturulduğuna dair bilgi yer almaktadır.
 
-#### Örnek: UART6 sinyallerinin 40-pin HAT'e yönlendirilmesi
+### 2.1. Örnek: UART6 sinyallerinin 40-pin HAT'e yönlendirilmesi
 
 T3-GEM-O1'in 40-pin HAT'i üzerinde varsayılan olarak sadece 1 adet seri port bulunmaktadır. Birden fazla seri
 porta ihtiyaç duyan projeler için 40-pin HAT üzerindeki başka pinlerin de seri porta dönüştürülmesi gerekmektedir.
 
-<Steps>
-  <Step title="Pinout'un İncelenmesi">
-    T3-GEM-O1'in pinout'u incelendiğinde HAT üzerindeki 7 ve 11 numaralı pinlerin UART6_RX ve UART6_TX olarak
-    kullanılabileceği görülmektedir.
-  </Step>
-  <Step title="İlgili Overlay Dosyasının Bulunması">
-    Sonraki aşamada istenen konfigürasyonu hangi device tree overlay dosyasının yaptığının
-    bulunması gerekmektedir.
-    Device tree overlay dosyalarının tümü geliştirme kartının içerisindeki `/boot/overlays` klasöründe bulunmaktadır.
-    `ls /boot/overlays` komutu çalıştırılarak hepsi listelenebilir.
+#### 2.1.1. Pinout'un İncelenmesi
 
-    ```bash
-    |-- boot
-    |   |-- overlays
-    |   |   |-- k3-am67a-t3-gem-o1-csi0-imx219.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-disable-imu.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-disable-leds.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-dsi-rpi-7inch-panel.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-gpio-fan.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-i2c1-400000.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio20.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-spi0-1cs.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-spi0-2cs.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-spidev0.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-uart-ttyama0.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-uart-ttys0.dtbo
-    |   |   |-- k3-am67a-t3-gem-o1-uart-ttys6.dtbo
-    ```
+T3-GEM-O1'in pinout'u incelendiğinde HAT üzerindeki 7 ve 11 numaralı pinlerin UART6_RX ve UART6_TX olarak
+kullanılabileceği görülmektedir.
 
-  </Step>
-  <Step title="uEnv.txt Dosyasının Güncellenmesi">
-    Bu örnekte `k3-am67a-t3-gem-o1-uart-ttys6.dtbo` adlı overlay dosyası kullanılacaktır. Bootloader'ın bu dosyayı
-    işletim sistemi başlatılmadan önce yükleyebilmesi için `/boot/uEnv.txt` dosyasındaki `overlays` kısmına
-    aşağıdaki gibi eklenmelidir. Overlay dosya adları arasında bir boşluk kalacak şekilde ekleme yapılmaktadır.
+#### 2.1.2. İlgili Overlay Dosyasının Bulunması
 
-    <code>overlays=k3-am67a-t3-gem-o1-uart-ttyama0.dtbo k3-am67a-t3-gem-o1-spidev0.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
-  </Step>
-  <Step title="Kontrol">
-    Değişiklikleri kaydettikten sonra kart `reboot` komutuyla yeniden başlatılmalıdır.
-    Ardından `ls /proc/device-tree/chosen/overlays` komutuyla ilgili overlay'in eklenip
-    eklenmediği kontrol edilmelidir.
+Sonraki aşamada istenen konfigürasyonu hangi device tree overlay dosyasının yaptığının
+bulunması gerekmektedir.
+Device tree overlay dosyalarının tümü geliştirme kartının içerisindeki `/boot/overlays` klasöründe bulunmaktadır.
+`ls /boot/overlays` komutu çalıştırılarak hepsi listelenebilir.
 
-    ```txt highlight=3
-    k3-am67a-t3-gem-o1-spidev0.kernel
-    k3-am67a-t3-gem-o1-uart-ttyama0.kernel
-    k3-am67a-t3-gem-o1-uart-ttys6.kernel
-    ...
-    ```
-  </Step>
-</Steps>
+<SnippetDeviceTreeOverlays />
+
+#### 2.1.3. uEnv.txt Dosyasının Güncellenmesi
+
+Bu örnekte `k3-am67a-t3-gem-o1-uart-ttys6.dtbo` adlı overlay dosyası kullanılacaktır. Bootloader'ın bu dosyayı
+işletim sistemi başlatılmadan önce yükleyebilmesi için `/boot/uEnv.txt` dosyasındaki `overlays` kısmına
+aşağıdaki gibi eklenmelidir. Overlay dosya adları arasında bir boşluk kalacak şekilde ekleme yapılmaktadır.
+
+<code>overlays=k3-am67a-t3-gem-o1-uart-ttyama0.dtbo k3-am67a-t3-gem-o1-spidev0.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
+
+#### 2.1.4. Kontrol
+
+Değişiklikleri kaydettikten sonra kart `reboot` komutuyla yeniden başlatılmalıdır.
+Ardından `ls /proc/device-tree/chosen/overlays` komutuyla ilgili overlay'in eklenip
+eklenmediği kontrol edilmelidir.
+
+```txt highlight=3
+k3-am67a-t3-gem-o1-spidev0.kernel
+k3-am67a-t3-gem-o1-uart-ttyama0.kernel
+k3-am67a-t3-gem-o1-uart-ttys6.kernel
+...
+```
 
 Yukarıdaki aşamalar başarıyla tamamlandıktan sonra `/dev/ttyS6` cihazı oluşmuş olacaktır.
