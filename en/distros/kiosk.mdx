@@ -1,4 +1,187 @@
 ---
 title: 'Kiosk'
-description: 'Kiosk Image'
+description: 'Kiosk image for touch panels'
 ---
+
+<Tip>
+By the end of this section, you will gain experience in the following topics:
+
+* Understanding what a Kiosk image is and where it can be used.
+* Automatically launching a graphical application on system startup after loading the Gemstone Kiosk image onto the card.
+</Tip>
+
+The term "Kiosk" is generally used for computers where users interact with the system via a touchscreen. These systems
+support touch input and have a graphical interface but do not host desktop applications—they are much smaller and faster
+to boot. Examples include autonomous vehicle driver consoles, command and control panel management screens, ATM
+displays, and queue management systems.
+
+<Note>
+Review the example images.
+</Note>
+
+<AccordionGroup>
+
+  <Accordion title="Cezeri Flying Car Command Control Panel">
+    <Frame>
+      <img height="600" width="800" src="/images/cezeri-console.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="TOGG End-to-End Driver Console">
+    <Frame>
+      <img height="600" width="800" src="/images/togg-console.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Tesla Driver Console">
+    <Frame>
+      <img height="600" width="800" src="/images/tesla-console.png" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="SpaceX Dragon Capsule Command Control Panel">
+    <Frame>
+      <img height="600" width="800" src="/images/dragon-console.png" />
+    </Frame>
+  </Accordion>
+
+</AccordionGroup>
+
+## 1. Features
+
+Linux systems offer multiple methods and graphical subsystems for running GUI applications. These methods differ in how
+they process and render visual content to the screen.
+
+- **X11 (X Window System)** is the traditional and most widely used windowing system; it operates on a client-server
+  architecture and allows applications to be displayed over a network.
+- **Wayland** is a modern protocol designed to replace X11, offering a simpler, performance-oriented structure with
+  lower latency by communicating directly with the DRM/KMS kernel module.
+- **DirectFB** is a lightweight graphics library often preferred in embedded systems, drawing directly to the
+  framebuffer for fast graphics processing without complex layers like X11 or Wayland.
+- **LinuxFB** is a simple method that accesses the Linux kernel's framebuffer device directly, useful for low-resource
+  systems but lacking advanced graphics features.
+
+Additionally, GUI frameworks like Qt or GTK can integrate with various graphics systems. For example, Qt applications
+can run directly on the framebuffer or Wayland using platform plugins like **eglfs (Embedded OpenGL Full Screen)**.
+
+Each method suits different use cases and can be chosen based on factors like performance, compatibility, or resource
+usage. The Gemstone Kiosk image uses **X11** due to its widespread adoption and compatibility with many applications. 
+
+For full-screen kiosk applications on X11, the highly configurable and lightweight **Openbox** window manager is used.
+Window borders, titles, management keys, dragging, keyboard shortcuts, etc. are disabled from Openbox settings
+(`$HOME/.config/openbox/rc.xml`) to better suit kiosk needs.
+
+## 2. Installation
+
+As described in the [Quick Start](../quickstart#1-installation) section, connect Gemstone to your computer, launch the
+Gemstone Imager application, and click on the **Operating System** section.
+
+<Frame>
+  <img src="/images/gem-imager/select-os.png" />
+</Frame>
+
+In the Operating System selection screen, clicking on Ubuntu or Debian images will display options like Desktop, Kiosk,
+and Minimal. Select the Kiosk image to complete the writing process.
+
+<Frame>
+  <img src="/images/gem-imager/select-kiosk.png" />
+</Frame>
+
+After the image is loaded, powering on Gemstone will launch the **Demo** application by default. The Demo app is
+developed with PyQt6, and its source code is available in the
+[t3gemstone/examples](https://github.com/t3gemstone/examples/tree/main/gui) repository.
+
+<Frame caption="Todo: Kiosk GCS">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+## 3. Configuration
+
+<Note>
+X11 clients use the `DISPLAY` environment variable to determine where to render the display. When connecting via serial
+terminal or SSH, this variable must be set manually. Its format is `<hostname>:<display server number>.<screen number>`.
+If the display server runs locally, the hostname is omitted. Below is an example usage. In most cases, `DISPLAY=:0.0` is
+common.
+
+```bash
+ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
+```
+
+- Since the display server runs on the Gemstone card and we connect via SSH, the hostname is omitted.
+- Modern systems typically run a single display server, so server number `0` is used.
+- Even with multiple monitors, modern systems often use a single virtual screen, so screen number `0` is used.
+</Note>
+
+After connecting to the Gemstone card via [serial port or SSH](../quickstart#2-1-seriport), you can configure the
+necessary settings using environment variables in the `$HOME/kiosk.environment` file. The environment variables listed
+in this file and their functions are shown in the table below.
+
+ | Environment Variable       | Default Value                     | Function                                                     |
+ |----------------------------|-----------------------------------|--------------------------------------------------------------|
+ | `PATH`                     | `$HOME/bin:$PATH`                 | Directories where applications will be searched              |
+ | `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Directories where dynamic libraries (.so) will be searched   |
+ | `KIOSK_RESOLUTION`         | `800x600`                         | Screen resolution                                            |
+ | `KIOSK_REFRESH_RATE`       | `60`                              | Screen refresh rate                                          |
+ | `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Directory where application stdout and stderr will be logged |
+ | `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Maximum size of the log file in bytes                        |
+ | `KIOSK_BIN`                | `kiosk`                           | Application to be executed                                   |
+
+For the changes in the settings to take effect, it is sufficient to restart the Openbox session using the following
+command.
+
+```bash
+gemstone@t3-gem-o1:~$ DISPLAY=:0.0 openbox --exit
+```
+
+You can list the current resolution and refresh rate values for your screen using the following command.
+
+```bash
+gemstone@t3-gem-o1:~$ DISPLAY=:0.0 xrandr --query
+# Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 8096 x 8096
+# HDMI-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 527mm x 296mm
+#    1920x1080     60.00*+  50.00    59.94
+#    1680x1050     59.88
+#    1600x900      60.00
+#    1280x1024     75.02    60.02
+#    1440x900      59.90
+#    1366x768      59.79
+#    1152x864      75.00
+#    1280x720      60.00    50.00    59.94
+#    1024x768      75.03    70.07    60.00
+#    832x624       74.55
+#    800x600       72.19    75.00    60.32    56.25
+#    720x576       50.00
+#    720x480       60.00    59.94
+#    640x480       75.00    72.81    60.00    59.94
+#    720x400       70.08
+```
+
+The Kiosk application is located in the `$HOME/bin/kiosk` directory by default. To replace or update the application,
+send the new application to this directory using `scp` as shown below, then restart the Openbox session.
+
+```bash
+ubuntu@host:~$ scp kiosk gemstone@10.0.0.1:bin/kiosk
+ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 openbox --exit
+```
+
+## 4. Architecture
+
+The stages from powering on the Gemstone card to displaying the Kiosk application are listed below.
+
+1. Systemd starts the `getty@tty1` service. This service automatically logs in the `gemstone` user from the terminal
+   named tty1.
+2. The default shell of the `gemstone` user, `/bin/bash`, is launched.
+3. The `$HOME/.profile` script is executed by the Bash shell. This script contains the `startx` command, which launches
+   **Xserver**, the display server for X11. If Xserver crashes for any reason, the status is logged in the systemd
+   journal with the `kiosk` tag, and `startx` is executed again.
+4. The `$HOME/.xinitrc` script is executed by Xserver. This script contains the `exec openbox-session` command, which
+   launches the Openbox session.
+5. The `$HOME/.config/openbox/autostart` script is executed by Openbox. This script launches the application defined by
+   the `KIOSK_BIN` environment variable. The stdout and stderr outputs of this application are logged to the file
+   defined by the `KIOSK_LOG_PATH` environment variable. If the Kiosk application crashes for any reason, the status is
+   logged in the systemd journal with the `kiosk` tag, and the application is restarted.
+
+## 5. Conclusion
+
+While the Desktop image allows login with a username and password, the Kiosk image is a type of image where only your
+specified application is automatically launched, and there is no access to the system via the screen.

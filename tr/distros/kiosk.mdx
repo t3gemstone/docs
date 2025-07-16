@@ -76,8 +76,9 @@ ve birçok yazılımla uyumlu olması etkili olmuştur.
 
 X11 üzerinde kiosk uygulamasını tam ekran göstermek için son derece
 konfigüre edilebilir olan ve az sistem kaynağı kullanan **Openbox** pencere yöneticisi tercih edilmiştir. 
-Openbox ayarlarından (`$HOME/.config/openbox/rc.xml`) pencere kenarlıkları, pencere başlığı, pencere yönetim tuşları, pencere
-sürükleme, klavye kısayol tuşları vb. işlevler devre dışı bırakılmıştır. 
+Kiosk ihtiyaçlarına uygun olması için Openbox ayarlarından (`$HOME/.config/openbox/rc.xml`) 
+pencere kenarlıkları, başlık, yönetim tuşları, sürükleme, klavye kısayol tuşları vb. işlevler devre dışı 
+bırakılmıştır. 
 
 ## 2. Kurulum
 
@@ -126,15 +127,15 @@ Gemstone karta [seri port ya da SSH](../quickstart#2-1-seriport) aracılığıyl
 `$HOME/kiosk.environment` dosyasından çevre değişkenler yardımıyla yapabilirsiniz. Bu dosyada yer alan çevre değişkenler 
 ve işlevleri aşağıdaki tabloda listelenmiştir.
 
-| Çevre Değişken             | Varsayılan Değer                  | İşlev                                                      |
-|----------------------------|-----------------------------------|------------------------------------------------------------|
-| `PATH`                     | `$HOME/bin:$PATH`                 | Uygulamaların aranacağı dizinler                           |
-| `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Dinamik kütüphanelerin (.so) aranacağı dizinler            |
-| `KIOSK_RESOLUTION`         | `800x600`                         | Ekran çözünürlüğü                                          |
-| `KIOSK_REFRESH_RATE`       | `60`                              | Ekran yenileme hızı                                        |
-| `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Uygulama stdout ve stderr çıktılarının kaydedileceği dizin |
-| `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Byte cinsinden log dosyasının maksimum boyutu              |
-| `KIOSK_BIN`                | `kiosk`                           | Çalıştırılacak uygulama                                    |
+   | Çevre Değişken             | Varsayılan Değer                  | İşlev                                                      |
+   |----------------------------|-----------------------------------|------------------------------------------------------------|
+   | `PATH`                     | `$HOME/bin:$PATH`                 | Uygulamaların aranacağı dizinler                           |
+   | `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Dinamik kütüphanelerin (.so) aranacağı dizinler            |
+   | `KIOSK_RESOLUTION`         | `800x600`                         | Ekran çözünürlüğü                                          |
+   | `KIOSK_REFRESH_RATE`       | `60`                              | Ekran yenileme hızı                                        |
+   | `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Uygulama stdout ve stderr çıktılarının kaydedileceği dizin |
+   | `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Byte cinsinden log dosyasının maksimum boyutu              |
+   | `KIOSK_BIN`                | `kiosk`                           | Çalıştırılacak uygulama                                    |
 
 Ayarlarda yapılan değişikliklerin geçerli olması için aşağıdaki komut yardımıyla Openbox oturumunu yeniden 
 başlatmanız yeterlidir.
@@ -143,19 +144,10 @@ başlatmanız yeterlidir.
 gemstone@t3-gem-o1:~$ DISPLAY=:0.0 openbox --exit
 ```
 
-Kiosk uygulaması varsayılan olarak `$HOME/bin/kiosk` dizininde yer alır. Uygulamayı değiştirmek ya da güncellemek için 
-aşağıda gösterildiği şekilde
-`scp` ile bu dizine yeni uygulamayı gönderdikten sonra Openbox oturumunu yeniden başlatınız.
-
-```bash
-ubuntu@host:~$ scp kiosk gemstone@10.0.0.1:bin/kiosk
-ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 openbox --exit
-```
-
 Ekranınız için geçerli çözünürlük ve yenileme hızı değerlerini aşağıdaki komut ile listeleyebilirsiniz.
 
 ```bash
-ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
+gemstone@t3-gem-o1:~$ DISPLAY=:0.0 xrandr --query
 # Screen 0: minimum 320 x 200, current 1920 x 1080, maximum 8096 x 8096
 # HDMI-1 connected primary 1920x1080+0+0 (normal left inverted right x axis y axis) 527mm x 296mm
 #    1920x1080     60.00*+  50.00    59.94
@@ -173,6 +165,15 @@ ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 xrandr --query
 #    720x480       60.00    59.94
 #    640x480       75.00    72.81    60.00    59.94
 #    720x400       70.08
+```
+
+Kiosk uygulaması varsayılan olarak `$HOME/bin/kiosk` dizininde yer alır. Uygulamayı değiştirmek ya da güncellemek için 
+aşağıda gösterildiği şekilde
+`scp` ile bu dizine yeni uygulamayı gönderdikten sonra Openbox oturumunu yeniden başlatınız.
+
+```bash
+ubuntu@host:~$ scp kiosk gemstone@10.0.0.1:bin/kiosk
+ubuntu@host:~$ ssh gemstone@10.0.0.1 DISPLAY=:0.0 openbox --exit
 ```
 
 ## 4. Mimari
