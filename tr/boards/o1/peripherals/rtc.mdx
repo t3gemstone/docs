@@ -2,3 +2,51 @@
 title: 'RTC'
 description: 'Real-Time Clock'
 ---
+
+Bilgisayarların, güç kesintilerinde veya kapatıp açılma durumlarında sistem saatini
+saymaya devam edebilmeleri için harici bir pille çalışan RTC (Real-Time Clock) adlı
+donanım kullanılır.
+
+<Note>
+  T3-GEM-O1 kartında RTC bulunmaktadır. RTC modülünü kullanmazsanız kartın gücünü
+  kesip tekrar verdiğinizde sistem saati sıfırlanır ve 01/01/1970 tarihinden başlar.
+  Kart internete bağlıysa doğru saat bir süre sonra ayarlanacaktır. İnternet yokken
+  de saatin doğru kalmasını istiyorsanız RTC kullanmalısınız.
+</Note>
+
+### RTC Çalıştırma Adımları
+
+<Steps>
+  <Step title="Pil Bağlantısını Yap">
+    <Frame caption="Todo: RTC pil bağlantısı">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Step>
+  <Step title="Güncel Tarih Saat Bilgisini Gönder">
+    Ardından [seri port](../../../quickstart.mdx#21-seriport) veya [SSH](../../../quickstart.mdx#23-ssh-ile-network-üzerinden-bağlantı) ile
+    bir terminal açınız. Sistem saatinizi aşağıdaki komutla bir defaya mahsus RTC modülüne göndermelisiniz.
+
+    ```bash
+    gemstone@t3-gem-o1:~$ sudo hwclock -w -u /dev/rtc0
+    ```
+
+    İşlem başarılı olduysa `hwclock -r` komutunu çalıştırdığınızda aşağıdakine benzer bir çıktı görmelisiniz.
+
+    <CodeGroup>
+      ```bash Komut
+      gemstone@t3-gem-o1:~$ sudo hwclock -r
+      ```
+
+      ```bash Çıktı
+      2025-07-16 08:25:02.160359+03:00
+      ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Test Et">
+    Kartın üstündeki güç düğmesiyle ya da `poweroff` komutuyla kartınızı kapatın ve
+    güç kablosunu çekin. Yaklaşık 10 saniye bekledikten sonra karta tekrar güç verin
+    ve `date` komutunu çalıştırın. Gösterilen tarih ve saat bilgisi doğruysa RTC
+    sorunsuz çalışıyor demektir.
+  </Step>
+</Steps>
