@@ -127,15 +127,15 @@ Gemstone karta [seri port ya da SSH](../quickstart#2-1-seriport) aracılığıyl
 `$HOME/kiosk.environment` dosyasından çevre değişkenler yardımıyla yapabilirsiniz. Bu dosyada yer alan çevre değişkenler 
 ve işlevleri aşağıdaki tabloda listelenmiştir.
 
-   | Çevre Değişken             | Varsayılan Değer                  | İşlev                                                      |
-   |----------------------------|-----------------------------------|------------------------------------------------------------|
-   | `PATH`                     | `$HOME/bin:$PATH`                 | Uygulamaların aranacağı dizinler                           |
-   | `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Dinamik kütüphanelerin (.so) aranacağı dizinler            |
-   | `KIOSK_RESOLUTION`         | `800x600`                         | Ekran çözünürlüğü                                          |
-   | `KIOSK_REFRESH_RATE`       | `60`                              | Ekran yenileme hızı                                        |
-   | `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Uygulama stdout ve stderr çıktılarının kaydedileceği dizin |
-   | `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Byte cinsinden log dosyasının maksimum boyutu              |
-   | `KIOSK_BIN`                | `kiosk`                           | Çalıştırılacak uygulama                                    |
+| Çevre Değişken             | Varsayılan Değer                  | İşlev                                                      |
+|----------------------------|-----------------------------------|------------------------------------------------------------|
+| `PATH`                     | `$HOME/bin:$PATH`                 | Uygulamaların aranacağı dizinler                           |
+| `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Dinamik kütüphanelerin (.so) aranacağı dizinler            |
+| `KIOSK_RESOLUTION`         | `800x600`                         | Ekran çözünürlüğü                                          |
+| `KIOSK_REFRESH_RATE`       | `60`                              | Ekran yenileme hızı                                        |
+| `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Uygulama stdout ve stderr çıktılarının kaydedileceği dizin |
+| `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Byte cinsinden log dosyasının maksimum boyutu              |
+| `KIOSK_BIN`                | `kiosk`                           | Çalıştırılacak uygulama                                    |
 
 Ayarlarda yapılan değişikliklerin geçerli olması için aşağıdaki komut yardımıyla Openbox oturumunu yeniden 
 başlatmanız yeterlidir.

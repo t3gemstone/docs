@@ -116,15 +116,15 @@ After connecting to the Gemstone card via [serial port or SSH](../quickstart#2-1
 necessary settings using environment variables in the `$HOME/kiosk.environment` file. The environment variables listed
 in this file and their functions are shown in the table below.
 
- | Environment Variable       | Default Value                     | Function                                                     |
- |----------------------------|-----------------------------------|--------------------------------------------------------------|
- | `PATH`                     | `$HOME/bin:$PATH`                 | Directories where applications will be searched              |
- | `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Directories where dynamic libraries (.so) will be searched   |
- | `KIOSK_RESOLUTION`         | `800x600`                         | Screen resolution                                            |
- | `KIOSK_REFRESH_RATE`       | `60`                              | Screen refresh rate                                          |
- | `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Directory where application stdout and stderr will be logged |
- | `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Maximum size of the log file in bytes                        |
- | `KIOSK_BIN`                | `kiosk`                           | Application to be executed                                   |
+| Environment Variable       | Default Value                     | Function                                                     |
+|----------------------------|-----------------------------------|--------------------------------------------------------------|
+| `PATH`                     | `$HOME/bin:$PATH`                 | Directories where applications will be searched              |
+| `LD_LIBRARY_PATH`          | `/usr/local/qt6:$LD_LIBRARY_PATH` | Directories where dynamic libraries (.so) will be searched   |
+| `KIOSK_RESOLUTION`         | `800x600`                         | Screen resolution                                            |
+| `KIOSK_REFRESH_RATE`       | `60`                              | Screen refresh rate                                          |
+| `KIOSK_LOG_PATH`           | `$HOME/kiosk.log`                 | Directory where application stdout and stderr will be logged |
+| `KIOSK_LOG_MAX_SIZE_BYTES` | `104857600`                       | Maximum size of the log file in bytes                        |
+| `KIOSK_BIN`                | `kiosk`                           | Application to be executed                                   |
 
 For the changes in the settings to take effect, it is sufficient to restart the Openbox session using the following
 command.

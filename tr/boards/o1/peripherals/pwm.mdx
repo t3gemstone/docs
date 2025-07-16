@@ -1,4 +1,96 @@
 ---
 title: 'PWM'
-description: 'Pulse With Modulation (PWM)'
+description: 'Pulse Width Modulation (PWM)'
 ---
+
+PWM (Pulse Width Modulation), bir sinyalin ortalama güç seviyesini kontrol etmek için kullanılan bir modülasyon
+tekniğidir. Temel çalışma prensibi, sabit periyotlu bir kare dalganın "açık" ve "kapalı" kalma sürelerinin
+(duty cycle) ayarlanmasına dayanır. Gömülü sistemlerde motor hız kontrolü, LED parlaklık ayarı, servo motor kontrolü,
+güç dönüştürücüler ve analog sinyal üretimi gibi birçok amaçla kullanılır. Örneğin, bir motorun hızı PWM ile kontrol
+edilirken, duty cycle değeri arttıkça motora iletilen ortalama gerilim artar ve motor daha hızlı döner.
+
+PWM sinyalinin temel parametrelerinden biri olan **periyot** bir tam dalga boyunun süresidir.
+**Duty cycle** ise bir periyot içinde sinyalin "açık" kaldığı süredir. **Polarite** ise PWM
+sinyalinin aktif olduğu durumu (yüksek veya düşük seviye) belirler. Örneğin, normal polaritede duty cycle yüksek
+seviyeyi temsil ederken, ters polaritede düşük seviyeyi temsil eder.
+
+### PWM Arayüzleri
+
+T3-GEM-O1 kartta yer alan PWM arayüzleri aşağıdaki tabloda listelenmiştir.
+
+| Arayüz        | Cihaz           | GPIO       | Overlay Dosyası                            |
+|---------------|-----------------|------------|--------------------------------------------|
+| **PWM-ECAP0** | `pwmchip0/pwm0` | GPIO-12    | `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtso` |
+| **PWM-ECAP1** | `pwmchip1/pwm0` | GPIO-16    | `k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtso` |
+| **PWM-ECAP2** | `pwmchip2/pwm0` | GPIO-18    | `k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtso` |
+| **PWM-0A**    | `pwmchip3/pwm0` | GPIO-5     | `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5.dtso`  |
+| **PWM-0B**    | `pwmchip3/pwm1` | GPIO-14    | `k3-am67a-t3-gem-o1-pwm-epwm0-gpio14.dtso` |
+| **PWM-1A**    | `pwmchip5/pwm0` | GPIO-6     | `k3-am67a-t3-gem-o1-pwm-epwm1-gpio6.dtso`  |
+| **PWM-1B**    | `pwmchip5/pwm1` | GPIO-13    | `k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtso` |
+| **PWM-2A**    | `pwmchip7/pwm0` | FAN header | `k3-am67a-t3-gem-o1-gpio-fan.dtso`         |
+
+<Note>
+PWM-0A ve PWM-0B birlikte aktif etmek için: `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtso`
+
+PWM-1A ve PWM-1B birlikte aktif etmek için: `k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtso`
+</Note>
+
+<Warning>
+`pwmchip3` ve `pwmchip5` çipleri iki kanala sahiptir ve her bir kanal bir PWM cihazı olarak kullanılabiir.
+Ancak bir PWM çipinin iki kanalına (örneğin PWM-0A ve PWM-0B) **farklı periyot değerleri ATANAMAZ**.
+İki kanala aynı periyot değeri verildiği sürece farklı duty-cycle atanmasında bir sakınca yoktur.
+</Warning>
+
+Aktif edilmek istenen arayüzlerin overlay dosyalarının isimleri `/boot/uEnv.txt` dosyasındaki `overlays` değişkenine 
+eklenmelidir. Overlay'ler hakkında detaylı bilgiye [Device Tree](./introduction/#2-device-tree) bölümünden
+erişilebilir.
+
+Tüm overlay'ler aktif edildiğinde 1 tanesi FAN header'ından 7 tanesi 40-pin header'dan olmak üzere **8 ayrı PWM** 
+arayüzü mevcuttur.
+
+### PWM Kullanımı
+
+PWM çiplerine `/sys/class/pwm` dizininden erişilebilmektedir. Bir PWM cihazını kullanabilmek için öncesinde `export`
+işlemi yapılmış olmalıdır. Örneğin yukarıdaki tablo incelendiğinde `PWM-ECAP0` arayüzünün `pwmchip0` çipinin `pwm0` 
+cihazına karşılık gelmekte olduğu görülmektedir. Aşağıdaki komut ile `export` yapıldıktan sonra
+`/sys/class/pwm/pwmchip0/pwm0` cihazı oluşur. `echo 0` yazmamızın sebebi `pwm0` yani `0` numaralı cihaz olmasıdır.
+
+```bash
+gemstone@t3-gem-o1:~$ echo 0 | sudo tee /sys/class/pwm/pwmchip0/export
+# 0
+```
+
+Benzer şekilde `PWM-0B` arayüzü kullanılmak isteniyorsa aşağıdaki komutta gösterildiği gibi `pwmchip3` çipinin `pwm1`
+cihazı aktif edilmelidir. `echo 1` yazmamızın sebebi `pwm1` yani `1` numaralı cihaz olmasıdır.
+
+```bash
+gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip3/export
+# 1
+```
+
+`export` işleminin ardından nanosaniye cinsinden `period` ve `duty_cycle` değişkenleri aşağıdaki örnekte gösterildiği 
+şekilde istenen değerlere ayarlanıp cihazın `enable` değişkenine `1` atandıktan sonra PWM çıktısı alınabilir.
+
+```bash
+gemstone@t3-gem-o1:~$ echo 2000000 | sudo tee /sys/class/pwm/pwmchip0/pwm0/period     # 500 Hz
+# 2000000
+gemstone@t3-gem-o1:~$ echo 1000000 | sudo tee /sys/class/pwm/pwmchip0/pwm0/duty_cycle # 50%
+# 1000000
+gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip0/pwm0/enable
+# 1
+```
+
+PWM çıktısını durdurmak için `enable` değişkenine `0` atanabilir. 
+
+```bash
+gemstone@t3-gem-o1:~$ echo 0 | sudo tee /sys/class/pwm/pwmchip0/pwm0/enable
+# 1
+```
+
+Eğer PWM cihazı artık kullanılmak istenmiyorsa `unexport` işlemi yapılabilir. Bu işlem sonrasında cihaz
+sistemden kaldırılacaktır. `echo 0` yazmamızın sebebi `pwm0` yani `0` numaralı cihaz olmasıdır.
+
+```bash
+gemstone@t3-gem-o1:~$ echo 0 | sudo tee /sys/class/pwm/pwmchip0/unexport
+# 0
+```
