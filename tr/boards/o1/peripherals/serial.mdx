@@ -24,8 +24,8 @@ gibi harici modüllerle haberleşme kurulurken çoğu zaman Seriport tercih edil
   [VNC](../../..//quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle Geliştirme kartına
   bağlan.    
   </Step>
-  <Step title="Picocom ve Shell">
-  Terminal haberleşme uygulamasını kur ve Bash Shell scriptlerini oluştur.
+  <Step title="Shell">
+  Bash Shell scriptlerini oluştur.
   </Step>
   <Step title="TTL ve Terminal">
   TTL kablosu ile Geliştirici bilgisayarı ve Gemstone kartını bağlayarak Tabby.sh isimli terminal aracılığıyla
@@ -33,15 +33,7 @@ gibi harici modüllerle haberleşme kurulurken çoğu zaman Seriport tercih edil
   </Step>
 </Steps>
 
-### 1. Picocom Kurulumu
-
-Aşağıdaki komut ile `picocom` isimli minimal terminal aracını Geliştirme kartına kurunuz.
-
-```bash
-sudo apt install picocom
-```
-
-### 2. Shell Script Oluşturulması
+### 1. Shell Script Oluşturulması
 
 Seri port açma ve veri gönderme işlemleri için script dosyası oluşturunuz.
 
@@ -49,7 +41,7 @@ Seri port açma ve veri gönderme işlemleri için script dosyası oluşturunuz.
 touch serial-test.sh
 ```
 
-### 3. Metin Editörü Kullanımı
+### 2. Metin Editörü Kullanımı
 
 Terminal arayüzünden `nano` isimli metin editörünü kullanarak `serial-test.sh` dosyasını açınız.
 
@@ -65,24 +57,24 @@ Aşağıdaki kodu kopyaladıktan sonra `serial-test.sh` dosyasına yapıştırı
 SERIAL_PORT="/dev/ttyS3"
 BAUD_RATE="115200"
 
-nohup picocom -b $BAUD_RATE $SERIAL_PORT &
+stty -F /dev/ttyS3 115200 -crtscts
 
 while true; do
-    echo -n "Teknofest" > $SERIAL_PORT
+    echo "Teknofest" > $SERIAL_PORT
     sleep 1
 done
 ```
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız.
 
-### 4. Shell Scriptinin Çalıştırılması
+### 3. Shell Scriptinin Çalıştırılması
 
 `chmod` komutu ile `serial-test.sh` dosyasını çalıştırılabilir hale getirerek başlatınız.
 
 <SnippetExamplesSerial />
 
-### 5. Haberleşme
+### 4. Haberleşme
 
-<Frame>
-  <img height="200" width="200" src="/images/under-construction.png" />
+<Frame >
+  <video controls className="w-full aspect-video" src="/videos/seri-test.mp4"></video>
 </Frame>
