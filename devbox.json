@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.15.0/.schema/devbox.schema.json",
   "packages": [
     "nodejs@latest"
   ],
@@ -13,8 +13,8 @@
       "export PS1='📦 shell> '"
     ],
     "scripts": {
-      "install": "npm install mintlify",
-      "docs": "mintlify dev"
+      "install": "npm install mint",
+      "docs": "mint dev"
     }
   }
 }
