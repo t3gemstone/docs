@@ -145,9 +145,7 @@
               "tr/projects/introduction",
               "tr/projects/preempt-rt",
               "tr/projects/cloud",
-              "tr/projects/ardupilot",
               "tr/projects/nuttx",
-              "tr/projects/autoware",
               "tr/projects/vtol"
             ]
           },
@@ -282,9 +280,7 @@
               "en/projects/introduction",
               "en/projects/preempt-rt",
               "en/projects/cloud",
-              "en/projects/ardupilot",
               "en/projects/nuttx",
-              "en/projects/autoware",
               "en/projects/vtol"
             ]
           },
