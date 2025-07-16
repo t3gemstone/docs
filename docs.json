@@ -144,8 +144,8 @@
             "pages": [
               "tr/projects/introduction",
               "tr/projects/preempt-rt",
-              "tr/projects/cloud",
               "tr/projects/nuttx",
+              "tr/projects/cloud",
               "tr/projects/vtol"
             ]
           },
@@ -279,8 +279,8 @@
             "pages": [
               "en/projects/introduction",
               "en/projects/preempt-rt",
-              "en/projects/cloud",
               "en/projects/nuttx",
+              "en/projects/cloud",
               "en/projects/vtol"
             ]
           },
