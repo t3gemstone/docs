@@ -6,7 +6,7 @@ description: 'General Purpose Input Output (GPIO)'
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
 
-- Gemstone işletim sistemi terminali üzerinden GPIO kontrolü yapmak.
+- Gemstone üzerinden GPIO kullanımı
 - [t3gemstone/examples/gpio](https://github.com/t3gemstone/examples/tree/main/gpio) projesi için ön hazırlık.
 </Tip>
 
@@ -15,7 +15,8 @@ işlemleri için kullanılan pinlerdir. Bu pinler, hem dijital veri almak (giri�
 göndermek (çıkış) için yapılandırılabilir. Aşağıda Gemstone üzerindeki GPIO pinleri aracılığıyla yapılan 
 led blink işlemi gösterilmektedir.
 
-[Hızlı Başlangıç](/tr/quickstart) sayfasında belirtilen malzemelere ek olarak bir led, buton ve bir direnç gerekmektedir.
+[Hızlı Başlangıç](/tr/quickstart) sayfasında belirtilen malzemelere ek olarak bir led, buton ve bir
+direnç gerekmektedir.
 
 <AccordionGroup>
 
@@ -43,19 +44,21 @@ led blink işlemi gösterilmektedir.
   <Step title="GPIO Bağlantıları">
   Gemstone kartına GPIO bağlantılarını yap.
   </Step>
+
   <Step title="SSH/VNC Bağlantısı">
   [SSH](../../..//quickstart.mdx#23-ssh-ile-network-üzerinden-bağlantı) veya
   [VNC](../../..//quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle Geliştirme kartına
   bağlan.    
   </Step>
+
   <Step title="Shell">
   Bash Shell scriptlerini oluştur.
   </Step>
 </Steps>
 
-### Led Yakma
+### 1. Led Yakma
 
-#### 1. GPIO Bağlantıları
+#### 1.1. GPIO Bağlantıları
 
 Gemstone üzerinde Input/Output olarak kullanılabilir durumda olan GPIOX'e aşağıda gösterildiği gibi 
 led bağlantıları yapılır.
@@ -64,7 +67,7 @@ led bağlantıları yapılır.
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-#### 2. Shell Script Oluşturulması
+#### 1.2. Shell Script Oluşturulması
 
 Gemstone'a bağlandıktan sonra led blink işlemi için bir script dosyası oluşturunuz.
 
@@ -73,13 +76,14 @@ touch led-blink.sh
 ```
 
 Terminal arayüzünden `nano` isimli metin editörünü kullanarak `led-blink.sh` dosyasını açınız.
+
 ```bash
 nano led-blink.sh
 ```
 
 Aşağıdaki kodu kopyalayıp led-blink.sh dosyasına yapıştırınız.
 
-```bash
+```bash lines
 #!/bin/bash
 
 while :
@@ -93,7 +97,7 @@ done
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız. 
 
-#### 3. Shell Scriptinin Çalıştırılması
+#### 1.3. Shell Scriptinin Çalıştırılması
 
 `chmod` komutu ile `led-blink.sh` dosyasını çalıştırılabilir hale getiriniz.
 
@@ -107,16 +111,15 @@ chmod +x led-blink.sh
 ./led-blink.sh
 ```
 
-Sonucunda aşağıdaki videoda gösterildiği gibi 1 saniye aralıklarda ledin yanıp söndüğünü görmektesiniz.
+Son olarak aşağıdaki videoda gösterildiği gibi 1 saniye aralıklarda ledin yanıp söndüğünü gözlemleyiniz.
 
 <Frame caption="Led blink uygulaması">
   <video controls className="w-full aspect-video" src=""></video>
 </Frame>
 
+### 2. Buton Okuma ve Led Yakma
 
-### Buton Okuma ve Led Yakma
-
-#### 1. GPIO Bağlantıları
+#### 2.1. GPIO Bağlantıları
 
 Gemstone üzerinde Input/Output olarak kullanılabilir durumda olan GPIOX pinine led ve GPIOY pinine buton 
 bağlantıları aşağıda gösterildiği gibi yapılır.
@@ -125,7 +128,7 @@ bağlantıları aşağıda gösterildiği gibi yapılır.
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-#### 2. Shell Script Oluşturulması
+#### 2.2. Shell Script Oluşturulması
 
 Script dosyasını oluşturunuz.
 
@@ -141,7 +144,7 @@ nano buton-led.sh
 
 Aşağıdaki kodu kopyalayıp `buton-led.sh` dosyasına yapıştırınız.
 
-```bash
+```bash lines
 #!/bin/bash
 
 while :
@@ -157,7 +160,7 @@ done
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız. 
 
-#### 3. Shell Scriptinin Çalıştırılması
+#### 2.3. Shell Scriptinin Çalıştırılması
 
 `chmod` komutu ile `buton-led.sh` dosyasını çalıştırılabilir hale getiriniz.
 
@@ -171,7 +174,7 @@ chmod +x buton-led.sh
 ./buton-led.sh
 ```
 
-Sonucunda aşağıdaki videoda gösterildiği gibi butona basıldığı süre boyunca ledin yandığını görmektesiniz.
+Son olarak aşağıdaki videoda gösterildiği gibi butona basılan süre boyunca ledin yandığını gözlemleyiniz.
 
 <Frame caption="Buton ile led yakma">
   <video controls className="w-full aspect-video" src=""></video>
