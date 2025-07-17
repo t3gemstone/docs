@@ -2,3 +2,128 @@
 title: 'Desktop'
 description: 'Desktop imajı'
 ---
+
+Desktop dağıtımımız, istikrar ve verimlilik için tasarlanmış, hafif ancak özellik açısından zengin bir masaüstü ortamı
+olan **Xfce4** üzerine kurulmuştur. Düşük kaynak kullanımı elde temek ve sorunsuz bir kullanıcı deneyimi sağlamak için 
+bileşenler dikkatli bir şekilde seçilmiştir.
+
+## 1. Özellikler
+
+Çeşitli masaüstü ortamları değerlendirilmiş aşağıdaki tercihler yapılmıştır:
+
+- **LXDE yerine Xfce**: LXDE hafif olmasına rağmen, Xfce'nin hazır olarak sunduğu sistem geneli ayar panelinden ve
+  bazı diğer özelliklerden yoksundur.
+- **Wayland yerine X11**: Wayland modern özellikler sunsa da henüz yeterince olgun değildir ve uyumluluk sorunları
+  yaşanabilmektedir. Birçok uygulama hala X11'e bağımlıdır.
+
+Xfce4 tabanlı dağıtımımız aşağıdaki temel bileşenleri içermektedir:
+
+### 1.1. Temel Sistem
+
+- **Konfigürasyon Yönetimi**: `xfconf`
+- **Masaüstü Yöneticisi**: `xfdesktop4`
+- **Giriş Yöneticisi**: `lightdm` ile `lightdm-gtk-greeter`
+- **Panel**: `xfce4-panel` ve eklentileri:
+  - `xfce4-indicator-plugin` (sistem göstergeleri)
+  - `xfce4-pulseaudio-plugin` (ses kontrolü)
+  - `xfce4-xkb-plugin` (klavye düzeni yönetimi)
+- **Oturum Yöneticisi**: `xfce4-session`
+- **Ayarlar Yöneticisi**: `xfce4-settings`
+- **Pencere Yöneticisi**: `xfwm4`
+
+### 1.2. Yardımcı Programlar
+
+- **Uygulama Başlatıcı**: `xfce4-appfinder`
+- **Disk Kullanım Analizcisi**: `baobab`
+- **Ağ Yönetimi**: `network-manager` + `network-manager-gnome`
+- **Görev Yöneticisi**: `xfce4-taskmanager`
+
+### 1.3. Uygulamalar
+
+- **Arşiv Yöneticisi**: `engrampa`
+- **Hesap Makinesi**: `mate-calc`
+- **Dosya Yönetimi**: `thunar` ve eklentileri:
+  - `thunar-archive-plugin` (arşiv desteği)
+  - `catfish` (arama desteği)
+- **Resim Görüntüleyici**: `ristretto`
+- **Medya Oynatıcı**: `parole`
+- **PDF Görüntüleyici**: `atril`
+- **Terminal**: `xfce4-terminal`
+- **Metin Düzenleyici**: `mousepad`
+- **Web Tarayıcısı**: `firefox`
+
+## 2. Kurulum
+
+[Hızlı Başlangıç](../quickstart#1-kurulum) bölümündeki anlatıldığı şekilde Gemstone'u bilgisayarınıza 
+bağlayarak Gemstone Imager isimli uygulamayı başlatarak **Operating System** bölümüne tıklayınız.
+
+<Frame>
+  <img src="/images/gem-imager/select-os.png" />
+</Frame>
+
+Operating System seçim ekranında Ubuntu veya Debian imajlarına tıkladığınızda aşağıdaki gibi Desktop,
+Kiosk ve Minimal seçenekleri listelenecektir. Desktop imajını seçerek yazma işlemini tamamlayınız.
+
+<Frame>
+  <img src="/images/gem-imager/select-desktop.png" />
+</Frame>
+
+Gemstone'u HDMI kablosu ile monitöre bağlayın. Karta güç vermek için USB Type-C kablosunu bağlayın. Önyükleme işlemi
+başarılı olduktan sonra giriş ekranıyla karşılaşacaksınız.
+
+<Frame caption="Giriş ekranı">
+  <img height="720" width="1280" src="/images/desktop-login-screen.png" />
+</Frame>
+
+## 3. Yapılandırma
+
+`xfce4-settings` yazılımı, masaüstü ortamınızı merkezi bir yerden özelleştirebilmenizi sağlar. Bu ayarlara paneldeki
+**Ayarlar Yöneticisi** simgesi aracılığıyla, uygulamalar menüsünden `Ayarlar > Ayarlar Yöneticisi` simgesine tıklayarak veya
+terminalden `xfce4-settings-manager` komutuyla erişebilirsiniz.
+
+<Frame caption="Ayarlar yöneticisi">
+  <img height="720" width="1280" src="/images/desktop-settings-manager.png" />
+</Frame>
+
+### 3.1. Görünüm
+- **Stiller**: Genel temayı (örn. T3-Gemstone, Greybird), simgeleri ve yazı tiplerini değiştirin.
+- **Ayarlar**: Yazı tipi için DPI değerini ayarlayın, kenar yumuşatmayı etkinleştirin/devre dışı bırakın.
+
+### 3.2. Masaüstü
+- **Stiller**: Masaüstü arka planını değiştirin.
+- **Ayarlar**: Masaüstü simgelerini ayarlayın.
+
+### 3.3. Panel
+- **Stiller**: Otomatik gizleme, panel boyutu, panel konumu ve şeffaflığını ayarlayın.
+- **Ayarlar**: Panel eklentilerini özelleştirin (örn. uygulamalar menüsü, başlatıcılar, saat).
+
+### 3.4. Pencere Yöneticisi
+- **Stiller**: Pencere temaları arasında geçiş yapın (örn. T3-Gemstone, Greybird).
+- **Klavye Kısayolları**: Pencere işlemleri için kısayollar tanımlayın.
+
+### 3.5. Ekran
+- **Ayarlar**: Ekran çözünürlüğünü ve yenileme hızını ayarlayın. Ekranları düzenleyin ve birincil ekranı yapılandırın.
+
+### 3.6. Klavye
+- **Ayarlar**: Klavye düzenleri ekleyin/kaldırın (örn. Türkçe, İngilizce).
+- **Klavye Kısayolları**: Uygulamaları başlatmak için kısayollar tanımlayın.
+
+### 3.7. Fare ve Dokunmatik Yüzey
+- **Stiller**: İmleç temasını değiştirin, imleç boyutunu ayarlayın.
+- **Ayarlar**: İmleç hızını, çift tıklama ve sürükle & bırak süresini ayarlayın.
+- **Klavye Kısayolları**: Uygulamaları başlatmak için kısayollar tanımlayın.
+
+### 3.7. Oturum ve Başlangıç
+- **Ayarlar**: Giriş sırasında başlatılan uygulamaları yönetin. Oturum kapatma için eylemleri seçin 
+  (oturumları kaydet/geri yükle).
+
+### 3.8. Ayar Düzenleyici
+- **Ayarlar**: Alt seviye Xfce konfigürasyonlarını doğrudan değiştirmek için grafiksel araçtır.
+  `xfce4-settings-manager`'dan farklı olarak, bu araç Xfce bileşenleri tarafından 
+  kullanılan ham yapılandırma kanallarını ve özelliklerini değiştirmeye imkan sağlar. Standart UI'da mevcut olmayan 
+  ince ayarlar için kullanılır.
+
+## 4. Sonuç
+
+Xfce4'ün modülerliği ve olgun ekosisteminden yararlanılarak **hızlı, özelleştirilebilir ve istikrarlı** bir masaüstü
+deneyimi sunulması hedeflenmiştir. Seçilen uygulamalar, kaynak kullanımını minimize ederken uyum içinde çalışırlar.
