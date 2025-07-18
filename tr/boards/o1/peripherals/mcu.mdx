@@ -217,8 +217,34 @@ Aşağıda bulunan dokümanlara hızlıca göz gezdirebilirsiniz.
 </Frame>
 
 ### 2.4. Linux Kernel
+
+[Device Tree'de](../../../faq#device-tree-nedir) tanımlanan donanımların sürücülerini yükler. Ardından
+varsa initrd'yi/initramfs'i başlatır ve rootfs'te bulunan `init` programını çalıştırır.
+
+<Tip>
+  U-Boot ve Linux kernelin device tree dosyaları birbirinden farklıdır. U-Boot'taki devicetreede
+  genellikle sadece kernel ve initramfs'i çeşitli depolama aygıtlarından (MMC, SSD, SPI flash, ...)
+  RAM'e yüklemeye yetecek kadar donanım aktif edilir. Asıl donanım aktif etme işlemlerini kernel yapar.
+</Tip>
+
 ### 2.5. Initial RAM Disk (Initrd)
+
+Rootfs başlatılmadan önce çeşitli kernel modüllerini yükleme, disk şifresini çözme, yazılım güncellemesi
+yapma gibi ara işlemleri gerçekleştirmeyi sağlayan ve RAM üzerinde bulunan geçici dosya sistemidir.
+
+<Tip>
+  Rootfs diskte şifreli olarak tutuluyorsa, kernel direkt olarak `init` programını başlatamaz.
+  Öncelikle disk şifresinin initramfs tarafından çözülmesi gerekir.
+</Tip>
+
 ### 2.6. Root Filesystem (Rootfs)
+
+Initrd, işlemlerini bitirdikten sonra rootfs olarak adlandırılan; sistem ve kullanıcı programlarını,
+kütüphaneleri ve çeşitli konfigürasyon dosyalarını içeren dosya sistemini `/` dizinine bağlar.
+Ardından kernel, rootfs'te `/init`, `/sbin/init` ya da benzeri bir dizinde bulunan `init` programını çalıştırır.
+Bu program, bazı donanımların sürücülerini yükler (kernel modüllerini), sistem servislerini
+(ağ bağlantısı, saat senkronizasyonu, paket güncelleme ve bluetooth gibi servisleri) ve masaüstü ortamını
+başlatır (gnome, kde, xfce, ...).
 
 ## 3. Son
 
