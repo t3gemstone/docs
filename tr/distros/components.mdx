@@ -2,3 +2,494 @@
 title: 'Bileşenler'
 description: 'İşletim Sistemindeki Bileşenler'
 ---
+
+<Note>
+Gemstone kartınızı aldığınız ve sisteminizi ilk kez başlattığınızda, karşınıza çıkan bu yeni dünya size biraz yabancı
+gelebilir. Bu rehber, Linux ve Ubuntu dünyasına ilk adım atan kullanıcıların T3 Gemstone OS'i etkin bir şekilde
+kullanabilmeleri için tasarlanmıştır. Orta-ileri seviye Linux bilgisine sahip kullanıcılar bu bölümü atlayabilir.
+</Note>
+
+## 1. Linux Felsefesi
+
+### 1.1. Açık Kaynak Yaklaşımı
+
+T3 Gemstone OS, açık kaynak yazılım felsefesine dayanan Debian/Ubuntu'nun üzerine inşa edilmiştir. Bu, sistem üzerinde
+tam kontrol sahibi olduğunuz, kaynak kodlara erişebileceğiniz ve sisteminizi ihtiyaçlarınıza göre özelleştirebileceğiniz
+anlamına gelir.
+
+### 1.2. "Her Şey Bir Dosyadır" Prensibi
+
+Linux dünyasında en temel kavramlardan biri **everything is a file (her şey bir dosyadır)** prensibidir. Bu, donanım
+bileşenlerinden süreçlere kadar her şeyin dosya sistemi üzerinden erişilebilir olduğu anlamına gelir. Gemstone
+kartınızdaki I2C, SPI, UART ve GPIO gibi donanım bileşenleri de bu felsefe çerçevesinde dosya olarak
+temsil edilir.
+
+### 1.3. Modüler Yapı
+
+Linux sistemler modüler bir yapıya sahiptir. Her bileşen belirli bir görevi yerine getirir ve diğer bileşenlerle
+standart arayüzler üzerinden iletişim kurar. Bu yaklaşım, Gemstone kartınızda farklı uygulamaları ve servisleri
+bağımsız olarak çalıştırabilmenizi sağlar. Örneğin Desktop imajındaki dosya yöneticisini beğenmediyseniz bunu kolayca
+alternatif dosya yöneticilerinden biriyle değiştirebilirsiniz. Kullanıcıya sunduğu bu özgürlük Linux işletim
+sistemlerini rakiplerinden farklı kılar.
+
+## 2. Linux Temelleri
+
+### 2.1. Boot Süreci
+
+Gemstone kartınız açıldığında, sistem belirli bir sırayla başlar. İlk olarak bootloader devreye girer, ardından Linux
+kernel yüklenir ve son olarak da systemd init sistemi çalışmaya başlar. Bu süreç boyunca sistem, donanımınızı tanır,
+gerekli sürücüleri yükler ve sistem servislerini başlatır.
+
+### 2.2. Kernel Space ve User Space Ayrımı
+
+Linux işletim sistemi, güvenlik ve kararlılık için **Kernel Space** (çekirdek alanı) ve **User Space** (kullanıcı
+alanı) olarak iki ana bölüme ayrılır. Bu ayrım, donanım kaynaklarına erişimi kontrol ederek sistemin güvenliğini sağlar.
+
+#### 2.2.1. Kernel Space
+
+Kernel space, işletim sisteminin kalbinin attığı yerdir. Bu alan, doğrudan donanım kaynaklarına erişim sağlar ve
+sistemin temel işlevlerini yönetir. Örneğin, bir USB aygıtını bilgisayara taktığınızda, kernel space'de çalışan ilgili
+sürücü bu aygıtı tanır ve kullanıma hazır hale getirir. Benzer şekilde, bilgisayarınızın belleğini yöneten, dosya
+sistemine erişimi düzenleyen ve ağ trafiğini kontrol eden tüm işlemler kernel space'de gerçekleşir. Bu alanda çalışan
+kodlar yüksek yetkilere sahiptir ve bir hatanın tüm sistemi çökertme riski vardır. Bu nedenle kernel space'e erişim sıkı
+bir şekilde kontrol edilir.
+
+#### 2.2.2. User Space
+
+User space ise kullanıcıların doğrudan etkileşimde bulunduğu alandır. Örneğin, T3 Gemstone OS'de bir terminal açıp komut
+yazdığınızda veya bir web tarayıcı kullandığınızda, bu uygulamalar user space'de çalışır. User space'deki programlar
+donanıma doğrudan erişemezler; bunun yerine kernel'e sistem çağrıları (system calls) göndererek işlemlerini
+gerçekleştirirler. Örneğin, bir metin dosyasını okumak isteyen bir program, kernel'in dosya sistemine erişim sağlaması
+için bir istekte bulunur. Bu sayede user space'deki bir uygulamanın hatası, sistemin geri kalanını etkilemez ve sadece o
+uygulamanın çökmesine neden olur.
+
+#### 2.2.3. Örnek Senaryo: Bir Dosyayı Açma İşlemi
+
+1. **User Space:** `cat /etc/gemstone/config.txt` komutu çalışır.
+2. **Kernel Space:**
+   - Komut, **sistem çağrısı (`open()` syscall)** yapar.
+   - Kernel, dosyanın izinlerini kontrol eder (`chmod` & `chown` kurallarına bakar).
+   - Eğer yetki varsa, **diske erişir** ve veriyi okur.
+3. **User Space:** Kernel, okunan veriyi terminale gönderir.
+
+### 2.3. Süreç (Process) Yapısı
+
+Her çalışan program bir süreç (process) olarak adlandırılır. Linux'te bu süreçler hiyerarşik bir yapıda
+organize edilir ve her birinin kendine özgü kimlik numarası (**PID**) ve ebeveyn kimlik numarası (**PPID**) bulunur.
+İlk başlayan süreç diğer tüm süreçlerin ebeveyni olan `/sbin/init` programı yani T3 Gemstone OS'te `systemd` sürecidir.
+
+### 2.4. Dosya Sistemi Hiyerarşisi
+
+Linux'te dosya sistemi (rootfs), Unix standardına uygun olarak organize edilmiştir. Kök dizin (`/`) sistemin en üst
+noktasıdır ve tüm diğer dizinler buradan dallanır.
+
+- `/bin` ve `/usr/bin` dizinleri temel programları barındırır. Günlük olarak kullanacağınız `ls`, `cp`, `mv` gibi
+  komutlar burada bulunur.
+
+- `/etc` dizini sistem yapılandırma dosyalarının ana merkezidir. Ağ ayarları, servis yapılandırmaları ve sistem çapında
+  ayarlar bu dizin altında saklanır.
+
+- `/home` dizini kullanıcı klasörlerini içerir. Kişisel dosyalarınız ve ayarlarınız burada bulunur.
+
+- `/var` dizini değişken veri dosyalarını saklar. Log dosyaları, veri tabanları ve süreçler tarafından oluşturulan geçici
+  dosyalar bu dizinde yer alır.
+
+- `/dev` dizini cihaz dosyalarını içerir. Gemstone kartınızdaki I2C, SPI, UART, GPIO ve diğer donanım bileşenleri
+  bu dizin altında dosya olarak temsil edilir.
+
+- `/sys` dizini kernel tarafından sağlanan sistem bilgilerini sunar. Donanım durumu, sürücü parametreleri ve sistem
+  istatistikleri burada bulunur.
+
+- `/proc` dizini çalışan süreçler ve kernel hakkında bilgi sağlar. Bu sanal dosya sistemi, sistem durumunu gerçek
+  zamanlı olarak izlemenizi sağlar.
+
+### 2.5. Kullanıcı Yetkileri
+
+Linux dünyasında iki temel kullanıcı kategorisi bulunur: root kullanıcısı ve normal kullanıcılar.
+
+#### 2.5.1. Root Kullanıcısı
+
+Root kullanıcısını, bir şirketin genel müdürü olarak düşünebilirsiniz. Tıpkı bir genel müdürün şirketteki tüm
+departmanlara erişimi olduğu gibi, root kullanıcısı da sistem üzerinde sınırsız yetkiye sahiptir.
+
+Root kullanıcısı sistemdeki her dosyayı okuyabilir, yazabilir ve silebilir. Herhangi bir programı çalıştırabilir, sistem
+ayarlarını değiştirebilir ve hatta tüm sistemi formatlamak da dahil olmak üzere geri döndürülemez değişiklikler
+yapabilir. Root kullanıcısı, "büyük güçle birlikte büyük sorumluluk gelir" ilkesini mükemmel şekilde örnekler.
+
+#### 2.5.2. Normal Kullanıcılar
+
+Normal kullanıcılar ise sistemin belirli alanlarında faaliyet gösteren departman çalışanları gibidir. Kendi `home`
+dizinlerinde tam yetkiye sahip olmalarına rağmen, sistem dosyalarını değiştiremez, kritik servisleri
+durdurup başlatamazlar veya sistem çapında ayarlar yapamazlar. Bu kısıtlama, sistemi hem güvenli hem de stabil tutar.
+
+Gemstone kartınızda normal kullanıcı olarak çalışırken, kendi projelerinizi geliştirebilir, kişisel dosyalarınızı
+yönetebilir ve çoğu programı çalıştırabilirsiniz. Ancak yeni yazılım yükleme, sistem servislerini yönetme veya sistem
+yapılandırma dosyalarını değiştirme gibi işlemler için ek yetkiye ihtiyacınız olacaktır.
+
+#### 2.5.3. Sudo ile Root Yetkisi Kazanma
+
+**Sudo (superuser do)** komutu, normal kullanıcıların belirli komutları root yetkisi ile çalıştırmasını sağlayan güvenli
+bir köprü görevi görür. Bunu, bir çalışanın belirli durumlar için genel müdürden imzalı bir yetki belgesi alması gibi
+düşünebilirsiniz.
+
+Sudo'nun en büyük avantajı, sürekli root kullanıcısı olarak çalışmanın risklerini ortadan kaldırmasıdır. Root olarak
+çalışırken yaptığınız her hata, sistem için potansiyel bir tehdit oluşturur. Sudo ile sadece gerekli olduğu anlarda
+yetki yükseltme yaparak, hem güvenliği hem de sistem bütünlüğünü korursunuz.
+
+## 3. Terminal Kullanımı
+
+Terminal, Linux sistemlerinin kalbidir. Grafiksel arayüzde yapabileceğiniz hemen her işlemi terminal üzerinden daha
+hızlı ve verimli şekilde gerçekleştirebilirsiniz. Bu bölümde Linux terminalini aktif bir şekilde kullanabilmek için
+bilmeniz gereken ana komutlara yer verilmiştir. Bu buz dağının görünen kısmıdır. Yaşadığınız sorunları araştırdıkça
+her geçen gün yeni komutlar ve yöntemler öğrenmeye başlayacaksınız. Tekrar eden işleri
+"Nasıl daha efektik şekilde yapabilirim?" sorusunu sorup terminal komutlarıyla otomatize etmeye başlayınca
+**Power User (Usta Kullanıcı)** olarak adlandırılan seviyeye erişeceksiniz.
+
+Komutlarda `< >` karakterleri içinde gösterilenler dummy (örnek) girdiler olup ihtiyaca göre gerçek girdilerle
+değiştirilmelidir.
+
+```bash
+touch <dosya_adi> # dummy
+touch file.txt    # gerçek ('<' ve '>' karakterleri dahil edilmemelidir!)
+```
+
+### 3.1. man Sayfaları ile Yardım Alma
+
+Linux'un en güçlü özelliklerinden biri, kapsamlı dokümantasyon sistemidir. Her komut için detaylı açıklama almak
+istediğinizde **man (manual)** komutunu kullanabilirsiniz:
+
+```bash
+man ls # ls komutunun kullanımını açıklar
+man cp # cp komutunun kullanımını açıklar
+```
+
+man sayfalarında gezinmek için yukarı/aşağı ok tuşlarını kullanabilir, çıkmak için `q` tuşuna basabilirsiniz.
+
+### 3.2. APT ile Paket Yönetimi
+
+T3 Gemstone OS, Debian/Ubuntu tabanlı olduğu için **APT (Advanced Package Tool)** paket yöneticisini kullanır.
+Yeni yazılım kurmanız veya mevcut yazılımları güncellemeniz gerektiğinde APT aracını kullanabilirsiniz:
+
+```bash
+sudo apt update                # Paket listesini günceller
+sudo apt upgrade               # Kurulu paketleri günceller, öncesinde update yapılmalıdır
+sudo apt install <paket_adi>   # Yeni paket kurar
+sudo apt remove <paket_adi>    # Paketi kaldırır
+sudo apt search <arama_terimi> # Paket arar
+```
+
+### 3.3. Dosya Operasyonları
+
+Dosya ve dizinlerle çalışmak için temel komutlar:
+
+```bash
+ls -la                     # Dizin içeriğini detaylı listeler
+cd </path/to/dir>          # Dizin değiştirir
+mkdir <yeni_dizin>         # Yeni dizin oluşturur
+cp <kaynak_dosya> <hedef_dosya>        # Dosyayı kaynaktan hedefe kopyalar
+mv <eski_isim> <yeni_isim> # Dosyayı taşır/yeniden adlandırır
+rm <dosya_adi>                 # Dosyayı siler
+```
+
+### 3.4. chown ile Dosya ve Dizin Sahipliğini Değiştirme
+
+Linux'te her dosya ve dizinin bir sahibi (owner) ve bir grubu (group) vardır. **chown (change owner)** komutu, dosya veya
+dizinlerin sahibini ve/veya grubunu değiştirmek için kullanılır. Bu, özellikle birden fazla kullanıcının bulunduğu
+sistemlerde veya belirli dosyaların erişim kontrolü için önemlidir.
+
+```bash
+chown <kullanici_adi>:<grup_adi> <dosya_veya_dizin_adi> # Tek bir dosya ya da dizinin sahipliğini değiştirme
+chown -R <kullanici_adi>:<grup_adi> <dizin_adi>         # Dizin altındaki tüm dosya ve alt dizinlerin sahipliğini değiştirme
+```
+
+<Warning>
+- Sistem dosyalarının ya da farklı kullanıcıya ait dosyaların sahipliğini değiştirmek için root yetkisi gerekir.
+- Sistem dosyalarının sahipliğini değiştirirken dikkatli olun, bazı uygulamaların çalışmamasına neden olabilir.
+</Warning>
+
+<Note>
+Kullanıcıları gruplara atayarak dosya paylaşımını kolaylaştırabilirsiniz. Örneğin `dialout` grubuna dahil olan
+kullanıcılar seri portlara root yetkisi olmadan erişebilir.
+
+```bash
+sudo usermod -aG dialout <kullanici_adi>
+```
+</Note>
+
+### 3.5. chmod ile Dosya ve Dizin İzinlerini Yönetme
+
+Linux'te her dosya ve dizinin belirli izinleri (permissions) vardır. Bu izinler, dosyalarınızı kimlerin okuyabileceğini,
+düzenleyebileceğini veya çalıştırabileceğini belirler. **chmod (change mode)** komutu, bu izinleri değiştirmek için
+kullanılır.
+
+Linux'te üç tür izin vardır:
+
+- **Okuma (r - read)**: Dosyanın içeriğini görüntüleme izni.
+- **Yazma (w - write)**: Dosyayı değiştirme veya silme izni.
+- **Çalıştırma (x - execute)**: Dosyayı bir program olarak çalıştırma izni (scriptler veya uygulamalar için).
+
+Bu izinler, üç farklı kullanıcı grubuna atanır:
+
+- **Sahip (Owner)**: Dosyanın sahibi olan kullanıcı.
+- **Grup (Group)**: Dosyanın ait olduğu grup.
+- **Diğerleri (Others)**: Diğer tüm kullanıcılar.
+
+Dizinler için de benzer kurallar geçerlidir, ancak **çalıştırma (x) izni**, dizine `cd` ile girebilme anlamına gelir.
+
+chmod komutunu iki farklı şekilde kullanabilirsiniz: sembolik (harflerle) ve sayısal (rakamlarla).
+
+#### 3.5.1. Sembolik Yöntem
+
+İzin eklemek veya kaldırmak için `+` ve `-` işaretlerini, kullanıcı gruplarını belirtmek için aşağıdaki sembolleri
+kullanabilirsiniz:
+
+- `u`: Sahip
+- `g`: Grup
+- `o`: Diğerleri
+- `a`: Hepsi
+
+```bash
+chmod +x <dosya_adi>  # Tüm kullanıcılara dosyayı çalıştırma izni ekler
+chmod u+w <dosya_adi> # Sadece dosya sahibine yazma izni ekler
+```
+
+#### 3.5.2. Sayısal Yöntem
+
+Her izin, ikilik sistemdeki sayı karşılığı ile temsil edilir:
+
+- `4`: Okuma (r)
+- `2`: Yazma (w)
+- `1`: Çalıştırma (x)
+
+Bu sayıları toplayarak izinleri belirleyebilirsiniz. Örneğin `chmod 755 script.sh` komutu aşağıdaki anlama gelir:
+
+- `7`: 4 + 2 + 1 = `rwx` (sahip)
+- `5`: 4 + 1 = `r-x` (grup)
+- `5`: 4 + 1 = `r-x` (diğerleri)
+
+<Warning>
+- `chmod 777` **kullanmayın!** 
+
+  Bu, dosyayı **herkese açık** (`rwxrwxrwx`) hale getirir ve güvenlik riski oluşturur.
+- Sistem dosyalarının izinlerini değiştirirken dikkatli olun, bazı uygulamaların çalışmamasına neden olabilir.
+</Warning>
+
+
+### 3.6. nano Metin Editörü
+
+**nano**, yeni başlayanlar için ideal bir terminal metin editörüdür. Basit ve sezgisel arayüzü sayesinde yapılandırma dosyalarını
+terminalden ayrılmadan düzenleyebilirsiniz:
+
+```bash
+nano <dosya_adi> # Dosyayı düzenler
+```
+
+nano arayüzünün alt panelinde yaygın kullanılan klavye kısayolları yer almaktadır.
+Burada `^` ön eki `Ctrl` tuşunu, `M` ön eki ise `Alt` tuşunu temsil eder.
+Örneğin dosyayı kaydetmek için `^O` (`Ctrl+O`), çıkmak için `^X` (`Ctrl+X`), kopyalamak için `M-6` (`Alt+6`)
+kısayollarını kullanabilirsiniz.
+
+### 3.7. Pipe ve Çıktı Yönlendirme
+
+Linux'un en güçlü özelliklerinden biri, komutları birbirine bağlayabilme yeteneğidir. Pipe (`|`) işareti bir komutun
+çıktısını diğer komutun girdisi olarak kullanmanızı sağlar:
+
+```bash
+ls -la | grep -i ".txt" # Sadece .txt uzantılı dosyaları listeler
+sudo dmesg | tail -20   # Son 20 kernel mesajını gösterir
+```
+
+Çıktı yönlendirme ile komut sonuçlarını dosyalara kaydedebilirsiniz ve komutlara girdi olarak dosyaları verebilirsiniz:
+
+```bash
+ls -la > dosya_listesi.txt # Çıktıyı dosyaya kaydeder (dosyadaki mevcut veriler kaybolur)
+cat < dosya_listesi.txt    # Programa girdi olarak dosyayı verir
+echo "test" >> log.txt     # Çıktıyı dosyanın sonuna ekler (dosyadaki mevcut veriler saklanır)
+```
+
+<Warning>
+`<` ve `>` karakterleri yönlendirme için kullanılmıştır, dummy değildir.
+</Warning>
+
+### 3.8. htop ile Süreç Yönetimi
+
+**htop**, sistem kaynaklarını ve çalışan süreçleri görsel olarak izlemenizi sağlar:
+
+```bash
+htop
+```
+
+htop içinde süreçleri sonlandırmak için `F9` tuşunu, arama yapmak için `F3` tuşunu, filtrelemek için `F4` tuşunu
+kullanabilirsiniz. Örneğin `F4` ile filtrelemeyi başlatıp "htop" yazıp `F9` tuşuna basıp `15 SIGTERM` sinyalini `Enter`
+ile seçerseniz "htop" sürecine yani kullanmakta olduğunuz programa kapatma sinyali gönderirsiniz ve program sonlandırılır.
+
+### 3.9. nmtui ile Ağ Yönetimi
+
+Gemstone kartınızın ağ bağlantısını yönetmek için nmtui programını kullanabilirsiniz:
+
+```bash
+nmtui
+```
+
+Bu araç sayesinde Wi-Fi ağlarına bağlanabilir, ethernet IP ayarlarını yapabilir ve ağ profillerini yönetebilirsiniz.
+Basit ve sezgisel arayüzüyle ağ bağlantısı yönetimini kolaylaştırır ve ağ ayarlarını profillere kaydederek kalıcı hale
+getirir.
+
+### 3.10. Sisteme Bağlı Harici Donanımları Öğrenme
+
+```bash
+lsusb # Bağlı USB cihazlarını listeler
+lspci # Bağlı PCI cihazlarını listeler
+```
+
+### 3.11. Donanım Sürücülerinin Yönetimi
+
+Linux'te sürücüler genellikle kernel modülleri olarak implemente edilir. Gemstone kartınızdaki özel donanım
+bileşenleri için sürücüler sistem açılışında kernel'e otomatik olarak yüklenir.
+
+```bash
+lsmod                 # Yüklü kernel modüllerini listeler
+modinfo <modul_ismi>  # Modül hakkında bilgi verir
+modprobe <modul_ismi> # Modülü kernel'e yükler
+rmmod <modul_ismi>    # Modülü kernel'den kaldırır
+```
+
+### 3.12. Güvenlik Duvarı Yönetimi
+
+```bash
+sudo ufw status   # Güvenlik duvarı durumunu gösterir
+sudo ufw enable   # Güvenlik duvarını etkinleştirir
+sudo ufw allow 22 # SSH portunu açar
+sudo ufw allow 80 # HTTP portunu açar
+```
+
+### 3.13. Kullanıcı Yönetimi
+
+```bash
+sudo adduser <kullanici_adi>          # Yeni kullanıcı ekler
+sudo usermod -aG sudo <kullanici_adi> # Kullanıcıyı sudo grubuna ekler
+sudo passwd <kullanici_adi>           # Kullanıcı parolasını değiştirir
+sudo deluser <kullanici_adi>          # Kullanıcıyı siler
+```
+
+### 3.14. Systemd ve Servis Yönetimi
+
+Systemd, T3 Gemstone OS'de varsayılan init sistemidir. Sistem başlangıcını yönetir, servisleri kontrol eder ve sistem
+durumunu izler.
+
+Aşağıdaki örnekler nginx isimli servis üzerinden anlatılmıştır. nginx yerine yapılandırmak
+istediğiniz servisin ismini kullanınız. Servisin ismini bilmiyorsanız `systemctl list-units` komutundan öğrenebilirsiniz.
+
+#### 3.14.1. Servis Durumunu Kontrol Etme
+
+```bash
+systemctl status          # Tüm servislerin durumunu gösterir
+systemctl status nginx    # Nginx servisinin durumunu gösterir
+systemctl is-active nginx # Servisin aktif olup olmadığını kontrol eder
+```
+
+#### 3.14.2. Servis Başlatma ve Durdurma
+
+```bash
+sudo systemctl start nginx   # Nginx servisini başlatır
+sudo systemctl stop nginx    # Nginx servisini durdurur
+sudo systemctl restart nginx # Nginx servisini yeniden başlatır
+sudo systemctl reload nginx  # Nginx yapılandırmasını yeniden yükler
+```
+
+#### 3.14.3. Otomatik Başlatma Ayarları
+
+```bash
+sudo systemctl enable nginx  # Nginx'i otomatik başlatmaya alır
+sudo systemctl disable nginx # Nginx'i otomatik başlatmadan çıkarır
+```
+
+#### 3.14.4. Özel Servis Oluşturma
+
+Kendi uygulamanız için systemd servis dosyası oluşturmak istediğinizde, `/etc/systemd/system/` dizininde `.service`
+uzantılı dosya oluşturabilirsiniz.
+
+```bash
+sudo nano /etc/systemd/system/backup-ssd.service # backup-ssd.service isimli servis dosyasını oluştur
+sudo systemctl daemon-reload                     # Systemctl servis listesini yenile
+sudo systemctl enable --now backup-ssd           # Servisi otomatik başlatmaya al ve hemen başlat
+```
+
+### 3.15. Hata Teşhisi
+
+#### 3.15.1. dmesg ile Kernel Mesajları
+
+Sistem seviyesinde donanımsal ya da yazılımsal problemler yaşadığınızda ilk kontrol etmeniz gereken 
+**dmesg (diagnostic messsages)** komutunun çıktısı yani kernel mesajlarıdır:
+
+```bash
+sudo dmesg | tail -50      # Son 50 kernel mesajını gösterir
+sudo dmesg | grep -i error # Hata mesajlarını arar
+sudo dmesg | grep -i usb   # USB ile ilgili mesajları bulu:
+```
+
+Örneğin ağ kartınız normalde sorunsuz çalışıyorken kernel sürümünü güncelledikten sonra çalışmamaya başladıysa dmesg
+çıktısında muhtemelen ağ kartının sürücüsünün bastığı hata mesajları yer alacaktır.
+
+
+Kernel mesajlarını gerçek zamanlı olarak izlemek için:
+
+```bash
+sudo dmesg -w # Yeni kernel mesajlarını canlı olarak izler
+```
+
+#### 3.15.2. journalctl ile Sistem Logları
+
+**journalctl**, systemd'nin log yönetim aracıdır ve sistem genelindeki tüm logları merkezi bir yerden görüntülemenizi sağlar:
+
+```bash
+journalctl -f                      # Logları canlı olarak takip eder
+journalctl -r                      # Logları yeniden eskiye sıralı gösterir
+journalctl -r -u nginx             # Nginx servisinin loglarını gösterir
+journalctl -r --since "1 hour ago" # Son bir saatteki logları gösterir
+journalctl -r --until "2025-07-18" # Belirli tarihe kadar olan logları gösterir
+journalctl -r -p err               # Sadece hata seviyesindeki logları gösterir
+```
+
+#### 3.15.3. Yaygın Hataların Teşhisi
+
+Disk kullanımını kontrol etmek için:
+
+```bash
+df -h          # Disk kullanımını gösterir
+sudo du -sh /* # Kök dizin altındaki dizinlerin boyutlarını gösterir (recursive arama yaptığı için uzun sürer)
+```
+
+Bellek kullanımını kontrol etmek için:
+
+```bash
+free -h # Bellek kullanımını gösterir
+```
+
+Benzer şekilde htop programı yardımıyla, bellek kullanımı, CPU çekirdeklerinin kullanım yüzdeleri, çalışan process
+sayısı ve I/O sekmesinden süreçlerin disk okuma/yazma yüzdeleri kontrol edilebiilr.
+
+```bash
+htop
+```
+
+Ağ bağlantısı problemlerinde:
+
+```bash
+ping 1.1.1.1        # İnternet bağlantısını test eder, bağlantı mevcutsa sunucudan cevap alınır
+ping cloudflare.com # DNS sunucusu bağlantısını test eder, DNS çalışıyorsa sunucudan cevap alınır
+ip addr show        # Ağ arayüzlerini gösterir
+```
+
+## 4. Sonuç ve İleri Adımlar
+
+Bu rehber, Gemstone kartınızla Linux dünyasında ilk adımlarınızı atmanız için temel bilgileri içermektedir. Zamanla
+daha karmaşık konulara geçebilir, Bash shell scripting öğrenebilir ve sistemin derinliklerine inebilirsiniz.
+
+Unutmayın ki Linux öğrenmek sürekli bir süreçtir. Her gün yeni şeyler keşfedecek ve sisteminizi daha verimli kullanmanın
+yollarını bulacaksınız. Gemstone kartınızın tüm potansiyelinden yararlanmak için bu temelleri sağlam bir şekilde
+oturtmanız önemlidir.
+
+Herhangi bir sorunla karşılaştığınızda, man sayfalarını, sistem loglarını ve Linux topluluğunun geniş bilgi birikimini
+kullanmaktan çekinmeyin. Linux dünyasında her soruna bir çözüm vardır ve bu çözümü bulmak da öğrenme sürecinin keyifli
+bir parçasıdır.
