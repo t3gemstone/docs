@@ -159,3 +159,85 @@ During system startup, remoteproc will automatically load the firmware to the ap
 - IPC communication fails
 - Unexpected behavior is observed during dynamic loading
 </Warning>
+
+## 2. Boot Diagram
+
+The flow chart specified below is for the Gemstone Obsidian development board, but a similar structure is found in many
+ARM-based embedded Linux development boards.
+
+<SnippetBootflow/>
+
+### 2.1. ROM Bootloader (RBL)
+
+The RBL (ROM Bootloader), often distributed by manufacturers only as compiled programs without source code, has the
+primary purpose of performing hardware health checks and initialization tasks when the board is first powered on, and
+then transitioning to the SBL (Secondary Bootloader), whose source code can be modified. The location from which the SBL
+is read and started is determined by the RBL through boot mode switches.
+
+### 2.2. Secondary Bootloader (SBL)
+
+The purpose of the Secondary Boot Loader on the _T3-GEM-O1_ development boards is to launch the more advanced bootloader
+called U-Boot and to enable writing images to
+[eMMC](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319) via the Gemstone Imager application.
+
+In embedded boards containing Linux Kernel, U-Boot is often preferred. While pre-bootloaders like SBL can perform basic
+initialization tasks, U-Boot has much more advanced features. For example, U-Boot has its own Terminal/Console interface
+and supports many drivers not available in SBL, enabling more sophisticated customizations.
+
+### 2.3. U-Boot
+
+After the SBL, U-Boot takes control of the development board. Based on the configurations defined in the 
+[Device Tree](../../../faq#device-tree-nedir), it activates the relevant hardware drivers, executes a set of predefined
+commands to load components like the Linux Kernel and Initrd into RAM, and then transfers control to the Linux Kernel.
+
+#### 2.3.1. U-Boot Console Exercises
+
+<Tip>
+This section demonstrates the use of the U-Boot console by connecting to the Gemstone development board via TTL. You can
+quickly review the documents below.
+
+- https://cm.e-ale.org/2018/u-boot/u-boot.pdf
+- [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
+</Tip>
+
+<Frame caption="Todo: U-Boot TTL">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+### 2.4. Linux Kernel
+
+It loads the drivers for the hardware defined in the [Device Tree](../../../faq#device-tree-nedir). Then, if present, it
+starts the initrd/initramfs and executes the `init` program located in the rootfs.
+
+<Tip>
+The device tree files for U-Boot and the Linux kernel are different. In U-Boot, the device tree typically only
+activates enough hardware to load the kernel and initramfs into RAM from various storage devices (MMC, SSD, SPI flash,
+...). The actual hardware activation is performed by the kernel.
+</Tip>
+
+### 2.5. Initial RAM Disk (Initrd)
+
+A temporary filesystem located in RAM that performs intermediate tasks such as loading kernel modules, decrypting disks,
+and performing software updates before the rootfs is started.
+
+<Tip>
+If the rootfs is stored encrypted on the disk, the kernel cannot directly start the `init` program. First, the disk
+encryption must be decrypted by the initramfs.
+</Tip>
+
+### 2.6. Root Filesystem (Rootfs)
+
+After completing its tasks, the initrd mounts the rootfs—a filesystem containing system and user programs, libraries,
+and various configuration files—to the `/` directory. The kernel then executes the `init` program located in `/init`,
+`/sbin/init`, or a similar directory in the rootfs. This program loads drivers for certain hardware (kernel modules),
+starts system services (such as network connectivity, time synchronization, package updates, and Bluetooth services),
+and launches the desktop environment (gnome, kde, xfce, ...).
+
+## 3. Conclusion
+
+<Tip>
+Below are a few article examples about the boot process.
+
+- [BeagleBone Black Linux Boot Process](https://serbayozkan.medium.com/embedded-linux-boot-s%C3%BCreci-beagle-bone-black-ba9d378bd3bd)
+- [Booting Embedded Linux On BeagleBone](https://medium.com/@kshitijvaze/booting-embedded-linux-on-beaglebone-black-a-look-beyond-the-code-20854568fb66)
+</Tip>
