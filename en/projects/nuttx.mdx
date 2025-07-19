@@ -1,4 +1,152 @@
 ---
 title: 'NuttX'
-description: 'NuttX'
+description: 'NuttX Operating System'
 ---
+
+<Warning>
+NuttX support for Gemstone is currently under development. Not all peripherals on the board are usable at this time.
+</Warning>
+
+NuttX is an open-source operating system designed for real-time applications. Compliant with POSIX and ANSI standards,
+NuttX is optimized for embedded systems and microcontrollers. The primary reason for choosing NuttX for the R5F cores on
+the Gemstone board is its deterministic behavior and reliable management of real-time tasks. Additionally, NuttX is a
+platform supported by popular autopilot software like Ardupilot and PX4, making it critical for drone and autonomous
+vehicle projects.
+
+Since there is no official NuttX support for the AM67A SoC yet, a custom configuration named `beagley-ai` has been
+created. This configuration is tailored to the hardware features of our board and the capabilities of the R5F cores.
+
+## Toolchain Installation
+
+To compile NuttX, we need a cross-compiler compatible with ARM Cortex-R5F cores. The `gcc-arm-none-eabi` toolchain is
+the standard solution for this requirement.
+
+On Ubuntu/Debian systems, you can install the toolchain using the package manager:
+
+```bash
+sudo apt update
+sudo apt install gcc-arm-none-eabi
+```
+
+Alternatively, you can download the latest version from ARM's official website and perform a manual installation. After
+installation, verify the toolchain is working correctly with the command `arm-none-eabi-gcc --version`.
+
+## Downloading the Source Code
+
+The NuttX ecosystem consists of two main repositories: the core operating system and the application framework. To
+download the customized versions for the Gemstone board, follow these steps:
+
+```bash
+# Clone the main NuttX repository
+git clone https://github.com/t3gemstone/nuttx.git
+
+# Clone the NuttX applications as the 'apps' folder
+git clone https://github.com/t3gemstone/nuttx-apps.git apps
+
+# Navigate to the main working directory
+cd nuttx
+```
+
+This setup creates the standard directory structure expected by NuttX. The `apps` folder contains the applications and
+services that will run on the operating system.
+
+## Applying the Configuration
+
+NuttX uses pre-prepared configurations for different hardware platforms. Let's start by applying the `beagley-ai`
+configuration for our Gemstone board:
+
+```bash
+./tools/configure.sh -l beagley-ai:nsh
+```
+
+This command configures the basic settings tailored to the AM67A SoC and enables NuttShell (nsh), a simple command-line
+interface. NuttShell allows you to perform basic file operations and system management tasks.
+
+## Customizing the Configuration
+
+Sometimes, you may need to modify the default configuration. NuttX uses a menuconfig tool similar to the Linux kernel:
+
+```bash
+make menuconfig
+```
+
+Through this graphical interface, you can enable drivers, adjust memory settings, or add new features. To save your
+changes permanently, use the savedefconfig command:
+
+```bash
+make savedefconfig
+```
+
+This command saves only the configurations that differ from the defaults, preventing unnecessary bloating of the
+configuration file.
+
+## Debug Configuration
+
+By default, NuttX is configured in release mode, producing a small-sized binary optimized for performance but lacking
+debug information. For step-by-step debugging during development, you need to switch to debug mode.
+
+Open the menuconfig tool and navigate to: `Build Setup` → `Debug Options` → `Enable Debug Features`. Also, enable the
+`Generate Debug Symbols` option. These settings ensure the compiler embeds debug information into the binary, allowing
+the debugger to perform source-level debugging.
+
+## Compilation Process
+
+Once the configuration is complete, you can compile NuttX:
+
+```bash
+make -j$(nproc)
+```
+
+This command performs parallel compilation using all available CPU cores. The compilation results in an ELF file named
+`nuttx`, which contains the operating system image to be loaded onto the R5F core.
+
+## CCS IDE Integration
+
+Texas Instruments Code Composer Studio (CCS) is a development environment specifically optimized for the AM67A SoC
+family. To integrate your NuttX project into CCS, open the IDE and use `File` → `Import` → `C/C++` → 
+`Existing Code as Makefile Project`.
+
+Select the `nuttx` folder as the project directory and specify `Cross GCC` as the toolchain. This configuration allows
+CCS to understand the NuttX source code and provide features like syntax highlighting and code navigation.
+
+## Debug Preparation with SBL NULL
+
+Under normal operating conditions, the `tiboot3.bin` file located in the SD card's boot partition launches the U-Boot
+bootloader. However, to enable debug access to the R5F cores, we need to replace this file with the `tiboot3.bin`
+produced by the SBL NULL project.
+
+SBL NULL is a special version of the System Boot Loader. This version initializes the SoC at a basic level and leaves
+the R5F cores in WFI (Wait For Interrupt) mode. This state allows the cores to wait for the debugger to connect without
+executing any code.
+
+Insert the SD card into your computer, back up the `tiboot3.bin` file in the boot partition, and replace it with the
+file produced by SBL NULL. Reinsert the card into the Gemstone board and power it on.
+
+## Debugging Process
+
+To start debugging in CCS IDE, first open your Target Configuration file and connect to the AM67A SoC. From the 
+`Run` → `Debug` menu, select the MCU R5F core.
+
+Once the debugger is connected, use `Run` → `Load` → `Load Program` to select the `nuttx` ELF file. This process loads
+the NuttX operating system into the R5F core's memory.
+
+After the program is loaded, you can set breakpoints, monitor variables, and step through the code. This allows you to
+examine critical components like NuttX's task scheduler and interrupt handlers in detail.
+
+## Cleanup Operations
+
+During development, you may occasionally need a fresh start. NuttX provides two levels of cleanup commands:
+
+```bash
+# Cleans only object files and binaries
+make clean
+
+# Cleans all build files and configurations
+make distclean
+```
+
+The `make clean` command removes files generated during compilation but preserves the configuration. `make distclean`
+resets the project to its initial state, requiring you to reconfigure it.
+
+Once this process is complete, your Gemstone board's R5F cores will be running a fully functional NuttX operating
+system, providing a solid foundation for your real-time applications.
