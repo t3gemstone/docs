@@ -3,3 +3,156 @@ title: 'NuttX'
 description: 'NuttX İşletim Sistemi'
 ---
 
+<Warning>
+Gemstone için NuttX desteği henüz geliştirme aşamasındadır. Kartın üzerindeki tüm çevre birimleri kullanmak mümkün
+değildir.
+</Warning>
+
+NuttX, gerçek zamanlı uygulamalar için tasarlanmış açık kaynaklı bir işletim sistemidir. POSIX ve ANSI standartlarına
+uyumlu olan NuttX, özellikle gömülü sistemler ve mikrodenetleyiciler için optimize edilmiştir. Gemstone kartında
+bulunan R5F çekirdekleri için NuttX'i seçmemizin temel nedeni, onun deterministik davranış sergilemesi ve gerçek zamanlı
+görevleri güvenilir şekilde yönetebilmesidir. Ayrıca NuttX, Ardupilot ve PX4 gibi popüler otopilot yazılımlarının
+desteklediği bir platform olması nedeniyle drone ve otonom araç projeleri için kritik öneme sahiptir.
+
+AM67A SoC'si için henüz resmi NuttX desteği bulunmadığından, özel olarak `beagley-ai` isimli bir konfigürasyon
+oluşturulmuştur. Bu konfigürasyon, kartımızın donanım özelliklerine ve R5F çekirdeklerinin kapasitelerine uygun şekilde
+tasarlanmıştır.
+
+## Toolchain Kurulumu
+
+NuttX'i derleyebilmek için ARM Cortex-R5F çekirdekleri ile uyumlu bir çapraz derleyiciye ihtiyacımız vardır.
+`gcc-arm-none-eabi` toolchain'i bu ihtiyacımızı karşılayan standart çözümdür.
+
+Ubuntu/Debian sistemlerde toolchain'i paket yöneticisi ile kurabilirsiniz:
+
+```bash
+sudo apt update
+sudo apt install gcc-arm-none-eabi
+```
+
+Alternatif olarak, ARM'ın resmi sitesinden en güncel sürümü indirerek manuel kurulum yapabilirsiniz. Kurulumun ardından
+`arm-none-eabi-gcc --version` komutuyla toolchain'in düzgün çalıştığını doğrulayabilirsiniz.
+
+## Kaynak Kodu İndirme
+
+NuttX ekosistemi iki temel repository'den oluşmaktadır: çekirdek işletim sistemi ve uygulama framework'ü. Gemstone kartı
+için özelleştirilmiş versiyonları indirmek için aşağıdaki adımları takip edin:
+
+```bash
+# Ana NuttX repository'sini klonlayın
+git clone https://github.com/t3gemstone/nuttx.git
+
+# NuttX uygulamalarını 'apps' klasörü olarak klonlayın
+git clone https://github.com/t3gemstone/nuttx-apps.git apps
+
+# Ana çalışma dizininize geçin
+cd nuttx
+```
+
+Bu yapılandırma, NuttX'in beklediği standart dizin düzenini oluşturur. `apps` klasörü, işletim sisteminin üzerinde
+çalışacak uygulamaları ve servisleri içerir.
+
+## Konfigürasyon Uygulama
+
+NuttX, farklı donanım platformları için önceden hazırlanmış konfigürasyonlar kullanır. Gemstone kartımız için
+`beagley-ai` konfigürasyonunu uygulayarak başlayalım:
+
+```bash
+./tools/configure.sh -l beagley-ai:nsh
+```
+
+Bu komut, AM67A SoC'nin özelliklerine uygun temel ayarları yapılandırır ve NuttShell (nsh) isimli basit bir komut satırı
+arayüzünü aktif hale getirir. NuttShell, sistem üzerinde temel dosya işlemleri ve sistem yönetimi görevlerini
+gerçekleştirmenizi sağlar.
+
+## Konfigürasyon Özelleştirme
+
+Bazen varsayılan konfigürasyonda değişiklik yapmanız gerekebilir. NuttX, Linux çekirdeğine benzer şekilde menuconfig
+aracını kullanır:
+
+```bash
+make menuconfig
+```
+
+Bu grafik arayüz üzerinden driver'ları aktifleştirebilir, bellek ayarlarını değiştirebilir veya yeni özellikler
+ekleyebilirsiniz. Değişikliklerinizi kalıcı hale getirmek için savedefconfig komutunu kullanın:
+
+```bash
+make savedefconfig
+```
+
+Bu komut, sadece varsayılan ayarlardan farklı olan konfigürasyonları kaydeder, böylece konfigürasyon dosyası gereksiz
+yere büyümez.
+
+## Debug Konfigürasyonu
+
+Varsayılan olarak NuttX release modunda konfigüre edilmiştir, bu da optimize edilmiş ancak debug bilgileri içermeyen
+küçük boyutlu bir binary üretir. Geliştirme sürecinde adım adım debug yapabilmek için debug moduna geçmeniz
+gerekecektir.
+
+Menuconfig aracını açın ve şu yolu takip edin: `Build Setup` → `Debug Options` → `Enable Debug Features`. Ayrıca
+`Generate Debug Symbols` seçeneğini de aktifleştirin. Bu ayarlar, derleyicinin debug bilgilerini binary içerisine gömüp,
+debugger'ın kaynak kod seviyesinde debug yapmasını sağlar.
+
+## Derleme İşlemi
+
+Konfigürasyon tamamlandıktan sonra NuttX'i derleyebiliriz:
+
+```bash
+make -j$(nproc)
+```
+
+Bu komut, sisteminizde bulunan tüm CPU çekirdeklerini kullanarak paralel derleme yapar. Derleme sonucunda `nuttx` isimli
+bir ELF dosyası oluşur. Bu dosya, R5F çekirdeğine yüklenecek işletim sistemi imajını içerir.
+
+## CCS IDE Entegrasyonu
+
+Texas Instruments Code Composer Studio (CCS), AM67A SoC ailesi için özel olarak optimize edilmiş geliştirme ortamıdır.
+NuttX projenizi CCS'ye entegre etmek için IDE'yi açın ve `File` → `Import` → `C/C++` → `Existing Code as Makefile
+Project` seçeneğini kullanın. 
+
+Proje dizini olarak `nuttx` klasörünü seçin ve toolchain olarak `Cross GCC`'yi belirtin. Bu yapılandırma, CCS'nin NuttX
+kaynak kodunu anlayıp syntax highlighting ve kod navigasyonu gibi özellikler sunmasını sağlar.
+
+## SBL NULL ile Debug Hazırlığı
+
+Normal çalışma koşullarında, SD kartın boot partition'ında bulunan `tiboot3.bin` dosyası U-Boot bootloader'ını başlatır.
+Ancak R5F çekirdeklerine debug erişimi sağlamak için bu dosyayı SBL NULL projesinin ürettiği `tiboot3.bin` ile
+değiştirmemiz gerekir.
+
+SBL NULL, System Boot Loader'ın özel bir versiyonudur. Bu versiyon, SoC'yi temel seviyede ilklendirip R5F çekirdeklerini
+WFI (Wait For Interrupt) modunda bekletir. Bu durum, çekirdeklerin herhangi bir kod çalıştırmadan debugger'ın
+bağlanmasını beklemesini sağlar.
+
+SD kartı bilgisayarınıza takın, boot partition'ındaki `tiboot3.bin` dosyasını yedekleyin ve SBL NULL'un ürettiği dosya
+ile değiştirin. Kartı tekrar Gemstone'a takıp güç verin.
+
+## Debug İşlemi
+
+CCS IDE üzerinden debug işlemini başlatmak için önce Target Configuration dosyanızı açın ve AM67A SoC'ye bağlanın. `Run`
+→ `Debug` menüsünden MCU R5F çekirdeğini seçin.
+
+Debugger bağlandıktan sonra, `Run` → `Load` → `Load Program` ile `nuttx` ELF dosyasını seçin. Bu işlem, NuttX işletim
+sistemini R5F çekirdeğinin belleğine yükler. 
+
+Program yüklendikten sonra breakpoint'ler koyabilir, değişkenleri izleyebilir ve kod üzerinde adım adım
+ilerleyebilirsiniz. NuttX'in task scheduler'ı ve interrupt handler'ları gibi kritik bileşenlerinin nasıl çalıştığını bu
+şekilde detaylı olarak inceleyebilirsiniz.
+
+## Temizlik İşlemleri
+
+Geliştirme sürecinde bazen temiz bir başlangıç yapmanız gerekebilir. NuttX iki seviyede temizlik komutu sunar:
+
+```bash
+# Sadece object dosyalarını ve binary'leri temizler
+make clean
+
+# Tüm build dosyalarını ve konfigürasyonu temizler
+make distclean
+```
+
+`make clean` komutu derleme sonucunda oluşan dosyaları siler ancak konfigürasyonu korur. `make distclean` ise projeyi
+tamamen ilk haline döndürür, bu durumda konfigürasyon işlemini tekrar yapmanız gerekir.
+
+Bu süreç tamamlandığında, Gemstone kartınızın R5F çekirdekleri üzerinde tam işlevsel bir NuttX işletim sistemi çalışıyor
+olacak ve gerçek zamanlı uygulamalarınız için sağlam bir temel elde etmiş olacaksınız.
