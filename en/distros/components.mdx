@@ -1,4 +1,475 @@
 ---
 title: 'Components'
-description: 'Applications and components of operating system'
+description: 'Components in the Operating System'
 ---
+
+<Note>
+When you receive your Gemstone card and boot up your system for the first time, this new world might feel a bit
+unfamiliar. This guide is designed for users taking their first steps into the Linux and Ubuntu world to effectively use
+T3 Gemstone OS. Intermediate to advanced Linux users may skip this section.
+</Note>
+
+## 1. Linux Philosophy
+
+### 1.1. Open Source Approach
+
+T3 Gemstone OS is built on Debian/Ubuntu, which is based on the open-source software philosophy. This means you have
+full control over the system, can access the source code, and customize it according to your needs.
+
+### 1.2. "Everything is a File" Principle
+
+One of the most fundamental concepts in the Linux world is the **"everything is a file"** principle. This means that
+everything from hardware components to processes is accessible through the file system. Hardware components like I2C,
+SPI, UART, and GPIO on your Gemstone card are also represented as files under this philosophy.
+
+### 1.3. Modular Structure
+
+Linux systems have a modular structure. Each component performs a specific task and communicates with other components
+through standard interfaces. This approach allows you to run different applications and services independently on your
+Gemstone card. For example, if you don't like the file manager in the Desktop image, you can easily replace it with an
+alternative file manager. This freedom sets Linux operating systems apart from their competitors.
+
+## 2. Linux Basics
+
+### 2.1. Boot Process
+
+When your Gemstone card boots up, the system starts in a specific sequence. First, the bootloader takes over, then the
+Linux kernel is loaded, and finally, the systemd init system starts running. During this process, the system detects
+your hardware, loads the necessary drivers, and starts system services.
+
+### 2.2. Kernel Space and User Space Separation
+
+The Linux operating system is divided into two main sections for security and stability: **Kernel Space** and 
+**User Space**. This separation controls access to hardware resources, ensuring system security.
+
+#### 2.2.1. Kernel Space
+
+Kernel space is where the heart of the operating system resides. This space provides direct access to hardware resources
+and manages the system's core functions. For example, when you plug in a USB device, the relevant driver in kernel space
+detects the device and makes it ready for use. Similarly, all processes managing your computer's memory, accessing the
+file system, and controlling network traffic occur in kernel space. Code running in this space has high privileges, and
+an error here can crash the entire system. Therefore, access to kernel space is tightly controlled.
+
+#### 2.2.2. User Space
+
+User space is where users directly interact. For example, when you open a terminal and type a command in T3 Gemstone OS
+or use a web browser, these applications run in user space. Programs in user space cannot access hardware directly;
+instead, they send system calls to the kernel to perform their tasks. For instance, a program wanting to read a text
+file requests the kernel to access the file system. This way, an error in a user space application does not affect the
+rest of the system and only causes that application to crash.
+
+#### 2.2.3. Example Scenario: Opening a File
+
+1. **User Space:** The `cat /etc/gemstone/config.txt` command runs.
+2. **Kernel Space:**
+   - The command makes a **system call (`open()` syscall)**.
+   - The kernel checks the file's permissions (`chmod` & `chown` rules).
+   - If authorized, it **accesses the disk** and reads the data.
+3. **User Space:** The kernel sends the read data to the terminal.
+
+### 2.3. Process Structure
+
+Every running program is called a process. In Linux, these processes are organized hierarchically, and each has a unique
+identification number (**PID**) and a parent identification number (**PPID**). The first process to start is
+`/sbin/init`, which is the parent of all other processes. In T3 Gemstone OS, this process is `systemd`.
+
+### 2.4. File System Hierarchy
+
+The Linux file system (rootfs) is organized according to Unix standards. The root directory (`/`) is the topmost point
+of the system, and all other directories branch from here.
+
+- `/bin` and `/usr/bin` directories contain basic programs. Commands like `ls`, `cp`, and `mv` used daily are located
+  here.
+- `/etc` is the central hub for system configuration files. Network settings, service configurations, and system-wide
+  settings are stored here.
+- `/home` contains user folders. Your personal files and settings are located here.
+- `/var` stores variable data files. Log files, databases, and temporary files created by processes reside here.
+- `/dev` contains device files. Hardware components like I2C, SPI, UART, GPIO, and others on your Gemstone card are
+  represented as files here.
+- `/sys` provides system information from the kernel. Hardware status, driver parameters, and system statistics are
+  found here.
+- `/proc` provides information about running processes and the kernel. This virtual file system allows real-time
+  monitoring of system status.
+
+### 2.5. User Permissions
+
+In the Linux world, there are two main user categories: the root user and regular users.
+
+#### 2.5.1. Root User
+
+The root user can be thought of as the CEO of a company. Just as a CEO has access to all departments, the root user has
+unlimited authority over the system.
+
+The root user can read, write, and delete any file on the system. They can run any program, change system settings, and
+even make irreversible changes like formatting the entire system. The root user perfectly exemplifies the principle that
+"with great power comes great responsibility."
+
+#### 2.5.2. Regular Users
+
+Regular users are like department employees operating in specific areas of the system. While they have full authority in
+their own `home` directories, they cannot modify system files, stop or start critical services, or make system-wide
+changes. This restriction keeps the system secure and stable.
+
+When working as a regular user on your Gemstone card, you can develop your projects, manage personal files, and run most
+programs. However, you will need additional permissions for tasks like installing new software, managing system
+services, or modifying system configuration files.
+
+#### 2.5.3. Gaining Root Privileges with Sudo
+
+The **sudo (superuser do)** command acts as a secure bridge, allowing regular users to run specific commands with root
+privileges. Think of it as an employee obtaining a signed authorization from the CEO for specific situations.
+
+The biggest advantage of sudo is eliminating the risks of constantly working as the root user. Every mistake made as
+root poses a potential threat to the system. By elevating privileges only when necessary, you maintain both security and
+system integrity.
+
+## 3. Terminal Usage
+
+The terminal is the heart of Linux systems. Almost anything you can do in the graphical interface can be done faster and
+more efficiently via the terminal. This section covers the essential commands you need to actively use the Linux
+terminal. This is just the tip of the iceberg. As you research the problems you encounter, you will start learning new
+commands and methods every day. When you begin automating repetitive tasks by asking, "How can I do this more
+effectively?" and using terminal commands, you will reach the level of a **Power User**.
+
+In commands, entries shown within `< >` characters are dummy (example) inputs and should be replaced with actual inputs
+as needed.
+
+```bash
+touch <file_name> # dummy
+touch file.txt    # actual (do not include '<' and '>' characters!)
+```
+
+### 3.1. Getting Help with man Pages
+
+One of Linux's most powerful features is its comprehensive documentation system. To get detailed explanations for any
+command, you can use the **man (manual)** command:
+
+```bash
+man ls # explains the usage of the ls command
+man cp # explains the usage of the cp command
+```
+
+Use the up/down arrow keys to navigate man pages and press `q` to exit.
+
+### 3.2. Package Management with APT
+
+Since T3 Gemstone OS is Debian/Ubuntu-based, it uses the **APT (Advanced Package Tool)** package manager. When you need
+to install new software or update existing software, you can use the APT tool:
+
+```bash
+sudo apt update                 # Updates the package list
+sudo apt upgrade                # Upgrades installed packages (run update first)
+sudo apt install <package_name> # Installs a new package
+sudo apt remove <package_name>  # Removes a package
+sudo apt search <search_term>   # Searches for a package
+```
+
+### 3.3. File Operations
+
+Basic commands for working with files and directories:
+
+```bash
+ls -la                         # Lists directory contents in detail
+cd </path/to/dir>              # Changes directory
+mkdir <new_directory>          # Creates a new directory
+cp <source_file> <target_file> # Copies a file from source to target
+mv <old_name> <new_name>       # Moves/renames a file
+rm <file_name>                 # Deletes a file
+```
+
+### 3.4. Changing File and Directory Ownership with chown
+
+In Linux, every file and directory has an owner and a group. The **chown (change owner)** command is used to change the
+owner and/or group of files or directories. This is especially important in systems with multiple users or for access
+control of specific files.
+
+```bash
+chown <username>:<group_name> <file_or_directory_name> # Changes ownership of a single file or directory
+chown -R <username>:<group_name> <directory_name>      # Recursively changes ownership of all files and subdirectories
+```
+
+<Warning>
+- Root privileges are required to change ownership of system files or files owned by other users.
+- Be cautious when changing ownership of system files, as it may cause some applications to stop working.
+</Warning>
+
+<Note>
+You can facilitate file sharing by assigning users to groups. For example, users in the `dialout` group can access
+serial ports without root privileges.
+
+```bash
+sudo usermod -aG dialout <username>
+```
+</Note>
+
+### 3.5. Managing File and Directory Permissions with chmod
+
+In Linux, every file and directory has specific permissions. These permissions determine who can read, edit, or execute
+your files. The **chmod (change mode)** command is used to change these permissions.
+
+Linux has three types of permissions:
+
+- **Read (r)**: Permission to view the file's content.
+- **Write (w)**: Permission to modify or delete the file.
+- **Execute (x)**: Permission to run the file as a program (for scripts or applications).
+
+These permissions are assigned to three different user groups:
+
+- **Owner**: The user who owns the file.
+- **Group**: The group the file belongs to.
+- **Others**: All other users.
+
+Similar rules apply to directories, but the **execute (x)** permission means the ability to `cd` into the directory.
+
+You can use the chmod command in two ways: symbolic (with letters) and numeric (with numbers).
+
+#### 3.5.1. Symbolic Method
+
+Use `+` and `-` signs to add or remove permissions, and the following symbols to specify user groups:
+
+- `u`: Owner
+- `g`: Group
+- `o`: Others
+- `a`: All
+
+```bash
+chmod +x <file_name>  # Adds execute permission for all users
+chmod u+w <file_name> # Adds write permission only for the owner
+```
+
+#### 3.5.2. Numeric Method
+
+Each permission is represented by its binary equivalent:
+
+- `4`: Read (r)
+- `2`: Write (w)
+- `1`: Execute (x)
+
+You can determine permissions by adding these numbers. For example, the command `chmod 755 script.sh` means:
+
+- `7`: 4 + 2 + 1 = `rwx` (owner)
+- `5`: 4 + 1 = `r-x` (group)
+- `5`: 4 + 1 = `r-x` (others)
+
+<Warning>
+- Avoid using `chmod 777`! 
+
+  This makes the file **world-writable** (`rwxrwxrwx`) and poses a security risk.
+- Be cautious when changing permissions of system files, as it may cause some applications to stop working.
+</Warning>
+
+### 3.6. nano Text Editor
+
+**nano** is an ideal terminal text editor for beginners. Its simple and intuitive interface allows you to edit
+configuration files without leaving the terminal:
+
+```bash
+nano <file_name> # Edits the file
+```
+
+The nano interface's bottom panel displays commonly used keyboard shortcuts. Here, the `^` prefix represents the `Ctrl`
+key, and the `M` prefix represents the `Alt` key. For example, use `^O` (`Ctrl+O`) to save the file, `^X` (`Ctrl+X`) to
+exit, and `M-6` (`Alt+6`) to copy text.
+
+### 3.7. Pipe and Output Redirection
+
+One of Linux's most powerful features is the ability to chain commands. The pipe (`|`) symbol allows you to use the
+output of one command as the input of another:
+
+```bash
+ls -la | grep -i ".txt" # Lists only .txt files
+sudo dmesg | tail -20   # Shows the last 20 kernel messages
+```
+
+Output redirection allows you to save command results to files and provide files as input to commands:
+
+```bash
+ls -la > file_list.txt # Saves output to a file (overwrites existing data)
+cat < file_list.txt    # Provides the file as input to the program
+echo "test" >> log.txt # Appends output to the file (preserves existing data)
+```
+
+<Warning>
+The `<` and `>` characters are used for redirection and are not dummy inputs.
+</Warning>
+
+### 3.8. Process Management with htop
+
+**htop** allows you to visually monitor system resources and running processes:
+
+```bash
+htop
+```
+
+Inside htop, use `F9` to terminate processes, `F3` to search, and `F4` to filter. For example, start filtering with
+`F4`, type "htop," press `F9`, select `15 SIGTERM`, and press `Enter` to send a termination signal to the "htop"
+process, closing the program.
+
+### 3.9. Network Management with nmtui
+
+To manage your Gemstone card's network connection, use the nmtui program:
+
+```bash
+nmtui
+```
+
+This tool allows you to connect to Wi-Fi networks, configure Ethernet IP settings, and manage network profiles. Its
+simple and intuitive interface simplifies network connection management and saves settings to profiles for persistence.
+
+### 3.10. Checking Connected External Hardware
+
+```bash
+lsusb # Lists connected USB devices
+lspci # Lists connected PCI devices
+```
+
+### 3.11. Managing Hardware Drivers
+
+In Linux, drivers are typically implemented as kernel modules. Drivers for special hardware components on your Gemstone
+card are automatically loaded into the kernel at boot.
+
+```bash
+lsmod                  # Lists loaded kernel modules
+modinfo <module_name>  # Provides information about a module
+modprobe <module_name> # Loads a module into the kernel
+rmmod <module_name>    # Removes a module from the kernel
+```
+
+### 3.12. Firewall Management
+
+```bash
+sudo ufw status   # Shows firewall status
+sudo ufw enable   # Enables the firewall
+sudo ufw allow 22 # Opens the SSH port
+sudo ufw allow 80 # Opens the HTTP port
+```
+
+### 3.13. User Management
+
+```bash
+sudo adduser <username>          # Adds a new user
+sudo usermod -aG sudo <username> # Adds the user to the sudo group
+sudo passwd <username>           # Changes the user's password
+sudo deluser <username>          # Deletes the user
+```
+
+### 3.14. Systemd and Service Management
+
+Systemd is the default init system in T3 Gemstone OS. It manages system startup, controls services, and monitors system
+status.
+
+The following examples use the nginx service. Replace "nginx" with the name of the service you want to configure. If you
+don't know the service name, you can find it using the `systemctl list-units` command.
+
+#### 3.14.1. Checking Service Status
+
+```bash
+systemctl status          # Shows the status of all services
+systemctl status nginx    # Shows the status of the Nginx service
+systemctl is-active nginx # Checks if the service is active
+```
+
+#### 3.14.2. Starting and Stopping Services
+
+```bash
+sudo systemctl start nginx   # Starts the Nginx service
+sudo systemctl stop nginx    # Stops the Nginx service
+sudo systemctl restart nginx # Restarts the Nginx service
+sudo systemctl reload nginx  # Reloads the Nginx configuration
+```
+
+#### 3.14.3. Configuring Automatic Startup
+
+```bash
+sudo systemctl enable nginx  # Enables automatic startup for Nginx
+sudo systemctl disable nginx # Disables automatic startup for Nginx
+```
+
+#### 3.14.4. Creating Custom Services
+
+To create a systemd service file for your own application, create a `.service` file in the `/etc/systemd/system/`
+directory.
+
+```bash
+sudo nano /etc/systemd/system/backup-ssd.service # Creates a service file named backup-ssd.service
+sudo systemctl daemon-reload                     # Reloads the systemctl service list
+sudo systemctl enable --now backup-ssd           # Enables automatic startup and starts the service immediately
+```
+
+### 3.15. Troubleshooting
+
+#### 3.15.1. Kernel Messages with dmesg
+
+When encountering hardware or software issues at the system level, the first thing to check is the output of the 
+**dmesg (diagnostic messages)** command, i.e., kernel messages:
+
+```bash
+sudo dmesg | tail -50      # Shows the last 50 kernel messages
+sudo dmesg | grep -i error # Searches for error messages
+sudo dmesg | grep -i usb   # Finds USB-related messages
+```
+
+For example, if your network card stops working after a kernel update despite previously functioning normally, the dmesg
+output will likely contain error messages from the network card's driver.
+
+To monitor kernel messages in real-time:
+
+```bash
+sudo dmesg -w # Monitors new kernel messages live
+```
+
+#### 3.15.2. System Logs with journalctl
+
+**journalctl** is systemd's log management tool, allowing you to view all system logs from a central location:
+
+```bash
+journalctl -f                      # Tails logs in real-time
+journalctl -r                      # Shows logs in reverse order (newest first)
+journalctl -r -u nginx             # Shows logs for the Nginx service
+journalctl -r --since "1 hour ago" # Shows logs from the last hour
+journalctl -r --until "2025-07-18" # Shows logs until the specified date
+journalctl -r -p err               # Shows only error-level logs
+```
+
+#### 3.15.3. Diagnosing Common Issues
+
+To check disk usage:
+
+```bash
+df -h          # Shows disk usage
+sudo du -sh /* # Shows the size of directories under root (takes longer due to recursive search)
+```
+
+To check memory usage:
+
+```bash
+free -h # Shows memory usage
+```
+
+Similarly, using the htop program, you can monitor memory usage, CPU core utilization percentages, the number of running
+processes, and disk read/write percentages in the I/O tab.
+
+```bash
+htop
+```
+
+For network connection issues:
+
+```bash
+ping 1.1.1.1        # Tests internet connectivity (if connected, the server responds)
+ping cloudflare.com # Tests DNS server connectivity (if DNS works, the server responds)
+ip addr show        # Shows network interfaces
+```
+
+## 4. Conclusion and Next Steps
+
+This guide covers the basics to help you take your first steps into the Linux world with your Gemstone card. Over time,
+you can move on to more complex topics, learn Bash shell scripting, and explore the depths of the system.
+
+Remember that learning Linux is a continuous process. You will discover new things every day and find ways to use your
+system more efficiently. Building a solid foundation with these basics is essential to fully leverage your Gemstone
+card's potential.
+
+If you encounter any issues, don't hesitate to use man pages, system logs, and the vast knowledge of the Linux
+community. In the Linux world, there is a solution to every problem, and finding that solution is a fun part of the
+learning process.
