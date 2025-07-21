@@ -1,39 +1,43 @@
 ---
-title: 'eMMC Usage'
-description: 'Using eMMC instead of SD card as storage medium'
+title: 'Using eMMC'
+description: 'Using eMMC instead of an SD card as storage'
 ---
 
 <Tip>
-By the end of this section, you will learn how to write an OS image to eMMC on the Gemstone development board.
+By the end of this section, you will learn how to write an image to the eMMC on the Gemstone development board.
 </Tip>
 
-The Gemstone operating system supports booting from eMMC in addition to SD cards. eMMC is a high-performance and reliable storage solution, 
-offering faster data access and more robust physical construction compared to SD cards, making it the preferred choice for many applications.
+The Gemstone operating system supports booting not only from an SD card but also from eMMC.
+eMMC is a high-performance and reliable storage solution. Compared to an SD card, it offers faster data
+access and a more robust physical structure, making it the preferred choice for many applications.
 
-To write core software (OS, firmware, bootloader, etc.) to eMMC, the Gemstone Imager provides an `Internal eMMC` storage device option. 
-This ensures a smooth installation process on eMMC, enabling a faster and more durable working environment without dependency on an SD card.
+To write core software (such as the operating system, firmware, and bootloader) to the eMMC, Gemstone Imager
+provides the `Internal eMMC` option as a storage device. This ensures a smooth installation on the eMMC,
+delivering a faster and more durable working environment without relying on an SD card.
 
-This section provides detailed instructions on how to write an image to eMMC.
+This section provides detailed instructions on how to write an image to the eMMC.
 
-### 1. Writing an Image to eMMC
-#### 1.1. Connect Gemstone to Your Computer
+### 1.1. Connect Gemstone to Your Computer
 
-After connecting Gemstone via USB Type-C and Ethernet, also connect a USB-TTL UART converter to UART0.
+After connecting the Gemstone board via USB Type-C and Ethernet, also connect a USB-TTL UART converter to UART0.
 
-<Warning>If you're using a Linux operating system, disable your computer's wired network connection before starting the writing process.</Warning>
+<Warning>
+If you are using a Linux operating system, make sure to disable your computer's wired network connection before
+starting the writing process.
+</Warning>
 
-#### 1.2. Starting the Writing Process
+### 1.2. Starting the Writing Process
 
-Follow the steps in the [Image Writing Process](/en/quickstart#1-2-image-writing-process) section of the [Quick Start](/en/quickstart) guide until 
-the storage device selection step. Then, choose `Internal eMMC`.
+Follow the steps in the [Quick Start](/en/quickstart) guide up to the
+[Image Writing Process](/en/quickstart#1-2-image-writing-process) section, and select `Internal eMMC` as the storage device.
 
-<Frame >
+<Frame>
   <img src="/images/gem-imager/m-storage.png" />
 </Frame>
 
-Click `NEXT`, configure the necessary settings, and begin the eMMC image writing process.
+Then, click `NEXT`, configure the necessary settings, and begin writing the image to the eMMC.
 
-#### 1.3. Connect to the Gemstone OS
+### 1.3. Connect to the Gemstone Operating System
 
-After writing to eMMC, the system will automatically boot from eMMC. You can access the 
+After the image writing process is complete, the system will boot from the eMMC. You can connect to the
 Gemstone OS via serial port or SSH.

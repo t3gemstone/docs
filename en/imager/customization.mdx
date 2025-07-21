@@ -1,4 +1,105 @@
 ---
-title: 'Settings'
-description: 'Customization of system'
+title: 'Customization'
+description: 'System customization'
 ---
+
+<Tip>
+By the end of this section, you will understand the purpose of the fields in the customization menus of the
+Gemstone Imager application.
+</Tip>
+
+After selecting the board, operating system, and storage options in the Gemstone Imager application and clicking
+the `Next` button, the `OS Customisation` menu appears. This menu contains three tabs: `General`, `Services`,
+and `Options`.
+
+## General Tab
+
+<Frame>
+  <img src="/images/gem-imager/general-tab.png"/>
+</Frame>
+
+### Hostname and Password Field
+
+- The setting is activated by checking the box.
+- The `Set Hostname` field is used to set the board's name. The default name is `gemstone`.
+- The `Password` field sets the password for the default user (`gemstone`). There is no default value; entering a
+  password is mandatory.
+
+### Configure Wireless LAN Field
+
+- The setting is activated by checking the box.
+- Enter the network name (SSID) in the `SSID` field.
+- Enter the network password in the `Password` field.
+- If the network is hidden, check the `Hidden SSID` box.
+- Select the country code for your location in the `Wireless LAN country` field.
+
+### Set Locale Settings Field
+
+- The setting is activated by checking the box.
+- Click the `Time Zone` box and select your time zone from the dropdown menu.
+- Click the `Keyboard layout` box and select your preferred keyboard layout from the dropdown menu.
+
+### Set Disk Encryption (Cryptsetup)
+
+- The setting is activated by checking the box. Encrypts the disk to prevent the system from booting without
+  entering the password.
+- Enter the password in the `Disk Password` field.
+
+### Write SD Card's Image to eMMC on First Boot
+
+- The setting is activated by checking the box. Writes the image from the SD card to the onboard storage (eMMC) during
+  the first boot, allowing the board to boot from the onboard storage.
+
+## Services Tab
+
+<Frame>
+  <img src="/images/gem-imager/services-tab.png"/>
+</Frame>
+
+### Enable SSH Field
+
+- The setting is activated by checking the box. Allows terminal connections to the board over the network.
+- When enabled, the default option `Use password authentication` is selected, allowing anyone with the password
+  to connect. If `Allow public-key authentication only` is selected, only devices with the provided key can connect.
+
+### Enable VNC Field
+
+- The setting is activated by checking the box. Allows connecting to the board's desktop GUI using only a browser.
+
+<Frame caption="Todo: Screenshot taken from VNC connection">
+<img height="200" width="200" src="/images/under-construction.png"/>
+</Frame>
+
+- When enabled, a password must be entered in the `Password` field. No default password is assigned.
+
+<Note>The password must be a maximum of 8 characters. Longer passwords will be truncated after the 8th character.</Note>
+
+### Gadgets Field
+
+- The T3-GEM-O1 board can provide virtual Ethernet, serial port, and storage device connections via its Type-C port.
+  Check the box to enable these features:
+- `Enable Storage Gadget`: Activates the virtual storage device.
+- `Enable Ethernet Gadget`: Activates the virtual Ethernet device.
+- `Enable Serial Gadget`: Activates the virtual serial port device.
+
+<Note>
+When connecting to a Windows host computer, certain drivers must be installed to use the gadget features. For
+instructions, [click here](https://www.diodes-delight.com/docs/piunora/usb-gadget/).
+</Note>
+
+## Options Tab
+
+<Frame>
+<img src="/images/gem-imager/options-tab.png"/>
+</Frame>
+
+- `Play Sound when finished`: When checked, a notification sound plays upon completion of the writing process.
+
+- `Eject media when finished`: When checked and writing to an SD card, the SD card is safely ejected automatically
+  upon completion. This has no effect when writing to onboard storage (eMMC).
+
+- `Serial Port`: If writing to the board's eMMC, select the serial port connected to the board. This has no effect
+  when writing to an SD card.
+
+- `Ethernet`: If writing to the board's eMMC, select the Ethernet port connected to the board. This has no effect when
+  writing to an SD card.

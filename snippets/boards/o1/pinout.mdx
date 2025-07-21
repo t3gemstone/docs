@@ -1,0 +1,22 @@
+| {func}                   | PINS          | PINS         | {func}                   |
+|-------------------------:|:-------------:|:------------:|:-------------------------|
+| 3v3 Power                | **3v3 Power** | **5v Power** | 5v Power                 |
+| I2C-MCU0 SDA             | **GPIO-2**    | **5v Power** | 5v Power                 |
+| I2C-MCU0 SCL             | **GPIO-3**    | **GND**      | GND                      |
+|                          | **GPIO-4**    | **GPIO-14**  | UART-MAIN1 TX            |
+| GND                      | **GND**       | **GPIO-15**  | UART-MAIN1 RX            |
+|                          | **GPIO-17**   | **GPIO-18**  | PCM-McASP0 CLK           |
+|                          | **GPIO-27**   | **GND**      | GND                      |
+|                          | **GPIO-22**   | **GPIO-23**  |                          |
+| 3v3 Power                | **3v3 Power** | **GPIO-24**  |                          |
+| SPI-MCU0 MOSI            | **GPIO-10**   | **GND**      | GND                      |
+| SPI-MCU0 MISO            | **GPIO-9**    | **GPIO-25**  |                          |
+| SPI-MCU0 SCLK            | **GPIO-11**   | **GPIO-8**   | SPI-MCU0 CS0             |
+| GND                      | **GND**       | **GPIO-7**   | SPI-MCU0 CS1             |
+| I2C-WKUP0 SDA (reserved) | **GPIO-0**    | **GPIO-1**   | I2C-WKUP0 SCL (reserved) |
+|                          | **GPIO-5**    | **GND**      | GND                      |
+|                          | **GPIO-6**    | **GPIO-12**  | PWM-ECAP0                |
+| PWM-1B                   | **GPIO-13**   | **GND**      | GND                      |
+| PCM-McASP0 FS            | **GPIO-19**   | **GPIO-16**  |                          |
+|                          | **GPIO-26**   | **GPIO-20**  | PCM-McASP0 DIN           |
+| GND                      | **GND**       | **GPIO-21**  | PCM-McASP0 DOUT          |

@@ -1,0 +1,45 @@
+<CodeGroup>
+
+```Python Python lines
+#!/usr/bin/python3
+
+eeprom_dest = "/sys/bus/i2c/drivers/at24/2-0051/eeprom"
+eeprom_size = 65536
+
+# Write
+with open(eeprom_dest, "w") as eeprom:
+    eeprom.write("Read-Write Example of EEPROM")
+
+# Read
+with open(eeprom_dest, "r") as eeprom:
+    eeprom_data = eeprom.read(eeprom_size)
+    print("EEPROM Data:", eeprom_data)
+```
+
+```C C/C++ lines
+#include <stdio.h>
+
+#define EEPROM_SIZE 65536
+
+const char* EEPROM_DEST = "/sys/bus/i2c/drivers/at24/2-0051/eeprom";
+
+int main()
+{
+    char eeprom_buffer[EEPROM_SIZE] = {0};
+    
+    // Write
+    FILE* eeprom = fopen(EEPROM_DEST, "w");
+    fprintf(eeprom, "Read-Write Example of EEPROM\n");
+    fclose(eeprom);
+    
+    // Read
+    eeprom = fopen(EEPROM_DEST, "r");
+    fread(eeprom_buffer, 1, EEPROM_SIZE, eeprom);
+    printf("Data: %s\n", eeprom_buffer);
+    fclose(eeprom);
+    
+    return 0;
+}
+```
+
+</CodeGroup>

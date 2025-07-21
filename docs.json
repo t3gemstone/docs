@@ -23,10 +23,6 @@
       "source": "https://rsms.me/inter/font-files/InterVariable.woff2?v=4.1"
     }
   },
-  "banner": {
-    "content": "Not ready yet. Wait until September 2025",
-    "dismissible": true
-  },
   "background": {
     "decoration": "windows"
   },

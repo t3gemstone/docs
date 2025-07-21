@@ -1,4 +1,43 @@
 ---
 title: 'JTAG'
-description: 'Usage of JTAG'
+description: 'JTAG Usage'
 ---
+
+JTAG (Joint Action Test Group) is a standard developed for operations such as testing connections in electronic
+circuits, programming onboard storage devices, or step-by-step debugging. The board includes a single JTAG
+interface connector. Debugging the dual-core R5 applications on the T3-GEM-O1 development board is performed using JTAG.
+
+To perform debugging, the following requirements are needed:
+
+- 1 x `T3-GEM-O1 JTAG Cable`
+- A computer with `Code Composer Studio` installed,
+- A JTAG debugger supported by Code Composer Studio.
+
+In this guide, the [Texas Instruments XDS200 USB Debug Probe](https://www.ti.com/tool/TMDSEMU200-U) was used.
+
+## JTAG Configuration and Connecting to the SOC
+
+- Set the development board to `Dev Bootmode` as shown [here](/en/quickstart#1-3-bootmode-switch), then power it on.
+  Next, connect the `T3-GEM-O1 JTAG Cable` to the board as shown in the image.
+
+<Frame caption="Todo: Connecting the JTAG cable to the board">
+  <img height="200" width="200" src="/images/under-construction.png" />
+</Frame>
+
+- Launch the `Code Composer Studio` program and select a new workspace directory. In this example, a workspace 
+  named `tutorial_ws` was created. After selecting the workspace, the `Getting Started` screen will appear.
+- On this screen, click `View -> Target Configurations`. In the opened menu, click the `New Target Configuration File` 
+  button in the top-right corner to open the new configuration screen. Enter the configuration name 
+  as `t3-gem-o1-am67a-debug.ccxml` and then click the `Finish` button.
+- You will now see the configuration settings screen. Here, select your debugger from the `Connection` dropdown 
+  menu (In this case, `Texas Instruments XDS2xx USB Debug Probe` was selected).
+- Type **J722S** in the `Board or Device` filter field and check the box for the `J722S_TDA4VEN_TDA4AEN_AM67` device. 
+  Then, click the `Save` button on the right to save the settings and test the debugger connection using 
+  the `Test Connection` button.
+- When the created configuration is executed from the `Target Configurations` screen, the connection with the
+  development board will be established. From this stage onward, you can connect to the cores and load code.
+
+<Frame caption="Configuring JTAG and connecting to the SOC">
+  <video controls className="w-full aspect-video" src="/videos/jtag-debug-start.mp4"></video>
+</Frame>
+

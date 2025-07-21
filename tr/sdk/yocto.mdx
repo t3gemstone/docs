@@ -3,6 +3,8 @@ title: 'Yocto'
 description: 'Gemstone Development Kit'
 ---
 
+import SnippetDir from '/snippets/sdk/yocto-dir.mdx';
+
 <Note>
 Bu bölümde Gemstone geliştirme kartlarının Kernel, Bootloader, Firmware, BSP (Board Support Packages),
 Initrd (Init Ramdisk) bileşenlerinin derlenmesi için kullanılan 
@@ -38,34 +40,21 @@ Bunun yerine istenen tarifler Yocto'nun `.bbappend` dosyaları kullanılarak met
 
 #### 1.1. Klasör yapısı
 
-```bash
-meta-gemstone
-|-- conf
-|   |-- distro
-|   |-- machine
-|   |-- templates
-|-- recipes-connectivity
-|-- recipes-core
-|   |-- images
-|-- recipes-devtools
-|-- recipes-graphics
-|-- recipes-kernel
-|-- ...
-```
+<SnippetDir />
 
 <ResponseField name="conf/">
-  Dağıtım konfigürasyonu, <Tooltip tip="T3-GEM-O1, T3-GEM-S1, ...">makine tanımları</Tooltip> ve makinelere özel konfigürasyon şablonları bu klasörde yer alır.
+Dağıtım konfigürasyonu, <Tooltip tip="T3-GEM-O1, T3-GEM-S1, ...">makine tanımları</Tooltip> ve makinelere özel konfigürasyon şablonları bu klasörde yer alır.
 </ResponseField>
 
 <ResponseField name="recipes-core/images/">
-  Initrd ve diğer imajların hangi paketleri barındıracağı, gereksinimleri ve özellikleri gibi tanımlamalar bu klasör
-  altında bulunan `.bb` uzantılı tarif dosyalarında yapılır.
+Initrd ve diğer imajların hangi paketleri barındıracağı, gereksinimleri ve özellikleri gibi tanımlamalar bu klasör
+altında bulunan `.bb` uzantılı tarif dosyalarında yapılır.
 </ResponseField>
 
 <ResponseField name="recipes-*/">
-  `recipes-` şeklinde başlayan diğer tüm klasörler, tarifleri kategorize etmek için kullanılmaktadır. Diğer
-  katmanlarda yazılan tarifleri özelleştirmeyi sağlayan `.bbappend` uzantılı dosyalar genellikle bu klasörler altında
-  tutulur.
+`recipes-` şeklinde başlayan diğer tüm klasörler, tarifleri kategorize etmek için kullanılmaktadır. Diğer
+katmanlarda yazılan tarifleri özelleştirmeyi sağlayan `.bbappend` uzantılı dosyalar genellikle bu klasörler altında
+tutulur.
 </ResponseField>
 
 ### 2. Yocto Çıktıları

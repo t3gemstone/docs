@@ -1,75 +1,67 @@
 ---
 title: 'Serial Port'
-description: 'Serial Port Communication'
+description: 'Serial Port Usage'
 ---
 
+import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
+import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
+
 <Tip>
-By the end of this section, you will have learned about serial port usage on the Gemstone development board.
+By the end of this section, you will gain experience in the following topics:
+
+- Establishing a serial port connection between the developer's computer and the Gemstone board using a USB TTL cable.
+- Communicating between both computers via a terminal.
+- Preliminary preparation for the [t3gemstone/examples/serial](https://github.com/t3gemstone/examples/tree/main/serial) project.
 </Tip>
 
-The serial port is a simple yet effective communication method that enables data transmission between devices 
-such as computers and microcontrollers. This communication typically occurs via the `UART (Universal Asynchronous Receiver-Transmitter)` 
-protocol and is used for low-speed data transfer.
+A serial port is a communication channel that enables data transmission between devices such as computers and
+microcontrollers. This communication typically occurs via the `UART (Universal Asynchronous Receiver-Transmitter)`
+protocol and is ideal for low-speed data transmission. For example, serial ports are often preferred when
+communicating with external modules like GPS or Radio Transmitters.
 
-To better understand this communication protocol, we will demonstrate how to establish communication between a Gemstone development board 
-and a Linux system using a `USB-TTL UART converter`.
+<Steps>
+  <Step title="SSH/VNC Connection">
+  Connect to the development board using one of the methods: [SSH](../../../quickstart#2-3-network-connection-via-ssh) or
+  [VNC](../../../quickstart#2-2-remote-desktop-connection-via-browser-with-vnc).
+  </Step>
+  <Step title="Shell">
+  Create Bash Shell scripts.
+  </Step>
+  <Step title="TTL and Terminal">
+  Connect the developer's computer and the Gemstone board using a TTL cable and perform data exchange via the Tabby.sh terminal.
+  </Step>
+</Steps>
 
-### Serial Port Communication
+### 1. Creating a Shell Script
 
-As explained in the [Image Writing Process](/en/quickstart#1-2-image-writing-process) section of the [Quick Start](/en/quickstart) guide, 
-ensure you have successfully flashed the `Minimal` image onto the Gemstone board. Connect the GPIO14 and GPIO15 (UART1) pins using the 
-USB-TTL UART converter. Then, follow the steps in the [Exploring Gemstone](/en/quickstart#2-exploring-gemstone) section to log in to the 
-Gemstone OS command line via SSH.
+Create a script file for opening the serial port and sending data.
 
-* Install `picocom`, a minimal terminal program, using the following command.
 ```bash
-sudo apt install picocom
+touch serial-test.sh
 ```
 
-* Create a script file for serial port communication.
+### 2. Using a Text Editor
+
+Open the `serial-test.sh` file using the `nano` text editor from the terminal interface.
+
 ```bash
-touch serial_test.sh
+nano serial-test.sh
 ```
 
-* Open the `serial_test.sh` file using the `nano` editor.
-```bash
-nano serial_test.sh
-```
+After copying the following code, paste it into the `serial-test.sh` file.
 
-* Copy and paste the following code into the `serial_test.sh` file.
-```bash
-#!/bin/bash
+<SnippetExamplesSerialScript />
 
-SERIAL_PORT="/dev/ttyS3"
-BAUD_RATE="115200"
+Press `CTRL+X`, then press `Y` to save and exit the nano editor.
 
-nohup picocom -b $BAUD_RATE $SERIAL_PORT &
+### 3. Running the Shell Script
 
-while true; do
-    echo -n "Teknofest" > $SERIAL_PORT
-    sleep 1
-done
-```
+Make the `serial-test.sh` file executable using the `chmod` command and start it.
 
-* Press `CTRL+X`, then `Y` to save and exit the nano editor.
+<SnippetExamplesSerial />
 
-* Make the `serial_test.sh` file executable using the `chmod` command.
-```bash
-chmod +x serial_test.sh
-```
+### 4. Communication
 
-<Note> The USB-TTL UART converter connected to GPIO14 and GPIO15 
-creates the `/dev/ttyS3` device in the Gemstone OS. </Note>
-
-* On the user's computer, open the corresponding serial port in `Tabby.sh`, 
-the terminal application described in the [Terminal/Console Application](/en/quickstart#2-1-1-terminal%2Fconsole-application) section.
-
-<Frame caption="Opening the serial port in Tabby.sh terminal">
-  <video controls className="w-full aspect-video" src="/videos/open-tabby-light.mp4"></video>
-</Frame>
-
-* Run the script with `./serial_test.sh` to verify the communication.
-
-<Frame caption="Serial Port Communication">
+<Frame >
   <video controls className="w-full aspect-video" src="/videos/seri-test.mp4"></video>
 </Frame>

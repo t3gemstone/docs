@@ -4,73 +4,72 @@ description: 'Controller Area Network (CAN)'
 ---
 
 <Tip>
-By the end of this section, you will learn how to create a virtual CAN interface on the Gemstone development board.
+By the end of this section, you will have learned how to create a virtual CAN interface on the Gemstone development board.
 </Tip>
 
-The Controller Area Network (CAN) protocol is a widely used communication standard, particularly in automotive and 
-industrial automation applications. The CAN protocol stands out for its high reliability and low-cost data transmission advantages.
+In the Gemstone operating system, a virtual CAN interface can be created, allowing data communication
+without the need for any additional hardware.
 
-### Using CAN Bus
-
-The Gemstone OS allows creating a virtual CAN interface, enabling data communication without requiring additional hardware.
-
-<Note> Since this example requires multiple terminals, using the `Desktop OS image` is recommended.</Note>
-
-* After connecting to the Gemstone OS, install the `kernel-module-vcan-6.1.83-ti` module to enable virtual CAN support.
+* After connecting to the Gemstone operating system, install the `kernel-module-vcan-6.1.83-ti` module to create
+a virtual CAN interface.
 
 ```bash
 sudo apt install picocom kernel-module-vcan-6.1.83-ti
 ```
-* Activate the module using `modprobe`.
+
+* Activate the installed module using the `modprobe` command.
 
 ```bash
 sudo modprobe vcan
 ```
-* Create and configure the virtual CAN interface (vcan0) with the following commands.
+
+* Follow the commands below to create the virtual CAN interface.
 
 ```bash
 sudo ip link add dev vcan0 type vcan
 sudo ip link set up vcan0
 ```
 
-* Create a test script (can_test.sh) and open it for editing.
+* Create a script file named `can-test.sh` and open it.
 
 ```bash
-touch can_test.sh
-nano can_test.sh
+touch can-test.sh
+nano can-test.sh
 ```
 
-* Copy and paste the following script, then save and exit.
+* Copy and paste the following code into the `can-test.sh` file. Save and close the file.
+
 ```bash
 #!/bin/bash
 
 while :
 do
-   cansend vcan0 123#AABBCCDDEE112233
+   cansend vcan0 123 #AABBCCDDEE112233
    sleep 1
 done
 ```
 
-* Install `can-utils` for CAN packet transmission/reception commands (cansend, candump, etc.).
+* Install the `can-utils` package to use commands such as `cansend` and `candump` for sending and 
+  receiving CAN packets.
 
 ```bash
 sudo apt install can-utils
 ```
 
-To test communication:
+1. Open two terminals.
 
-1. Open two terminals
+2. Start listening to the CAN interface from the first terminal.
 
-2. In the first terminal, monitor CAN traffic with:
 ```bash
 candump vcan0
 ```
 
-3. In the second terminal, run the test script.
+3. Run the `can-test.sh` script from the second terminal.
+
 ```bash
-./can_test.sh
+./can-test.sh
 ```
 
-<Frame caption="CAN bus communication via virtual interface">
+<Frame caption="Communication over virtual CAN interface">
   <video controls className="w-full aspect-video" src="/videos/can-test.mp4"></video>
 </Frame>

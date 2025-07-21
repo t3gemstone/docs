@@ -1,0 +1,10 @@
+```bash
+gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip5/export
+# 1
+gemstone@t3-gem-o1:~$ echo 2000000 | sudo tee /sys/class/pwm/pwmchip5/pwm1/period     # 500 Hz
+# 2000000
+gemstone@t3-gem-o1:~$ echo 1000000 | sudo tee /sys/class/pwm/pwmchip5/pwm1/duty_cycle # 50%
+# 1000000
+gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip5/pwm1/enable
+# 1
+```

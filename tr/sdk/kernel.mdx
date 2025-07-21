@@ -48,46 +48,46 @@ yapabilirsiniz.
 <AccordionGroup>
 
   <Accordion title="Menuconfig ekranının açılması">
-    ```bash
-    bitbake -c menuconfig virtual/kernel
-    ```
+  ```bash
+  bitbake -c menuconfig virtual/kernel
+  ```
 
-    <Frame>
-      <img src="/images/kernel-menuconfig.png" />
-    </Frame>
+  <Frame>
+    <img src="/images/kernel-menuconfig.png" />
+  </Frame>
 
-    İstediğiniz ayarları değiştirdikten sonra aşağıdaki pencere açılana kadar
-    `ESC` tuşuna basınız. Ardından "Yes" butonunu seçiniz.
+  İstediğiniz ayarları değiştirdikten sonra aşağıdaki pencere açılana kadar
+  `ESC` tuşuna basınız. Ardından "Yes" butonunu seçiniz.
 
-    <Frame>
-      <img src="/images/kernel-menuconfig-save.png" />
-    </Frame>
+  <Frame>
+    <img src="/images/kernel-menuconfig-save.png" />
+  </Frame>
   </Accordion>
 
   <Accordion title="Değişikliklerin kalıcı hale getirilmesi">
-    Bu aşamada kerneli tekrar derleyebilirsiniz ancak yaptığınız değişiklikler sadece
-    sizin bilgisayarınızda kalır ve build klasörünü temizlemeniz durumunda kaybolurlar.
-    Bunu engellemek için aşağıdaki adımları takip ediniz.
+  Bu aşamada kerneli tekrar derleyebilirsiniz ancak yaptığınız değişiklikler sadece
+  sizin bilgisayarınızda kalır ve build klasörünü temizlemeniz durumunda kaybolurlar.
+  Bunu engellemek için aşağıdaki adımları takip ediniz.
 
-    ```bash
-    bitbake -c savedefconfig virtual/kernel
-    cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/linux-t3-gem-o1-rt/6.1.83+git/defconfig \
-       /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/
-    ```
+  ```bash
+  bitbake -c savedefconfig virtual/kernel
+  cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/linux-t3-gem-o1-rt/6.1.83+git/defconfig \
+      /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/
+  ```
 
-    Yukarıdaki komutlar sayesinde menuconfig ekranında yaptığınız değişiklikler
-    `yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/` dizinindeki
-    `defconfig` dosyasına kaydedilmiş olacaktır
+  Yukarıdaki komutlar sayesinde menuconfig ekranında yaptığınız değişiklikler
+  `yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/` dizinindeki
+  `defconfig` dosyasına kaydedilmiş olacaktır
   </Accordion>
 
   <Accordion title="Kernelin yeniden derlenmesi">
-    ```bash
-    bitbake -c clean virtual/kernel
-    bitbake virtual/kernel
-    ```
+  ```bash
+  bitbake -c clean virtual/kernel
+  bitbake virtual/kernel
+  ```
 
-    Yukarıdaki komutlar başarıyla tamamlandıysa `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`
-    dizininde Image dosyası oluşacaktır.
+  Yukarıdaki komutlar başarıyla tamamlandıysa `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`
+  dizininde Image dosyası oluşacaktır.
   </Accordion>
 
 </AccordionGroup>

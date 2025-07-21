@@ -1,0 +1,13 @@
+```bash lines
+#!/bin/bash
+
+while :
+do
+   if (( $(gpioget --bias=pull-up $(gpiofind GPIOY)) == 0))
+   then
+      gpioset $(gpiofind GPIOX)=1
+   else
+      gpioset $(gpiofind GPIOX)=0
+   fi
+done
+```

@@ -2,3 +2,54 @@
 title: 'RTC'
 description: 'Real-Time Clock'
 ---
+
+Computers use a hardware component called RTC (Real-Time Clock), which is powered by an external battery,
+to continue counting the system time during power outages or when the system is turned off and on.
+
+<Note>
+  The T3-GEM-O1 board includes an RTC. If you do not use the RTC module, the system time will reset and start
+  from 01/01/1970 when you cut and restore power to the board. If the board is connected to the internet,
+  the correct time will be set after a while. If you want the time to remain accurate even without internet,
+  you must use the RTC.
+</Note>
+
+### Steps to Run the RTC
+
+<Steps>
+
+  <Step title="Connect the Battery">
+    <Frame caption="Todo: RTC battery connection">
+      <img height="200" width="200" src="/images/under-construction.png" />
+    </Frame>
+  </Step>
+
+  <Step title="Send the Current Date and Time Information">
+  Next, open a terminal via [serial port](../../../quickstart#2-1-serial-port) or 
+  [SSH](../../../quickstart#2-3-connecting-via-ssh-over-network). You must send your system time to the 
+  RTC module once using the following command.
+
+  ```bash
+  gemstone@t3-gem-o1:~$ sudo hwclock -w -u /dev/rtc0
+  ```
+
+  If the operation is successful, when you run the `hwclock -r` command, you should see an output similar to the following.
+
+  <CodeGroup>
+  ```bash Command
+  gemstone@t3-gem-o1:~$ sudo hwclock -r
+  ```
+
+  ```bash Output
+  2025-07-16 08:25:02.160359+03:00
+  ```
+  </CodeGroup>
+
+  </Step>
+
+  <Step title="Test">
+  Turn off your board using the power button on the board or the `poweroff` command, and unplug the power cable.
+  After waiting about 10 seconds, power the board back on and run the `date` command. If the displayed date and time
+  are correct, the RTC is working properly.
+  </Step>
+
+</Steps>

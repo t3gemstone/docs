@@ -3,34 +3,42 @@ title: 'JTAG'
 description: 'JTAG Kullanımı'
 ---
 
-JTAG (Joint Action Test Group) elektronik devrelerde bağlantıların kontrol edilmesi, kart üzerindeki depolama aygıtlarının programlaması veya adım adım
-hata ayıklama (step debugging) gibi işlemlerin yapılması için üretilmiş bir standarttır. Kart üzerinde bir adet JTAG arayüzü konnektörü bulunmaktadır.
-Halihazırda debug yapabilmek için;
-- 1 adet `T3-GEM-O1 JTAG Kablosu`'na,
-- `Code Composer Studio` programının kurulu olduğu bir bilgisayara,
-- Code Composer Studio'nun desteklediği bir JTAG debuggera ihtiyacınız var. 
+JTAG (Joint Action Test Group) elektronik devrelerde bağlantıların kontrol edilmesi, kart üzerindeki depolama
+aygıtlarının programlaması veya adım adım hata ayıklama (step debugging) gibi işlemlerin yapılması için üretilmiş
+bir standarttır. Kart üzerinde bir adet JTAG arayüzü konnektörü bulunmaktadır. T3-GEM-O1 geliştirme kartı
+üzerinde bulunan iki çekirdekli R5 uygulamalarının debug edilmesi JTAG ile yapılmaktadır.
+
+Debug yapabilmek için aşağıdaki gereksinimlere ihtiyaç vardır.
+
+- 1 adet `T3-GEM-O1 JTAG Kablosu`
+- `Code Composer Studio` kurulu bilgisayar,
+- Code Composer Studio'nun desteklediği bir JTAG debugger. 
 
 Buradaki anlatımda [Texas Instruments XDS200 USB Debug Probe](https://www.ti.com/tool/TMDSEMU200-U) kullanıldı.
 
 ## JTAG Konfigürasyonu ve SOC'ye Bağlanma
 
-- Öncelikle kartı [burada](/tr/quickstart#1-3-bootmode-switch) gösterildiği gibi `Dev Bootmode`'a alın ve ardından güç verin. Daha sonra `T3-GEM-O1 JTAG Kablosu`'nu resimde
-görüldüğü gibi karta bağlayın.
+- Geliştirme kartını [burada](/tr/quickstart#1-3-bootmode-switch) gösterildiği gibi `Dev Bootmode`'a alın ve ardından
+  güç verin. Daha sonra `T3-GEM-O1 JTAG Kablosu`'nu resimde görüldüğü gibi karta bağlayın.
 
 <Frame caption="Todo: JTAG kablosunun karta bağlanması">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-- `Code Composer Studio` programını başlatın ve yeni bir workspace dizini seçin. Biz `tutorial_ws` isminde bir workspace oluşturduk. `Getting Started` ekranı ile karşılacaksınız.
-- Bu ekranda `View -> Target Configurations`'a tıklayın. Açılan menüde sağ üst köşede bulunan `New Target Configuration File` butonuna basarak yeni bir
-konfigurasyan ekleme ekranını açın. Bu ekranda konfigurasyon ismini `t3-gem-o1-am67a-debug.ccxml` koyun ve `Finish` butonuna basın.
-- Konfigurasyon ayar ekranı ile karşılacaksınız. Burada `Connection` açılır menüsünde kullanacağınız debuggerı seçin (Biz `Texas Instruments XDS2xx USB Debug Probe` seçeceğiz). 
-`Board or Device` filtre alanına J722S yazıp `J722S_TDA4VEN_TDA4AEN_AM67` cihazının kutucuğunu işaretleyin. Ardından sağ tarafta bulunan `Save` butonuna
-tıklayıp ayarları kaydedin ve `Test Connection` butonu ile debuggera bağlantının sorunsuz gerçekleştiğini görün.
-- `Target Configurations` ekranından oluşturulan konfigurasyonu koşturduğumuzda karta bağlanmış olacaksınız. Bu aşamadan sonra çekirdeklere bağlanıp kod
-yükleyebilirsiniz.
+- `Code Composer Studio` programını başlatın ve yeni bir workspace dizini seçin. Buradaki 
+  örneklerde `tutorial_ws` isminde bir workspace oluşturulmuştur. Workspace seçimi
+  sonrası `Getting Started` ekranı gelecektir.
+- Bu ekranda `View -> Target Configurations`'a tıklayın. Açılan menüde sağ üst köşede bulunan
+  `New Target Configuration File` butonuna basarak yeni bir konfigurasyan ekleme ekranını açın.
+  Bu ekranda konfigurasyon ismini `t3-gem-o1-am67a-debug.ccxml` girdikten sonra `Finish` butonuna basın.
+- Konfigurasyon ayar ekranı ile karşılacaksınız. Burada `Connection` açılır menüsünde kullanacağınız debuggerı
+  seçin (Burada `Texas Instruments XDS2xx USB Debug Probe` seçilmiştir.). 
+- `Board or Device` filtre alanına J722S yazarak `J722S_TDA4VEN_TDA4AEN_AM67` cihazının kutucuğunu işaretleyin.
+  Ardından sağ tarafta bulunan `Save` butonuna tıklayıp ayarları kaydedin ve `Test Connection` butonu ile
+  debuggera bağlantının sorunsuz gerçekleştiğini test edin.
+- `Target Configurations` ekranından oluşturulan konfigurasyon çalıştırıldığında geliştirme kartı ile
+   bağlantı sağlanmış olacaktır. Bu aşamadan sonra çekirdeklere bağlanıp kod yükleyebilirsiniz.
 
 <Frame caption="JTAG Konfigürasyonunun yapılması ve SOC'ye bağlanma işlemi">
   <video controls className="w-full aspect-video" src="/videos/jtag-debug-start.mp4"></video>
 </Frame>
-

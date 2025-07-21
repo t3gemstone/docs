@@ -1,0 +1,13 @@
+```bash lines
+#!/bin/bash
+
+SERIAL_PORT="/dev/ttyS3"
+BAUD_RATE="115200"
+
+stty -F /dev/ttyS3 115200 -crtscts
+
+while true; do
+    echo "Teknofest" > $SERIAL_PORT
+    sleep 1
+done
+```

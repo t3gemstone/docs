@@ -4,200 +4,172 @@ description: 'Texas AM67 Cortex-R5, C7x (DSP)'
 ---
 
 import SnippetBootflow from '/snippets/boards/o1/bootflow.mdx';
+import SnippetClone from '/snippets/boards/o1/mcu/clone.mdx';
+import SnippetInstallDeps from '/snippets/boards/o1/mcu/install-deps.mdx';
+import SnippetTargets from '/snippets/boards/o1/mcu/targets.mdx';
+import SnippetSysconfig from '/snippets/boards/o1/mcu/sysconfig.mdx';
+import SnippetBuild from '/snippets/boards/o1/mcu/build.mdx';
+import SnippetUpload from '/snippets/boards/o1/mcu/upload.mdx';
+import SnippetHelloWorld from '/snippets/boards/o1/mcu/helloworld.mdx';
+import SnippetFirmwares from '/snippets/boards/o1/mcu/firmwares.mdx';
+import SnippetRemoteproc from '/snippets/boards/o1/mcu/remoteproc.mdx';
 
-While Linux is the primary focus of the **T3-GEM-O1** development board, it also leverages the power of the R5 and C7x
-cores embedded in the Texas Instruments AM67 microprocessor. This section will explore topics such as compiling software
-for the R5 cores, debugging, and related procedures.
+While the primary focus of the **T3-GEM-O1** development board is Linux, it also leverages the power of the R5
+and C7x cores within the Texas AM67 microprocessor. This section will explore topics such as how to compile
+software for the R5 cores, perform debugging, and more.
 
 <Tip>
 By the end of this section, you will gain knowledge and experience in the following areas:
 
 * Compiling Texas AM67 MCU software and running it on the Gemstone Obsidian
-* Understanding the boot sequence stages when the development board is first powered on
+* Understanding the boot stages of the system when the development board is first powered on
 </Tip>
 
 ## 1. MCU Software Development
 
-The necessary tools for compiling MCU projects are listed below:
+The tools required to compile MCU projects are listed below.
 
 1. Texas Instruments Processor SDK RTOS J722S
 2. Texas Instruments Sysconfig
 3. Texas Instruments Code Generation Tools C7000
 4. Texas Instruments Code Generation Tools ARM LLVM
 
-Since downloading and installing these individually from the Texas Instruments website is cumbersome,
-the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository provides a preconfigured setup with all required tools to compile MCU projects.
+Since downloading and installing these tools one by one from the Texas Instruments website is cumbersome,
+the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository has been set up to download
+all the necessary tools and provide the infrastructure to compile MCU projects.
 
-### 1.1. Clone example projects with Git
+### 1.1. Download example projects via Git clone
 
-```bash
-ubuntu@host:~$ git clone https://github.com/t3gemstone/examples.git
-ubuntu@host:~$ cd examples
-```
+<SnippetClone />
 
-### 1.2. Install the required tools and libraries for compilation
+### 1.2. Install tools and libraries required for compilation
 
-```bash
-ubuntu@host:examples$ ./setup.sh
-ubuntu@host:examples$ devbox shell
-ubuntu@host:examples$ task fetch-ti
-```
+<SnippetInstallDeps />
 
-### 1.3. Create template project
+### 1.3. Create a template project
 
-The `mcu` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository contains sample applications running on two R5F real-time cores and two C7x DSP cores. Similar examples can be found in the directory:
-`build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples`
+The `mcu` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository contains sample
+projects for two R5F real-time cores and two C7x DSP cores. Similar examples can be found in
+the `build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples` directory.
+It is recommended to find an example project that suits your purpose, copy it to the `mcu` project directory,
+and develop on it.
 
-We recommend finding a sample project matching your requirements, copying it to the `mcu` project directory, and developing on top of it.
+Each example project has subdirectories for different cores. For example, the `hello_world` project contains
+the following directories:
 
-Each sample project contains subdirectories for different processor cores. For example, the `hello_world` project includes:
-1. `c75ss0-0_freertos`
-2. `c75ss1-0_freertos`
-3. `main-r5fss0-0_freertos` and
-4. `mcu-r5fss0-0_freertos` directories.
+<SnippetHelloWorld />
 
-Development should be done in the directory corresponding to the target core (one of these four), and the compiled outputs from that specific directory should be used.
+Development should be done in the directory corresponding to the core where the code will run, and the compiled
+outputs from that directory should be used.
 
-MCU projects to be compiled are defined in the `.env` file through the `MCU_TARGETS` variable. To compile a project, add either the absolute or relative path to its `makefile` directory to the `MCU_TARGETS` variable. Below is an example configuration for the `mcu-r5fss0-0_freertos` core of the `hello_world` project:
+The MCU projects to be compiled are defined in the `.env` file as the `MCU_TARGETS` variable. Add the absolute
+or relative path of the project's `makefile` directory to the `MCU_TARGETS` variable. Below is an example
+for the `mcu-r5fss0-0_freertos` core of the `hello_world` project.
 
-```bash
-MCU_TARGETS="
-ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000
-ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000
-ipc_rpmsg_echo_linux/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang
-ipc_rpmsg_echo_linux/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang
-hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang
-"
-```
+<SnippetTargets />
 
 ### 1.4. Configure peripherals with SysConfig
 
-The project's peripheral configurations (GPIO, I2C, UART, etc.) are defined in the `.syscfg` file.
+The peripherals used by the project (GPIO, I2C, UART, etc.) and their configurations are defined in the `.syscfg` file.
 
-To add new peripherals or modify existing Pin Mux settings, use the SysConfig GUI tool. To launch SysConfig for an MCU project:
+The SysConfig GUI tool is used to add new peripherals or modify the Pin Mux settings of existing ones. To launch
+SysConfig for an MCU project:
 
-- Set the `SYSCONFIG_TARGET` variable to your target project.
-   - You can either edit this variable directly in the `.env` file, or
-   - Pass it as an environment variable to the `task` program.
+- Change the `SYSCONFIG_TARGET` variable to the desired project.
+    - You can edit this variable in the `.env` file or
+    - Pass it as an environment variable to the `task` program.
 
-```bash
-SYSCONFIG_TARGET=hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang task sysconfig
-```
+<SnippetSysconfig />
 
 After saving your changes with the `Ctrl + S` shortcut, you can close the SysConfig interface.
 
 <Warning>
-The remoteproc infrastructure is used to enable remote software loading onto R5F and C7x cores from Linux. For a
-compiled `.out` file to be loadable via remoteproc, certain configurations must be set in the SysConfig interface. After
-copying a new project, follow these steps:
+The remoteproc infrastructure is used to remotely load software onto the R5F and C7x cores from Linux. Certain
+settings must be configured in the SysConfig interface for a compiled `.out` file to be loaded via remoteproc.
+After copying a new project, follow these steps:
 
 1. Open the `IPC` tab under `TI DRIVERS`.
 2. Click the `ADD` button.
-3. Ensure the `Linux A53 IPC RP Message` setting is enabled.
-4. Save the `.syscfg` file with `Ctrl + S` and exit.
+3. Ensure the `Linux A53 IPC RP Message` setting is active.
+4. Save the `.syscfg` file with the `Ctrl + S` shortcut and exit.
 </Warning>
 
 ### 1.5. Compile the project
 
-```bash
-ubuntu@host:examples$ PROJECT=mcu task clean build
-```
+<SnippetBuild />
 
-### 1.6. Upload compiled project into the development board
+### 1.6. Upload the compiled project to the development board
 
-```bash
-ubuntu@host:examples$ scp mcu/hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.out gemstone@10.0.0.1:
-```
+<SnippetUpload />
 
 ### 1.7. Run the compiled project
 
-For loading `.out` files onto cores via remoteproc, the firmware files must be copied to `/lib/firmware` with specific predefined names. The firmware naming convention for each core is shown in the table below:
+The `.out` files to be loaded onto the cores via remoteproc must be copied to the `/lib/firmware` directory with
+predefined names. The firmware names for each core are listed in the table below.
 
-| Core          | Firmware Name        |
-|---------------|----------------------|
-| mcu-r5fss0-0  | j722s-mcu-r5f0_0-fw  |
-| main-r5fss0-0 | j722s-main-r5f0_0-fw |
-| c7xss0-0      | j722s-c71_0-fw       |
-| c7xss1-0      | j722s-c71_1-fw       |
+<SnippetFirmwares />
 
-To verify firmware names and their corresponding remoteproc devices, use `head /sys/class/remoteproc/remoteproc*/firmware` command.
-After each boot, cores may be assigned to different remoteproc devices, so this verification step is essential for proper operation.
+The firmware names and which core corresponds to which remoteproc device can be accessed with the
+`head /sys/class/remoteproc/remoteproc*/firmware` command. Since the cores may correspond to different
+remoteproc devices after each boot, this must be checked.
 
-```bash
-gemstone@t3-gem-o1:~$ head /sys/class/remoteproc/remoteproc*/firmware
-# ==> /sys/class/remoteproc/remoteproc0/firmware <==
-# j722s-mcu-r5f0_0-fw
-#
-# ==> /sys/class/remoteproc/remoteproc1/firmware <==
-# j722s-main-r5f0_0-fw
-#
-# ==> /sys/class/remoteproc/remoteproc2/firmware <==
-# j722s-c71_0-fw
-#
-# ==> /sys/class/remoteproc/remoteproc3/firmware <==
-# j722s-c71_1-fw
-gemstone@t3-gem-o1:~$ echo stop | sudo tee /sys/class/remoteproc0/state
-# [ 1920.592397] remoteproc remoteproc0: stopped remote processor 79000000.r5f
-gemstone@t3-gem-o1:~$ sudo cp hello_world.release.out /lib/firmware/j722s-mcu-r5f0_0-fw
-gemstone@t3-gem-o1:~$ echo start | sudo tee /sys/class/remoteproc0/state
-# [ 1928.127331] remoteproc remoteproc0: powering up 79000000.r5f
-# [ 1928.133194] remoteproc remoteproc0: Booting fw image j722s-mcu-r5f0_0-fw, size 45492
-# [ 1928.173034] remoteproc remoteproc0: remote processor 79000000.r5f is now up
-```
+<SnippetRemoteProc />
 
 <Warning>
-The above procedure ensures graceful shutdown and restart of remote cores. In some cases, the graceful shutdown process may fail. If this occurs, we recommend:
+The above procedure ensures that the remote cores are shut down and restarted smoothly. In some cases, a
+smooth shutdown may fail. In such cases, we recommend the following steps:
 
-1. Place new firmware binaries in `/lib/firmware`.
-2. Perform a full board reboot.
+1. Place the new firmware files in the `/lib/firmware` directory.
+2. Reboot the board.
 
-During system startup, remoteproc will automatically load the firmware to the appropriate cores.
+During system startup, the remoteproc mechanism will automatically load the firmware onto the relevant cores.
 
-**Note:** This approach is particularly useful when:
+**Note:** This approach is particularly useful in the following scenarios:
 
-- Core crashes occur
-- IPC communication fails
-- Unexpected behavior is observed during dynamic loading
+- When core crashes occur
+- When IPC communication is interrupted
+- When unexpected behavior is observed during dynamic loading
 </Warning>
 
 ## 2. Boot Diagram
 
-The flow chart specified below is for the Gemstone Obsidian development board, but a similar structure is found in many
-ARM-based embedded Linux development boards.
+The flowchart below is specific to the Gemstone Obsidian development board, but many ARM-based embedded Linux
+development boards have a similar structure.
 
 <SnippetBootflow/>
 
 ### 2.1. ROM Bootloader (RBL)
 
-The RBL (ROM Bootloader), often distributed by manufacturers only as compiled programs without source code, has the
-primary purpose of performing hardware health checks and initialization tasks when the board is first powered on, and
-then transitioning to the SBL (Secondary Bootloader), whose source code can be modified. The location from which the SBL
-is read and started is determined by the RBL through boot mode switches.
+The RBL (ROM Bootloader), often distributed only as compiled binaries without source code by manufacturers,
+has the primary purpose of performing hardware health checks and initialization when the board is first powered
+on, then transitioning to the SBL (Secondary Bootloader), whose source code can be modified. The location from
+which the SBL is read and started is determined by the RBL based on Bootmode switches.
 
 ### 2.2. Secondary Bootloader (SBL)
 
-The purpose of the Secondary Boot Loader on the _T3-GEM-O1_ development boards is to launch the more advanced bootloader
-called U-Boot and to enable writing images to
+The purpose of the Secondary Boot Loader on the _T3-GEM-O1_ development boards is to start the more advanced
+U-Boot bootloader and enable the writing of images to
 [eMMC](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319) via the Gemstone Imager application.
 
-In embedded boards containing Linux Kernel, U-Boot is often preferred. While pre-bootloaders like SBL can perform basic
-initialization tasks, U-Boot has much more advanced features. For example, U-Boot has its own Terminal/Console interface
-and supports many drivers not available in SBL, enabling more sophisticated customizations.
+U-Boot is commonly preferred in embedded boards running Linux. While pre-bootloaders like SBL can perform basic
+initialization, U-Boot offers many more advanced features. For example, U-Boot has its own Terminal/Console
+interface and supports many drivers not available in SBL, enabling more sophisticated customizations.
 
 ### 2.3. U-Boot
 
-After the SBL, U-Boot takes control of the development board. Based on the configurations defined in the 
-[Device Tree](../../../faq#device-tree-nedir), it activates the relevant hardware drivers, executes a set of predefined
-commands to load components like the Linux Kernel and Initrd into RAM, and then transfers control to the Linux Kernel.
+After the SBL, U-Boot takes control of the development board. Based on the configurations defined in the
+[Device Tree](../../../faq#device-tree-nedir), it activates the relevant hardware drivers and executes predefined
+commands to load components like the Linux Kernel and Initrd into RAM, then hands control over to the Linux Kernel.
 
 #### 2.3.1. U-Boot Console Exercises
 
 <Tip>
-This section demonstrates the use of the U-Boot console by connecting to the Gemstone development board via TTL. You can
-quickly review the documents below.
+This section demonstrates the use of the U-Boot console by connecting to the Gemstone development board via TTL.
+You can quickly skim the documents below.
 
 - https://cm.e-ale.org/2018/u-boot/u-boot.pdf
 - [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
+
 </Tip>
 
 <Frame caption="Todo: U-Boot TTL">
@@ -206,37 +178,37 @@ quickly review the documents below.
 
 ### 2.4. Linux Kernel
 
-It loads the drivers for the hardware defined in the [Device Tree](../../../faq#device-tree-nedir). Then, if present, it
-starts the initrd/initramfs and executes the `init` program located in the rootfs.
+Loads the drivers for the hardware defined in the [Device Tree](../../../faq#device-tree-nedir). Then, if present,
+it starts the initrd/initramfs and executes the `init` program located in the rootfs.
 
 <Tip>
-The device tree files for U-Boot and the Linux kernel are different. In U-Boot, the device tree typically only
-activates enough hardware to load the kernel and initramfs into RAM from various storage devices (MMC, SSD, SPI flash,
-...). The actual hardware activation is performed by the kernel.
+  The device tree files for U-Boot and the Linux kernel are different. The device tree in U-Boot typically only
+  activates enough hardware to load the kernel and initramfs into RAM from various storage devices (MMC, SSD,
+  SPI flash, etc.). The actual hardware activation is performed by the kernel.
 </Tip>
 
 ### 2.5. Initial RAM Disk (Initrd)
 
-A temporary filesystem located in RAM that performs intermediate tasks such as loading kernel modules, decrypting disks,
-and performing software updates before the rootfs is started.
+A temporary filesystem in RAM that performs intermediate tasks such as loading kernel modules, decrypting disks,
+or performing software updates before the rootfs is started.
 
 <Tip>
-If the rootfs is stored encrypted on the disk, the kernel cannot directly start the `init` program. First, the disk
-encryption must be decrypted by the initramfs.
+  If the rootfs is stored encrypted on disk, the kernel cannot directly start the `init` program. First, the disk
+  encryption must be decrypted by the initramfs.
 </Tip>
 
 ### 2.6. Root Filesystem (Rootfs)
 
-After completing its tasks, the initrd mounts the rootfs—a filesystem containing system and user programs, libraries,
-and various configuration files—to the `/` directory. The kernel then executes the `init` program located in `/init`,
-`/sbin/init`, or a similar directory in the rootfs. This program loads drivers for certain hardware (kernel modules),
-starts system services (such as network connectivity, time synchronization, package updates, and Bluetooth services),
-and launches the desktop environment (gnome, kde, xfce, ...).
+After completing its tasks, the initrd mounts the root filesystem (rootfs), which contains system and user programs,
+libraries, and various configuration files, to the `/` directory. The kernel then executes the `init`
+program located in `/init`, `/sbin/init`, or a similar directory in the rootfs. This program loads some hardware
+drivers (kernel modules), starts system services (such as network connectivity, time synchronization, package
+updates, and Bluetooth), and launches the desktop environment (gnome, kde, xfce, etc.).
 
 ## 3. Conclusion
 
 <Tip>
-Below are a few article examples about the boot process.
+Below are a few example articles about the boot process.
 
 - [BeagleBone Black Linux Boot Process](https://serbayozkan.medium.com/embedded-linux-boot-s%C3%BCreci-beagle-bone-black-ba9d378bd3bd)
 - [Booting Embedded Linux On BeagleBone](https://medium.com/@kshitijvaze/booting-embedded-linux-on-beaglebone-black-a-look-beyond-the-code-20854568fb66)

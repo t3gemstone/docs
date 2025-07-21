@@ -3,19 +3,25 @@ title: 'GPIO'
 description: 'General Purpose Input Output (GPIO)'
 ---
 
+import SnippetExamplesGpioScript from '/snippets/boards/o1/examples/gpio-script.mdx';
+
 <Tip>
-By the end of this section, you will have learned about GPIO usage on the Gemstone development board.
+By the end of this section, you will gain experience in the following topics:
+
+- Using GPIO via Gemstone
+- Preliminary preparation for the [t3gemstone/examples/gpio](https://github.com/t3gemstone/examples/tree/main/gpio) project.
 </Tip>
 
-GPIO (General Purpose Input/Output) refers to pins on microcontrollers and development boards that can be used 
-for general-purpose input and output operations. These pins can be configured to either receive digital data (input) 
-or send digital signals (output). Below is an example of an LED blink operation performed using the GPIO pins on the Gemstone board.
+GPIO (General Purpose Input/Output) refers to pins used for general-purpose input and output operations in
+microcontrollers and development boards. These pins can be configured for both receiving digital data (input)
+and sending digital signals (output). Below is an example of an LED blink operation performed via GPIO pins on the Gemstone.
 
-In addition to the materials listed on the [Quick Start](/en/quickstart) page, you will need an LED, a button, and a resistor.
+In addition to the materials listed on the [Quick Start](/en/quickstart) page, you will need an LED, a button, 
+and a resistor.
 
 <AccordionGroup>
 
-  <Accordion title="Led">
+  <Accordion title="LED">
     <Frame>
       <img height="500" width="800" src="/images/led.jpg" />
     </Frame>
@@ -35,115 +41,117 @@ In addition to the materials listed on the [Quick Start](/en/quickstart) page, y
 
 </AccordionGroup>
 
-### Blinking an LED
+<Steps>
+  <Step title="GPIO Connections">
+    Make the GPIO connections to the Gemstone board.
+  </Step>
 
-On the Gemstone board, GPIOX can be used as an Input/Output pin. Connect the LED as shown below.
+  <Step title="SSH/VNC Connection">
+    Connect to the development board using either [SSH](../../../quickstart#2-3-connecting-via-ssh-over-network) or
+    [VNC](../../../quickstart#2-2-remote-desktop-connection-via-vnc-from-browser).
+  </Step>
 
-<Frame caption="LED Connection">
+  <Step title="Shell">
+    Create Bash Shell scripts.
+  </Step>
+</Steps>
+
+## 1. Turning on an LED
+
+### 1.1. GPIO Connections
+
+Connect the LED to GPIOX on the Gemstone, which is available for Input/Output, as shown below.
+
+<Frame caption="LED connection">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-Once the connections are complete, write and execute a script to blink the LED.
+### 1.2. Creating a Shell Script
 
-* Create the script file:
-
-```bash
-touch led_blink.sh
-```
-
-* Open the led_blink.sh file using the `nano` editor.
+After connecting to the Gemstone, create a script file for the LED blink operation.
 
 ```bash
-nano led_blink.sh
+touch led-blink.sh
 ```
 
-* Copy and paste the following code into the `led_blink.sh` file:
+Open the `led-blink.sh` file using the `nano` text editor in the terminal interface.
 
 ```bash
-#!/bin/bash
-
-while :
-do
-      gpioset $(gpiofind GPIOX)=1
-      sleep 1
-      gpioset $(gpiofind GPIOX)=0
-      sleep 1
-done
+nano led-blink.sh
 ```
 
-* Press `CTRL+X`, then press `Y` to save and exit the nano editor.
+Copy and paste the following code into the `led-blink.sh` file.
 
-* Use the `chmod` command to make the `led_blink.sh` file executable:
+<SnippetExamplesGpioScript />
+
+Press `CTRL+X`, then `Y` to exit the nano editor and save the file.
+
+### 1.3. Running the Shell Script
+
+Make the `led-blink.sh` file executable using the `chmod` command.
+
 ```bash
-chmod +x led_blink.sh
+chmod +x led-blink.sh
 ```
 
-* Run the `led_blink.sh` script.
+Run the `led-blink.sh` script.
+
 ```bash
-./led_blink.sh
+./led-blink.sh
 ```
 
-As a result, you will see the LED blinking at 1-second intervals, as shown in the video below.
+Finally, observe the LED blinking at 1-second intervals as shown in the video below.
 
-<Frame caption="LED Blink Demonstration">
+<Frame caption="LED blink application">
   <video controls className="w-full aspect-video" src=""></video>
 </Frame>
 
+## 2. Reading a Button and Turning on an LED
 
-### LED Control with Button
+### 2.1. GPIO Connections
 
-The GPIOX pin on the Gemstone board can be used as an Input/Output for the LED, 
-while the GPIOY pin can be connected to a button as shown below.
+Connect the LED to GPIOX and the button to GPIOY on the Gemstone, as shown below.
 
 <Frame caption="LED and Button Connection">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-After completing the connections, write and execute a script to control the 
-LED based on the button state.
+### 2.2. Creating a Shell Script
 
-* Create the script file.
-```bash
-touch butyon_led.sh
-```
-
-* Open the `button_led.sh` file using the `nano` editor
-```bash
-nano button_led.sh
-```
-
-* Copy and paste the following code into the `button_led.sh` file.
-```bash
-#!/bin/bash
-
-while :
-do
-   if (( $(gpioget --bias=pull-up $(gpiofind GPIOY)) == 0))
-   then
-      gpioset $(gpiofind GPIOX)=1
-   else
-      gpioset $(gpiofind GPIOX)=0
-   fi
-done
-```
-
-* Press `CTRL+X`, then `Y` to save and exit the nano editor.
-
-* Make the `button_led.sh` file executable using the `chmod` command.
+Create the script file.
 
 ```bash
-chmod +x button_led.sh
+touch button-led.sh
 ```
 
-* Run the `button_led.sh` script.
+Open the `button-led.sh` file using the `nano` text editor in the terminal interface.
 
 ```bash
-./button_led.sh
+nano button-led.sh
 ```
 
-As a result, you will see that the LED turns on while the button is pressed, 
-as demonstrated in the video below.
+Copy and paste the following code into the `button-led.sh` file.
 
-<Frame caption="LED Control with Button">
+<SnippetExamplesLedScript />
+
+Press `CTRL+X`, then `Y` to exit the nano editor and save the file.
+
+### 2.3. Running the Shell Script
+
+Make the `button-led.sh` file executable using the `chmod` command.
+
+```bash
+chmod +x button-led.sh
+```
+
+Run the `button-led.sh` script.
+
+```bash
+./button-led.sh
+```
+
+Finally, observe the LED turning on while the button is pressed, as shown in the video below.
+
+<Frame caption="Turning on an LED with a button">
   <video controls className="w-full aspect-video" src=""></video>
 </Frame>

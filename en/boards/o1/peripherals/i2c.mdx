@@ -1,4 +1,56 @@
 ---
-title: 'i2C'
-description: 'i2C'
+title: 'I2C'
+description: 'Inter-Integrated Circuit'
 ---
+
+import SnippetExamplesI2CDetect from '/snippets/boards/o1/i2c/detect2.mdx';
+import SnippetInstallTools from '/snippets/boards/o1/i2c/tools.mdx';
+import SnippetDevices from '/snippets/boards/o1/i2c/devices.mdx';
+import SnippetRead from '/snippets/boards/o1/i2c/read.mdx';
+import SnippetWrite from '/snippets/boards/o1/i2c/write.mdx';
+
+The [I2C (Inter-Integrated Circuit)](https://preprod.kureansiklopedi.com/en/detay/i2c-inter-integrated-circuit-f974c)
+protocol is a widely used communication protocol for data transmission between microcontrollers and other integrated
+circuits. It is preferred in applications requiring low-speed data transmission, especially for communication
+with sensors, memory modules, and other peripheral devices.
+
+The Gemstone development board has one I2C (I2C1) output on its 40-pin header. External I2C devices can be
+connected via these pins. Additionally, the Gemstone includes an ICM-20948 9-axis MEMS sensor and an HDC2010
+temperature and humidity sensor, both communicating via I2C.
+
+### Using I2C
+
+After connecting to the Gemstone operating system, install the `i2c-tools` package to write and read data
+from I2C addresses.
+
+<SnippetInstallTools />
+
+To view the available I2C buses, run the `ls /dev/i2c-*` command.
+
+<SnippetI2CDevices />
+
+To view the addresses of devices connected to the `i2c-2` bus, run the following command:
+
+<SnippetExamplesI2CDetect />
+
+<Note>
+In the output above, `UU` indicates that an I2C device is present at that address and is being used by
+the system. `40` indicates that a device is present at that address. For example, while reading and writing
+operations cannot be performed at address 0x30, they can be performed at address 0x40.
+</Note>
+
+To read data from address `0x00` of the device connected to address `0x40` on the `i2c-2` bus,
+run the following command:
+
+<SnippetRead />
+
+To write the value `0x80` to address `0x07` of the device connected to address `0x40` on the `i2c-2` bus, run
+the following command:
+
+<SnippetWrite />
+
+<Warning>
+The I2C addresses used in the examples (such as 0x40, 0x00, and 0x07) are for demonstration purposes only. The
+addresses of I2C devices in your applications may vary. It is important to consult the documentation of the
+devices you are using to determine the correct addresses.
+</Warning>

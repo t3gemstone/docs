@@ -187,13 +187,13 @@ After that set static IP to your computer as shown below.
 
 <Tabs>
   <Tab title="Windows">
-    <Frame caption="Todo: Set IP address from Control Panel">
-      <img height="200" width="200" src="/images/under-construction.png" />
+    <Frame>
+      <video controls className="w-full aspect-video" src="../videos/win-set-ip.mp4"></video>
     </Frame>
   </Tab>
   <Tab title="Linux">
-    <Frame caption="Todo: Set IP address from CLI or gnome-settings GUI">
-      <img height="200" width="200" src="/images/under-construction.png" />
+    <Frame>
+      <video controls className="w-full aspect-video" src="../videos/linux-set-ip.mp4"></video>
     </Frame>
   </Tab>
   <Tab title="macOS">
@@ -203,9 +203,9 @@ After that set static IP to your computer as shown below.
   </Tab>
 </Tabs>
 
-After setting your computer's IP, get a shell from Gemstone board via serial port and run the commands below.
-A new connection for static IP will be created and its priority will be set higher than DHCP via `nmcli` tool. That way 
-static IP will be assigned automatically.
+After setting your computer's IP, get a shell from Gemstone board via [serial port](./quickstart#2-1-serial-port)
+and run the commands below. A new connection for static IP will be created and its priority will be set higher
+than DHCP via `nmcli` tool. That way static IP will be assigned automatically.
 
 ```bash
 gemstone@t3-gem-o1:~$ sudo nmcli connection add \

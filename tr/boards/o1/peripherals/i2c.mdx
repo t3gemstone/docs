@@ -1,67 +1,56 @@
 ---
-title: 'i2C'
-description: 'i2C'
+title: 'I2C'
+description: 'Inter-Integrated Circuit'
 ---
 
-I2C (Inter-Integrated Circuit) protokolü, mikrodenetleyiciler ve diğer entegre devreler arasında veri iletimi için kullanılan yaygın bir iletişim protokolüdür. 
-Düşük hızlı veri iletimi gerektiren uygulamalarda, özellikle sensörler, bellek modülleri ve diğer çevresel birimlerle iletişimde tercih edilmektedir. 
+import SnippetExamplesI2CDetect from '/snippets/boards/o1/i2c/detect2.mdx';
+import SnippetInstallTools from '/snippets/boards/o1/i2c/tools.mdx';
+import SnippetDevices from '/snippets/boards/o1/i2c/devices.mdx';
+import SnippetRead from '/snippets/boards/o1/i2c/read.mdx';
+import SnippetWrite from '/snippets/boards/o1/i2c/write.mdx';
 
-Gemstone geliştirme kartında 40 pin header pinlerinde 1 adet I2C (I2C1) çıkışı bulunmaktadır. Harici olarak kullanılmak istenen I2C cihazları
-bu pinler aracılığıyla bağlanılabilir. Ayrıca Gemstone üzerinde i2c ile haberleşen ICM-20948 9 eksen MEMS sensörü ve  HDC2010 sıcaklık 
-ve nem sensörü bulunmaktadır.
+[I2C (Inter-Integrated Circuit)](https://preprod.kureansiklopedi.com/tr/detay/i2c-inter-integrated-circuit-8c241)
+protokolü, mikrodenetleyiciler ve diğer entegre devreler arasında veri iletimi için kullanılan yaygın bir iletişim
+protokolüdür. Düşük hızlı veri iletimi gerektiren uygulamalarda, özellikle sensörler, bellek modülleri ve diğer
+çevresel birimlerle iletişimde tercih edilmektedir. 
+
+Gemstone geliştirme kartında 40 pin header pinlerinde 1 adet I2C (I2C1) çıkışı bulunmaktadır. Harici olarak
+kullanılmak istenen I2C cihazları bu pinler aracılığıyla bağlanılabilir. Ayrıca Gemstone üzerinde i2c ile haberleşen
+ICM-20948 9 eksen MEMS sensörü ve  HDC2010 sıcaklık ve nem sensörü bulunmaktadır.
 
 ### I2C Kullanımı
 
-* Gemstone işletim sistemine bağlandıktan sonra I2C adreslerine veri yazabilmek ve veri okuyabilmek için `i2c-tools` paketinin kurulumunu 
-yapınız.
+Gemstone işletim sistemine bağlandıktan sonra I2C adreslerine veri yazabilmek ve veri okuyabilmek 
+için `i2c-tools` paketinin kurulumunu yapınız.
 
-```bash
-sudo apt install i2c-tools
-```
+<SnippetInstallTools />
 
-* Bulunan I2C hatlarını görüntülemek için `ls /dev/i2c-*` komutunu çalıştırınız.
+Bulunan I2C hatlarını görüntülemek için `ls /dev/i2c-*` komutunu çalıştırınız.
 
-```bash
-gemstone@t3-gem-o1:~$ ls /dev/i2c-*
-crw-rw---- 1 root i2c 89, 1 /dev/i2c-1
-crw-rw---- 1 root i2c 89, 2 /dev/i2c-2
-crw-rw---- 1 root i2c 89, 3 /dev/i2c-3
-crw-rw---- 1 root i2c 89, 4 /dev/i2c-4
-crw-rw---- 1 root i2c 89, 5 /dev/i2c-5
-crw-rw---- 1 root i2c 89, 6 /dev/i2c-6
-```
+<SnippetI2CDevices />
 
-* `i2c-2` hattına bağlı olan cihazların bağlı olduğu adresleri görüntülemek için aşağıdaki komutu çalıştırınız.
+`i2c-2` hattına bağlı olan cihazların bağlı olduğu adresleri görüntülemek için aşağıdaki komutu çalıştırınız.
 
-```bash
-gemstone@t3-gem-o1:~$ sudo i2cdetect -y -r 2
-     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-00:                         -- -- -- -- -- -- -- -- 
-10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-30: UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-40: 40 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-50: -- UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-60: -- -- -- -- -- -- -- -- UU -- -- -- -- -- -- -- 
-70: -- -- -- -- -- -- -- -- 
-```
+<SnippetExamplesI2CDetect />
 
-<Note> Yukarıdaki komut çıktısında görünen `UU` o adreste bir I2C cihazının bulunduğunu ve bu cihazın sistem tarafından kullanıldığını gösterir.
-`40` ise o adreste bir cihazın bulunduğunu ifade eder. Örneğin 0x30 adresi için okuma ve yazma işlemi yapılamazken 0x40 adresi için bu işlemler
-yapılabilmektedir. </Note>
+<Note>
+Yukarıdaki komut çıktısında görünen `UU` o adreste bir I2C cihazının bulunduğunu ve bu cihazın sistem tarafından
+kullanıldığını gösterir. `40` ise o adreste bir cihazın bulunduğunu ifade eder. Örneğin 0x30 adresi için okuma ve
+yazma işlemi yapılamazken 0x40 adresi için bu işlemler yapılabilmektedir.
+</Note>
 
-<Note> I2C adreslerine veri okuyup yazmak için `i2cset` ve `i2cget` komutları kullanılmaktadır.</Note>
+`i2c-2` hattının `0x40` adresine bağlı olan cihazın `0x00` adresinden veri okuyabilmek için
+aşağıdaki komutu çalıştırınız.
 
-* `i2c-2` hattının `0x40` adresine bağlı olan cihazın `0x00` adresinden veri okuyabilmek için aşağıdaki komutu çalıştırınız.
-```bash
-sudo i2cget -y 2 0x40 0x00
-```
+<SnippetRead />
 
-* `i2c-2` hattının `0x40` adresine bağlı olan cihazın `0x07` adresine `0x80` verisi yazabilmek için aşağıdaki komutu çalıştırınız.
-```bash
-sudo i2cset -y 2 0x40 0x07 0x80
-```
+`i2c-2` hattının `0x40` adresine bağlı olan cihazın `0x07` adresine `0x80` verisi yazabilmek için aşağıdaki
+komutu çalıştırınız.
 
-<Warning>Verilen örnekteki I2C adresleri (0x40, 0x00 ve 0x07 gibi) örnekleme amacıyla kullanılmıştır. Yapacağınız uygulamalarda 
+<SnippetWrite />
+
+<Warning>
+Verilen örnekteki I2C adresleri (0x40, 0x00 ve 0x07 gibi) örnekleme amacıyla kullanılmıştır. Yapacağınız uygulamalarda 
 I2C cihazlarının adresleri farklılık gösterebilir. Kullanılan cihazların dökümanlarına başvurarak doğru adreslerin 
-belirlenmesi önemlidir.</Warning>
+belirlenmesi önemlidir.
+</Warning>

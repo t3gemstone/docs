@@ -7,28 +7,27 @@ description: 'Saklama alanı olarak sdcard yerine eMMC kullanımı'
 Bölüm bitiminde Gemstone geliştirme kartında eMMC üzerine imaj yazma işlemi hakkında bilgi sahibi olacaksınız.
 </Tip>
 
-Gemstone işletim sisteminin SD kartın yanı sıra eMMC üzerinden de boot edilebilme desteği bulunmaktadır. eMMC, yüksek performanslı 
-ve güvenilir bir depolama çözümüdür. SD karta kıyasla daha hızlı veri erişimi ve daha sağlam fiziksel yapı sunması nedeniyle birçok 
-uygulamada öncelikli olarak tercih edilmektedir.
+Gemstone işletim sisteminin SD kartın yanı sıra eMMC üzerinden de boot edilebilme desteği bulunmaktadır.
+eMMC, yüksek performanslı ve güvenilir bir depolama çözümüdür. SD karta kıyasla daha hızlı veri erişimi ve daha
+sağlam fiziksel yapı sunması nedeniyle birçok uygulamada öncelikli olarak tercih edilmektedir.
 
-Çekirdek yazılımlarının(işletim sistemi, firmware ve bootloader gibi) eMMC'ye yazılabilmesi için Gemstone Imager'da depolama aygıtı olarak
-`Internal eMMC` seçeneği bulunmaktadır. Bu sayede eMMC’ye sorunsuz bir kurulum yapılması sağlanır ve SD karta bağımlı kalmadan daha hızlı 
-ve dayanıklı bir çalışma ortamı elde edilir.
+Çekirdek yazılımlarının(işletim sistemi, firmware ve bootloader gibi) eMMC'ye yazılabilmesi için Gemstone Imager'da
+depolama aygıtı olarak `Internal eMMC` seçeneği bulunmaktadır. Bu sayede eMMC’ye sorunsuz bir kurulum yapılması
+sağlanır ve SD karta bağımlı kalmadan daha hızlı ve dayanıklı bir çalışma ortamı elde edilir.
 
 Bu bölümde, eMMC'ye imaj yazma işleminin nasıl yapılacağı hakkında detaylı bilgiler yer almaktadır.
 
-### 1. eMMC'ye imaj yazma işlemi
-#### 1.1. Gemstone'u bilgisayara bağla
+### 1.1. Gemstone'u bilgisayara bağla
 
 Gemstone'a USB Type-C ve Ethernet bağlantılarını yaptıktan sonra UART0'a USB-TTL Uart dönüştürücü bağlantısını da yapınız.
 
 <Warning>Eğer Linux işletim sistemini kullanıyorsanız yazma işlemini başlatmadan önce bilgisayarınızın kablolu ağ bağlantısını 
 kapatmanız gerekmektedir</Warning>
 
-#### 1.2. Yazma işleminin başlatılması
+### 1.2. Yazma işleminin başlatılması
 
-[Hızlı Başlangıç](/tr/quickstart) sayfasındaki [İmaj yazma işlemi](/tr/quickstart#1-2-i̇maj-yazma-işlemi) kısmında depolama aygıtı seçimi
-kısmına kadar gelip seçiminizi `Internal eMMC` şeklinde yapınız.
+[Hızlı Başlangıç](/tr/quickstart) sayfasındaki [İmaj yazma işlemi](/tr/quickstart#1-2-i̇maj-yazma-işlemi) kısmında
+depolama aygıtı seçimi kısmına kadar gelip seçiminizi `Internal eMMC` şeklinde yapınız.
 
 <Frame >
   <img src="/images/gem-imager/m-storage.png" />
@@ -36,7 +35,7 @@ kısmına kadar gelip seçiminizi `Internal eMMC` şeklinde yapınız.
 
 Sonrasında `NEXT` butonuna yapıp gerekli ayarları yaptıktan sonra eMMC'ye imaj yazma işlemini başlatınız.
 
-#### 1.3. Gemstone işletim sistemine bağlan
+### 1.3. Gemstone işletim sistemine bağlan
 
 İmaj yazma işlemi bittikten sonra sistem eMMC üzerinden boot edilecektir. Seri port veya SSH aracılığıyla
 Gemstone işletim sistemine bağlanabilirsiniz.

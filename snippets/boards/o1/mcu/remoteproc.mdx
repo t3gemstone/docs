@@ -1,0 +1,21 @@
+```bash
+gemstone@t3-gem-o1:~$ head /sys/class/remoteproc/remoteproc*/firmware
+# ==> /sys/class/remoteproc/remoteproc0/firmware <==
+# j722s-mcu-r5f0_0-fw
+#
+# ==> /sys/class/remoteproc/remoteproc1/firmware <==
+# j722s-main-r5f0_0-fw
+#
+# ==> /sys/class/remoteproc/remoteproc2/firmware <==
+# j722s-c71_0-fw
+#
+# ==> /sys/class/remoteproc/remoteproc3/firmware <==
+# j722s-c71_1-fw
+gemstone@t3-gem-o1:~$ echo stop | sudo tee /sys/class/remoteproc0/state
+# [ 1920.592397] remoteproc remoteproc0: stopped remote processor 79000000.r5f
+gemstone@t3-gem-o1:~$ sudo cp hello_world.release.out /lib/firmware/j722s-mcu-r5f0_0-fw
+gemstone@t3-gem-o1:~$ echo start | sudo tee /sys/class/remoteproc0/state
+# [ 1928.127331] remoteproc remoteproc0: powering up 79000000.r5f
+# [ 1928.133194] remoteproc remoteproc0: Booting fw image j722s-mcu-r5f0_0-fw, size 45492
+# [ 1928.173034] remoteproc remoteproc0: remote processor 79000000.r5f is now up
+```

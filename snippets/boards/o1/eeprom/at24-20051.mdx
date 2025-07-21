@@ -1,0 +1,16 @@
+```bash highlight=11
+gemstone@t3-gem-o1:~$ ls /sys/bus/i2c/drivers/at24/2-0051/
+total 0
+drwxr-xr-x 4 root root    0 Apr  7  2022 ./
+drwxr-xr-x 7 root root    0 Apr  7  2022 ../
+drwxr-xr-x 3 root root    0 Apr  7  2022 2-00511/
+lrwxrwxrwx 1 root root    0 Jul  9 14:54 driver -> ../../../../../../../bus/i2c/drivers/at24/
+lrwxrwxrwx 1 root root    0 Jul  9 14:54 of_node -> '../../../../../../../firmware/devicetree/base/bus@f0000/bus@b00000/i2c@2b200000/eeprom@51'/
+drwxr-xr-x 2 root root    0 Jul  9 14:54 power/
+lrwxrwxrwx 1 root root    0 Apr  7  2022 subsystem -> ../../../../../../../bus/i2c/
+lrwxrwxrwx 1 root root    0 Jul  9 14:54 supplier:regulator:regulator.0 -> ../../../../../../virtual/devlink/regulator:regulator.0--i2c:2-0051/
+-rw------- 1 root root 4.0K Jul  9 14:54 eeprom
+-r--r--r-- 1 root root 4.0K Jul  9 14:54 modalias
+-r--r--r-- 1 root root 4.0K Apr  7  2022 name
+-rw-r--r-- 1 root root 4.0K Apr  7  2022 uevent
+```

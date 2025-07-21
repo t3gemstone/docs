@@ -1,168 +1,145 @@
 ---
 title: 'Introduction'
-description: 'Components, Peripherals and Usage Examples'
+description: 'Components, Peripheral Devices, and Usage Examples'
 ---
 
-In this section, examples will be provided on the usage of the sensors and data lines on the board.
-Since all examples will be performed via the Terminal/Console by establishing a serial port connection,
-it is assumed that you have read the explanations about Terminal usage in the [Quick Start](../../../quickstart) section.
-You may choose one of the connection methods described in the relevant part, such as connecting to the Desktop image via a browser,
-connecting via SSH/Ethernet, or connecting via the console over a serial port.
+import SnippetDeviceTreeOverlays from '/snippets/boards/o1/dt-overlays.mdx';
+import SnippetPinout from '/snippets/boards/o1/pinout.mdx';
+import SnippetPicocomUart from '/snippets/boards/o1/picocom-uart.mdx';
+import SnippetI2cDetect from '/snippets/boards/o1/i2c/detect.mdx';
+import SnippetSPIHelloWorld from '/snippets/boards/o1/spi-helloworld.mdx';
+import SnippetPWM1B from '/snippets/boards/o1/pwm/pwm-1b.mdx';
+import SnippetPWMEcap0 from '/snippets/boards/o1/pwm/pwm-ecap0.mdx';
+import SnippetCheckDTBS from '/snippets/boards/o1/check-dtbs.mdx';
 
-### Pinout
+This section will demonstrate examples of how to use the sensors and data lines on the board.  
+All examples will be performed via the Terminal/Console after establishing a serial port connection,
+so it is assumed that you have read the explanations about Terminal usage in the [Quick Start](../../../quickstart)
+section. You may choose one of the methods described in the relevant section: connecting to the Desktop image via a
+browser, connecting via SSH/Ethernet, or connecting via the console over the serial port.
 
-The **40-pin expansion header** on the board provides Input/Output (I/O) pins that support interfaces such as UART (serial port), I2C, SPI, PWM, and PCM.
+## 1. Pinout
 
-In this section, we will discuss the purposes of the 40-pin I/O ports and which interfaces they are assigned to in the default configuration. In the next section, we will explain how these pins can be reconfigured for different uses via **Device Tree Overlay** files.
+The Input/Output (I/O) pins on the board, referred to as the **40-pin expansion header**, provide interfaces such
+as UART (serial port), I2C, SPI, PWM, and PCM. The purposes of the 40-pin I/O ports and their default interface
+assignments will be explained. In the next section, it will be described how the pins can be reconfigured for
+different uses using **Device Tree Overlay** files.
 
-For example, the pin labeled `GPIO-7` is configured as `SPI-MCU0 CS1` by default, but it can be reassigned to UART-WKUP0 RX by enabling a **Device Tree Overlay** file. Similarly, in the Gemstone VTOL project, since Bluetooth functionality was not needed, the relevant pins were disabled and repurposed as `UART-MAIN6`.
+For example, the pin named `GPIO-7` is configured as `SPI-MCU0 CS1` by default but can be converted to
+the `UART-WKUP0 RX` function by activating a file called **Device Tree Overlay**. Similarly, in the
+[Gemstone VTOL](../../../projects/vtol) project, since Bluetooth was not needed, the relevant pins were
+disabled and converted to `UART-MAIN6`.
 
-| FUNCTION                 | PINS          | PINS         | FUNCTION                 |
-|-------------------------:|:-------------:|:------------:|:-------------------------|
-| 3v3 Power                | **3v3 Power** | **5v Power** | 5v Power                 |
-| I2C-MCU0 SDA             | **GPIO-2**    | **5v Power** | 5v Power                 |
-| I2C-MCU0 SCL             | **GPIO-3**    | **GND**      | GND                      |
-|                          | **GPIO-4**    | **GPIO-14**  | UART-MAIN1 TX            |
-| GND                      | **GND**       | **GPIO-15**  | UART-MAIN1 RX            |
-|                          | **GPIO-17**   | **GPIO-18**  | PCM-McASP0 CLK           |
-|                          | **GPIO-27**   | **GND**      | GND                      |
-|                          | **GPIO-22**   | **GPIO-23**  |                          |
-| 3v3 Power                | **3v3 Power** | **GPIO-24**  |                          |
-| SPI-MCU0 MOSI            | **GPIO-10**   | **GND**      | GND                      |
-| SPI-MCU0 MISO            | **GPIO-9**    | **GPIO-25**  |                          |
-| SPI-MCU0 SCLK            | **GPIO-11**   | **GPIO-8**   | SPI-MCU0 CS0             |
-| GND                      | **GND**       | **GPIO-7**   | SPI-MCU0 CS1             |
-| I2C-WKUP0 SDA (reserved) | **GPIO-0**    | **GPIO-1**   | I2C-WKUP0 SCL (reserved) |
-|                          | **GPIO-5**    | **GND**      | GND                      |
-|                          | **GPIO-6**    | **GPIO-12**  | PWM-ECAP0                |
-| PWM-1B                   | **GPIO-13**   | **GND**      | GND                      |
-| PCM-McASP0 FS            | **GPIO-19**   | **GPIO-16**  |                          |
-|                          | **GPIO-26**   | **GPIO-20**  | PCM-McASP0 DIN           |
-| GND                      | **GND**       | **GPIO-21**  | PCM-McASP0 DOUT          |
+<SnippetPinout func="FUNCTION" />
 
-#### UART-MAIN1
+#### 1.1. UART-MAIN1
 
-This UART interface can be accessed via the `/dev/ttyS3` device on the Gemstone card.
+This UART interface can be accessed via the `/dev/ttyS3` device on the Gemstone board.
 
-To test the UART line from the command line, you can use the `picocom` program.
-`picocom` is a serial terminal application that instantly sends characters typed on the keyboard to the specified serial port
-while also displaying data received from the other end.
-After connecting the `TX` and `RX` pins with a jumper cable,
-you can run the following command. If the connections are correct, you should see the characters you type in real time on your screen.
+To test the UART line from the command line, you can use the `picocom` program.  
+`picocom` is a serial terminal application that sends characters typed on the keyboard in real time to the
+specified serial port while also displaying data received from the other end. After connecting the `TX` and `RX` pins
+with a jumper cable, you can run the following command. If the connections are correct, you should see the characters
+you type on the screen.
 
-```bash
-gemstone@t3-gem-o1:~$ picocom -b 115200 /dev/ttyS3
-# picocom v3.1
-#
-# port is        : /dev/ttyS6
-# flowcontrol    : none
-# baudrate is    : 115200
-# parity is      : none
-# databits are   : 8
-# stopbits are   : 1
-# escape is      : C-a
-# local echo is  : no
-# noinit is      : no
-# noreset is     : no
-# hangup is      : no
-# nolock is      : no
-# send_cmd is    : sz -vv
-# receive_cmd is : rz -vv -E
-# imap is        :
-# omap is        :
-# emap is        : crcrlf,delbs,
-# logfile is     : none
-# initstring     : none
-# exit_after is  : not set
-# exit is        : no
-#
-# Type [C-a] [C-h] to see available commands
-# Terminal ready
-# Hello World
-```
+<SnippetPicocomUart />
 
-#### I2C-MCU0
+#### 1.2. I2C-MCU0
 
-This I2C interface can be accessed via the `/dev/i2c-1` device on the Gemstone card.
+This I2C interface can be accessed via the `/dev/i2c-1` device on the Gemstone board.
 
-To view the peripherals connected to the bus, you can use the `i2cdetect` command.
-An example output is provided below.
-In the command output, peripherals marked with `UU` at addresses (`0x30`) are connected to the I2C bus but are currently in use by the Linux kernel,
-while peripherals with a direct address number (`0x6b`) are connected to the I2C bus and available for use.
+To view the peripheral devices connected to the bus, you can use the `i2cdetect` command.  
+An example output is provided below. In the command output, peripheral devices marked with `UU` (e.g., `0x30`) are
+connected to the I2C bus but are in use by the Linux kernel, while those with a numeric address (e.g., `0x6b`) are
+connected and idle.
 
-```bash
-gemstone@t3-gem-o1:~$ i2cdetect -r -y 1
-#      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-# 00:                         -- -- -- -- -- -- -- --
-# 10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-# 20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-# 30: UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-# 40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-# 50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-# 60: -- -- -- -- -- -- -- -- -- -- -- 6b -- -- -- --
-# 70: -- -- -- -- -- -- -- --
-```
+<SnippetI2cDetect />
 
-#### I2C-WKUP0
+#### 1.3. I2C-WKUP0
 
 <Warning>
-This I2C interface is used to detect **Hardware Attached on Top (HAT)** devices connected via the **40-pin expansion header**.
-During boot, the EEPROM on the HAT is queried, and the device information is read. If no HAT will be connected to the board,
-these pins should be left unconnected.
+This I2C interface is used to identify **Hardware Attached on Top (HAT)** devices connected to the board via the
+**40-pin expansion header**. During boot, the EEPROM on the HAT is queried, and the device information is read. If
+no HAT will be connected to the board, these pins should be left unconnected.
 </Warning>
 
-#### SPI-MCU0
+#### 1.4. SPI-MCU0
 
-This SPI interface can be accessed via the `/dev/spidev0.0` and `/dev/spidev0.1` devices on the Gemstone card.
-The `/dev/spidev0.0` device corresponds to SPI-MCU0 CS0, while `/dev/spidev0.1` corresponds to SPI-MCU0 CS1.
+This SPI interface can be accessed via the `/dev/spidev0.0` and `/dev/spidev0.1` devices on the Gemstone board.  
+`/dev/spidev0.0` corresponds to SPI-MCU0 CS0, and `/dev/spidev0.1` corresponds to SPI-MCU0 CS1.
 
-To test the SPI line from the command line, you can use the `spi-pipe` program.
-The `spi-pipe` program sends data from stdin to the SPI line specified by the `--device` parameter and outputs the received data to stdout.
+To test the SPI line from the command line, you can use the `spi-pipe` program.  
+`spi-pipe` sends data from stdin to the SPI line specified by the `--device` setting and outputs the data received
+from the line to stdout. After connecting the `MOSI` and `MISO` pins with a jumper cable, you can run the following
+command. If the connections are correct, you should see the text "Hello World" on the screen.
 
-After connecting the `MOSI` and `MISO` pins with a jumper cable,
-you can execute the following command. If the connections are correct, you should see the text "Hello World" on your screen.
+<SnippetSPIHelloWorld />
 
-```bash
-gemstone@t3-gem-o1:~$ printf '\x48\x65\x6c\x6c\x6f\x20\x57\x6f\x72\x6c\x64' | spi-pipe --device /dev/spidev0.0 --speed 1000000
-# Hello World
-```
+#### 1.5. PWM-1B
 
-#### PWM-1B
+This PWM interface can be accessed via the `/sys/class/pwm/pwmchip5/pwm1` device on the Gemstone board.
 
-This PWM interface can be accessed via the `/sys/class/pwm/pwmchip5/pwm1` device on the Gemstone card.
+For this device to be created, the `export` command must first be executed.  
+Then, the `period` and `duty_cycle` values in nanoseconds can be set to the desired values as shown in the example
+below. After enabling the device with the `enable` command, the PWM output can be obtained.
 
-For this device to be created, the `export` command must first be executed.
-Then, the `period` and `duty_cycle` values (in nanoseconds) should be set to the desired values as shown in the example below.
-After enabling the device with the `enable` command, the PWM output can be obtained.
+<SnippetPWM1B />
 
-```bash
-gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip5/export
-# 1
-gemstone@t3-gem-o1:~$ echo 2000000 | sudo tee /sys/class/pwm/pwmchip5/pwm1/period     # 500 Hz
-# 2000000
-gemstone@t3-gem-o1:~$ echo 1000000 | sudo tee /sys/class/pwm/pwmchip5/pwm1/duty_cycle # 50%
-# 1000000
-gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip5/pwm1/enable
-# 1
-```
+#### 1.6. PWM-ECAP0
 
-#### PWM-ECAP0
+This PWM interface can be accessed via the `/sys/class/pwm/pwmchip0/pwm0` device on the Gemstone board.
 
-This PWM interface can be accessed via the `/sys/class/pwm/pwmchip0/pwm0` device on the Gemstone card.
+<SnippetPWMEcap0 />
 
-```bash
-gemstone@t3-gem-o1:~$ echo 0 | sudo tee /sys/class/pwm/pwmchip0/export
-# 0
-gemstone@t3-gem-o1:~$ echo 2000000 | sudo tee /sys/class/pwm/pwmchip0/pwm0/period     # 500 Hz
-# 2000000
-gemstone@t3-gem-o1:~$ echo 1000000 | sudo tee /sys/class/pwm/pwmchip0/pwm0/duty_cycle # 50%
-# 1000000
-gemstone@t3-gem-o1:~$ echo 1 | sudo tee /sys/class/pwm/pwmchip0/pwm0/enable
-# 1
-```
+#### 1.7. PCM-McASP0
 
-#### PCM-McASP0
+Pulse-code Modulation (PCM), or Multichannel Audio Serial Port (McASP) as it is called in Texas Instruments SoCs,
+can be used in real-time audio processing applications requiring low-latency and high-quality digital audio
+streaming. The `FS` pin provides a frame-sync signal to an external audio device like a DAC, while the `CLK`
+pin similarly provides a clock signal. The `DIN` pin allows data input from a digital audio device like an
+I2S microphone, and the `DOUT` pin allows data output to a digital audio device like a DAC.
 
-Pulse-code Modulation (PCM), known as Multichannel Audio Serial Port (McASP) in Texas Instruments SoCs, can be used in real-time audio processing applications requiring low-latency and high-quality digital audio streaming.
-The `FS` pin provides frame-sync signals to external audio devices like DACs, while the `CLK` pin similarly supplies clock signals.
-Through the `DIN` pin, data input can be received from digital audio devices such as I2S microphones, and via the `DOUT` pin, data output can be sent to digital audio devices like DACs.
+## 2. Device Tree
+
+The configurations (UART, PWM, I2C, GPIO, ...) that the 40-pin I/O ports on the board can be used for are defined
+in files called **device tree overlays**. To activate the desired configuration(s), the relevant overlay files
+must be found and provided to the bootloader as a list.
+
+For Texas Instruments ARM64-based SoCs, the source code for all overlay files is located in the
+[t3gemstone/linux](https://github.com/t3gemstone/linux) project under the `arch/arm64/boot/dts/ti` directory.
+Those for the T3-GEM-O1 board are named in the format `k3-am67a-t3-gem-o1-<overlay_name>.dtso`. Each overlay
+file includes information at the beginning about its purpose.
+
+### 2.1. Example: Routing UART6 signals to the 40-pin HAT
+
+By default, the T3-GEM-O1's 40-pin HAT has only one serial port. For projects requiring multiple serial ports,
+other pins on the 40-pin HAT must be converted to serial ports.
+
+#### 2.1.1. Examining the Pinout
+
+When examining the T3-GEM-O1's pinout, it can be seen that pins 7 and 11 on the HAT can be used as UART6_RX and UART6_TX.
+
+#### 2.1.2. Finding the Relevant Overlay File
+
+The next step is to determine which device tree overlay file provides the desired configuration.  
+All device tree overlay files are located in the `/boot/overlays` folder on the development board. They can be
+listed by running the `ls /boot/overlays` command.
+
+<SnippetDeviceTreeOverlays />
+
+#### 2.1.3. Updating the uEnv.txt File
+
+In this example, the `k3-am67a-t3-gem-o1-uart-ttys6.dtbo` overlay file will be used. For the bootloader to load
+this file before the operating system starts, it must be added to the `overlays` section in the `/boot/uEnv.txt`
+file as shown below. Overlay file names are added with a space between them.
+
+<code>overlays=k3-am67a-t3-gem-o1-uart-ttyama0.dtbo k3-am67a-t3-gem-o1-spidev0.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
+
+#### 2.1.4. Verification
+
+After saving the changes, the board should be rebooted using the `reboot` command.  
+Then, the `ls /proc/device-tree/chosen/overlays` command can be used to check whether the overlay has been added.
+
+<SnippetCheckDTBS />
+
+After completing the above steps successfully, the `/dev/ttyS6` device will be created.

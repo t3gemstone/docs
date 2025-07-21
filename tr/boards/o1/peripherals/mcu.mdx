@@ -4,6 +4,15 @@ description: 'Texas AM67 Cortex-R5, C7x (DSP)'
 ---
 
 import SnippetBootflow from '/snippets/boards/o1/bootflow.mdx';
+import SnippetClone from '/snippets/boards/o1/mcu/clone.mdx';
+import SnippetInstallDeps from '/snippets/boards/o1/mcu/install-deps.mdx';
+import SnippetTargets from '/snippets/boards/o1/mcu/targets.mdx';
+import SnippetSysconfig from '/snippets/boards/o1/mcu/sysconfig.mdx';
+import SnippetBuild from '/snippets/boards/o1/mcu/build.mdx';
+import SnippetUpload from '/snippets/boards/o1/mcu/upload.mdx';
+import SnippetHelloWorld from '/snippets/boards/o1/mcu/helloworld.mdx';
+import SnippetFirmwares from '/snippets/boards/o1/mcu/firmwares.mdx';
+import SnippetRemoteproc from '/snippets/boards/o1/mcu/remoteproc.mdx';
 
 **T3-GEM-O1** geliştirme kartının birincil odak noktası Linux olmakla birlikte, üzerinde bulunan Texas AM67
 mikroişlemcisinin barındırdığı R5 ve C7x çekirdeklerinin de gücünden faydalanılmaktadır. Bu bölümde R5 çekirdekleri
@@ -31,18 +40,11 @@ reposunda gerekli tüm araçları indirip MCU projelerini derleyebilmek için al
 
 ### 1.1. Git clone işlemi ile örnek projeleri indir
 
-```bash
-ubuntu@host:~$ git clone https://github.com/t3gemstone/examples.git
-ubuntu@host:~$ cd examples
-```
+<SnippetClone />
 
 ### 1.2. Derleme için gerekli araçları ve kütüphaneleri kur
 
-```bash
-ubuntu@host:examples$ ./setup.sh
-ubuntu@host:examples$ devbox shell
-ubuntu@host:examples$ task fetch-ti
-```
+<SnippetInstallDeps />
 
 ### 1.3. Taslak proje oluştur
 
@@ -52,11 +54,10 @@ ubuntu@host:examples$ task fetch-ti
 almaktadır. Amacınıza uygun bir örnek proje bulup `mcu` proje dizinine kopyalamanız ve onun üzerinde geliştirme yapmanız
 tavsiye edilir.
 
-Her bir örnek projenin altında farklı çekirdekler için alt dizinler bulunmaktadır. Örneğin `hello_world` projesinde:
-1. `c75ss0-0_freertos`
-2. `c75ss1-0_freertos`
-3. `main-r5fss0-0_freertos` ve
-4. `mcu-r5fss0-0_freertos` dizinleri mevcuttur.
+Her bir örnek projenin altında farklı çekirdekler için alt dizinler bulunmaktadır. 
+Örneğin `hello_world` projesinde aşağıdaki dizinler mevcuttur.
+
+<SnippetHelloWorld />
 
 Yazılacak kodlar bu 4 çekirdekten hangisinde çalıştırılmak isteniyorsa
 o dizinde geliştirme yapılmalı ve o dizindeki derlenmiş çıktılar kullanılmalıdır.
@@ -65,15 +66,7 @@ Derlenecek MCU projeleri `.env` dosyasında `MCU_TARGETS` değişkeni olarak tan
 projenin `makefile` dizininin mutlak veya göreli yolunu `MCU_TARGETS` değişkenine ekleyin. Aşağıda `hello_world`
 projesinin `mcu-r5fss0-0_freertos` çekirdeği için örnek gösterilmiştir.
 
-```bash
-MCU_TARGETS="
-ipc_rpmsg_echo_linux/j722s-evm/c75ss0-0_freertos/ti-c7000
-ipc_rpmsg_echo_linux/j722s-evm/c75ss1-0_freertos/ti-c7000
-ipc_rpmsg_echo_linux/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang
-ipc_rpmsg_echo_linux/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang
-hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang
-"
-```
+<SnippetTargets />
 
 ### 1.4. SysConfig ile çevre birimleri yapılandır
 
@@ -87,9 +80,7 @@ Bir MCU projesinde SysConfig'i başlatmak için:
     - Bu değişkeni `.env` dosyası içinde düzenleyebilir veya
     - `task` programına ortam değişkeni olarak iletebilirsiniz.
 
-```bash
-SYSCONFIG_TARGET=hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang task sysconfig
-```
+<SnippetSysconfig />
 
 Değişikliklerinizi `Ctrl + S` kısayol tuşuyla kaydettikten sonra SysConfig arayüzünü kapatabilirsiniz.
 
@@ -106,53 +97,24 @@ yapılmış olması gerekmektedir. Yeni bir proje kopyalandıktan sonra aşağı
 
 ### 1.5. Projeyi derle
 
-```bash
-ubuntu@host:examples$ PROJECT=mcu task clean build
-```
+<SnippetBuild />
 
 ### 1.6. Derlenmiş projeyi geliştirme kartına yükle
 
-```bash
-ubuntu@host:examples$ scp mcu/hello_world/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.out gemstone@10.0.0.1:
-```
+<SnippetUpload />
 
 ### 1.7. Derlenmiş projeyi çalıştır
 
 Remoteproc ile çekirdeklere yüklenecek `.out` dosyaları `/lib/firmware` dizini altına önceden tanımlı isimlerde
 kopyalanmalıdır. Her bir çekirdek için firmware ismi aşağıdaki tabloda verilmiştir.
 
-| Çekirdek      | Firmware             |
-|---------------|----------------------|
-| mcu-r5fss0-0  | j722s-mcu-r5f0_0-fw  |
-| main-r5fss0-0 | j722s-main-r5f0_0-fw |
-| c7xss0-0      | j722s-c71_0-fw       |
-| c7xss1-0      | j722s-c71_1-fw       |
+<SnippetFirmwares />
 
 Firmware isimlerine ve hangi çekirdeğin hangi remoteproc cihazına karşılık geldiğine
 `head /sys/class/remoteproc/remoteproc*/firmware` komutu ile erişilebilir. Her boot sonrasında çekirdekler
 farklı remoteproc cihazlarına karşılık gelebildiği için kontrol edilmesi gerekmektedir.
 
-```bash
-gemstone@t3-gem-o1:~$ head /sys/class/remoteproc/remoteproc*/firmware
-# ==> /sys/class/remoteproc/remoteproc0/firmware <==
-# j722s-mcu-r5f0_0-fw
-#
-# ==> /sys/class/remoteproc/remoteproc1/firmware <==
-# j722s-main-r5f0_0-fw
-#
-# ==> /sys/class/remoteproc/remoteproc2/firmware <==
-# j722s-c71_0-fw
-#
-# ==> /sys/class/remoteproc/remoteproc3/firmware <==
-# j722s-c71_1-fw
-gemstone@t3-gem-o1:~$ echo stop | sudo tee /sys/class/remoteproc0/state
-# [ 1920.592397] remoteproc remoteproc0: stopped remote processor 79000000.r5f
-gemstone@t3-gem-o1:~$ sudo cp hello_world.release.out /lib/firmware/j722s-mcu-r5f0_0-fw
-gemstone@t3-gem-o1:~$ echo start | sudo tee /sys/class/remoteproc0/state
-# [ 1928.127331] remoteproc remoteproc0: powering up 79000000.r5f
-# [ 1928.133194] remoteproc remoteproc0: Booting fw image j722s-mcu-r5f0_0-fw, size 45492
-# [ 1928.173034] remoteproc remoteproc0: remote processor 79000000.r5f is now up
-```
+<SnippetRemoteProc />
 
 <Warning>
 Yukarıdaki prosedür, uzak çekirdeklerin sorunsuz bir şekilde kapatılmasını ve yeniden başlatılmasını sağlar. Bazı

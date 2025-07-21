@@ -34,58 +34,57 @@ yapılanları uygulayacaksanız makine ismini uygun şekilde değiştiriniz.
 <AccordionGroup>
 
   <Accordion title="Menuconfig ekranının açılması">
-    ```bash
-    bitbake -c menuconfig virtual/bootloader
-    ```
+  ```bash
+  bitbake -c menuconfig virtual/bootloader
+  ```
 
-    <Frame>
-      <img src="/images/u-boot-menuconfig.png" />
-    </Frame>
+  <Frame>
+    <img src="/images/u-boot-menuconfig.png" />
+  </Frame>
 
-    İstediğiniz ayarları değiştirdikten sonra aşağıdaki pencere açılana kadar
-    `ESC` tuşuna basınız. Ardından "Yes" butonunu seçiniz.
+  İstediğiniz ayarları değiştirdikten sonra aşağıdaki pencere açılana kadar
+  `ESC` tuşuna basınız. Ardından "Yes" butonunu seçiniz.
 
-    <Frame>
-      <img src="/images/u-boot-menuconfig-save.png" />
-    </Frame>
+  <Frame>
+    <img src="/images/u-boot-menuconfig-save.png" />
+  </Frame>
   </Accordion>
 
   <Accordion title="Değişikliklerin kalıcı hale getirilmesi">
-    Bu aşamada U-Boot'u tekrar derleyebilirsiniz ancak yaptığınız değişiklikler sadece
-    sizin bilgisayarınızda kalır ve build klasörünü temizlemeniz durumunda kaybolurlar.
-    Bunu engellemek için aşağıdaki adımları takip ediniz.
+  Bu aşamada U-Boot'u tekrar derleyebilirsiniz ancak yaptığınız değişiklikler sadece
+  sizin bilgisayarınızda kalır ve build klasörünü temizlemeniz durumunda kaybolurlar.
+  Bunu engellemek için aşağıdaki adımları takip ediniz.
 
-    ```bash
-    bitbake -c diffconfig virtual/bootloader
-    cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/u-boot-t3-gem-o1/2025.04+git/fragment.cfg \
-       /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files/fragment.config
-    ```
+  ```bash
+  bitbake -c diffconfig virtual/bootloader
+  cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/u-boot-t3-gem-o1/2025.04+git/fragment.cfg \
+      /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files/fragment.config
+  ```
 
-    `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files` dizininde bulunan
-    `fragment.config` dosyasının adını `.config` uzantısını değiştirmeden yaptığınız değişikliği açıklayan bir isimle
-    değiştiriniz. Sonrasında bu adı `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/u-boot-t3-gem-o1_2025.04.bb`
-    dosyasındaki `SRC_URI` değişkenine ekleyiniz. Örnek için dosya adını `fragment-enable-tftp.config` yaptığımızı
-    varsayalım.
+  `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files` dizininde bulunan
+  `fragment.config` dosyasının adını `.config` uzantısını değiştirmeden yaptığınız değişikliği açıklayan bir isimle
+  değiştiriniz. Sonrasında bu adı `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/u-boot-t3-gem-o1_2025.04.bb`
+  dosyasındaki `SRC_URI` değişkenine ekleyiniz. Örnek için dosya adını `fragment-enable-tftp.config` yaptığımızı
+  varsayalım.
 
-    ```bash highlight=5
-    SRC_URI:append:t3-gem-o1 = " \
-        file://uEnv-desktop.txt \
-        file://uEnv-rd.txt \
-        file://fragment-mmc-env.config \
-        file://fragment-enable-tftp.config \
-    "
-    ```
-
+  ```bash highlight=5
+  SRC_URI:append:t3-gem-o1 = " \
+      file://uEnv-desktop.txt \
+      file://uEnv-rd.txt \
+      file://fragment-mmc-env.config \
+      file://fragment-enable-tftp.config \
+  "
+  ```
   </Accordion>
 
   <Accordion title="U-Boot'un yeniden derlenmesi">
-    ```bash
-    bitbake -c clean virtual/bootloader
-    bitbake virtual/bootloader
-    ```
+  ```bash
+  bitbake -c clean virtual/bootloader
+  bitbake virtual/bootloader
+  ```
 
-    Yukarıdaki komutlar başarıyla tamamlandıysa `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`
-    dizininde u-boot.img ve u-boot-spl.bin dosyaları oluşacaktır.
+  Yukarıdaki komutlar başarıyla tamamlandıysa `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`
+  dizininde u-boot.img ve u-boot-spl.bin dosyaları oluşacaktır.
   </Accordion>
 
 </AccordionGroup>

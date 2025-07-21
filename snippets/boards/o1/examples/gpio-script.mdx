@@ -1,0 +1,11 @@
+```bash lines
+#!/bin/bash
+
+while :
+do
+    gpioset $(gpiofind GPIOX)=1
+    sleep 1
+    gpioset $(gpiofind GPIOX)=0
+    sleep 1
+done
+```

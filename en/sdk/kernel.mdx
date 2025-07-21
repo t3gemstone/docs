@@ -1,4 +1,106 @@
 ---
 title: 'Kernel'
-description: 'Gemstone Development Kit'
+description: 'Linux Kernel'
 ---
+
+<Note>
+This section will cover Linux Kernel customizations for Gemstone development boards, including topics like
+activating new hardware drivers.
+</Note>
+
+<Tip>
+By the end of this section, you will have knowledge about:
+
+* Compiling Linux Kernel for Gemstone
+* Activating new hardware drivers
+</Tip>
+
+For Gemstone boards, the Linux kernel is compiled by Yocto, just like U-Boot. The meta-gemstone layer contains
+a recipe called `linux-t3-gem-o1-rt_6.1.bb` that uses the
+[T3 Gemstone Linux Git repository](https://github.com/t3gemstone/linux). If you need to switch to an older or
+newer version, you can update the `SRCREV` variable in the recipe with the commit ID of the desired version and
+then run the following commands to start the compilation.
+
+<Warning>
+All commands below will be executed inside the distrobox. Therefore, you must first run the
+`devbox shell` --> `task box` commands. Additionally, to switch to the Yocto environment, you need to
+run the `m:oeinit t3-gem-o1` command.
+</Warning>
+
+<Note>
+This section will use the T3-GEM-O1 board for explanation. If you are applying these steps for a different
+machine, change the machine name accordingly.
+</Note>
+
+```bash
+bitbake virtual/kernel
+```
+
+After completing the above steps, you can copy the `Image` file from
+the `<sdk-directory>/build/t3-gem-o1/deploy-ti/images` folder to the `/boot` folder on your board to perform tests.
+
+### Updating Configuration with Menuconfig
+
+If you want to enable/disable various hardware drivers or modify kernel configuration (essentially changing
+features defined in Kconfig), you can use the menuconfig interface.
+
+<AccordionGroup>
+
+  <Accordion title="Opening the Menuconfig screen">
+  ```bash
+  bitbake -c menuconfig virtual/kernel
+  ```
+
+  <Frame>
+    <img src="/images/kernel-menuconfig.png" />
+  </Frame>
+
+  After making the desired changes, press the `ESC` key until the following window appears. Then, select
+  the "Yes" button.
+
+  <Frame>
+    <img src="/images/kernel-menuconfig-save.png" />
+  </Frame>
+  </Accordion>
+
+  <Accordion title="Making changes permanent">
+  At this stage, you can recompile the kernel, but your changes will only remain on your local machine and will be
+  lost if you clean the build directory. To prevent this, follow the steps below.
+
+  ```bash
+  bitbake -c savedefconfig virtual/kernel
+  cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/linux-t3-gem-o1-rt/6.1.83+git/defconfig \
+      /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/
+  ```
+
+  The above commands will save the changes you made in the menuconfig interface to the `defconfig` file
+  located in `yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/`.
+  </Accordion>
+
+  <Accordion title="Recompiling the Kernel">
+  ```bash
+  bitbake -c clean virtual/kernel
+  bitbake virtual/kernel
+  ```
+
+  If the above commands complete successfully, the `Image` file will be generated in the
+  `<sdk-directory>/build/t3-gem-o1/deploy-ti/images` directory.
+  </Accordion>
+
+</AccordionGroup>
+
+### Modifying Source Code
+
+Open the `<sdk-directory>/build/tmp-musl/work-shared/t3-gem-o1/kernel-source` folder in your text editor.
+After making the desired changes, compile the kernel using the following commands. To avoid losing your
+changes, you can create your own fork of the [T3 Gemstone Linux repository](https://github.com/t3gemstone/linux)
+and push your changes there.
+
+```bash
+bitbake virtual/kernel
+```
+
+After the compilation is complete, copy the generated files in the `<sdk-directory>/build/t3-gem-o1/deploy-ti/images`
+directory to the `/boot` directory on the SD card. If you have fixed an issue or added a new feature, you can create
+a pull request to the [T3 Gemstone Linux repository](https://github.com/t3gemstone/linux) so the community can
+benefit from it.

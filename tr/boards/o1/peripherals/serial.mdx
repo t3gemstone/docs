@@ -3,7 +3,8 @@ title: 'Seri Port'
 description: 'Seri Port kullanımı'
 ---
 
-import SnippetExamplesSerial from '/snippets/boards/o1/examples-serial.mdx';
+import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
+import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
 
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
@@ -20,8 +21,8 @@ gibi harici modüllerle haberleşme kurulurken çoğu zaman Seriport tercih edil
 
 <Steps>
   <Step title="SSH/VNC Bağlantısı">
-  [SSH](../../..//quickstart.mdx#23-ssh-ile-network-üzerinden-bağlantı) veya
-  [VNC](../../..//quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle Geliştirme kartına
+  [SSH](../../../quickstart#2-3-ssh-ile-network-üzerinden-bağlantı) veya
+  [VNC](../../../quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle Geliştirme kartına
   bağlan.    
   </Step>
   <Step title="Shell">
@@ -51,19 +52,7 @@ nano serial-test.sh
 
 Aşağıdaki kodu kopyaladıktan sonra `serial-test.sh` dosyasına yapıştırınız.
 
-```bash lines
-#!/bin/bash
-
-SERIAL_PORT="/dev/ttyS3"
-BAUD_RATE="115200"
-
-stty -F /dev/ttyS3 115200 -crtscts
-
-while true; do
-    echo "Teknofest" > $SERIAL_PORT
-    sleep 1
-done
-```
+<SnippetExamplesSerialScript />
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız.
 

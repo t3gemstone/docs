@@ -4,21 +4,23 @@ description: 'Board Setup and Exploration'
 icon: "rocket"
 ---
 
-This section explains the **initial setup** steps required to prepare the Gemstone development board for use and
-demonstrates how to connect to Gemstone from your computer. In later sections of the documentation, software/hardware
-development processes and various project examples will be examined.
+import SnippetBootmode from '/snippets/boards/o1/bootmode.mdx';
+
+This section explains the **initial setup** of the Gemstone development board and the necessary steps to get it
+ready for use. It will also show how to connect the Gemstone to your computer. In later sections of the
+documentation, software/hardware development processes and various project examples will be discussed.
 
 <Tip>
 By the end of this section, you will gain experience in the following topics:
 
 * Downloading and using the Gemstone Imager software installation application.
 * Preparing a new Gemstone development board by installing the necessary software.
-* Connecting to Gemstone and exploring the system.
+* Connecting to the Gemstone and exploring the system.
 </Tip>
 
 ### Package Contents
 
-<Frame caption="Todo: Image of the package and its contents">
+<Frame caption="Todo: Package and contents image">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
@@ -32,34 +34,34 @@ The hardware required for setup is listed below.
     </Frame>
   </Accordion>
 
-  <Accordion title="SD Card (32GB or higher)">
-    <Frame caption="SD Card from any brand">
+  <Accordion title="SD card (32GB or higher)">
+    <Frame caption="Any brand SD card">
       <img height="600" width="800" src="/images/sandisk-sdcard.png" />
     </Frame>
   </Accordion>
 
-  <Accordion title="SD Card reader">
-    <Frame caption="SD Card reader from any brand">
+  <Accordion title="SD card reader">
+    <Frame caption="Any brand SD card reader">
       <img height="600" width="800" src="/images/sdcard-reader.jpg" />
     </Frame>
   </Accordion>
 
   <Accordion title="Ethernet cable">
-    <Frame caption="Ethernet cable to connect the computer and Gemstone card">
+    <Frame caption="Ethernet cable to connect the computer and Gemstone board">
       <img height="600" width="800" src="/images/ethernet-cable-wire.png" />
     </Frame>
   </Accordion>
 
   <Accordion title="USB TTL converter (Optional)">
-    <Frame caption="Not required for initial setup. Used for connecting to the board via serial port when an Ethernet cable is unavailable.">
+    <Frame caption="Not required initially. Used for board connection via serial port when an Ethernet cable is not available.">
       <img height="600" width="800" src="/images/pl2303-ta-usb-ttl-seri.jpg" />
     </Frame>
   </Accordion>
 
 </AccordionGroup>
 
-After the initial setup, you can connect to your Gemstone board using an Ethernet cable or use the board directly as
-a computer with the following hardware.
+After the initial setup, you can connect to your Gemstone board using an Ethernet cable or use the board directly
+as a computer with the following hardware.
 
 <AccordionGroup>
   <Accordion title="HDMI cable">
@@ -80,47 +82,47 @@ a computer with the following hardware.
 
 Your board will be prepared by performing the following four main steps.
 
-<Note>The term "image" generally refers to a file with the **.img** extension, containing Linux operating system
-files, drivers, and everything necessary for the board to function. You can download and examine the **minimal**
-image from https://packages.t3gemstone.org/images/ubuntu/jammy/t3-gem-o1.</Note>
+<Note>The term "image" generally refers to a file with the .img extension, which contains the files and drivers
+of the Linux operating system—essentially everything needed for the board to function. You can download and examine
+the file named "minimal" from https://packages.t3gemstone.org/images/ubuntu/jammy/t3-gem-o1.</Note>
 
 <Steps>
   <Step title="Download the image writing application">
     This is the process of downloading the desktop application used to install and customize the operating system on the board.
   </Step>
   <Step title="Write the image to the development board">
-    This is the process of installing software on the board and preparing it for use using the Gemstone Imager application.
+    This is the process of installing software on the board and preparing it using the Gemstone Imager application.
   </Step>
-  <Step title="Change the Bootmode switch to boot the development board from the SD card">
-    The development board can optionally be used with `SD card` or `eMMC`. This step shows how to make this selection.
+  <Step title="Change the bootmode switch to boot the development board from the SD card">
+    The development board can optionally be used with an `SD card` or `eMMC`. This section shows how to make this selection.
   </Step>
   <Step title="Establish a connection between the computer and the development board">
     These are the steps to connect to the development board and access the system inside it.
   </Step>
 </Steps>
 
-### 1.1. Image Writing Application
+### 1.1. Image writing application
 
-All core software on Gemstone, such as the 
-[Operating System](https://preprod.kureansiklopedi.com/tr/detay/isletim-sistemleri), 
-[Bootloader](https://preprod.kureansiklopedi.com/tr/detay/bootloader), and 
-[Firmware](https://preprod.kureansiklopedi.com/tr/detay/firmware), is installed using the 
-Gemstone Image Writer (GemImager or Gemstone Imager) application. Download the appropriate 
-application (Linux, Windows, or macOS) for your computer from http://www.t3gemstone.org/software.
+All core software on Gemstone, such as the
+[Operating System](https://preprod.kureansiklopedi.com/tr/detay/isletim-sistemleri),
+[Bootloader](https://preprod.kureansiklopedi.com/tr/detay/bootloader), and
+[Firmware](https://preprod.kureansiklopedi.com/tr/detay/firmware), is installed using the Gemstone
+Image Writer (GemImager or Gemstone Imager) application. Download the appropriate application
+(Linux, Windows, or macOS) for your computer from http://www.t3gemstone.org/software.
 
 ![Browser](/images/browser.png)
 
 <Note>
-Throughout the documentation, the terms Gemstone Imager and Gemstone Image Writer will be used for 
-the image/operating system writing application.
+Throughout the documentation, the terms Gemstone Imager and Gemstone Image Writer will be used for the
+image/operating system writing application.
 </Note>
 
-### 1.2. Image Writing Process
+### 1.2. Image writing process
 
 #### 1.2.1. Connect the SD card and reader to the computer
 
-The Product does not include an SD card. After connecting any brand and model of SD card with at least 32GB 
-capacity to your computer using a suitable SD card reader, launch the Gemstone Imager application.
+The package does not include an SD card. Connect any brand and model of SD card with at least 32 GB capacity
+to your computer using a suitable card reader, then launch the Gemstone Imager application.
 
 <Frame caption="Todo: Connecting the SD card and reader to the computer">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -130,15 +132,15 @@ capacity to your computer using a suitable SD card reader, launch the Gemstone I
 
 <Tabs>
   <Tab title="Windows">
-    If you are using the Windows operating system, double-click the downloaded **.exe** file to install and launch the
+    If you are using Windows, double-click the downloaded **.exe** file to install and launch the
     application from the Desktop.
   </Tab>
   <Tab title="Linux">
-    For the Linux operating system, after downloading the **.AppImage** file, right-click it, open the Properties 
-    screen, and check the "Allow executing file as program" option under "Permissions."
+    For Linux, download the **.AppImage** file, right-click it, open the Properties screen, and check the
+    "Allow executing file as program" option under "Permissions."
   </Tab>
   <Tab title="macOS">
-    For the macOS operating system, double-click the downloaded **.dmg** file to install it.
+    For macOS, download the **.dmg** file and double-click it to install.
   </Tab>
 </Tabs>
 
@@ -158,8 +160,8 @@ Click the "Gemstone board / Choose Device" button to select the development boar
 
 #### 1.2.4. Select the operating system to install on the board
 
-After selecting the development board (Gemstone board / Choose Device), click the **Operating System / Choose OS** 
-button for the next step.
+After selecting the development board (Gemstone board / Choose Device), click the
+**Operating System / Choose OS** button for the next step.
 
 <Tabs>
   <Tab title="Default Operating System">
@@ -167,7 +169,7 @@ button for the next step.
       <img src="/images/gem-imager/c-select-image.png" />
     </Frame>
   </Tab>
-  <Tab title="Other Operating Systems">
+  <Tab title="Other Operating System Options">
     <Columns cols={2}>
       <Card>
         <img src="/images/gem-imager/select-os.png" />
@@ -179,32 +181,32 @@ button for the next step.
   </Tab>
 </Tabs>
 
-Gemstone uses a Ubuntu/Debian-based operating system, with different variations available depending on project 
-needs. While the [later sections](./distros/introduction) of the documentation explain which version to use for 
-which projects, a summary is provided below:
+Gemstone uses a Ubuntu/Debian-based operating system, with different variations available depending on project
+needs. The documentation [later sections](./distros/introduction) explain which version to use for which tasks,
+but a summary is provided below:
 
-* **Desktop:** An image containing applications such as a browser (Firefox), text editor, code development 
-environment (VSCode), and video player (VLC), allowing the board to be used as a computer. This image is larger 
-than the other two types and is mostly used for prototyping, testing, and development activities. 
-(For robotics projects, the "Minimal" image is more suitable.)
+* **Desktop:** An image that includes software such as a browser (Firefox), text editor, code development
+  environment (VSCode), and video player (VLC), allowing the board to be used as a computer. This image is
+  larger than the other two types and is mostly used for prototyping, testing, and development activities.
+  (For robotics work, the Minimal image is more suitable.)
 
-* **Kiosk:** An image that does not include the applications or desktop environment found in the Desktop image, 
-primarily used for touch panel purposes. (For example, the touch media control panel in Tesla vehicles or the 
-control screen in passenger vehicles during Teknofest competitions.)
+* **Kiosk:** An image that supports a graphical interface, often used for touch panels, **without** the text
+  editor or applications found in the Desktop image. (For example, the touch panel used for media control in Tesla
+  vehicles or the control screen inside passenger vehicles in Teknofest competitions.)
 
-* **Minimal:** This image contains a real-time Linux kernel and is optimized for IoT, robotics, and autopilot 
-applications. It is a powerful and deterministic structure suitable for embedded software system development projects.
+* **Minimal:** This image contains a real-time Linux kernel and is optimized for IoT, robotics, and autopilot
+  applications. It is a powerful and deterministic structure suitable for embedded software system development projects.
 
 #### 1.2.5. Select the storage device (SD card/eMMC)
 
-After connecting your SD card and reader to your computer, the Gemstone Imager application will list the relevant 
+After connecting your SD card and reader to your computer, the Gemstone Imager application will list the relevant
 device as shown in the screenshot below.
 
 <Frame caption="SD card or eMMC selection">
   <img src="/images/gem-imager/d-select-storage.png" />
 </Frame>
 
-After completing all three options, click the **Next button** as shown below.
+After completing all three selections, click the **Next button** as shown below.
 
 <Frame>
   <img src="/images/gem-imager/g-prepare.png" />
@@ -212,8 +214,8 @@ After completing all three options, click the **Next button** as shown below.
 
 #### 1.2.6. Customize the system
 
-After completing the above selections, clicking the Next button will automatically open the **System Customization** 
-screen. This screen is used to set the board's login password and enable certain services to start automatically.
+After completing the above selections, the **System Customization** screen will automatically open. This screen
+is used to set the board's login password and enable certain services to start automatically.
 
 <AccordionGroup>
 
@@ -222,13 +224,13 @@ screen. This screen is used to set the board's login password and enable certain
       <img src="/images/gem-imager/e-setting-1.png" />
     </Frame>
 
-    * Enter an 8-character password in the **Password** field on the screen. This password is for the "gemstone" 
-      user account in the Linux operating system and will be required when accessing the board.
+    * Enter an 8-character password in the **Password** field on the screen. This password is for the "gemstone" user 
+      account in the Linux operating system and will be required when accessing the board.
 
-    * If you want your Gemstone board to connect to a Wi-Fi network after completing the image writing process 
-      and powering it on, check the "Configure wireless LAN" option and enter the Wi-Fi network name and password.
+    * If you want the board to connect to a Wi-Fi network after completing the image writing process and powering 
+      it on, check the "Configure wireless LAN" option and enter the Wi-Fi network name and password.
 
-        <Warning>Caution: Ensure you enter the correct Wi-Fi network name (Access Point Name) and password.</Warning>
+        <Warning>Note: Make sure you enter the correct Wi-Fi network name (Access Point Name) and password.</Warning>
 
     * Finally, check the **Set locale settings** option and select the keyboard language for the Gemstone board.
 
@@ -239,17 +241,17 @@ screen. This screen is used to set the board's login password and enable certain
       <img src="/images/gem-imager/f-setting-2.png" />
     </Frame>
 
-    * **Enable SSH:** (Secure Shell) This option is required for connecting to the board via Terminal over 
-      Ethernet, as explained later in this section. For images like Minimal and Kiosk, which lack desktop 
+    * **Enable SSH:** (Secure Shell) This option is required for Terminal connection to the board via 
+      Ethernet, as explained later in this section. For images like Minimal and Kiosk, which lack desktop
       components, Ethernet/SSH or Serial Port/Console is often used.
 
-    * **Enable VNC:** When using Desktop-type images, [t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) 
-      allows you to access the board's desktop via a browser without needing a monitor, keyboard, or mouse by 
-      connecting the board's Ethernet cable to your computer.
+    * **Enable VNC:** When using Desktop-type images, [t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) allows 
+      you to eliminate the need for a monitor, keyboard, and mouse. This service enables you to connect to
+      the board's desktop via a browser by connecting the board's Ethernet cable to your computer.
 
-    * **Gadgets:** When you connect your Gemstone board to your computer via USB Type-C, this feature allows the 
-      board to obtain a virtual IP without needing an Ethernet cable, create a serial port, and use the board's 
-      disk (like the storage area that appears when you connect a mobile phone to your computer) as a storage area.
+    * **Gadgets:** When you connect your Gemstone board to your computer via USB Type-C, this feature allows
+      the board to obtain a virtual IP without needing an Ethernet cable, create a serial port, and use 
+      the board's disk as storage (similar to connecting a phone to your computer).
 
   </Accordion>
 
@@ -259,7 +261,7 @@ After customization, click the **Save** button to proceed to the next step.
 
 #### 1.2.7. Start the writing process
 
-After completing all the above steps, you will be asked to confirm before starting the image writing 
+After completing all the above steps, you will be asked to confirm before starting the image writing
 process, and the copying process will begin.
 
 <AccordionGroup>
@@ -286,8 +288,8 @@ process, and the copying process will begin.
 
 #### 1.2.8. Insert the SD card
 
-After the writing process is successfully completed, remove the SD card from the reader, insert it into Gemstone, 
-and set the Bootmode pins to "SD card" as explained in the next section.
+After the writing process is successfully completed, remove the SD card from the reader and insert it into
+the Gemstone. Then, set the Bootmode pins to "SD card" as explained in the next section.
 
 <Frame caption="Todo: Insert the SD card">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -295,61 +297,51 @@ and set the Bootmode pins to "SD card" as explained in the next section.
 
 ### 1.3. Bootmode Switch
 
-<Tooltip tip="Boot mode change switch">Bootmode switch</Tooltip> is used to determine how and from where 
-(which disk the operating system boots from) the system will start when power is first applied to the board, or 
-for purposes such as <Tooltip tip="Debugging">Debug</Tooltip> during software development. 
+<Tooltip tip="Boot mode change switch"> Bootmode switch</Tooltip> is used to determine how and where
+(from which disk) the system will boot when power is first applied to the board, or for purposes 
+such as <Tooltip tip="Debugging">Debug</Tooltip> during software development.
 
-The table and screenshot below list all Boot modes available on the Gemstone O1 development board.
-This section explains the installation process for the SD card, while the 
-[eMMC (embedded disk on the board) usage](./imager/emmc) will be covered in later sections.
+The table and screenshot below list all the Boot modes available on the Gemstone O1 development board. This
+section explains the installation process for the SD card, while the
+[use of eMMC (embedded disk on the board)](./imager/emmc) will be discussed in later sections.
 
-The SD card is often preferred for quick testing and development activities due to its convenience, but data 
-loss can occur in moving systems where vibration may occur. If you plan to use your the board on a moving platform, 
-eMMC is a more suitable choice.
+The SD card is often preferred for quick testing and development activities due to its convenience, but data
+loss can occur in systems with vibration. If you plan to use the board on a moving platform, eMMC is more suitable.
 
 <Frame caption="Todo: Bootmode switch image">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-| Boot modu         | Image                                                                 |
-| :---------------- | :--------------------------------------------------------------------- |
-| SD card           | <img width="300" src="/images/bootmode/sd-card-bootmode.svg" />        |
-| eMMC              | <img width="300" src="/images/bootmode/emmc-bootmode.svg" />           |
-| Ethernet          | <img width="300" src="/images/bootmode/ethernet-rgmii-bootmode.svg" /> |
-| Uart              | <img width="300" src="/images/bootmode/uart-bootmode.svg" />           |
-| Devboot           | <img width="300" src="/images/bootmode/devboot-bootmode.svg" />        |
+<SnippetBootmode desc="Image"/>
 
 ### 1.4. Connect the board to the computer
 
-After connecting the USB Type-C and Ethernet cables from the package to your computer and the development board as 
-shown in the photo below, you are ready to explore the board!
+After connecting the USB Type-C and Ethernet cables from the package to your computer and the development
+board as shown in the photo below, you are ready to explore the board!
 
 <Frame caption="Todo: Connecting the SD card and reader to the computer">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-# 2. Exploring Gemstone
+# 2. Explore Gemstone
 
-The following steps are for using your Gemstone development board via your computer. (For example, connecting 
-to your Gemstone board's desktop via a browser or performing operations via Serial Port/Terminal from the command 
-line). If you have the option to connect a monitor, keyboard, and mouse, you can also explore the board using 
-this method!
+The following steps are for using your Gemstone development board via your computer (for example, connecting
+to the board's desktop via a browser or performing operations via Serial Port/Terminal command line). If you
+have the option to connect a monitor, keyboard, and mouse, you can also explore the board this way!
 
 <Accordion title="What is a Terminal?">
-  The Terminal or Console concept refers to the method of performing operations by writing code on the command 
-  line (Command Line Interface) without a graphical interface, windows, or buttons. Examples include 
-  **CMD, Powershell** on Windows operating systems or the **Terminal** application on Unix/POSIX-based 
-  operating systems. An example screenshot is provided below.
+  Terminal or Console refers to a method (Command Line Interface) where you can perform operations by writing
+  commands without a graphical interface, windows, or buttons. Examples include **CMD, Powershell** on
+  Windows or the **Terminal** application on Unix/POSIX-based operating systems. A sample screenshot is provided below.
   <Frame>
     <img height="600" width="800" src="/images/terminal-windows.png" />
   </Frame>
 </Accordion>
 
-After setup, you can determine whether the board has a network connection via the connected Ethernet and USB 
-Type-C or Wi-Fi settings (as explained in the [Customize System](./quickstart#1-2-6-customize-the-system) section) by 
-checking if the 
-<Tooltip tip="If an IP address cannot be obtained, this LED will blink; if an IP address is obtained, it will stay lit continuously.">green LED 
-stays lit continuously</Tooltip>.
+After setup, you can check whether the board has a network connection via the Ethernet and USB Type-C you connected
+or, as explained in the [System Customization](./quickstart#1-2-6-sistem-özelleştir) section, if Wi-Fi settings were
+configured, by observing the
+<Tooltip tip="If an IP address could not be obtained, this LED will blink; if an IP address is obtained, it will stay lit continuously.">green LED staying lit continuously</Tooltip>.
 
 <Frame caption="Todo: Connecting the SD card and reader to the computer">
   <img height="200" width="200" src="/images/under-construction.png" />
@@ -369,56 +361,91 @@ stays lit continuously</Tooltip>.
 
 ### 2.1. Serial Port
 
-The USB TTL converter cable is mostly used to connect to the board via serial port when an Ethernet connection 
-is unavailable. Normally, when you connect your Gemstone board to your computer via a USB Type-C cable, if the 
-"Gadgets" option under Services in the [Customize System](./quickstart#1-2-6-customize-the-system) section is 
-checked, you can connect via serial port without needing a TTL cable. However, if an unexpected issue arises 
+The USB TTL converter cable is often used to connect to the board via serial port when an Ethernet connection is
+not available. Normally, when you connect your Gemstone board to your computer via a USB Type-C cable, if the
+"Gadgets" option under Services in the [System Customization](./quickstart#1-2-6-sistem-özelleştir) section is
+checked, a serial port connection is possible without needing a TTL cable. However, if unexpected issues arise
 during development and these features do not work, you can still connect to the board using a USB TTL cable.
 
-An advantage of this method is that it allows you to view the console outputs of U-Boot, the preloader (Bootloader) 
-on Gemstone boards. While network initialization must complete before outputs appear when connecting over Ethernet, 
-outputs are visible from the start when using TTL.
+An advantage of this method is that it allows you to view the console outputs of U-Boot, the preloader (Bootloader) on
+Gemstone boards. While network initialization is required for outputs to appear over Ethernet, with TTL, outputs are
+visible from the start.
 
 #### 2.1.1. Terminal/Console Application
 
-For Terminal/Console operations, you can use [Putty](https://www.putty.org/) on Windows, Gnome Terminal on Linux, 
-or Terminal on macOS. This document will use the [Tabby.sh](https://tabby.sh/) application, which works on all three 
-operating systems.
+For Terminal/Console operations, you can use [Putty](https://www.putty.org/) on Windows, Gnome Terminal on Linux,
+or Terminal on macOS. This documentation will use [Tabby.sh](https://tabby.sh/), an application that works on all
+three operating systems.
 
 #### 2.1.2. Download the application
 
-Go to the [Tabby.sh](https://tabby.sh/) website, click the **Download** button, and download the software suitable 
-for your operating system.
+Go to [Tabby.sh](https://tabby.sh/) and click the **Download** button to download the software suitable for your
+operating system.
 
 <Frame caption="https://github.com/Eugeny/tabby/releases" >
   <img src="/images/tabbysh-terminal-website.png" />
 </Frame>
 
-After completing the installation, run it and select the Serial port as shown in the screenshot below.
+After completing the installation, run it and select the serial port as shown in the screenshot below.
 
 <Frame caption="Todo: Tabby terminal and serial port">
   <img height="200" width="200" src="/images/under-construction.png" />
 </Frame>
 
-### 2.2. Remote Desktop Connection via Browser with VNC
-
-Browser
-
-### 2.3. Network Connection via SSH
-
-Ethernet
-
-### 2.4. Update the Gemstone Operating System
-
-Gemstone development boards include a customized real-time Linux kernel-based Debian/Ubuntu operating system. 
-While the version you installed via GemImager is up-to-date, you can update any existing Ubuntu/Debian 
-packages using the method below.
+### 2.2. VNC remote desktop connection via browser
 
 <Note>
-The following operations should be performed on the board via the command line by clicking the Terminal 
-icon in the top menu when connected via remote desktop from a browser or via SSH/Console from your computer's 
-Terminal. If you have no prior experience using Linux, you can gain experience by reading the 
-[Beginner's Guide](./guides/basic) in the [Training Guides](./guides/introduction).
+The VNC service is only available with the [Desktop image](./distros/desktop).
+</Note>
+
+After connecting your Gemstone development board to your computer via a USB Type-C cable, you can access the
+desktop via a browser using the following link.
+
+<Tip>
+[https://192.168.7.2:8443/vnc.html](https://192.168.7.2:8443/vnc.html)
+</Tip>
+
+<Frame caption="Certificate Error Screen (You can proceed from the Advanced section)">
+  <img src="/images/vnc-cert.png" />
+</Frame>
+
+<Note>
+The reason for the browser's certificate error when connecting is that the VNC server uses a self-signed
+certificate. This is normal.
+</Note>
+
+<Frame caption="Password Screen (Enter the VNC password you set in Gemstone Imager)">
+  <img src="/images/vnc-pass.png" />
+</Frame>
+
+<Frame>
+  <img src="/images/vnc-desktop.png" />
+</Frame>
+
+### 2.3. SSH connection over the network
+
+<Note>
+For a faster and more stable console experience, it is recommended to use SSH over serial port for console access.
+</Note>
+
+After connecting your Gemstone development board to your computer via a USB Type-C cable, run the following
+command in the terminal.
+
+```bash
+ssh gemstone@192.168.7.2
+```
+
+### 2.4. Update the Gemstone operating system
+
+Gemstone development boards include a Debian/Ubuntu-based operating system with a customized real-time Linux kernel.
+While the version you installed via GemImager is up-to-date, you can update any installed Ubuntu/Debian packages
+(if available) using the following method.
+
+<Note>
+Note: The following operations should be performed on the board via the Terminal icon in the top menu when
+connected via remote desktop in a browser or via SSH/Console from your computer. If you have no prior
+experience with Linux, you can gain experience by reading the [Getting Started section](./guides/basic) in
+the [Training Guides](./guides/introduction).
 </Note>
 
 ```bash
@@ -427,9 +454,9 @@ sudo apt update && sudo apt upgrade
 
 # 3. Conclusion
 
-This document will provide explanations about Gemstone Development boards' entire software and hardware ecosystem, 
-along with rich project examples, and will explain how to specialize in topics such as the operating system and 
-hardware architecture. For example, if you are interested in the Real-Time Ubuntu/Debian-based Linux distribution 
-used for Gemstone and wonder how these systems are assembled or how robotic projects are safely implemented in C++, 
-we encourage you to complete all the resources mentioned throughout the document to develop yourself and join the 
-community with your contributions!
+This documentation will provide explanations for all software and hardware ecosystems of Gemstone development
+boards, along with rich project examples, and will explain how to master topics such as the operating system
+and hardware architecture. For example, if you are interested in the Real-Time Ubuntu/Debian-based Linux
+distribution used for Gemstone and wonder how these systems are assembled or how robotic projects are safely
+implemented in C++, we encourage you to complete all the resources mentioned throughout the documentation to
+develop yourself and join the community with your contributions!

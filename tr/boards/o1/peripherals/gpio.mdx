@@ -3,6 +3,8 @@ title: 'GPIO'
 description: 'General Purpose Input Output (GPIO)'
 ---
 
+import SnippetExamplesGpioScript from '/snippets/boards/o1/examples/gpio-script.mdx';
+
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
 
@@ -46,9 +48,9 @@ direnç gerekmektedir.
   </Step>
 
   <Step title="SSH/VNC Bağlantısı">
-  [SSH](../../..//quickstart.mdx#23-ssh-ile-network-üzerinden-bağlantı) veya
-  [VNC](../../..//quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle Geliştirme kartına
-  bağlan.    
+  [SSH](../../../quickstart#2-3-ssh-ile-network-üzerinden-bağlantı) veya
+  [VNC](../../../quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle
+  Geliştirme kartına bağlan.
   </Step>
 
   <Step title="Shell">
@@ -83,17 +85,7 @@ nano led-blink.sh
 
 Aşağıdaki kodu kopyalayıp led-blink.sh dosyasına yapıştırınız.
 
-```bash lines
-#!/bin/bash
-
-while :
-do
-      gpioset $(gpiofind GPIOX)=1
-      sleep 1
-      gpioset $(gpiofind GPIOX)=0
-      sleep 1
-done
-```
+<SnippetExamplesGpioScript />
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız. 
 
@@ -144,19 +136,7 @@ nano button-led.sh
 
 Aşağıdaki kodu kopyalayıp `button-led.sh` dosyasına yapıştırınız.
 
-```bash lines
-#!/bin/bash
-
-while :
-do
-   if (( $(gpioget --bias=pull-up $(gpiofind GPIOY)) == 0))
-   then
-      gpioset $(gpiofind GPIOX)=1
-   else
-      gpioset $(gpiofind GPIOX)=0
-   fi
-done
-```
+<SnippetExamplesLedScript />
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız. 
 

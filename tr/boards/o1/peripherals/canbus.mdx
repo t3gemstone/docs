@@ -7,16 +7,8 @@ description: 'Controller Area Network (CAN)'
 Bölüm bitiminde Gemstone geliştirme kartında sanal CAN arayüzü oluşturma hakkında bilgi sahibi olacaksınız.
 </Tip>
 
-Controller Area Network (CAN) protokolü, özellikle otomotiv ve endüstriyel otomasyon alanlarında yaygın olarak 
-kullanılan bir iletişim standardıdır. CAN protokolü, yüksek güvenilirlik ve düşük maliyet veri iletimi 
-gibi avantajları ile dikkat çekmektedir. 
-
-### CAN Bus Kullanımı
-
 Gemstone işletim sisteminde sanal CAN arayüzü oluşturularak herhangi ilave donanıma gerek kalmadan bu arayüz üzerinden 
 veri iletişimi sağlanabilmektedir.
-
-<Note> Bu örnekte birden fazla terminal açılması gerektiği için `Desktop` imajının kullanılması tercih edilmiştir.</Note>
 
 * Gemstone işletim sistemine bağlandıktan sonra sanal CAN arayüzü oluşturabilmek için `kernel-module-vcan-6.1.83-ti` 
 modülünü kurunuz.
@@ -24,11 +16,13 @@ modülünü kurunuz.
 ```bash
 sudo apt install picocom kernel-module-vcan-6.1.83-ti
 ```
+
 * `modprobe` komutu ile kurulan modülü aktif ediniz.
 
 ```bash
 sudo modprobe vcan
 ```
+
 * Aşağıdaki komutları takip ederek sanal CAN arayüzünü oluşturunuz.
 
 ```bash
@@ -36,40 +30,43 @@ sudo ip link add dev vcan0 type vcan
 sudo ip link set up vcan0
 ```
 
-* `can_test.sh` isimli bir script dosyası oluşturunuz ve dosyayı açınız.
+* `can-test.sh` isimli bir script dosyası oluşturunuz ve dosyayı açınız.
 
 ```bash
-touch can_test.sh
-nano can_test.sh
+touch can-test.sh
+nano can-test.sh
 ```
 
-* Aşağıdaki kodu kopyalayıp `can_test.sh` dosyasına yapıştırınız. Dosyayı kaydedip kapatınız.
+* Aşağıdaki kodu kopyalayıp `can-test.sh` dosyasına yapıştırınız. Dosyayı kaydedip kapatınız.
+
 ```bash
 #!/bin/bash
 
 while :
 do
-   cansend vcan0 123#AABBCCDDEE112233
+   cansend vcan0 123 #AABBCCDDEE112233
    sleep 1
 done
 ```
 
-* `cansend` ve `candump` gibi CAN paketleri gönderim alım komutlarını kullanabilmek için `can-utils`
-paketini kurunuz.
+* `cansend` ve `candump` gibi CAN paketleri gönderim alım komutlarını kullanabilmek için `can-utils` paketini kurunuz.
 
 ```bash
 sudo apt install can-utils
 ```
+
 1. İki adet terminal açınız. 
 
 2. İlk terminalden CAN arayüzünü dinleme işlemini başlatınız.
+
 ```bash
 candump vcan0
 ```
 
-3. İkinci terminalden cant_test.sh scriptini çalıştırınız.
+3. İkinci terminalden can-test.sh scriptini çalıştırınız.
+
 ```bash
-./can_test.sh
+./can-test.sh
 ```
 
 <Frame caption="Sanal CAN arayüzü üzerinden haberleşme">
