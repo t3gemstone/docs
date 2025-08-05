@@ -334,6 +334,7 @@
       "author": "T3 Foundation",
       "robots": "index, follow",
       "googlebot": "index, follow",
+      "indexing": "all",
       "google": "notranslate",
       "generator": "Mintlify",
       "format-detection": "telephone=no",
