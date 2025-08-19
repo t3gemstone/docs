@@ -3,4 +3,191 @@ title: 'Cloud'
 description: 'Gemstone Kişisel Bulut Sistemi'
 ---
 
-Yapım aşamasında..
+## 1. Giriş
+
+Günümüzde kişisel verilerin kontrolü ve güvenliği her zamankinden daha önemli. Dosyalarınızı, fotoğraflarınızı, takvimlerinizi, notlarınızı ve 
+hatta şifrelerinizi Amazon, Google veya Microsoft gibi büyük bulut sağlayıcılarına bağımlı olmadan merkezi bir sistemde yönetmek isteyebilirsiniz. Bunun için
+self-hosting ismi verilen yöntemi kullanmanız yani kendi sunucunuzu kendi cihazlarınızda barındırmanız gerekir. Ancak kendi evinizde sunucu çalıştırmak, sunucuya
+internet bağlantısı olan heryerden erişememe ve veri güvenliğini sağlayamama gibi teknik problemleri beraberinde getirir. Bu problemler çoğu zaman karmaşık ve
+yüksek maliyetli yöntemler ile çözülür. `Cloud` projesi bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
+
+## 2. Nextcloud Kurulum
+
+Nextcloud açık kaynak kodlu bir bulut çözümüdür. Fotoğraf ve dosya depolama, sohbet, takvim, şifre yöneticisi, kanban görev planlama gibi uygulamaları bir arada
+sunar.
+
+Karta [terminal bağlantısı](/tr/quickstart/#2-gemstone’u-keşfet) yapın ve aşağıdaki komut ile Nextcloud kurulumunu başlatın.
+
+```bash
+sudo apt install t3-gem-nextcloud
+```
+
+Kurulum esnasında aşağıdaki şifre girme ekranı ile karşılaşacaksınız. Bu şifre Nextcloud'un kullandığı veritabanında ve nextcloud `admin` kullanıcı şifresi olarak kullanılacak.
+Güçlü ve akılda kalıcı bir şifre olduğundan emin olun ve şifrenizi not edin.
+
+<Frame>
+    <img src="/images/cloud/nextcloud-password.png" alt="Nextcloud password input" />
+</Frame>
+
+Kurulum tamamlandığında nextcloud sunucusu çalışmaya başladı. Sırada bunu internete bağlı tüm cihazlarınızdan erişilebilir hale getirmek var. 
+
+## 3. Tailscale Kurulum
+
+Bu [bağlantıya](https://login.tailscale.com/start) tıklayarak Tailscale'e kayıt olun. Eğer seçeneklerin hepsi size yabancıysa kayıt olma seçeneklerinden 
+en hızlı ve kolay olanı Github. Yalnızca e-mail adresinizle üye olup hemen kullanmaya başlayabilirsiniz.
+
+<Frame>
+    <img src="/images/cloud/tailscale-signup.png" alt="Tailscale signup" />
+</Frame>
+
+Hesabınıza giriş yaptığınızda karşınıza Tailscale kontrol paneli çıkacak. Gemstone kartı eklemek için `Machines -> Add device -> Linux server` seçeneğini seçin.
+
+<Frame>
+    <img src="/images/cloud/gemstone-ekle.png" alt="Gemstone ekle" />
+</Frame>
+
+Sayfanın en altına inip `Generate install script` butonuna basarak oluşan tailscale kurulum için gerekli komutu kopyalayın. 
+Ardından Gemstone karta [terminal bağlantısı yaparak](/tr/quickstart/#2-gemstone’u-keşfet) bu komutu terminalde çalıştırın. 
+
+<Frame>
+    <img src="/images/cloud/gen-install-script.png" alt="Install script" />
+</Frame>
+
+Tailscale kurulumunun tamamlanmasını bekleyin. Ardından aşağıdaki komut ile tailscale servislerini başlatın.
+
+```bash
+sudo tailscale up
+```
+ 
+Kart kontrol panelinde Machines bölümünde gemstone kart `Connected` olarak görünmeli.
+
+<Frame>
+    <img src="/images/cloud/gem-machine-list.png" alt="Tailnet machine list" />
+</Frame>
+
+Sırada Nextcloud sunucusunu tailnetten erişilebilir hale getirmek var. Öncelikle kontrol panelinde `DNS` menüsüne girip sayfanın en altında bulunan
+`Enable HTTPS` butonuna basın ardından `Enable` butonuna basın.
+
+<Frame>
+    <img src="/images/cloud/enable-https.png" alt="Tailnet HTTPS enable" />
+</Frame>
+
+Artık karta terminal bağlantısı yapıp aşağıdaki komut ile Nextcloud'u ağdaki diğer cihazlarla paylaşabiliriz.
+
+```bash
+sudo tailscale serve --bg --http=80 1453
+```
+
+Bu adımdan sonra bu ağa eklenen diğer cihazlar Nextcloud'a http://gemstone adresinden erişebilirler. Ağa client cihaz 
+(Örneğin Cep telefonu, kişisel bilgisayar veya tablet) eklemek için ise cihaz ekleme bölümündeki diğer seçenek olan
+`Machines -> Add device ->  Client device` seçeneğini seçin.
+
+<Frame>
+    <img src="/images/cloud/client-add.png" alt="Tailnet Add Client device" />
+</Frame>
+
+Açılan ekranda cihazınıza kurulum talimatlarını takip ederek eklemek istediğiniz cihazda Tailscale kurulumunu tamamlayın. Tailscale uygulamasını başlatın
+ve işletim sisteminize uygun yöntemle giriş yapın. İşlemleri tamamladığınızda kontrol panelinde makinayı `Connected` etiketiyle görmeniz gerekli.
+
+<Frame>
+    <img src="/images/cloud/client-list.png" alt="Tailnet device list" />
+</Frame>
+
+Eklediğimiz cihazda tarayıcıdan http://gemstone adresine gidildiğinde Nextcloud giriş sayfasıyla karşılaşacaksınız.
+Yönetici hesabının kullanıcı adı `admin` şifresi ise kurulum esnasında girdiğiniz `CLOUD` şifresi olarak ayarlandı.
+
+<Frame>
+    <img src="/images/cloud/nextcloud-login.png" alt="Nextcloud login" />
+</Frame>
+
+## 4. Tailscale Neden Kullanılıyor ?
+
+IPv4 adreslerinin sınırlı sayıda olması nedeniyle, internet servis sağlayıcıları CGNAT (Carrier-Grade NAT) kullanarak birden fazla kullanıcıyı tek bir
+IPv4 adresi üzerinden internete çıkarır. Bu durum, evde çalışan sunuculara (bizim durumumuzda Nextcloud) doğrudan erişimi engeller. Tailscale, bu sorunu
+çözmek için WireGuard tabanlı bir VPN ağı kurarak, CGNAT ve geleneksel NAT engellerini aşar. Kullanıcılar, internet erişimi olan her yerden, yalnızca
+yetkilendirilmiş cihazlarla güvenli bir şekilde Nextcloud sunucusuna bağlanabilir. Böylece, herkese açık IP paylaşımına gerek kalmadan, kapalı ve kontrollü
+bir ağ ortamı sağlar.
+
+## 5. Static IP ile Kullanım
+
+Yapım aşamasında...
+
+## 6. Gelişmiş Güvenlik
+
+### 6.1. Nextcloud İki Adımlı Doğrulama
+
+Admin hesabına giriş yapın sağ üste bulunan profil resmine tıklayıp açılan menüden `Personal Settings` seçeneğini seçin. 
+
+<Frame>
+    <img src="/images/cloud/nc-user-menu.png" alt="Nextcloud user menu" />
+</Frame>
+
+Ardından sol menüden `Security` seçeneğini seçip `Enable TOTP` kutucuğunu işaretleyin. 
+
+<Frame>
+    <img src="/images/cloud/security-settings.png" alt="Nextcloud security settings" />
+</Frame>
+
+Bu seçeneği işaretlediğinizde oluşan şifreyi veya QR kodu doğrulama uygulamanıza girerek şifre oluşturun oluşan şifreyi `Authentication` alanına girip
+`Verify` butonuna basarak işlemi tamamlayın.
+
+<Frame>
+    <img src="/images/cloud/totp-enable.png" alt="Nextcloud totp enable" />
+</Frame>
+
+Artık hesabınıza girişte şifrenize ek olarak doğrulama kodu da kullanmanız gerekli.
+
+### 6.2. Tailscale Tailnet Lock Aktifleştirme
+
+Kurulan bu sistemde Nextcloud'a erişim yalnızca tailnet ağına eklediğimiz cihazlarla yapılabildiğinden sistemimiz güvenli. 
+Ancak burada ağa eklenecek cihazları kontrol eden `Tailscale` firmasının `coordination server` ismini verdiği kapalı kaynaklı bir sunucu.
+Bir tailnete bir cihazın katılıp katılamayacağının kararını bu sunucu veriyor. Yani en kötü senaryoda Tailscale firması sizi hedef alırsa,
+`coordination serveri` kullanarak sizin izniniz dışında tailnetinize cihaz ekleyebilir. `Tailscale` firması bu sorunu `Tailnet Lock` ismi verilen bir
+yöntemle çözüyor. Basitçe Tailnet Lock, ağa katılmaya olanak sağlayan anahtarları Tailscale firmasının kendi `coordination serverinde` tutmak yerine sizin
+belirlediğiniz ağınızda bulunan iki cihazda tutuyor. Böylelikle tailnetinize girişleri bu iki cihaz yönetmiş oluyor.
+
+Kontrol panelinde `Settings -> Device management -> Enable tailnet lock` butonuna basın.
+
+<Frame>
+    <img src="/images/cloud/enable-tailnet-lock-page.png" alt="Tailnet lock page" />
+</Frame>
+
+Enable tailnet lock ekranında `Add new signing node` butonuna basıp hali hazırda tailnette bulunan iki cihazı seçin. Eğer sizin tailnetinizde
+başka cihazlar da varsa burada seçilen cihazlar güvendiğiniz cihazlar olmalı.
+
+<Frame>
+    <img src="/images/cloud/tailnet-sign-nodes.png" alt="Tailnet sign nodes" />
+</Frame>
+
+Tailnet lock aktifleştirildiğinde geri dönebilmek için tek yol Tailnet lock devre dışı bırakma kodlarıdır (Tailnet lock disablement secret). Eğer ağınıza
+bir şekilde erişimi kaybederseniz ağı kurtarmak bu kodlar olmadan mümkün değil. Bu sebeple Tailscale firması bu kodlardan birini kendi destek sistemlerine
+göndermenizi tavsiye ediyor. Biz bunun yerine şifreleri kendinizin güvenli bir yerde muhafaza etmenizi tavsiye ederiz. Bu sebeple
+`Configure disablement options` bölümüne gidip `Don’t send disablement secret to Tailscale support`  seçeneğine tıklıyoruz.
+`Run command from signing node` bölümünde oluşan komutu kopyalayıp eklediğimiz cihazların birinde çalıştırmamız gerekiyor.
+(Örneğin Gemstone kartta çalıştırabilirsiniz.)
+
+<Frame>
+    <img src="/images/cloud/tailnet-lock-cmd.png" alt="Tailnet lock cmd" />
+</Frame>
+
+Çalıştırdığınızda oluşan `disablement-secret:XXXXXXXX` şeklindeki devre dışı bırakma kodlarını güvenli bir yere not edin. 
+
+Kontrol panelinde Machines kısmına gittiğimizde seçtiğimiz iki cihazın altında `Signing node` ibaresini görmemiz gerekiyor.
+
+<Frame>
+    <img src="/images/cloud/after-tailnet-lock.png" alt="After Tailnet lock" />
+</Frame>
+
+Artık yeni cihaz bağladığınızda bağlanan cihazlar doğrudan ağınıza bağlanamayacaklar bunun yerine aşağıdaki gibi `Locked out` olarak gözükecekler.
+
+<Frame>
+    <img src="/images/cloud/tailnet-locked-out.png" alt="Tailnet locked out" />
+</Frame>
+
+Bu cihazlar Signing node cihazlarının birinden aktifleştirilmeli. Bunun için Signing node cihazında eklenecek cihaza tıklayıp `Sign machine` butonuna
+basılmalı ardından cihazın işletim sistemine uygun seçeneklerden biri seçilip sign işlemi tamamlanmalıdır. İşlemin ardından cihaz ağa bağlanmış olur.
+Sign işlemini Gemstone kartta yapmak için `CLI` seçeneğini seçip oluşan komutu karta terminal bağlantısı yapıp terminalde çalıştırın.
+
+<Frame>
+    <img src="/images/cloud/tailnet-sign-machine.png" alt="Tailnet sign" />
+</Frame>
