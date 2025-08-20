@@ -1,6 +1,219 @@
 ---
 title: 'Cloud'
-description: 'Gemstone Personel Cloud System'
+description: 'Gemstone Personal Cloud System'
 ---
 
-Under construction..
+<Frame>
+    <img noZoom src="/images/cloud/nextcloud-hub.png" alt="Nextcloud" />
+</Frame>
+
+<Tip>
+By the end of this section, you will have knowledge about the following topics.
+
+* Installing the Nextcloud cloud system on the Gemstone development board
+* Methods used to access your Gemstone from your mobile phone or from anywhere in the world
+</Tip>
+
+## 1. Introduction
+
+Today, control and security of personal data are more important than ever. You might want to manage your files, photos, calendars, notes, and even passwords in a centralized system without depending on major cloud providers like Amazon, Google, or Microsoft. To do this, you need to use a method called self-hosting, which means hosting your own server on your own devices. However, running a server at home brings technical problems such as the inability to access the server from anywhere with an internet connection and difficulties in ensuring data security. These problems are often solved with complex and costly methods. The `GemCloud` project enables these problems to be solved in an easy, cost-effective, and secure manner.
+
+## 2. Nextcloud Installation
+
+Nextcloud is an open-source cloud solution. It offers applications such as photo and file storage, chat, calendar, password manager, and Kanban task planning in one place.
+
+After connecting to the Gemstone development board via [terminal connection](/en/quickstart/#2-explore-gemstone), start the Nextcloud installation with the following command.
+
+```bash
+sudo apt install t3-gem-nextcloud
+```
+
+During the installation, you will encounter the following password entry screen. This password will be used in the database used by Nextcloud and as the Nextcloud `admin` user password. Choose a strong and memorable password and keep it safe.
+
+<Frame>
+    <img src="/images/cloud/nextcloud-password.png" alt="Nextcloud password input" />
+</Frame>
+
+Once the installation is complete, the Nextcloud server will start running on Gemstone. The next step explains how to connect to this cloud system from the outside world.
+
+## 3. Access from the Public Internet
+
+Accessing your home computers by IP address is only possible within your home network. The ability to access recently popular devices like robot vacuums, smart lighting systems, air conditioners controlled from mobile phones, and various household appliances from the outside world is made possible by these devices transferring data to servers set up by their manufacturers.
+
+The easiest solution to access the Gemstone Cloud project from the outside world is to call your internet service provider to request a Static IP and set up port forwarding in your modem settings. For users who do not wish to do this, there are various solutions such as [Tailscale](https://tailscale.com/) and [Localtunnel](https://theboroer.github.io/localtunnel-www/).
+
+<Tabs>
+  <Tab title="Example Smart Home System Network">
+    ```mermaid
+    flowchart
+      n1@{ label: "Rectangle" }
+      n1["Robot Vacuum"]
+      n3["Air Conditioner"]
+      n1 --- n6
+      n2["Lighting"] --- n6
+      n3 --- n6
+      n6@{ shape: "diam", label: "WIFI Modem" }
+      n6@{ shape: "hex", label: "Wireless" }
+      n6
+      n5@{ shape: "stadium", label: "Server" }
+      n6@{ shape: "hex", label: "WIFI" } --- n5
+      n6@{ shape: "dbl-circ", label: "WIFI" }
+      n7@{ shape: "doc", label: "Mobile Phone" }
+      style n6 fill:#C1FF72
+      n7@{ shape: "diam", label: "Mobile Phone" }
+      n5@{ shape: "stadium", label: "Manufacturer Server" } --- n7@{ shape: "hex", label: "Mobile Phone" }
+      n8
+      n8["Smart Home Systems"] --- n6
+      style n7 fill:#00BF63
+      n5@{ shape: "lin-cyl", label: "Server" }
+    ```
+  </Tab>
+  <Tab title="ISP Modem and Local Network">
+    <img noZoom height="600" width="600" src="/images/cloud/isp-nat-local.png" alt="ISP Modem and Local Network" />
+  </Tab>
+</Tabs>
+
+The basic principle is that a service installed on your computer communicates with Tailscale, allowing you to access your computer from the outside world via Tailscale.
+
+### 3.1. Tailscale Installation
+
+<Frame>
+    <img src="/images/cloud/tailscale-web.jpg" alt="Tailscale" />
+</Frame>
+
+Click on this [link](https://login.tailscale.com/start) to sign up for Tailscale using your Github, Google, or Microsoft account.
+
+<Frame>
+    <img src="/images/cloud/tailscale-signup.png" alt="Tailscale signup" />
+</Frame>
+
+Once you log into your account, you will see the Tailscale control panel. To add the Gemstone board, select `Machines -> Add device -> Linux server`.
+
+<Frame>
+    <img src="/images/cloud/gemstone-ekle.png" alt="Add Gemstone" />
+</Frame>
+
+Scroll to the bottom of the page and click the `Generate install script` button to copy the Tailscale installation command. Then, [connect to the Gemstone board via terminal](/en/quickstart/#2-explore-gemstone) and run the copied command in the terminal.
+
+<Frame>
+    <img src="/images/cloud/gen-install-script.png" alt="Install script" />
+</Frame>
+
+After the Tailscale installation is complete, start the Tailscale services with the following command.
+
+```bash
+sudo tailscale up
+```
+
+Verify that the connection is healthy by checking the `Machines` section in the Tailscale Control Panel to see if it says `Connected`.
+
+<Frame>
+    <img src="/images/cloud/gem-machine-list.png" alt="Tailnet machine list" />
+</Frame>
+
+The next step is to make the Nextcloud server accessible from the tailnet. Go to the `DNS` menu in the control panel and click the `Enable HTTPS` button at the bottom of the page, then click the `Enable` button.
+
+<Frame>
+    <img src="/images/cloud/enable-https.png" alt="Tailnet HTTPS enable" />
+</Frame>
+
+Connect to the development board via terminal and use the following command to make Nextcloud accessible to other devices on the network.
+
+```bash
+sudo tailscale serve --bg --http=80 1453
+```
+
+After this step, other devices added to this network can access Nextcloud at http://gemstone. To add a client device (e.g., mobile phone, personal computer, or tablet) to the network, select the other option in the device addition section: `Machines -> Add device -> Client device`.
+
+<Frame>
+    <img src="/images/cloud/client-add.png" alt="Tailnet Add Client device" />
+</Frame>
+
+On the screen that opens, follow the installation instructions for your device to complete the Tailscale installation on the device you want to add. Start the Tailscale application and log in using the method appropriate for your operating system. Once you complete the steps, you should see the machine labeled `Connected` in the control panel.
+
+<Frame>
+    <img src="/images/cloud/client-list.png" alt="Tailnet device list" />
+</Frame>
+
+When you go to http://gemstone in the browser on the device you added, you will see the Nextcloud login page. The administrator account username is `admin`, and the password is the `CLOUD` password you entered during installation.
+
+<Frame>
+    <img src="/images/cloud/nextcloud-login.png" alt="Nextcloud login" />
+</Frame>
+
+### 3.4. Why is Tailscale Used?
+
+Due to the limited number of IPv4 addresses, internet service providers use CGNAT (Carrier-Grade NAT) to route multiple users through a single IPv4 address to the internet. This situation prevents direct access to servers running at home (in our case, Nextcloud). Tailscale solves this problem by establishing a WireGuard-based VPN network, overcoming CGNAT and traditional NAT barriers. Users can securely connect to the Nextcloud server from anywhere with internet access, using only authorized devices. Thus, a closed and controlled network environment is provided without the need for public IP sharing.
+
+### 3.5. Usage with Static IP
+
+Under construction...
+
+## 4. Advanced Security
+
+### 4.1. Nextcloud Two-Factor Authentication
+
+After logging into the admin account, click the profile picture at the top and select `Personal Settings` from the menu that opens.
+
+<Frame>
+    <img src="/images/cloud/nc-user-menu.png" alt="Nextcloud user menu" />
+</Frame>
+
+Then, select `Security` from the left menu and check the `Enable TOTP` box.
+
+<Frame>
+    <img src="/images/cloud/security-settings.png" alt="Nextcloud security settings" />
+</Frame>
+
+When you check this option, enter the generated password or QR code into your verification application to generate a code. Finally, enter the generated code in the `Authentication` field and click the `Verify` button to complete the process.
+
+<Frame>
+    <img src="/images/cloud/totp-enable.png" alt="Nextcloud totp enable" />
+</Frame>
+
+From now on, in addition to your password, you will need to use a verification code to log into your account as an additional security measure.
+
+### 4.2. Enabling Tailscale Tailnet Lock
+
+In this system, access to Nextcloud is only possible from devices added to the tailnet, making the system secure. However, there is a closed-source server called the `Coordination Server` by Tailscale that controls which devices can be added to the network. The decision of whether a device can join the tailnet is made by this server.
+
+In the worst-case scenario, if Tailscale targets you, the `Coordination Server` could add devices to your tailnet without your permission. Tailscale solves this problem with a method called `Tailnet Lock`. Tailnet Lock stores the keys that allow joining the network on two devices you specify within your network, instead of on Tailscale's own `Coordination Server`. Thus, only these two devices can manage entries into your tailnet.
+
+From the control panel, click `Settings -> Device management -> Enable tailnet lock`.
+
+<Frame>
+    <img src="/images/cloud/enable-tailnet-lock-page.png" alt="Tailnet lock page" />
+</Frame>
+
+On the Enable tailnet lock screen, click `Add new signing node` and select two devices already in the tailnet. If there are other devices in your tailnet, the devices selected here should be ones you trust.
+
+<Frame>
+    <img src="/images/cloud/tailnet-sign-nodes.png" alt="Tailnet sign nodes" />
+</Frame>
+
+Once Tailnet Lock is activated, the only way to revert is by using the Tailnet lock disablement secrets. If you lose access to your network for any reason, recovering the network is impossible without these codes. Tailscale recommends sending one of these codes to their support system, but you can instead store the passwords in a location you trust.
+
+Go to the `Configure disablement options` section and click `Don’t send disablement secret to Tailscale support`. Copy the command from the `Run command from signing node` section and run it on one of the devices we added (For example, you can run it on the Gemstone board).
+
+<Frame>
+    <img src="/images/cloud/tailnet-lock-cmd.png" alt="Tailnet lock cmd" />
+</Frame>
+
+When you run it, note the disablement secrets that appear in the format `disablement-secret:XXXXXXXX` in a secure location. In the control panel, under `Machines`, you should see the `Signing node` label under the two devices we selected.
+
+<Frame>
+    <img src="/images/cloud/after-tailnet-lock.png" alt="After Tailnet lock" />
+</Frame>
+
+Now, when you create new devices, they will not be able to connect directly to your network; instead, they will appear as `Locked out`, as shown below.
+
+<Frame>
+    <img src="/images/cloud/tailnet-locked-out.png" alt="Tailnet locked out" />
+</Frame>
+
+These devices must be activated from one of the Signing node devices. To do this, click on the device to be added on the Signing node device and click the `Sign machine` button. Then, select one of the options appropriate for the device's operating system and complete the sign process. After the process, the device will be connected to the network. To perform the sign process on the Gemstone board, select the `CLI` option, copy the generated command, connect to the board via terminal, and run the command in the terminal.
+
+<Frame>
+    <img src="/images/cloud/tailnet-sign-machine.png" alt="Tailnet sign" />
+</Frame>
+```
