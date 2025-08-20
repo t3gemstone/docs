@@ -29,15 +29,15 @@ bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağla
 Nextcloud açık kaynak kodlu bir bulut çözümüdür. Fotoğraf ve dosya depolama, sohbet, takvim, şifre yöneticisi,
 kanban görev planlama gibi uygulamaları bir arada sunar.
 
-Karta [terminal bağlantısı](/tr/quickstart/#2-gemstone’u-keşfet) yapın ve aşağıdaki komut ile Nextcloud
-kurulumunu başlatınız.
+Gemstone geliştirme kartına [terminal bağlantısı](/tr/quickstart/#2-gemstone’u-keşfet) yaptıktan sonra aşağıdaki
+komut ile Nextcloud kurulumunu başlatınız.
 
 ```bash
 sudo apt install t3-gem-nextcloud
 ```
 
 Kurulum esnasında aşağıdaki şifre girme ekranı ile karşılaşacaksınız. Bu şifre Nextcloud'un kullandığı
-veritabanında ve nextcloud `admin` kullanıcı şifresi olarak kullanılacak. Güçlü ve akılda kalıcı bir şifre
+veritabanında ve nextcloud `admin` kullanıcı şifresi olarak kullanılmaktadır. Güçlü ve akılda kalıcı bir şifre
 seçerek şifrenizi saklayınız.
 
 <Frame>
@@ -55,8 +55,9 @@ edilen klima ve çeşitli ev aletlerinin dış dünyadan erişelebilir olması i
 çeşitli sunuculara veri aktarımı gerçekleştirilerek mümkün olmaktadır.
 
 Gemstone Cloud projesine dış dünyadan erişebilmek için en kolay çözüm internet servis sağlayıcınızı arayarak
-(ISP: TTNET, Turktelekom, Superonline vb.) Statik IP talebinde bulunmanız ve modem ayarlarından port yönlendirmesi
-yapmanızdır. Bunu yapmak istemeyen kullanıcılar için ise Tailscale, Localtunnel gibi çeşitli çözümler bulunmaktadır.
+(ISP: TurkNet, Turktelekom, Superonline vb.) Statik IP talebinde bulunmanız ve modem ayarlarından port yönlendirmesi
+yapmanızdır. Bunu yapmak istemeyen kullanıcılar için ise [Tailscale](https://tailscale.com/),
+[Localtunnel](https://theboroer.github.io/localtunnel-www/) gibi çeşitli çözümler bulunmaktadır.
 
 <Tabs>
   <Tab title="Örnek Akıllı Ev Sistem Ağı">
@@ -112,15 +113,15 @@ için `Machines -> Add device -> Linux server` seçeneğini seçiniz.
     <img src="/images/cloud/gemstone-ekle.png" alt="Gemstone ekle" />
 </Frame>
 
-Sayfanın en altına inip `Generate install script` butonuna basarak oluşan tailscale kurulum için gerekli
-komutu kopyalayınız. Ardından Gemstone karta [terminal bağlantısı yaparak](/tr/quickstart/#2-gemstone’u-keşfet)
-bu komutu terminalde çalıştırınız. 
+Sayfanın en altına inip `Generate install script` butonuna tıklayarak oluşan tailscale kurulum 
+komutunu kopyalayınız. Ardından Gemstone karta [terminal bağlantısı yaparak](/tr/quickstart/#2-gemstone’u-keşfet)
+kopyaladığınız komutu terminalde çalıştırınız.
 
 <Frame>
     <img src="/images/cloud/gen-install-script.png" alt="Install script" />
 </Frame>
 
-Tailscale kurulumunun tamamlandıktan sonra aşağıdaki komut ile tailscale servislerini başlatınız.
+Tailscale kurulumunu tamamlandıktan sonra aşağıdaki komut ile tailscale servislerini başlatınız.
 
 ```bash
 sudo tailscale up
@@ -165,7 +166,7 @@ tamamladığınızda kontrol panelinde makineyi `Connected` etiketiyle görmeniz
 </Frame>
 
 Eklediğimiz cihazda tarayıcıdan http://gemstone adresine gidildiğinde Nextcloud giriş sayfasıyla karşılaşacaksınız.
-Yönetici hesabının kullanıcı adı `admin` şifresi ise kurulum esnasında girdiğiniz `CLOUD` şifresi olarak ayarlandı.
+Yönetici hesabının kullanıcı adı `admin` şifresi ise kurulum esnasında girdiğiniz `CLOUD` şifresidir.
 
 <Frame>
     <img src="/images/cloud/nextcloud-login.png" alt="Nextcloud login" />
@@ -189,46 +190,49 @@ Yapım aşamasında...
 
 ### 4.1. Nextcloud İki Adımlı Doğrulama
 
-Admin hesabına giriş yapın sağ üste bulunan profil resmine tıklayıp açılan menüden `Personal Settings` seçeneğini seçiniz. 
+Admin hesabına giriş yaptıktan sonra üste bulunan profil resmine tıklayarak, açılan menüden `Personal Settings`
+seçeneğine tıklayınız. 
 
 <Frame>
     <img src="/images/cloud/nc-user-menu.png" alt="Nextcloud user menu" />
 </Frame>
 
-Ardından sol menüden `Security` seçeneğini seçip `Enable TOTP` kutucuğunu işaretleyin. 
+Ardından sol menüden `Security` seçeneğini seçip `Enable TOTP` kutucuğunu işaretleyiniz. 
 
 <Frame>
     <img src="/images/cloud/security-settings.png" alt="Nextcloud security settings" />
 </Frame>
 
-Bu seçeneği işaretlediğinizde oluşan şifreyi veya QR kodu doğrulama uygulamanıza girerek şifre oluşturun oluşan
-kodu `Authentication` alanına girip `Verify` butonuna basarak işlemi tamamlayınız.
+Bu seçeneği işaretlediğinizde oluşan şifreyi veya QR kodu; doğrulama uygulamanıza girerek şifre oluşturunuz. 
+Son olarak üretilen kodu `Authentication` alanına girip `Verify` butonuna tıklayarak işlemi tamamlayınız.
 
 <Frame>
     <img src="/images/cloud/totp-enable.png" alt="Nextcloud totp enable" />
 </Frame>
 
-Artık hesabınıza girişte şifrenize ek olarak doğrulama kodu da kullanmanız gerekli.
+Artık hesabınıza girişte şifrenize ek olarak doğrulama kodu da kullanmanız ilave güvenlik önlemi olarak
+aktifleşmiş olacaktır.
 
 ### 4.2. Tailscale Tailnet Lock Aktifleştirme
 
-Kurulan bu sistemde Nextcloud'a erişim yalnızca tailnet ağına eklediğimiz cihazlarla yapılabildiğinden sistemim güvenlidir. 
+Kurulan bu sistemde Nextcloud'a erişim yalnızca tailnet ağına eklediğimiz cihazlarla yapılabildiğinden sistem güvenlidir. 
 Ancak burada ağa eklenecek cihazları kontrol eden `Tailscale` firmasının `Coordination Server` ismini verdiği kapalı
-kaynaklı bir sunucu mevcuttur. Tailnet'e bir cihazın katılıp katılamayacağının kararı bu sunucu tarafından verilmektedir.
+kaynaklı bir sunucusu mevcuttur. Tailnet'e bir cihazın katılıp katılamayacağının kararı bu sunucu tarafından
+verilmektedir.
 
 En kötü senaryoda Tailscale firması sizi hedef alırsa, `Coordination Server` kullanarak sizin izniniz dışında
 tailnetinize cihaz ekleyebilir. `Tailscale` firması bu sorunu `Tailnet Lock` ismi verilen bir yöntemle çözmektedir.
-Basitçe Tailnet Lock, ağa katılmaya olanak sağlayan anahtarları Tailscale firmasının kendi `Coordination Server`inde
+Tailnet Lock; ağa katılmaya olanak sağlayan anahtarları Tailscale firmasının kendi `Coordination Server`inde
 tutmak yerine sizin belirlediğiniz ağınızda bulunan iki cihazda tutmaktadır. Böylelikle tailnetinize girişleri 
 yalnızca bu iki cihaz yönetebilmektedir.
 
-Kontrol panelinden `Settings -> Device management -> Enable tailnet lock` butonuna basınız.
+Kontrol panelinden `Settings -> Device management -> Enable tailnet lock` butonuna tıklayınız.
 
 <Frame>
     <img src="/images/cloud/enable-tailnet-lock-page.png" alt="Tailnet lock page" />
 </Frame>
 
-Enable tailnet lock ekranında `Add new signing node` butonuna basıp hali hazırda tailnette bulunan iki cihazı seçiniz.
+Enable tailnet lock ekranında `Add new signing node` butonuna tıklayıp hali hazırda tailnette bulunan iki cihazı seçiniz.
 Eğer sizin tailnetinizde başka cihazlar da varsa burada seçilen cihazlar güvendiğiniz cihazlar olmalıdır.
 
 <Frame>
