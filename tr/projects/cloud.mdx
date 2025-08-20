@@ -3,6 +3,10 @@ title: 'Cloud'
 description: 'Gemstone Kişisel Bulut Sistemi'
 ---
 
+<Frame>
+    <img noZoom src="/images/cloud/nextcloud-hub.png" alt="Nextcloud" />
+</Frame>
+
 <Tip>
 Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
 
@@ -54,36 +58,45 @@ Gemstone Cloud projesine dış dünyadan erişebilmek için en kolay çözüm in
 (ISP: TTNET, Turktelekom, Superonline vb.) Statik IP talebinde bulunmanız ve modem ayarlarından port yönlendirmesi
 yapmanızdır. Bunu yapmak istemeyen kullanıcılar için ise Tailscale, Localtunnel gibi çeşitli çözümler bulunmaktadır.
 
-<Frame caption="Örnek Akıllı Ev Sistemi Bağlantısı">
-```mermaid
-flowchart
-	n1@{ label: "Rectangle" }
-	n1["Robot Süpürge"]
-	n3["Klima"]
-	n1 --- n6
-	n2["Aydınlatma"] --- n6
-	n3 --- n6
-	n6@{ shape: "diam", label: "WIFI Modem" }
-	n6@{ shape: "hex", label: "Wireless" }
-	n6
-	n5@{ shape: "stadium", label: "Sunucu" }
-	n6@{ shape: "hex", label: "WIFI" } --- n5
-	n6@{ shape: "dbl-circ", label: "WIFI" }
-	n7@{ shape: "doc", label: "Mobil Telefon" }
-	style n6 fill:#C1FF72
-	n7@{ shape: "diam", label: "Mobil Telefon" }
-	n5@{ shape: "stadium", label: "Üretici Sunucusu" } --- n7@{ shape: "hex", label: "Mobil Telefon" }
-	n8
-	n8["Akıllı Ev Sistemleri"] --- n6
-	style n7 fill:#00BF63
-	n5@{ shape: "lin-cyl", label: "Server" }
-```
-</Frame>
+<Tabs>
+  <Tab title="Örnek Akıllı Ev Sistem Ağı">
+    ```mermaid
+    flowchart
+      n1@{ label: "Rectangle" }
+      n1["Robot Süpürge"]
+      n3["Klima"]
+      n1 --- n6
+      n2["Aydınlatma"] --- n6
+      n3 --- n6
+      n6@{ shape: "diam", label: "WIFI Modem" }
+      n6@{ shape: "hex", label: "Wireless" }
+      n6
+      n5@{ shape: "stadium", label: "Sunucu" }
+      n6@{ shape: "hex", label: "WIFI" } --- n5
+      n6@{ shape: "dbl-circ", label: "WIFI" }
+      n7@{ shape: "doc", label: "Mobil Telefon" }
+      style n6 fill:#C1FF72
+      n7@{ shape: "diam", label: "Mobil Telefon" }
+      n5@{ shape: "stadium", label: "Üretici Sunucusu" } --- n7@{ shape: "hex", label: "Mobil Telefon" }
+      n8
+      n8["Akıllı Ev Sistemleri"] --- n6
+      style n7 fill:#00BF63
+      n5@{ shape: "lin-cyl", label: "Server" }
+    ```
+  </Tab>
+  <Tab title="ISP Modem ve Lokal Ağ">
+    <img noZoom height="100" width="200" src="/images/cloud/isp-nat-local.png" alt="Tailscale" />
+  </Tab>
+</Tabs>
 
 Temel mantığı bilgisayarınıza kurmuş olduğunuz bir servis ile Tailscale haberleşmesi yaparak dış dünyadan yine tailscale
 üzerinden bilgisayarınıza erişmenizi sağlamasıdır.
 
 ### 3.1. Tailscale Kurulum
+
+<Frame>
+    <img src="/images/cloud/tailscale-web.jpg" alt="Tailscale" />
+</Frame>
 
 Bu [bağlantıya](https://login.tailscale.com/start) tıklayarak Github, Google veya Microsoft hesabınızla 
 Tailscale'e kayıt olunuz.
