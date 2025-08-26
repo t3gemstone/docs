@@ -1,10 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
-  "name": "T3 Foundation Gemstone Boards",
+  "name": "T3 Foundation Gemstone Project",
   "favicon": "/logo/favicon.png",
+  "description": "T3 Gemstone Development Boards",
   "colors": {
-    "primary": "#ad152a",
+    "primary": "#AD152A",
     "light": "#AB1A18",
     "dark": "#AB1A18"
   },
@@ -37,9 +38,8 @@
     "socials": {
       "github": "https://github.com/t3gemstone",
       "linkedin": "https://tr.linkedin.com/company/teknofest",
-      "x": "https://x.com/teknofest",
       "youtube": "https://www.youtube.com/@teknofest",
-      "instagram": "https://www.instagram.com/teknofest"
+      "website": "https://sosyal.teknofest.app/@gemstone"
     }
   },
   "navigation": {
@@ -330,7 +330,7 @@
       "charset": "UTF-8",
       "viewport": "width=device-width, initial-scale=1.0",
       "description": "T3 Gemstone Development Boards",
-      "keywords": "t3, t3vakfi, t3gemstone, gemstone, gemstoneboard, t3foundation, embedded, realtime, iot, robotics, uav, drone, teknofest",
+      "keywords": "t3, t3vakfi, t3gemstone, gemstone, gemstoneboard, obsidian, obsidyen, kuvars, quartz, t3foundation, embedded, realtime, iot, robotics, uav, drone, teknofest, github",
       "author": "T3 Foundation",
       "robots": "index, follow",
       "googlebot": "index, follow",
@@ -350,7 +350,6 @@
       "category": "Technology",
       "target": "all",
       "HandheldFriendly": "True",
-      "MobileOptimized": "320",
       "apple-mobile-web-app-capable": "yes",
       "apple-mobile-web-app-status-bar-style": "black",
       "apple-mobile-web-app-title": "T3 Gemstone",
@@ -359,7 +358,7 @@
   },
   "integrations": {
     "ga4": {
-        "measurementId": "G-Y2NEG1WBJW"
+      "measurementId": "G-Y2NEG1WBJW"
     }
   }
 }
