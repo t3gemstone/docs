@@ -142,7 +142,8 @@
               "tr/projects/preempt-rt",
               "tr/projects/nuttx",
               "tr/projects/cloud",
-              "tr/projects/vtol"
+              "tr/projects/vtol",
+              "tr/projects/swupdate"
             ]
           },
           {
@@ -277,7 +278,8 @@
               "en/projects/preempt-rt",
               "en/projects/nuttx",
               "en/projects/cloud",
-              "en/projects/vtol"
+              "en/projects/vtol",
+              "en/projects/swupdate"
             ]
           },
           {
