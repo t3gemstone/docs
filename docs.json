@@ -139,11 +139,12 @@
             "icon": "code",
             "pages": [
               "tr/projects/introduction",
+              "tr/projects/cloud",
               "tr/projects/preempt-rt",
               "tr/projects/nuttx",
-              "tr/projects/cloud",
               "tr/projects/vtol",
-              "tr/projects/swupdate"
+              "tr/projects/swupdate",
+              "tr/projects/mediabox"
             ]
           },
           {
@@ -275,11 +276,12 @@
             "icon": "code",
             "pages": [
               "en/projects/introduction",
+              "en/projects/cloud",
               "en/projects/preempt-rt",
               "en/projects/nuttx",
-              "en/projects/cloud",
               "en/projects/vtol",
-              "en/projects/swupdate"
+              "en/projects/swupdate",
+              "en/projects/mediabox"
             ]
           },
           {
