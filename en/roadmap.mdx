@@ -6,11 +6,11 @@ icon: "location-crosshairs"
 
 <Tip>
 This section contains new projects planned with Gemstone and their completion stages.
-To contribute by taking part in related projects, visit the Github pages or community forums.
+To contribute by taking part in the relevant projects, visit their Github pages or community forums.
 </Tip>
 
 <Card horizontal title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
-`In Progress` `%20`
+`In Progress` `40%`
 </Card>
 <Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
 `Not Started Yet` `0%`
@@ -21,9 +21,9 @@ To contribute by taking part in related projects, visit the Github pages or comm
 
 ## Apache Nuttx
 
-Pixhawk
-[Flight Controller](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
-hardware mostly contains STM32 with Cortex-M architecture. The autopilot named PX4 runs on the real-time operating system called Apache Nuttx and does not have support for Texas AM67a.
+Pixhawk [Flight Controller](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
+hardware mostly contains STM32 with Cortex-M architecture. The autopilot named PX4 runs on the real-time operating
+system named Apache Nuttx and does not have support for Texas AM67a.
 
 <Columns cols={2}>
   <Frame caption="Apache Nuttx RTOS">
@@ -38,15 +38,24 @@ hardware mostly contains STM32 with Cortex-M architecture. The autopilot named P
   </Frame>
 </Columns>
 
-In this project, the goal is to run Apache Nuttx and PX4 on Cortex-R5 cores found in T3-GEM-O1 development boards. The current status and tasks to be done are in the table below.
+This project aims to run Apache Nuttx and PX4 on the Cortex-R5 cores found on T3-GEM-O1 development boards. The current
+status and pending tasks are in the table below.
 
-|               |                  |
-| :------------ | ---------------: |
-| Running NuttX on R5 cores | `Completed` |
-| Debug support with JTAG | `Completed` |
-| GPIO usage | **In Progress** |  
-| Serial port driver support | Volunteer Developer Needed |
-| IPC communication between NuttX (Cortex-R5) and Linux (Cortex A57) | Volunteer Developer Needed |
+|                                                                                                              |                            |
+|:-------------------------------------------------------------------------------------------------------------|---------------------------:|
+| Running NuttX on R5 cores                                                                                    | `Completed`                |
+| GPIO driver support                                                                                          | `Completed`                |
+| Serial port driver support                                                                                   | `Completed`                |
+| Access to NuttShell (nsh) console                                                                            | `Completed`                |
+| Loading NuttX onto the R5 core via U-Boot or Linux using the remoteproc mechanism                            | `Completed`                |
+| Communication between NuttX running on the R5 core and Linux running on the A53 core via Texas IPC mechanism | Volunteer Developer Needed |
+| PWM driver support                                                                                           | Volunteer Developer Needed |
+| SPI driver support                                                                                           | Volunteer Developer Needed |
+| I2C driver support                                                                                           | Volunteer Developer Needed |
+| Pinmux settings for all pins on the 40-pin HAT                                                               | Volunteer Developer Needed |
+| USB driver support                                                                                           | Volunteer Developer Needed |
+| SD card and eMMC driver support                                                                              | Volunteer Developer Needed |
+| CAN Bus driver support                                                                                       | Volunteer Developer Needed |
 
 ## PX4 Autopilot
 
@@ -62,7 +71,7 @@ The goal is to run the PX4 autopilot on Gemstone Linux (without NuttX).
 
 ## Phoenix RTOS
 
-The goal is to run the open-source microkernel architecture real-time operating system named Phoenix on Gemstone.
+The goal is to run the open-source real-time operating system Phoenix, which has a microkernel architecture, on Gemstone.
 
 <Frame caption="Phoenix RTOS">
   <a href="https://github.com/t3gemstone/phoenix-rtos-project" target="_blank">
