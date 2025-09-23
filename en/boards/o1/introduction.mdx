@@ -3,39 +3,220 @@ title: 'Board Specifications'
 description: 'T3 Gemstone Obsidian'
 ---
 
-# Overview
+import { Card, CardGroup } from '/components/Card';
 
-<Frame caption="Gemstone Obsidian">
-  <img className="rounded-lg" src="/images/o1-board/21-sideview.png" />
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
+  <img className="rounded-lg" src="/images/o1-board/02-back.png" />
 </Frame>
 
-* Texas Instruments AM67A
-  - Quad-core 1.4GHz 64-bit Arm® Cortex®-A53
-  - Dual-core 800MHz Arm® Cortex® R5 MCU
-  - Dual-core 2 TOPS C7x DSP Hardware Accelerator
-  - 50 GFlop GPU
-* 32GB eMMC
-* 9-axis IMU sensor
-* M2-SSD Connector
+<div className="text-2xl font-light mt-4 mb-8">
+High-performance development board based on Texas Instruments AM67A processor
+</div>
 
-# Specifications
+<CardGroup cols={3}>
+  <Card title="CPU" icon="microchip">
+    Quad-core 64-bit ARM Cortex-A53 @1.4 GHz for running high-level operating systems such as Linux
+  </Card>
 
-| Component               | Description                               |
-| :---------------------- | :---------------------------------------- |
-| Processor               | [Texas Instruments AM67A](https://www.ti.com/product/AM67A), Quad-core 64-bit Arm® Cortex®-A53 @1.4 GHz, multi-core Arm/GPU processor, DSP, AI accelerator |
-| RAM                     | 4GB LPDDR4 (x32)                       |
-| Wifi/Bluetooth          | WL1835 802.11ax Wi-Fi 6, Bluetooth Low Energy (BLE) 5.4  |
-| USB                     | 2 x USB 3.0 TypeA ports (5Gbps), 1 x USB 2.0 TypeA, 2 x USB 2.0 TypeC |
-| Ethernet                | 1 x Gigabit Ethernet                   |
-| Camera/Display          | 2 x 4-lane MIPI connectors              |
-| Video Output            | 1 x HDMI display, 1 x DSI MIPI Display |
-| Realtime Clock          | Externally battery-backed RTC                |
-| PCIe Connector          | 1 x PCI-Express® Gen3                  |
-| Storage                 | eMMC + microSD card slot (UHS-1)      |
-| GPU                     | [BXS-4-64](https://www.imaginationtech.com/product/img-bxs-4-64-mc1/) Imagination Technologies |
-| JTAG                    | 1 x JTAG connector                     |
-| Expansion Connector     | 40-pin                                 |
-| CanBus                  | [TCAN1462-Q1](https://www.ti.com/lit/ds/symlink/tcan1462-q1.pdf) Can FD Transceiver         |
-| EEPROM                  | [AT24C512C](https://ww1.microchip.com/downloads/en/devicedoc/atmel-8720-seeprom-at24c512c-datasheet.pdf) I2C-Compatible (2-wire) Serial EEPROM 512-Kbit |
-| IMU                     | [ICM-20948](https://invensense.tdk.com/products/motion-tracking/9-axis/icm-20948/) 9-Axis MEMS MotionTracking |
-| eMMC                    | [FEMDMW032G-88A19](https://lcsc.com/datasheet/lcsc_datasheet_2409241206_FORESEE-FEMDMW032G-88A19_C3249969.pdf) 32GB eMMC Storage |
+  <Card title="MCU" icon="microchip" iconType="light">
+    Dual single-core ARM Cortex-R5F @800 MHz for running real-time MCU applications
+  </Card>
+
+  <Card title="AI Accelerator" icon="microchip-ai">
+    Dual 2 TOPS (4 TOPS total) deep learning accelerators for running AI applications
+  </Card>
+
+  <Card title="GPU" icon="display">
+    50 GFLOPS computing power, fully compliant with OpenGL ES 3.2, OpenCL 1.2 EP and Vulkan 1.2 APIs
+  </Card>
+
+  <Card title="4GB RAM" icon="memory">
+    LPDDR4 system memory
+  </Card>
+
+  <Card title="32GB eMMC" icon="hard-drive">
+    Onboard flash storage that allows the board to operate without a microSD card
+  </Card>
+</CardGroup>
+
+# Core Processing Platform
+
+<CardGroup cols={2}>
+  <Card title="Processor" icon="microchip">
+    **→ [TI AM67A](https://www.ti.com/product/AM67A)**
+
+    Quad-core 64-bit ARM Cortex-A53 @1.4 GHz, multi-core ARM/GPU processors, DSP, AI accelerators
+  </Card>
+
+  <Card title="Graphics" icon="display">
+    **→ [IMG BXS-4-64](https://www.imaginationtech.com/product/img-bxs-4-64-mc1/)**
+
+    Advanced GPU for high-performance graphics processing
+  </Card>
+
+  <Card title="System Memory" icon="memory">
+    **→ [4GB LPDDR4](https://www.longsys.com/products/embedded-storage/embedded-storage/lpddr.html)**
+
+    x32 bit width high-speed system memory
+  </Card>
+</CardGroup>
+
+# Storage
+
+<CardGroup cols={2}>
+  <Card title="Onboard Storage" icon="hard-drive">
+    **→ [32GB eMMC](https://www.longsys.com/products/embedded-storage/embedded-storage/automotive-industriai-wide-temperature-industriai-emmc.html)**
+
+    High-speed onboard flash storage
+
+    **→ [512Kbit EEPROM](https://www.microchip.com/en-us/product/AT24C512C)**
+
+     I2C-compatible serial EEPROM for configuration storage
+  </Card>
+
+  <Card title="Expandable Storage" icon="sd-card">
+    **→ microSD Card Slot**
+
+    Supports high-speed SDR104 mode
+
+    **→ M.2 2280 SSD Port**
+
+    Supports high-capacity NVMe SSD
+  </Card>
+</CardGroup>
+
+# Network Connections
+
+<CardGroup cols={2}>
+  <Card title="Wireless" icon="wifi">
+    **→ [TI WL1835MOD](https://www.ti.com/product/WL1835MOD)**
+
+    Wi-Fi 4 (802.11n), external dual 2.4 GHz antennas<br></br>
+    Bluetooth 5.1, Bluetooth Low Energy (BLE)
+  </Card>
+
+  <Card title="Wired" icon="network-wired">
+    **→ Gigabit Ethernet**
+
+    RJ45 Gigabit Ethernet port for high-speed wired connectivity
+
+    **→ [CAN Bus](https://www.ti.com/product/TCAN1462-Q1)**
+
+    CAN FD transceiver for automotive applications
+  </Card>
+</CardGroup>
+
+# I/O Interfaces
+
+<CardGroup cols={2}>
+  <Card title="USB Ports" icon="usb">
+    **→ 2 x USB 3.0 Type-A**
+
+    Supports 5Gbps high-speed operation
+
+    **→ 1 x USB 2.0 Type-A**
+
+    **→ 1 x USB 2.0 Type-C**
+
+    **→ 1 x USB 2.0 Type-C (Device + PD)**
+
+    Supports USB device mode and Power Delivery (PD)
+  </Card>
+
+  <Card title="Display & Camera Interfaces" icon="camera">
+    **→ 2 x 4-lane MIPI CSI<sup>1</sup>**
+
+    Supports wide range of camera modules such as Raspberry Pi Camera V2
+
+    **→ 1 x 4-lane MIPI DSI**
+
+    Supports wide range of touch displays such as Raspberry Pi 7" or Waveshare 7" and 10.1" displays
+
+    **→ 1 x HDMI**
+
+    Full-size HDMI output for external displays
+
+    ---
+
+    <span className="text-xs"><sup>1</sup> One of the two ports is muxed with DSI capability, you can select between dual CSIs or one CSI & one DSI configurations</span>
+  </Card>
+
+  <Card title="Expansion Interfaces" icon="code">
+    **→ 40-pin GPIO Header**
+
+    Default pinout is compatible with Raspberry Pi
+
+    **→ JTAG Connector**
+
+    ARM Cortex 10-pin JTAG connector for debugging Cortex-R5 MCU cores
+
+    **→ UART Connector**
+
+    3-pin 2.54mm connector provides access to serial console for debugging and system management
+  </Card>
+</CardGroup>
+
+# Onboard Sensors
+
+<CardGroup cols={2}>
+  <Card title="Motion Sensing" icon="compass">
+    **→ [InvenSense ICM-20948](https://invensense.tdk.com/products/motion-tracking/9-axis/icm-20948/)**
+
+    9-Axis MEMS MotionTracking sensor with accelerometer, gyroscope, and magnetometer
+  </Card>
+
+  <Card title="Environmental Monitoring" icon="temperature-half">
+    **→ [Bosch BMP390](https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/pressure-sensors-bmp390.html)**
+
+    24-bit barometric pressure sensor
+
+    **→ [TI HDC2010](https://www.ti.com/product/HDC2010)**
+
+    Humidity and temperature sensor
+  </Card>
+</CardGroup>
+
+# Power & System Control
+
+<CardGroup cols={2}>
+  <Card title="Power Input" icon="plug">
+    **→ USB Type-C Power (5-9V/3A)**
+
+    Primary power input with USB Power Delivery support
+
+    **→ DC Power Connector (5-12V/3A)**
+
+    Alternative power input
+  </Card>
+
+  <Card title="System Management" icon="toggle-on">
+    **→ Boot Mode Switch**
+
+    Hardware switch for selecting different boot modes and configurations
+
+    **→ Power Button**
+
+    Dedicated button for board reset functionality
+
+    **→ Programmable Button**
+
+    User-configurable button
+
+    **→ Red-Green LEDs**
+
+    Programmable status indicators for system monitoring and user feedback
+  </Card>
+
+  <Card title="Thermal" icon="fan">
+    **→ Fan Connector**
+
+    4-pin JST SH connector for active cooling solutions with PWM fan control
+  </Card>
+
+  <Card title="Real-Time Clock" icon="clock">
+    **→ [Maxim DS1340](https://www.analog.com/en/products/ds1340.html)**
+
+    I2C RTC module with external battery connector (2-pin JST SH)
+  </Card>
+</CardGroup>

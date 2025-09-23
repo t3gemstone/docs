@@ -1,41 +1,223 @@
 ---
 title: 'Kart Özellikleri'
-description: 'T3 Gemstone Obsidyen'
+description: 'T3 Gemstone Obsidian'
 ---
 
-# Özet
+import { Card, CardGroup } from '/components/Card';
 
-<Frame caption="Gemstone Obsidian">
-  <img className="rounded-lg" src="/images/o1-board/21-sideview.png" />
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
+  <img className="rounded-lg" src="/images/o1-board/02-back.png" />
 </Frame>
 
-* Texas Instruments AM67A
-  - 4 çekirdekli 1.4GHz 64-bit Arm® Cortex®-A53
-  - 2 çekirdekli 800MHz Arm® Cortex® R5 MCU
-  - 2 çekirdekli 2 TOPS C7x DSP Donanım Hızlandırıcı
-  - 50 GFlop GPU
-* 32GB Dahili eMMC
-* 9-eksen IMU Sensörü
-* M2-SSD Yuvası
+<div className="text-2xl font-light mt-4 mb-8">
+Texas Instruments AM67A işlemcisi tabanlı yüksek performanslı geliştirme kartı
+</div>
 
-# Özellikler
+<CardGroup cols={3}>
+  <Card title="CPU" icon="microchip">
+    Dört çekirdekli 64-bit ARM Cortex-A53 @1.4 GHz, Linux gibi üst düzey işletim sistemlerini çalıştırır
+  </Card>
 
-| Bileşen               | Açıklama                               |
-| :-------------------- | :------------------------------------- |
-| İşlemci               | [Texas Instruments AM67A](https://www.ti.com/product/AM67A), 4 çekirdekli 64-bit Arm® Cortex®-A53 @1.4 GHz, çok çekirdekli Arm/GPU işlemci, DSP, yapay zeka hızlandırıcısı |
-| RAM                   | 4GB LPDDR4 (x32)                       |
-| Wifi/Bluetooth        | WL1835 802.11ax Wi-Fi 6, Bluetooth Low Energy (BLE) 5.4  |
-| USB                   | 2 x USB 3.0 TypeA ports (5Gbps), 1 x USB 2.0 TypeA, 2 x USB 2.0 TypeC |
-| Ethernet              | 1 x Gigabit Ethernet                   |
-| Kamera/Ekran          | 2 x 4-lane MIPI konnektör              |
-| Görüntü Çıkışı        | 1 x HDMI display, 1 x DSI MIPI Display |
-| Realtime Clock        | Harici pil destekli RTC                |
-| PCIe Konnektör        | 1 x PCI-Express® Gen3                  |
-| Disk                  | eMMC + microSD card slotu (UHS-1)      |
-| GPU                   | [BXS-4-64](https://www.imaginationtech.com/product/img-bxs-4-64-mc1/) Imagination Technologies |
-| JTAG                  | 1 x JTAG konnektör                     |
-| Expansion Konnektörü  | 40-pin                                 |
-| CanBus                | [TCAN1462-Q1](https://www.ti.com/lit/ds/symlink/tcan1462-q1.pdf) Can FD Transceiver         |
-| EEPROM                | [AT24C512C](https://ww1.microchip.com/downloads/en/devicedoc/atmel-8720-seeprom-at24c512c-datasheet.pdf) I2C-Compatible (2-wire) Serial EEPROM 512-Kbit |
-| IMU                   | [ICM-20948](https://invensense.tdk.com/products/motion-tracking/9-axis/icm-20948/) 9-Axis MEMS MotionTracking |
-| eMMC                  | [FEMDMW032G-88A19](https://lcsc.com/datasheet/lcsc_datasheet_2409241206_FORESEE-FEMDMW032G-88A19_C3249969.pdf) 32GB eMMC Storage |
+  <Card title="MCU" icon="microchip" iconType="light">
+    İki adet tek çekirdekli ARM Cortex-R5F @800 MHz, gerçek zamanlı MCU uygulamalarını çalıştırır
+  </Card>
+
+  <Card title="AI Hızlandırıcı" icon="microchip-ai">
+    İki adet 2 TOPS (toplam 4 TOPS) derin öğrenme hızlandırıcısı, AI uygulamalarını çalıştırır
+  </Card>
+
+  <Card title="GPU" icon="display">
+    50 GFLOPS hesaplama gücü, OpenGL ES 3.2, OpenCL 1.2 EP ve Vulkan 1.2 API'leri ile tam uyumlu
+  </Card>
+
+  <Card title="4GB RAM" icon="memory">
+    LPDDR4 sistem belleği
+  </Card>
+
+  <Card title="32GB eMMC" icon="hard-drive">
+    Kartın microSD kart olmadan çalışabilmesini sağlayan yerleşik flash depolama alanı
+  </Card>
+</CardGroup>
+
+# Ana İşlem Platformu
+
+<CardGroup cols={2}>
+  <Card title="İşlemci" icon="microchip">
+    **→ [TI AM67A](https://www.ti.com/product/AM67A)**
+
+    Dört çekirdekli 64-bit ARM Cortex-A53 @1.4 GHz, çok çekirdekli ARM/GPU işlemciler, DSP, AI hızlandırıcıları
+  </Card>
+
+  <Card title="Grafik" icon="display">
+    **→ [IMG BXS-4-64](https://www.imaginationtech.com/product/img-bxs-4-64-mc1/)**
+
+    Yüksek performanslı grafik işleme için gelişmiş GPU
+  </Card>
+
+  <Card title="Sistem Belleği" icon="memory">
+    **→ [4GB LPDDR4](https://www.longsys.com/products/embedded-storage/embedded-storage/lpddr.html)**
+
+    x32 bit genişlikte yüksek hızlı sistem belleği
+  </Card>
+</CardGroup>
+
+# Depolama
+
+<CardGroup cols={2}>
+  <Card title="Yerleşik Depolama" icon="hard-drive">
+    **→ [32GB eMMC](https://www.longsys.com/products/embedded-storage/embedded-storage/automotive-industriai-wide-temperature-industriai-emmc.html)**
+
+    Yerleşik flash depolama
+
+    **→ [512Kbit EEPROM](https://www.microchip.com/en-us/product/AT24C512C)**
+
+    Konfigürasyon depolaması için I2C uyumlu seri EEPROM
+  </Card>
+
+  <Card title="Genişletilebilir Depolama" icon="sd-card">
+    **→ microSD Kart Yuvası**
+
+    Yüksek hızlı SDR104 modunu destekler
+
+    **→ M.2 2280 SSD Portu**
+
+    Yüksek kapasiteli NVMe SSD destekler
+  </Card>
+</CardGroup>
+
+# Ağ Bağlantıları
+
+<CardGroup cols={2}>
+  <Card title="Kablosuz" icon="wifi">
+    **→ [TI WL1835MOD](https://www.ti.com/product/WL1835MOD)**
+
+    Wi-Fi 4 (802.11n), harici iki adet 2.4 GHz anten<br></br>
+    Bluetooth 5.1, Bluetooth Low Energy (BLE)
+  </Card>
+
+  <Card title="Kablolu" icon="network-wired">
+    **→ Gigabit Ethernet**
+
+    Yüksek hızlı kablolu bağlantı için RJ45 Gigabit Ethernet portu
+
+    **→ [CAN Bus](https://www.ti.com/product/TCAN1462-Q1)**
+
+    Otomotiv uygulamaları için CAN FD dönüştürücü
+  </Card>
+
+</CardGroup>
+
+# I/O Arayüzleri
+
+<CardGroup cols={2}>
+  <Card title="USB Portları" icon="usb">
+    **→ 2 x USB 3.0 Type-A**
+
+    5Gbps yüksek hızlı işlemi destekler
+
+    **→ 1 x USB 2.0 Type-A**
+
+    **→ 1 x USB 2.0 Type-C**
+
+    **→ 1 x USB 2.0 Type-C (Device + PD)**
+
+    USB cihaz modu ve Power Delivery (PD) destekler
+  </Card>
+
+  <Card title="Ekran ve Kamera Arayüzleri" icon="camera">
+    **→ 2 x 4-lane MIPI CSI<sup>1</sup>**
+
+    Birçok kamera modülünü destekler, örneğin Raspberry Pi Kamera V2
+
+    **→ 1 x 4-lane MIPI DSI**
+
+    Birçok dokunmatik ekranı destekler, örneğin Raspberry Pi 7" veya Waveshare 7" ve 10.1" ekranları
+
+    **→ 1 x HDMI**
+
+    Harici ekranlar için tam boyut HDMI çıkışı
+
+    ---
+
+    <span className="text-xs"><sup>1</sup> İki porttan biri DSI yeteneği ile çoklandırılmıştır, çift CSI veya bir CSI & bir DSI yapılandırmaları arasında seçim yapabilirsiniz</span>
+  </Card>
+
+  <Card title="Genişletme Arayüzleri" icon="code">
+    **→ 40-pin GPIO Başlığı**
+
+    Varsayılan pin çıkışı Raspberry Pi ile uyumludur
+
+    **→ JTAG Konnektörü**
+
+    Cortex-R5 MCU çekirdeklerinin hata ayıklaması için ARM Cortex 10-pin JTAG konnektörü
+
+    **→ UART Konnektörü**
+
+    Hata ayıklama ve sistem yönetimi için seri konsola erişim sağlayan 3-pin 2.54mm konnektörü
+  </Card>
+</CardGroup>
+
+# Yerleşik Sensörler
+
+<CardGroup cols={2}>
+  <Card title="Hareket Algılama" icon="compass">
+    **→ [InvenSense ICM-20948](https://invensense.tdk.com/products/motion-tracking/9-axis/icm-20948/)**
+
+    İvmeölçer, jiroskop ve manyetometre ile 9-Eksen MEMS Hareket İzleme sensörü
+  </Card>
+
+  <Card title="Çevresel Ölçüm" icon="temperature-half">
+    **→ [Bosch BMP390](https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/pressure-sensors-bmp390.html)**
+
+    24-bit barometrik basınç sensörü
+
+    **→ [TI HDC2010](https://www.ti.com/product/HDC2010)**
+
+    Nem ve sıcaklık sensörü
+  </Card>
+</CardGroup>
+
+# Güç ve Sistem Kontrolü
+
+<CardGroup cols={2}>
+  <Card title="Güç Girişi" icon="plug">
+    **→ USB Type-C Güç (5-9V/3A)**
+
+    USB Power Delivery desteği ile birincil güç girişi
+
+    **→ DC Güç Konnektörü (5-12V/3A)**
+
+    Alternatif güç girişi
+  </Card>
+
+  <Card title="Sistem Yönetimi" icon="toggle-on">
+    **→ Boot Modu Anahtarı**
+
+    Farklı boot modları ve yapılandırmalarını seçmek için donanım anahtarı
+
+    **→ Güç Düğmesi**
+
+    Kart resetleme işlevi için özel düğme
+
+    **→ Programlanabilir Düğme**
+
+    Kullanıcı tarafından yapılandırılabilen düğme
+
+    **→ Kırmızı-Yeşil LED'ler**
+
+    Sistem izleme ve kullanıcı geri bildirimi için programlanabilir durum göstergeleri
+  </Card>
+
+  <Card title="Termal" icon="fan">
+    **→ Fan Konnektörü**
+
+    PWM fan kontrolü ile aktif soğutma çözümleri için 4-pin JST SH konnektör
+  </Card>
+
+  <Card title="Gerçek Zamanlı Saat" icon="clock">
+    **→ [Maxim DS1340](https://www.analog.com/en/products/ds1340.html)**
+
+    Harici pil bağlantısı (2-pin JST SH) ile I2C RTC modülü
+  </Card>
+</CardGroup>
