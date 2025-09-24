@@ -142,6 +142,7 @@
               "tr/projects/cloud",
               "tr/projects/preempt-rt",
               "tr/projects/nuttx",
+              "tr/projects/ardupilot",
               "tr/projects/vtol",
               "tr/projects/swupdate",
               "tr/projects/mediabox"
@@ -279,6 +280,7 @@
               "en/projects/cloud",
               "en/projects/preempt-rt",
               "en/projects/nuttx",
+              "en/projects/ardupilot",
               "en/projects/vtol",
               "en/projects/swupdate",
               "en/projects/mediabox"
