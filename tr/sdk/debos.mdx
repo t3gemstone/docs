@@ -19,7 +19,7 @@ Devam etmeden önce aşağıdaki dosyaları incelemiş olduğunuza emin olunuz.
 </Tip>
 
 Gemstone geliştirme kartlarında, dokümanın yazıldığı tarih itibariyle
-<Tooltip tip="ubuntu-22, ubuntu-24, debian-11, debian-12">4 Dağıtım</Tooltip>, 
+<Tooltip tip="ubuntu-22, ubuntu-24, debian-11, debian-12, pardus-23">4 Dağıtım</Tooltip>, 
 <Tooltip tip="Desktop, Kiosk, Minimal">3 İmaj Türü</Tooltip> ve 
 <Tooltip tip="beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64">4 Makine</Tooltip> bulunmaktadır.
 Her bir İmaj, Makine ve Dağıtımın kendine özgü farklılıkları, özelleştirme ayarları mevcuttur.
@@ -47,11 +47,11 @@ task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu
 </ParamField>
 
 <ParamField body="DISTRO_BASE" default="ubuntu" required>
-`ubuntu` `debian`
+`ubuntu` `debian` `pardus`
 </ParamField>
 
 <ParamField body="DISTRO_SUITE" default="jammy" required>
-`jammy` `noble` `bullseye` `bookworm`
+`jammy` `noble` `bullseye` `bookworm` `yirmiuc-deb`
 </ParamField>
 
 <ParamField body="DISTRO_ARCH" default="amd64" required>
@@ -66,7 +66,7 @@ Derleme sonucu oluşan **.img** uzantılı imaj dosyasının boyutudur.
 
 Gemstone Imager uygulaması ile yeni bir karta imaj yükleme sürecinde, yukarıdaki dağıtımlar seçilebilmektedir.
 Varsayılan olarak Gemstone geliştirme kartında **Ubuntu 22.04** dağıtımı tercih edilmekle birlikte farklı
-projelerdeki ihtiyaçlar göz önüne alınarak Debian 11 ve 12 imajları da desteklenmiştir.
+projelerdeki ihtiyaçlar göz önüne alınarak Debian 11, Debian 12 ve Pardus 23 imajları da desteklenmiştir.
 
 <Tip>
 Debian dağıtımlarında (kabaca ifade edilecek olursa) temel ilke; **güvenlik ve kararlılık** iken Ubuntu
@@ -90,6 +90,10 @@ Mevcut kodları Debian 11 için stabil olan projelerde tercih edilmektedir.
 
 <ParamField body="Debian 12" type="DISTRO_BASE=debian DISTRO_SUITE=bookworm">
 Debian'ın en güncel sürümüdür.
+</ParamField>
+
+<ParamField body="Pardus 23" type="DISTRO_BASE=pardus DISTRO_SUITE=yirmiuc-deb">
+Pardus'un en güncel sürümüdür.
 </ParamField>
 
 ## 3. İmajlar

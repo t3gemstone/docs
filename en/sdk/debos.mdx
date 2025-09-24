@@ -19,7 +19,7 @@ Before proceeding, make sure you have reviewed the following files:
 </Tip>
 
 As of the date this document was written, Gemstone development boards support 
-<Tooltip tip="ubuntu-22, ubuntu-24, debian-11, debian-12">4 Distributions</Tooltip>, 
+<Tooltip tip="ubuntu-22, ubuntu-24, debian-11, debian-12, pardus-23">4 Distributions</Tooltip>, 
 <Tooltip tip="Desktop, Kiosk, Minimal">3 Image Types</Tooltip>, and 
 <Tooltip tip="beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64">4 Machines</Tooltip>.
 Each Image, Machine, and Distribution has its own unique differences and customization settings.
@@ -47,11 +47,11 @@ A few parameters are summarized here. For the rest, refer to the `vars` section 
 </ParamField>
 
 <ParamField body="DISTRO_BASE" default="ubuntu" required>
-  `ubuntu` `debian`
+  `ubuntu` `debian` `pardus`
 </ParamField>
 
 <ParamField body="DISTRO_SUITE" default="jammy" required>
-  `jammy` `noble` `bullseye` `bookworm`
+  `jammy` `noble` `bullseye` `bookworm` `yirmiuc-deb`
 </ParamField>
 
 <ParamField body="DISTRO_ARCH" default="amd64" required>
@@ -66,7 +66,7 @@ A few parameters are summarized here. For the rest, refer to the `vars` section 
 
 During the process of uploading an image to a new board using the Gemstone Imager application, the above 
 distributions can be selected. By default, **Ubuntu 22.04** is preferred on Gemstone development boards, 
-but Debian 11 and 12 images are also supported to meet the needs of different projects.
+but Debian 11, Debian 12 and Pardus 23 images are also supported to meet the needs of different projects.
 
 <Tip>
 In Debian distributions (roughly speaking), the core principle is **security and stability**, while Ubuntu 
@@ -89,6 +89,10 @@ Used in projects where the current code is stable for Debian 11.
 
 <ParamField body="Debian 12" type="DISTRO_BASE=debian DISTRO_SUITE=bookworm">
 The latest version of Debian.
+</ParamField>
+
+<ParamField body="Pardus 23" type="DISTRO_BASE=pardus DISTRO_SUITE=yirmiuc-deb">
+The latest version of Pardus.
 </ParamField>
 
 ## 3. Images
@@ -131,7 +135,7 @@ file and performs a 4-step process to create the `.img` file/distribution.
 
 <Steps>
   <Step title="Debootstrap/Apt">
-    Based on the specified Distribution (Ubuntu or Debian), it downloads all **.deb** packages from the respective 
+    Based on the specified Distribution (Ubuntu,Debian or Pardus), it downloads all **.deb** packages from the respective 
     distribution's APT servers using the `debootstrap` tool.
   </Step>
   <Step title="Package Installation">
