@@ -19,7 +19,7 @@ Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
 - Overlay eklemeyi.
 </Tip>
 
-### CSI Nedir ?
+### CSI Nedir?
 
 CSI (Camera Serial Interface), mobil cihazlarda ve gömülü sistemlerde yüksek çözünürlüklü kameralar için tasarlanmış bir seri veri yoludur.
 Bu arayüz, MIPI (Mobile Industry Processor Interface) ittifakı tarafından geliştirilmiş olup, işlemci ile kamera sensörü arasında yüksek hızda, güvenilir bir şekilde görüntü ve video verisi aktarımını sağlar.
@@ -35,7 +35,7 @@ Genellikle akıllı telefonlar, dronlar ve mini cep bilgisayarlarla kullanılan 
   CSI kameranın çalışması için boot partition'da yer alan uEnv.txt dosyasına ilgili overlay eklenmelidir.
   </Step>
   <Step title="Kartın Yeniden Başlatılması">
-  Tüm bu adımları tamamladıktan sonra cihazı yeniden başlatmak yeterli olacaktır.
+  Tüm bu adımları tamamladıktan sonra kartı yeniden başlatmak yeterli olacaktır.
   </Step>
 </Steps>
 
@@ -74,9 +74,7 @@ Komutu sudo ile kullandığımız için şifre soracaktır. Değiştirmediyseniz
 
 <SnippetUEnv />
 
-`overlays=` satırının sonuna boşluk bırakarak aşağıdaki dosyayının adını ekleyiniz.
-
-Bir önceki komutla elde ettiğiniz dosya adını ekleyin. Örneğin CSI0 (ethernete uzak olan konnektör) konnektörüne IMX219 kamerasını bağladığınızda
+Bir önceki komutla elde ettiğiniz dosya adını `overlays=` satırının sonuna boşluk bırakarak ekleyin. Örneğin CSI0 (ethernete uzak olan konnektör) konnektörüne IMX219 kamerasını bağladığınızda
 ```
 k3-am67a-t3-gem-o1-csi0-imx219.dtbo
 ```
@@ -88,15 +86,15 @@ dosya adını kullanmalısınız.
 
 ### 3. Kartın Yeniden Başlatılması
 
-`reboot` komutu ile cihazı yeniden başlatılmalı.
+`reboot` komutu ile kart yeniden başlatılmalı.
 
 ```bash
 sudo reboot
 ```
 
-### 4. gemstone-camera-setup Scriptinin Çalıştırılması
+### 4. `gemstone-camera-setup` Scriptinin Çalıştırılması
 
-`gemstone-camera-setup` scripti ile cihaza bağlı olan kameraların kurulumu sağlanmalıdır.
+`gemstone-camera-setup` scripti ile karta bağlı olan kameraların kurulumu sağlanmalıdır.
 
 <SnippetCameraSetup />
 
@@ -104,7 +102,7 @@ Yukarıdakine benzer bir çıktı almanız durumunda karta kamerayı başarıyla
 
 ### 5. Kamera Ayarları
 
-İlk başta aşağıdaki komut ile bir kamera sensörünün çekirdek sürücüsü (kernel driver) ile kullanıcı alanı (user space) uygulamaları arasında doğru bir iletişim kurulmasını sağlamak için kullanılır.
+Başlangıçta aşağıdaki komut, bir kamera sensörünün çekirdek sürücüsü (kernel driver) ile kullanıcı alanı (user space) uygulamaları arasında doğru bir iletişim kurulmasını sağlamak için kullanılır.
 Komut çalıştırıldığında, IMX219 kamera sensörünün video çıkışı 640x480 çözünürlüğe ve SRGGB8 formatına ayarlanır. Bu ayar, sonraki aşamada bu veri akışını kullanacak olan uygulamaların (örneğin, bir kamera uygulaması veya gstreamer) doğru veriyi almasını sağlar.
 
 <SnippetCameraSet />

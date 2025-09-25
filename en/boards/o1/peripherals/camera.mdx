@@ -74,9 +74,7 @@ The `uEnv.txt` file will contain definitions like these.
 
 <SnippetUEnv />
 
-Add the name of the following file to the end of the `overlays=` line, leaving a space.
-
-Add the file name you obtained with the previous command. For example, when you connect the IMX219 camera to the CSI0 connector (the connector that is far from the Ethernet port).
+Add the file name you obtained with the previous command to the end of the `overlays=` leaving a space. For example, when you connect the IMX219 camera to the CSI0 connector (the connector that is far from the Ethernet port).
 ```
 k3-am67a-t3-gem-o1-csi0-imx219.dtbo
 ```
@@ -87,7 +85,7 @@ The final version of the `uEnv.txt` file will look like this. You must place the
 <SnippetUEnvEdit />
 
 
-### 3. Reboot the Development Board
+### 3. Rebooting the Board
 
 The development board should be restarted using the `reboot` command.
 
@@ -95,13 +93,13 @@ The development board should be restarted using the `reboot` command.
 sudo reboot
 ```
 
-### 4. Running the gemstone-camera-setup script
+### 4. Running the `gemstone-camera-setup` Script
 
-The `gemstone-camera-setup` script must be used to set up the cameras connected to the device.
+The `gemstone-camera-setup` script must be used to set up the cameras connected to the board.
 
 <SnippetCameraSetup />
 
-If you get an output similar to the one above, you have successfully connected the camera to the card.
+If you get an output similar to the one above, you have successfully connected the camera to the board.
 
 ### 5. Camera Settings
 

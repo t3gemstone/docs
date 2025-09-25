@@ -31,7 +31,7 @@ USB bağlantısı yapılmadığında, geliştirme kartı 12V bataryanın ters po
 </Danger>
 
 <Danger>
-USB takılıyken 12V batarya ters bağlanırsa, geliştirme kartı ciddi şekilde zarar görebilir ve hatta yanma riski oluşabilir. Bu nedenle USB ile güç bağlantısı varken batarya bağlantısını yapmadan önce polarite mutlaka kontrol edilmelidir.
+USB takılıyken 12V batarya ters bağlanırsa, geliştirme kartı ciddi şekilde zarar görebilir hatta yanma riski oluşabilir. Bu nedenle USB ile güç bağlantısı varken batarya bağlantısını yapmadan önce polarite mutlaka kontrol edilmelidir.
 </Danger>
 
 ## 1. Pinout
@@ -155,7 +155,7 @@ Bu örnekte `k3-am67a-t3-gem-o1-uart-ttys6.dtbo` adlı overlay dosyası kullanı
 işletim sistemi başlatılmadan önce yükleyebilmesi için `/boot/uEnv.txt` dosyasındaki `overlays` kısmına
 aşağıdaki gibi eklenmelidir. Overlay dosya adları arasında bir boşluk kalacak şekilde ekleme yapılmaktadır.
 
-<code>overlays=k3-am67a-t3-gem-o1-uart-ttyama0.dtbo k3-am67a-t3-gem-o1-spidev0.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
+<code>overlays=k3-am67a-t3-gem-o1-spidev0-2cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
 
 #### 2.1.4. Kontrol
 

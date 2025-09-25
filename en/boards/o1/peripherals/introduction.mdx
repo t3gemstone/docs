@@ -20,14 +20,14 @@ browser, connecting via SSH/Ethernet, or connecting via the console over the ser
 
 ## Power Connection
 
-The Gemstone Obsidian development board's external power input is designed to operate within the 5V–12V / 3A range. Any suitable external power source within this range can be connected. On the USB side, the USB PD (Power Delivery) integrator is set to 9V. If the connected device supports 9V, the development board is powered at 9V / 3A; if the device is not compatible, the board continues to draw power at 5V / 3A.
+The Gemstone Obsidian development board's external power input is designed to operate within the 5V–12V / 3A range. Any suitable external power source within this range can be connected. On the USB side, the USB PD (Power Delivery) IC is set to 9V. If the connected device supports 9V, the development board is powered at 9V / 3A; if the device is not compatible, the board continues to draw power at 5V / 3A.
 
 <Tip>
 When the battery is connected and a USB is plugged in, the power source automatically switches to the USB and the battery is disabled. When the USB is removed, the battery automatically re-engages and continues to supply power to the development board.
 </Tip>
 
 <Danger>
-When no USB connection, the development board is protected against reverse polarity connection to the 12V battery. However, this protection does not provide complete assurance, so the user must connect it carefully.
+When USB is not connected, the development board is protected against reverse polarity connection to the 12V battery. However, this protection does not provide complete assurance, so the user must connect it carefully.
 </Danger>
 
 <Danger>
@@ -153,7 +153,7 @@ In this example, the `k3-am67a-t3-gem-o1-uart-ttys6.dtbo` overlay file will be u
 this file before the operating system starts, it must be added to the `overlays` section in the `/boot/uEnv.txt`
 file as shown below. Overlay file names are added with a space between them.
 
-<code>overlays=k3-am67a-t3-gem-o1-uart-ttyama0.dtbo k3-am67a-t3-gem-o1-spidev0.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
+<code>overlays=k3-am67a-t3-gem-o1-spidev0-2cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
 
 #### 2.1.4. Verification
 
