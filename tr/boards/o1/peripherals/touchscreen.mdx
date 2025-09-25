@@ -3,4 +3,80 @@ title: 'Ekran'
 description: 'Dokunmatik Ekran/Touchscreen'
 ---
 
-Yapım aşamasında..
+import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
+import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-tr.mdx';
+import SnippetTouchscreenListOverlays from '/snippets/boards/o1/touchscreen/listoverlays.mdx';
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
+
+- Gemstone Obsidyen geliştirme kartına nasıl DSI ekran bağlayabileceğinizi.
+- Overlay eklemeyi.
+</Tip>
+
+### DSI Nedir ?
+
+DSI (Display Serial Interface), mobil cihazlarda ve gömülü sistemlerde kullanılan, yüksek çözünürlüklü ekranlar için tasarlanmış bir seri veri yoludur.
+Bu arabirim, MIPI (Mobile Industry Processor Interface) ittifakı tarafından geliştirilmiş olup, düşük güç tüketimiyle yüksek hızda veri transferi sağlar.
+Özellikle akıllı telefonlar, tabletler ve taşınabilir cihazlarda kullanılan LCD ve OLED panellerle işlemciler arasındaki iletişimi kurmak için idealdir.
+
+### Adımlar
+
+<Steps>
+  <Step title="Kablo Bağlantısının Yapılması">
+   Ekran ile Gemstone Obsidyen geliştirme kartı arasındaki kablonun doğru bir şekilde bağlanması gerekmektedir.
+  </Step>
+  <Step title="Overlay Eklenmesi">
+  DSI ekranının çalışması için boot partition'da yer alan uEnv.txt dosyasına ilgili overlay eklenmelidir.
+  </Step>
+  <Step title="Kartın Yeniden Başlatılması">
+  Tüm bu adımları tamamladıktan sonra cihazı yeniden başlatmak yeterli olacaktır.
+  </Step>
+</Steps>
+
+### 1. Kablo Bağlantısının Yapılması
+
+Ekran ile Gemstone Obsidyen geliştirme kartı arasındaki kablonun doğru bir şekilde bağlanması için aşağıda yer alan fotoğraftaki gibi DSI0 (ethernet soketine yakın olan) konnektörüne bağlantı yapmanız gerekmektedir.
+<Tip>
+Kablonun bakır yollarının yer aldığı kısım soketin beyaz kısmına bakmalıdır.
+</Tip>
+
+<Frame caption="DSI Kablosunun Karta Bağlanması">
+  <img className="rounded-lg" noZoom src="/images/o1-board/08-screen.png" />
+</Frame>
+
+### 2. Overlay Eklenmesi
+
+Terminal arayüzünden `nano` isimli metin editörünü kullanarak boot klasöründe yer alan `uEnv.txt` dosyasını açınız.
+
+```bash
+sudo nano /boot/uEnv.txt
+```
+<Tip>
+Komutu sudo ile kullandığımız için şifre soracaktır. Değiştirmediyseniz Gem-Imager ile imajı yazarken belirlemiş olduğunuz şifreyi kullanmalısınız.
+</Tip>
+
+`uEnv.txt` dosyasının içinde bu tarz tanımlamalar bulunacaktır.
+
+<SnippetUEnv />
+
+Desteklenen ekranların overlaylerini aşağıdaki komut ile görebilirsiniz.
+
+<SnippetTouchscreenListOverlays />
+
+`overlays=` satırının sonuna boşluk bırakarak ekranınız için uygun olan overlay'in adını ekleyiniz.
+
+`uEnv.txt` dosyasının son hali böyle olacaktır. Uygun dosya adını `<dosya-adi>` kısmına yerleştirmeniz gerekmektedir.
+
+<SnippetUEnvEdit />
+
+
+### 3. Kartın Yeniden Başlatılması
+
+`reboot` komutu ile cihazı yeniden başlatılmalı.
+
+```bash
+sudo reboot
+```

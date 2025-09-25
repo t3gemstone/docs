@@ -3,4 +3,80 @@ title: 'Touchscreen'
 description: 'Display'
 ---
 
-Under construction..
+import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
+import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-en.mdx';
+import SnippetTouchscreenListOverlays from '/snippets/boards/o1/touchscreen/listoverlays.mdx';
+
+<Tip>
+By the end of this section, you will have gained experience in the following areas:
+
+- How to connect a DSI touchscreens to the Gemstone Obsidian development board.
+- Adding overlays.
+</Tip>
+
+### What is DSI?
+
+DSI (Display Serial Interface) is a serial bus designed for high-resolution displays used in mobile devices and embedded systems.
+This interface was developed by the MIPI (Mobile Industry Processor Interface) Alliance and enables high-speed data transfer with low power consumption.
+It is ideal for establishing communication between LCD and OLED panels and processors, particularly in smartphones, tablets, and portable devices.
+
+### Steps
+
+<Steps>
+  <Step title="Making the Cable Connection">
+    The cable between the screen and the Gemstone Obsidian development board must be connected correctly.
+  </Step>
+  <Step title="Adding an Overlay">
+    The relevant overlay must be added to the uEnv.txt file located in the boot partition for the DSI screen to function.
+  </Step>
+  <Step title="Board Reboot">
+    After completing all these steps, simply reboot the development board.
+  </Step>
+</Steps>
+
+### 1. Making the Cable Connection
+
+To properly connect the cable between the screen and the Gemstone Obsidian development board, you must connect it to the DSI0 connector (the one near the Ethernet socket) as shown in the photo below.
+<Tip>
+The part of the cable containing the copper wires should face the white part of the socket.
+</Tip>
+
+<Frame caption="Connecting the DSI Cable to the Development Board">
+  <img className="rounded-lg" noZoom src="/images/o1-board/08-screen.png" />
+</Frame>
+
+### 2. Adding an Overlay
+
+Open the `uEnv.txt` file located in the boot directory using the `nano` text editor from the terminal interface.
+
+```bash
+sudo nano /boot/uEnv.txt
+```
+<Tip>
+Since we are using the command with sudo, it will ask for a password. If you haven't changed it, you should use the password you set when writing the image with Gem-Imager.
+</Tip>
+
+The `uEnv.txt` file will contain definitions like these.
+
+<SnippetUEnv />
+
+You can view the overlays of supported screens with the following command.
+
+<SnippetTouchscreenListOverlays />
+
+Add the name of the overlay suitable for your screen at the end of the `overlays=` line, leaving a space.
+
+The final version of the `uEnv.txt` file will look like this. You must place the appropriate file name in the `<file-name>` section.
+
+<SnippetUEnvEdit />
+
+
+### 3. Reboot the Development Board
+
+The development board should be restarted using the `reboot` command.
+
+```bash
+sudo reboot
+```
