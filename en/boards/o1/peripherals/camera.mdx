@@ -3,4 +3,143 @@ title: 'Camera'
 description: 'Camera'
 ---
 
-Under construction..
+import SnippetCameraOverlaysList from '/snippets/boards/o1/camera/listoverlays.mdx';
+import SnippetCameraSetup from '/snippets/boards/o1/camera/camerasetup.mdx';
+import SnippetCameraRecordVideo from '/snippets/boards/o1/camera/recordvideo.mdx';
+import SnippetCameraTakePhoto from '/snippets/boards/o1/camera/takephoto.mdx';
+import SnippetCameraSet from '/snippets/boards/o1/camera/cameraset.mdx';
+import SnippetCameraListFormats from '/snippets/boards/o1/camera/listformats.mdx';
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-en.mdx';
+
+<Tip>
+By the end of this section, you will have gained experience in the following areas:
+
+- How to connect a CSI camera to the Gemstone Obsidian development board.
+- Adding overlays.
+</Tip>
+
+### What is CSI?
+
+CSI (Camera Serial Interface) is a serial bus designed for high-resolution cameras in mobile devices and embedded systems.
+This interface was developed by the MIPI (Mobile Industry Processor Interface) Alliance and enables high-speed, reliable transfer of image and video data between the processor and the camera sensor.
+It is commonly preferred in cameras used in smartphones, drones, and mini handheld computers. 
+
+### Steps
+
+<Steps>
+  <Step title="Making the Cable Connection">
+    The cable between the camera and the Gemstone Obsidian development board must be connected correctly.
+  </Step>
+  <Step title="Adding an Overlay">
+    The relevant overlay must be added to the uEnv.txt file located in the boot partition for the CSI camera to work.
+  </Step>
+  <Step title="Board Reboot">
+    After completing all these steps, simply reboot the development board.
+  </Step>
+</Steps>
+
+### 1. Making the Cable Connection
+
+To properly connect the cable between the camera and the Gemstone Obsidian development board, you must make a connection as shown in the photo below.
+You can connect the CSI cable to either socket; the important thing here is that you must add the overlay that activates the CSI of the socket you plugged into.
+<Tip>
+The part of the cable containing the copper wires should face the white part of the socket.
+</Tip>
+
+<Tip>
+The connector farther from the Ethernet socket is CSI0, while the connector closer to it is CSI1.
+</Tip>
+
+<Frame caption="Connecting the Camera Cable to the Development Board">
+  <img className="rounded-lg" noZoom src="/images/o1-board/15-camera-lens-3.png" />
+</Frame>
+
+### 2. Adding an Overlay
+
+You can view the overlays of supported cameras using the following command.
+
+<SnippetCameraOverlaysList />
+
+Open the `uEnv.txt` file located in the boot directory using the `nano` text editor from the terminal interface.
+
+```bash
+sudo nano /boot/uEnv.txt
+```
+<Tip>
+Since we are using the command with sudo, it will ask for a password. If you haven't changed it, you should use the password you set when writing the image with Gem-Imager.
+</Tip>
+
+The `uEnv.txt` file will contain definitions like these.
+
+<SnippetUEnv />
+
+Add the file name you obtained with the previous command to the end of the `overlays=` leaving a space. For example, when you connect the IMX219 camera to the CSI0 connector (the connector that is far from the Ethernet port).
+```
+k3-am67a-t3-gem-o1-csi0-imx219.dtbo
+```
+You should use the file name.
+
+The final version of the `uEnv.txt` file will look like this. You must place the appropriate file name in the `<file-name>` section.
+
+<SnippetUEnvEdit />
+
+
+### 3. Rebooting the Board
+
+The development board should be restarted using the `reboot` command.
+
+```bash
+sudo reboot
+```
+
+### 4. Running the `gemstone-camera-setup` Script
+
+The `gemstone-camera-setup` script must be used to set up the cameras connected to the board.
+
+<SnippetCameraSetup />
+
+If you get an output similar to the one above, you have successfully connected the camera to the board.
+
+### 5. Camera Settings
+
+Initially, the following command is used to establish proper communication between the kernel driver of a camera sensor and user space applications.
+When the command is executed, the video output of the IMX219 camera sensor is set to a resolution of 640x480 and the SRGGB8 format. This setting ensures that applications that will use this data stream in the next step (e.g., a camera application or gstreamer) receive the correct data.
+
+<SnippetCameraSet />
+
+You can access the formats supported by the camera using the following command.
+
+<SnippetCameraListFormats />
+
+<Tip>
+You should enter the device specified in the output of the `gemstone-camera-setup` script in the `/dev/video-imx219-cam0` section.
+</Tip>
+
+The settings below set the camera's gain and exposure values to reasonable default values.
+If you notice that your image is washed out, too dark, or even blank, you may need to adjust these parameters according to your lighting environment.
+If you are not viewing the image properly, it may be a sign that these settings are incorrect.
+
+```bash Indoor Lighting
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=digital_gain=2048
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=analogue_gain=230
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=exposure=1750
+```
+
+```bash Natural Light
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=digital_gain=1000
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=analogue_gain=100
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=exposure=1000
+```
+
+### 6. Taking Photos
+
+You can capture an image in .jpg format by running the following command.
+
+<SnippetCameraTakePhoto />
+
+### 7. Video Recording
+
+You can capture a video recording (100 frames) in .mp4 format by running the following command.
+
+<SnippetCameraRecordVideo />

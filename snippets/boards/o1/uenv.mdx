@@ -1,0 +1,15 @@
+```
+firstboot=0
+overlays=k3-am67a-t3-gem-o1-spidev0-2cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo
+
+bootpart=1:1
+initrdaddr=0x90000000
+fdtoverlayaddr=0x89000000
+get_kern_mmc=load mmc ${bootpart} ${loadaddr} Image
+get_fdt_mmc=load mmc ${bootpart} ${fdtaddr} k3-am67a-t3-gem-o1.dtb;fdt addr ${fdtaddr};fdt resize 8192
+get_initrd_mmc=load mmc ${bootpart} ${initrdaddr} gemstone-image-rd-t3-gem-o1.cpio.gz
+get_overlays=for o in ${overlays}; do load mmc ${bootpart} ${fdtoverlayaddr} overlays/${o};fdt apply ${fdtoverlayaddr}; done
+args_mmc=setenv bootargs console=${console} ${optargs} root=/dev/mmcblk1p2 rw rootfstype=btrfs bootpart=/dev/mmcblk1p1 firstboot=${firstboot} init_fatal_sh=1
+boot_mmc=run get_kern_mmc;run get_fdt_mmc;run get_overlays;run get_initrd_mmc;booti ${loadaddr} ${initrdaddr}:${filesize} ${fdtaddr}
+distro_bootcmd=run args_mmc;run boot_mmc
+```

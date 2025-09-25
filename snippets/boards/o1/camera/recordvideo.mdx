@@ -1,0 +1,6 @@
+```bash
+gst-launch-1.0 v4l2src device=/dev/video-imx219-cam0 num-buffers=100 io-mode=dmabuf ! \
+    video/x-bayer, width=640, height=480, format=rggb,depth=8 ! \
+    queue ! bayer2rgb ! queue ! videoconvert ! video/x-raw,format=NV12 ! \
+    queue ! v4l2h264enc ! queue !  h264parse ! mp4mux  ! filesink location=t3-gem-o1.mp4
+```
