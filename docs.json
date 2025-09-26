@@ -108,7 +108,8 @@
                       "tr/boards/o1/peripherals/touchscreen",
                       "tr/boards/o1/peripherals/rtc",
                       "tr/boards/o1/peripherals/jtag",
-                      "tr/boards/o1/peripherals/mcu"
+                      "tr/boards/o1/peripherals/mcu",
+                      "tr/boards/o1/peripherals/ai"
                     ]
                   },
                   "tr/boards/o1/pcb"
@@ -246,7 +247,8 @@
                       "en/boards/o1/peripherals/touchscreen",
                       "en/boards/o1/peripherals/rtc",
                       "en/boards/o1/peripherals/jtag",
-                      "en/boards/o1/peripherals/mcu"
+                      "en/boards/o1/peripherals/mcu",
+                      "en/boards/o1/peripherals/ai"
                     ]
                   },
                   "en/boards/o1/pcb"

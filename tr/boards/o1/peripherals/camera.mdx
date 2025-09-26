@@ -15,41 +15,45 @@ import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-tr.mdx';
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
 
-- Gemstone Obsidyen geliştirme kartına nasıl CSI kamera bağlayabileceğinizi.
-- Overlay eklemeyi.
+- Gemstone Obsidyen geliştirme kartına fiziksel CSI kamera bağlantısı yapmak.
+- Overlay ekleyerek yazılım bağlantısını sağlamak
 </Tip>
 
 ### CSI Nedir?
 
-CSI (Camera Serial Interface), mobil cihazlarda ve gömülü sistemlerde yüksek çözünürlüklü kameralar için tasarlanmış bir seri veri yoludur.
-Bu arayüz, MIPI (Mobile Industry Processor Interface) ittifakı tarafından geliştirilmiş olup, işlemci ile kamera sensörü arasında yüksek hızda, güvenilir bir şekilde görüntü ve video verisi aktarımını sağlar.
-Genellikle akıllı telefonlar, dronlar ve mini cep bilgisayarlarla kullanılan kameralarda tercih edilir.
+CSI (Camera Serial Interface), mobil cihazlarda ve gömülü sistemlerde yüksek çözünürlüklü kameralar için tasarlanmış
+bir seri veri yoludur. Bu arayüz, MIPI (Mobile Industry Processor Interface) ittifakı tarafından geliştirilmiş
+olup, işlemci ile kamera sensörü arasında yüksek hızda, güvenilir bir şekilde görüntü ve video verisi aktarımını
+sağlar. Genellikle akıllı telefonlar, dronlar ve mini cep bilgisayarlarla kullanılan kameralarda tercih edilir.
 
 ### Adımlar
 
 <Steps>
+
   <Step title="Kablo Bağlantısının Yapılması">
-   Kamera ile Gemstone Obsidyen geliştirme kartı arasındaki kablonun doğru bir şekilde bağlanması gerekmektedir.
+    Kamera ile Gemstone Obsidyen geliştirme kartı arasındaki kablonun doğru bir şekilde bağlanması gerekmektedir.
   </Step>
+
   <Step title="Overlay Eklenmesi">
-  CSI kameranın çalışması için boot partition'da yer alan uEnv.txt dosyasına ilgili overlay eklenmelidir.
+    CSI kameranın çalışması için boot partition'da yer alan uEnv.txt dosyasına ilgili overlay eklenmelidir.
   </Step>
+
   <Step title="Kartın Yeniden Başlatılması">
-  Tüm bu adımları tamamladıktan sonra kartı yeniden başlatmak yeterli olacaktır.
+    Tüm bu adımları tamamladıktan sonra kartı yeniden başlatmak yeterli olacaktır.
   </Step>
+
 </Steps>
 
 ### 1. Kablo Bağlantısının Yapılması
 
-Kamera ile Gemstone Obsidyen geliştirme kartı arasındaki kablonun doğru bir şekilde bağlanması için aşağıda yer alan fotoğraftaki gibi bir bağlantı yapmanız gerekmektedir.
-İki sokete de CSI kablosunu bağlayabilirsiniz burada önemli olan taktığınız soketin CSI'ını etkinleştiren overlayi eklemeniz gerekmektedir.
-<Tip>
-Kablonun bakır yollarının yer aldığı kısım soketin beyaz kısmına bakmalıdır.
-</Tip>
+Kamera ile Gemstone Obsidyen geliştirme kartı arasındaki kablonun doğru bir şekilde bağlanması için aşağıda yer alan
+fotoğraftaki gibi bir bağlantı yapmanız gerekmektedir. İki sokete de CSI kablosunu bağlayabilirsiniz burada önemli
+olan taktığınız soketin CSI'ını etkinleştiren overlayi eklemeniz gerekmektedir.
 
-<Tip>
-Ethernet soketine uzak olan konnektör CSI0, yakın olan konnektör ise CSI1'dir.
-</Tip>
+<Note>
+- Kablonun bakır yollarının yer aldığı kısım soketin beyaz kısmına bakmalıdır.
+- Ethernet soketine uzak olan konnektör CSI0, yakın olan konnektör ise CSI1'dir.
+</Note>
 
 <Frame caption="Kamera Kablosunun Karta Bağlanması">
   <img className="rounded-lg" noZoom src="/images/o1-board/15-camera-lens-3.png" />
@@ -57,7 +61,7 @@ Ethernet soketine uzak olan konnektör CSI0, yakın olan konnektör ise CSI1'dir
 
 ### 2. Overlay Eklenmesi
 
-Desteklenen kameraların overlaylerini aşağıdaki komut ile görebilirsiniz.
+Desteklenen kameraların overlaylerini aşağıdaki komut ile listeleyebilirsiniz.
 
 <SnippetCameraOverlaysList />
 
@@ -66,19 +70,19 @@ Terminal arayüzünden `nano` isimli metin editörünü kullanarak boot klasör�
 ```bash
 sudo nano /boot/uEnv.txt
 ```
+
 <Tip>
-Komutu sudo ile kullandığımız için şifre soracaktır. Değiştirmediyseniz Gem-Imager ile imajı yazarken belirlemiş olduğunuz şifreyi kullanmalısınız.
+Komutu sudo ile kullandığımız için şifre soracaktır. Değiştirmediyseniz Gem-Imager ile imajı yazarken belirlemiş
+olduğunuz şifreyi kullanmalısınız.
 </Tip>
 
 `uEnv.txt` dosyasının içinde bu tarz tanımlamalar bulunacaktır.
 
 <SnippetUEnv />
 
-Bir önceki komutla elde ettiğiniz dosya adını `overlays=` satırının sonuna boşluk bırakarak ekleyin. Örneğin CSI0 (ethernete uzak olan konnektör) konnektörüne IMX219 kamerasını bağladığınızda
-```
-k3-am67a-t3-gem-o1-csi0-imx219.dtbo
-```
-dosya adını kullanmalısınız.
+Bir önceki komutla elde ettiğiniz dosya adını `overlays=` satırının sonuna boşluk bırakarak ekleyin. Örneğin
+CSI0 (ethernete uzak olan konnektör) konnektörüne IMX219 kamerasını 
+bağladığınızda `k3-am67a-t3-gem-o1-csi0-imx219.dtbo` dosya adını kullanmalısınız.
 
 `uEnv.txt` dosyasının son hali böyle olacaktır. Uygun dosya adını `<dosya-adi>` kısmına yerleştirmeniz gerekmektedir.
 
@@ -102,8 +106,11 @@ Yukarıdakine benzer bir çıktı almanız durumunda karta kamerayı başarıyla
 
 ### 5. Kamera Ayarları
 
-Başlangıçta aşağıdaki komut, bir kamera sensörünün çekirdek sürücüsü (kernel driver) ile kullanıcı alanı (user space) uygulamaları arasında doğru bir iletişim kurulmasını sağlamak için kullanılır.
-Komut çalıştırıldığında, IMX219 kamera sensörünün video çıkışı 640x480 çözünürlüğe ve SRGGB8 formatına ayarlanır. Bu ayar, sonraki aşamada bu veri akışını kullanacak olan uygulamaların (örneğin, bir kamera uygulaması veya gstreamer) doğru veriyi almasını sağlar.
+Başlangıçta aşağıdaki komut, bir kamera sensörünün çekirdek sürücüsü (kernel driver) ile kullanıcı
+alanı (user space) uygulamaları arasında doğru bir iletişim kurulmasını sağlamak için kullanılır.
+Komut çalıştırıldığında, IMX219 kamera sensörünün video çıkışı 640x480 çözünürlüğe ve SRGGB8 formatına ayarlanır.
+Bu ayar, sonraki aşamada bu veri akışını kullanacak olan uygulamaların (örneğin, bir kamera uygulaması veya gstreamer)
+doğru veriyi almasını sağlar.
 
 <SnippetCameraSet />
 
@@ -111,13 +118,14 @@ Kameranın desteklediği formatlara aşağıdaki komuttan ulaşabilirsiniz.
 
 <SnippetCameraListFormats />
 
-<Tip>
+<Warning>
 `/dev/video-imx219-cam0` kısmına `gemstone-camera-setup` scriptinin çıktısında belirtilen cihazı girmelisiniz.
-</Tip>
+</Warning>
 
 Aşağıda yer alan ayarlar, kameranın kazanç ve pozlama değerlerini makul bir varsayılan değere ayarlar.
-Görüntünüzün soluk, çok karanlık veya hatta boş olduğunu fark ederseniz, kendi aydınlatma ortamınıza göre bu parametreleri ayarlamanız gerekebilir.
-Görüntüyü düzgün gözlemlemiyorsanız, bu ayarların yanlış olduğunun bir işareti olabilir.
+Görüntünüzün soluk, çok karanlık veya hatta boş olduğunu fark ederseniz, kendi aydınlatma ortamınıza göre bu
+parametreleri ayarlamanız gerekebilir. Görüntüyü düzgün gözlemlemiyorsanız, bu ayarların yanlış
+olduğunun bir işareti olabilir.
 
 ```bash İç Mekan Işığı
 v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=digital_gain=2048
