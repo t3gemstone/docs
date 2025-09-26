@@ -1,0 +1,25 @@
+export const SnippetCardEntry = ({ children, header, link = "" }) => {
+  const headerWords = header.split(" ");
+  const headerLast = headerWords.pop();
+  const headerStart = headerWords.join(" ");
+
+  return (
+    <div>
+      <div className="flex items-start gap-2 mb-1 mt-1">
+        <Icon icon="arrow-right"/>
+        {link ? (
+          <a href={link} className="leading-tight">
+            {headerStart && <b>{headerStart} </b>}
+            <span className="inline-flex items-center gap-1">
+              <b>{headerLast} </b>
+              <Icon size={12} icon="arrow-up-right-from-square"/>
+            </span>
+          </a>
+        ) : (
+          <b className="leading-tight">{header}</b>
+        )}
+      </div>
+      <p className="">{children}</p>
+    </div>
+  );
+};

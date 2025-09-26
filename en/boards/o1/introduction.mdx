@@ -4,6 +4,7 @@ description: 'T3 Gemstone Obsidian'
 ---
 
 import { Card, CardGroup } from '/components/Card';
+import { SnippetCardEntry } from '/snippets/boards/o1/card-entry.mdx';
 
 <Frame>
   <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
@@ -44,21 +45,21 @@ High-performance development board based on Texas Instruments AM67A processor
 
 <CardGroup cols={2}>
   <Card title="Processor" icon="microchip">
-    **→ [TI AM67A](https://www.ti.com/product/AM67A)**
-
-    Quad-core 64-bit ARM Cortex-A53 @1.4 GHz, multi-core ARM/GPU processors, DSP, AI accelerators
+    <SnippetCardEntry header="TI AM67A" link="https://www.ti.com/product/AM67A">
+      Quad-core 64-bit ARM Cortex-A53 @1.4 GHz, multi-core ARM/GPU processors, DSP, AI accelerators
+    </SnippetCardEntry>
   </Card>
 
   <Card title="Graphics" icon="display">
-    **→ [IMG BXS-4-64](https://www.imaginationtech.com/product/img-bxs-4-64-mc1/)**
-
-    Advanced GPU for high-performance graphics processing
+    <SnippetCardEntry header="IMG BXS-4-64" link="https://www.imaginationtech.com/product/img-bxs-4-64-mc1">
+      Advanced GPU for high-performance graphics processing
+    </SnippetCardEntry>
   </Card>
 
   <Card title="System Memory" icon="memory">
-    **→ [4GB LPDDR4](https://www.longsys.com/products/embedded-storage/embedded-storage/lpddr.html)**
-
-    x32 bit width high-speed system memory
+    <SnippetCardEntry header="4GB LPDDR4" link="https://www.longsys.com/products/embedded-storage/embedded-storage/lpddr.html">
+      x32 bit width high-speed system memory
+    </SnippetCardEntry>
   </Card>
 </CardGroup>
 
@@ -66,23 +67,23 @@ High-performance development board based on Texas Instruments AM67A processor
 
 <CardGroup cols={2}>
   <Card title="Onboard Storage" icon="hard-drive">
-    **→ [32GB eMMC](https://www.longsys.com/products/embedded-storage/embedded-storage/automotive-industriai-wide-temperature-industriai-emmc.html)**
+    <SnippetCardEntry header="32GB eMMC" link="https://www.longsys.com/products/embedded-storage/embedded-storage/automotive-industriai-wide-temperature-industriai-emmc.html">
+      High-speed onboard flash storage
+    </SnippetCardEntry>
 
-    High-speed onboard flash storage
-
-    **→ [512Kbit EEPROM](https://www.microchip.com/en-us/product/AT24C512C)**
-
-     I2C-compatible serial EEPROM for configuration storage
+    <SnippetCardEntry header="512Kbit EEPROM" link="https://www.microchip.com/en-us/product/AT24C512C">
+      I2C-compatible serial EEPROM for configuration storage
+    </SnippetCardEntry>
   </Card>
 
   <Card title="Expandable Storage" icon="sd-card">
-    **→ microSD Card Slot**
+    <SnippetCardEntry header="microSD Card Slot">
+      Supports high-speed SDR104 mode
+    </SnippetCardEntry>
 
-    Supports high-speed SDR104 mode
-
-    **→ M.2 2280 SSD Port**
-
-    Supports high-capacity NVMe SSD
+    <SnippetCardEntry header="M.2 2280 SSD Port">
+      Supports high-capacity NVMe SSD
+    </SnippetCardEntry>
   </Card>
 </CardGroup>
 
@@ -90,20 +91,20 @@ High-performance development board based on Texas Instruments AM67A processor
 
 <CardGroup cols={2}>
   <Card title="Wireless" icon="wifi">
-    **→ [TI WL1835MOD](https://www.ti.com/product/WL1835MOD)**
-
-    Wi-Fi 4 (802.11n), external dual 2.4 GHz antennas<br></br>
-    Bluetooth 5.1, Bluetooth Low Energy (BLE)
+    <SnippetCardEntry header="TI WL1835MOD" link="https://www.ti.com/product/WL1835MOD">
+      Wi-Fi 4 (802.11n), external dual 2.4 GHz antennas<br></br>
+      Bluetooth 5.1, Bluetooth Low Energy (BLE)
+    </SnippetCardEntry>
   </Card>
 
   <Card title="Wired" icon="network-wired">
-    **→ Gigabit Ethernet**
+    <SnippetCardEntry header="Gigabit Ethernet">
+      RJ45 Gigabit Ethernet port for high-speed wired connectivity
+    </SnippetCardEntry>
 
-    RJ45 Gigabit Ethernet port for high-speed wired connectivity
-
-    **→ [CAN Bus](https://www.ti.com/product/TCAN1462-Q1)**
-
-    CAN FD transceiver for automotive applications
+    <SnippetCardEntry header="CAN Bus" link="https://www.ti.com/product/TCAN1462-Q1">
+      CAN FD transceiver for automotive applications
+    </SnippetCardEntry>
   </Card>
 </CardGroup>
 
@@ -111,49 +112,49 @@ High-performance development board based on Texas Instruments AM67A processor
 
 <CardGroup cols={2}>
   <Card title="USB Ports" icon="usb">
-    **→ 2 x USB 3.0 Type-A**
+    <SnippetCardEntry header="2 x USB 3.0 Type-A" link="">
+      Supports 5Gbps high-speed operation
+    </SnippetCardEntry>
 
-    Supports 5Gbps high-speed operation
+    <SnippetCardEntry header="1 x USB 2.0 Type-A" link=""></SnippetCardEntry>
 
-    **→ 1 x USB 2.0 Type-A**
+    <SnippetCardEntry header="1 x USB 2.0 Type-C" link=""> </SnippetCardEntry>
 
-    **→ 1 x USB 2.0 Type-C**
-
-    **→ 1 x USB 2.0 Type-C (Device + PD)**
-
-    Supports USB device mode and Power Delivery (PD)
+    <SnippetCardEntry header="1 x USB 2.0 Type-C (Device + PD)" link="">
+      Supports USB device mode and Power Delivery (PD)
+    </SnippetCardEntry>
   </Card>
 
   <Card title="Display & Camera Interfaces" icon="camera">
-    **→ 2 x 4-lane MIPI CSI<sup>1</sup>**
+    <SnippetCardEntry header="2 x 4-lane MIPI CSI" link="">
+      Supports wide range of camera modules such as Raspberry Pi Camera V2
+    </SnippetCardEntry>
 
-    Supports wide range of camera modules such as Raspberry Pi Camera V2
+    <SnippetCardEntry header="1 x 4-lane MIPI DSI" link="">
+      Supports wide range of touch displays such as Raspberry Pi 7" or Waveshare 7" and 10.1" displays
+    </SnippetCardEntry>
 
-    **→ 1 x 4-lane MIPI DSI**
-
-    Supports wide range of touch displays such as Raspberry Pi 7" or Waveshare 7" and 10.1" displays
-
-    **→ 1 x HDMI**
-
-    Full-size HDMI output for external displays
+    <SnippetCardEntry header="1 x HDMI" link="">
+      Full-size HDMI output for external displays
+    </SnippetCardEntry>
 
     ---
 
-    <span className="text-xs"><sup>1</sup> One of the two ports is muxed with DSI capability, you can select between dual CSIs or one CSI & one DSI configurations</span>
+    <span className="text-xs"><sup>1</sup> One of the two CSI ports is muxed with DSI capability, you can select between dual CSIs or one CSI & one DSI configurations.</span>
   </Card>
 
   <Card title="Expansion Interfaces" icon="code">
-    **→ 40-pin GPIO Header**
+    <SnippetCardEntry header="40-pin GPIO Header" link="">
+      Default pinout is compatible with Raspberry Pi
+    </SnippetCardEntry>
 
-    Default pinout is compatible with Raspberry Pi
+    <SnippetCardEntry header="JTAG Connector" link="">
+      ARM Cortex 10-pin JTAG connector for debugging Cortex-R5 MCU cores
+    </SnippetCardEntry>
 
-    **→ JTAG Connector**
-
-    ARM Cortex 10-pin JTAG connector for debugging Cortex-R5 MCU cores
-
-    **→ UART Connector**
-
-    3-pin 2.54mm connector provides access to serial console for debugging and system management
+    <SnippetCardEntry header="UART Connector" link="">
+      3-pin 2.54mm connector provides access to serial console for debugging and system management
+    </SnippetCardEntry>
   </Card>
 </CardGroup>
 
@@ -161,19 +162,19 @@ High-performance development board based on Texas Instruments AM67A processor
 
 <CardGroup cols={2}>
   <Card title="Motion Sensing" icon="compass">
-    **→ [InvenSense ICM-20948](https://invensense.tdk.com/products/motion-tracking/9-axis/icm-20948/)**
-
-    9-Axis MEMS MotionTracking sensor with accelerometer, gyroscope, and magnetometer
+    <SnippetCardEntry header="InvenSense ICM-20948" link="https://invensense.tdk.com/products/motion-tracking/9-axis/icm-20948/">
+      9-Axis MEMS MotionTracking sensor with accelerometer, gyroscope, and magnetometer
+    </SnippetCardEntry>
   </Card>
 
   <Card title="Environmental Monitoring" icon="temperature-half">
-    **→ [Bosch BMP390](https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/pressure-sensors-bmp390.html)**
+    <SnippetCardEntry header="Bosch BMP390" link="https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/pressure-sensors-bmp390.html">
+      24-bit barometric pressure sensor
+    </SnippetCardEntry>
 
-    24-bit barometric pressure sensor
-
-    **→ [TI HDC2010](https://www.ti.com/product/HDC2010)**
-
-    Humidity and temperature sensor
+    <SnippetCardEntry header="TI HDC2010" link="https://www.ti.com/product/HDC2010">
+      Humidity and temperature sensor
+    </SnippetCardEntry>
   </Card>
 </CardGroup>
 
@@ -181,42 +182,42 @@ High-performance development board based on Texas Instruments AM67A processor
 
 <CardGroup cols={2}>
   <Card title="Power Input" icon="plug">
-    **→ USB Type-C Power (5-9V/3A)**
+    <SnippetCardEntry header="USB Type-C Power (5-9V/3A)" link="">
+      Primary power input with USB Power Delivery support
+    </SnippetCardEntry>
 
-    Primary power input with USB Power Delivery support
-
-    **→ DC Power Connector (5-12V/3A)**
-
-    Alternative power input
+    <SnippetCardEntry header="DC Power Connector (5-12V/3A)" link="">
+      Alternative power input
+    </SnippetCardEntry>
   </Card>
 
   <Card title="System Management" icon="toggle-on">
-    **→ Boot Mode Switch**
+    <SnippetCardEntry header="Boot Mode Switch" link="">
+      Hardware switch for selecting different boot modes and configurations
+    </SnippetCardEntry>
 
-    Hardware switch for selecting different boot modes and configurations
+    <SnippetCardEntry header="Power Button" link="">
+      Dedicated button for board reset functionality
+    </SnippetCardEntry>
 
-    **→ Power Button**
+    <SnippetCardEntry header="Programmable Button" link="">
+      User-configurable button
+    </SnippetCardEntry>
 
-    Dedicated button for board reset functionality
-
-    **→ Programmable Button**
-
-    User-configurable button
-
-    **→ Red-Green LEDs**
-
-    Programmable status indicators for system monitoring and user feedback
+    <SnippetCardEntry header="Red-Green LEDs" link="">
+      Programmable status indicators for system monitoring and user feedback
+    </SnippetCardEntry>
   </Card>
 
   <Card title="Thermal" icon="fan">
-    **→ Fan Connector**
-
-    4-pin JST SH connector for active cooling solutions with PWM fan control
+    <SnippetCardEntry header="Fan Connector" link="">
+      4-pin JST SH connector for active cooling solutions with PWM fan control
+    </SnippetCardEntry>
   </Card>
 
   <Card title="Real-Time Clock" icon="clock">
-    **→ [Maxim DS1340](https://www.analog.com/en/products/ds1340.html)**
-
-    I2C RTC module with external battery connector (2-pin JST SH)
+    <SnippetCardEntry header="Maxim DS1340" link="https://www.analog.com/en/products/ds1340.html">
+      I2C RTC module with external battery connector (2-pin JST SH)
+    </SnippetCardEntry>
   </Card>
 </CardGroup>
