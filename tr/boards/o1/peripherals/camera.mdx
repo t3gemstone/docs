@@ -96,9 +96,9 @@ bağladığınızda `k3-am67a-t3-gem-o1-csi0-imx219.dtbo` dosya adını kullanma
 sudo reboot
 ```
 
-### 4. `gemstone-camera-setup` Scriptinin Çalıştırılması
+### 4. `gem-camera-setup` Scriptinin Çalıştırılması
 
-`gemstone-camera-setup` scripti ile karta bağlı olan kameraların kurulumu sağlanmalıdır.
+`/usr/local/bin/gem-camera-setup` scripti ile karta bağlı olan kameraların kurulumu sağlanmalıdır.
 
 <SnippetCameraSetup />
 
@@ -119,7 +119,7 @@ Kameranın desteklediği formatlara aşağıdaki komuttan ulaşabilirsiniz.
 <SnippetCameraListFormats />
 
 <Warning>
-`/dev/video-imx219-cam0` kısmına `gemstone-camera-setup` scriptinin çıktısında belirtilen cihazı girmelisiniz.
+`/dev/video-imx219-cam0` kısmına `gem-camera-setup` scriptinin çıktısında belirtilen cihazı girmelisiniz.
 </Warning>
 
 Aşağıda yer alan ayarlar, kameranın kazanç ve pozlama değerlerini makul bir varsayılan değere ayarlar.

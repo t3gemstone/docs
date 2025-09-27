@@ -93,9 +93,9 @@ The development board should be restarted using the `reboot` command.
 sudo reboot
 ```
 
-### 4. Running the `gemstone-camera-setup` Script
+### 4. Running the `gem-camera-setup` Script
 
-The `gemstone-camera-setup` script must be used to set up the cameras connected to the board.
+The `/usr/local/bin/gem-camera-setup` script must be used to set up the cameras connected to the board.
 
 <SnippetCameraSetup />
 
@@ -113,7 +113,7 @@ You can access the formats supported by the camera using the following command.
 <SnippetCameraListFormats />
 
 <Tip>
-You should enter the device specified in the output of the `gemstone-camera-setup` script in the `/dev/video-imx219-cam0` section.
+You should enter the device specified in the output of the `gem-camera-setup` script in the `/dev/video-imx219-cam0` section.
 </Tip>
 
 The settings below set the camera's gain and exposure values to reasonable default values.
