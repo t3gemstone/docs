@@ -20,20 +20,27 @@ are suitable for real-time processing.
 
 ## 1. Compilation
 
-### 1.1. Toolchain Installation
+### 1.1. Installing Dependencies and Toolchain
 
-To compile NuttX, we need a cross-compiler compatible with ARM Cortex-R5F cores. The `gcc-arm-none-eabi` toolchain is
-the standard solution that meets this need.
+To compile NuttX, the system must have several prerequisites installed. Additionally, we need a cross‑compiler that is
+compatible with ARM Cortex‑R5F cores. The gcc-arm-none-eabi toolchain is the standard solution that fulfills this
+requirement.
 
-On Ubuntu/Debian systems, you can install the toolchain using the package manager:
+On Ubuntu/Debian systems, you can install the dependencies and toolchain using the package manager:
 
 ```bash
 sudo apt update
-sudo apt install gcc-arm-none-eabi
+sudo apt install \
+    bison flex gettext texinfo libncurses5-dev libncursesw5-dev xxd \
+    git gperf automake libtool pkg-config build-essential gperf genromfs \
+    libgmp-dev libmpc-dev libmpfr-dev libisl-dev binutils-dev libelf-dev \
+    libexpat1-dev gcc-multilib g++-multilib picocom u-boot-tools util-linux \
+    kconfig-frontends gcc-arm-none-eabi
 ```
 
-Alternatively, you can download the latest version from ARM's official site and perform a manual installation. After
-installation, you can verify the toolchain is working correctly with the `arm-none-eabi-gcc --version` command.
+Alternatively, you can download the latest version of toolchain from ARM's official site and perform a manual 
+installation. After installation, you can verify the toolchain is working correctly with the 
+`arm-none-eabi-gcc --version` command.
 
 ### 1.2. Downloading Source Codes
 
