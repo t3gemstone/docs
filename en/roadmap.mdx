@@ -22,6 +22,12 @@ To contribute by taking part in the relevant projects, visit their Github pages 
 `Not Started Yet` `0%`
 </Card>
 
+<Note>
+To become a Volunteer Developer, you need to read all the documentation, review the projects on GitHub,
+and choose one of the topics below to work on. Visit the [community forum](https://community.t3gemstone.org)
+for your questions.
+</Note>
+
 ## Apache Nuttx
 
 Pixhawk [Flight Controller](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
@@ -44,21 +50,22 @@ system named Apache Nuttx and does not have support for Texas AM67a.
 This project aims to run Apache Nuttx and PX4 on the Cortex-R5 cores found on T3-GEM-O1 development boards. The current
 status and pending tasks are in the table below.
 
-|                                                                                                              |                            |
-|:-------------------------------------------------------------------------------------------------------------|---------------------------:|
-| Running NuttX on R5 cores                                                                                    | `Completed`                |
-| GPIO driver support                                                                                          | `Completed`                |
-| Serial port driver support                                                                                   | `Completed`                |
-| Access to NuttShell (nsh) console                                                                            | `Completed`                |
-| Loading NuttX onto the R5 core via U-Boot or Linux using the remoteproc mechanism                            | `Completed`                |
-| Communication between NuttX running on the R5 core and Linux running on the A53 core via Texas IPC mechanism | Volunteer Developer Needed |
-| PWM driver support                                                                                           | Volunteer Developer Needed |
-| SPI driver support                                                                                           | Volunteer Developer Needed |
-| I2C driver support                                                                                           | Volunteer Developer Needed |
-| Pinmux settings for all pins on the 40-pin HAT                                                               | Volunteer Developer Needed |
-| USB driver support                                                                                           | Volunteer Developer Needed |
-| SD card and eMMC driver support                                                                              | Volunteer Developer Needed |
-| CAN Bus driver support                                                                                       | Volunteer Developer Needed |
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Running NuttX on R5 cores                                                                                   | `Completed`                    |
+| GPIO driver support                                                                                         | `Completed`                    |
+| Serial port driver support                                                                                  | `Completed`                    |
+| Access to NuttShell (nsh) console                                                                           | `Completed`                    |
+| Loading NuttX onto the R5 core via the remoteproc mechanism by U-Boot or Linux                              | `Completed`                    |
+| Communication between NuttX running on the R5 core and Linux running on the A53 core via Texas IPC mechanism | Volunteer Developer Needed     |
+| PWM driver support                                                                                          | Volunteer Developer Needed     |
+| SPI driver support                                                                                          | Volunteer Developer Needed     |
+| I2C driver support                                                                                          | Volunteer Developer Needed     |
+| Pinmux settings for all pins on the 40-pin HAT                                                              | Volunteer Developer Needed     |
+| Running Ardupilot and PX4 autopilots as apps on the Nuttx OS on Gemstone                                    | Volunteer Developer Needed     |
+| CAN Bus driver support                                                                                      | Volunteer Developer Needed     |
+| USB driver support                                                                                          | Volunteer Developer Needed     |
+| SD card and eMMC driver support                                                                             | Volunteer Developer Needed     |
 
 ## PX4 Autopilot
 
@@ -74,8 +81,10 @@ The goal is to run the PX4 autopilot on Gemstone Linux (without NuttX).
 
 ## Buildroot
 
-Compared to the Yocto Project, support for Gemstone will be provided for Buildroot, which has a slightly
-lighter structure.
+Support for Gemstone will be added to Buildroot, a Linux build system with a somewhat lighter structure compared 
+to the Yocto Project. The goal is for a person downloading buildroot to see `T3-GEM-O1` as a board in the
+official buildroot system, and to be able to compile and load two image types named `Minimal` and `Kiosk` onto the
+development board.
 
 <Columns cols={1}>
   <Frame caption="Buildroot">
@@ -85,9 +94,15 @@ lighter structure.
   </Frame>
 </Columns>
 
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Adding T3-GEM-O1 configuration to Buildroot and creating a pull request to its [address](https://github.com/buildroot/buildroot) | Volunteer Developer Needed     |
+| Creating two image types named Minimal and Kiosk and similarly creating a merge request                     | Volunteer Developer Needed     |
+
 ## Phoenix RTOS
 
-The goal is to run the open-source real-time operating system Phoenix, which has a microkernel architecture, on Gemstone.
+The goal is to run the open-source real-time operating system Phoenix, which has a microkernel architecture 
+on Gemstone.
 
 <Frame caption="Phoenix RTOS">
   <a href="https://github.com/t3gemstone/phoenix-rtos-project" target="_blank">
