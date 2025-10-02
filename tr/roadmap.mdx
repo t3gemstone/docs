@@ -7,7 +7,7 @@ icon: "location-crosshairs"
 <Tip>
 Bu bölümde Gemstone ile yapılması planlanan yeni projeler ve tamamlanma aşamaları bulunmaktadır.
 İlgili projelerde görev alarak katkıda bulunmak için Github sayfalarını veya topluluk forumlarını
-ziyaret ediniz. 
+ziyaret edininiz.
 </Tip>
 
 <Card horizontal title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
@@ -22,6 +22,12 @@ ziyaret ediniz.
 <Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
 `Henüz Başlamadı` `0%`
 </Card>
+
+<Note>
+Gönüllü Geliştirici olmak için yapmanız gereken bütün dokümantasyonu okuyarak github'daki projeleri
+incelemek, aşağıdaki konu başlıklarından birini seçerek çalışma yapmaktır. Sorularınız için
+[topluluk forumunu](https://community.t3gemstone.org) ziyaret ediniz.
+</Note>
 
 ## Apache Nuttx
 
@@ -58,9 +64,10 @@ hedeflenmektedir. Aşağıdaki tabloda güncel durum ve yapılacaklar bulunmakta
 | SPI sürücü desteği                                                                                          | Gönüllü Geliştirici Bekleniyor |
 | I2C sürücü desteği                                                                                          | Gönüllü Geliştirici Bekleniyor |
 | 40-pin HAT'te yer alan tüm pinler için pinmux ayarlamaları                                                  | Gönüllü Geliştirici Bekleniyor |
+| Gemstone üzerindeki Nuttx işletim sisteminde Ardupilot ve PX4 otopilotlarının app olarak çalıştırılması     | Gönüllü Geliştirici Bekleniyor |
+| CAN Bus sürücü desteği                                                                                      | Gönüllü Geliştirici Bekleniyor |
 | USB sürücü desteği                                                                                          | Gönüllü Geliştirici Bekleniyor |
 | SD kart ve eMMC sürücü desteği                                                                              | Gönüllü Geliştirici Bekleniyor |
-| CAN Bus sürücü desteği                                                                                      | Gönüllü Geliştirici Bekleniyor |
 
 ## PX4 Autopilot
 
@@ -77,7 +84,9 @@ PX4 otopilotunun Gemstone Linux üzerinde (NuttX olmadan) çalıştırılması h
 ## Buildroot
 
 Yocto Project'e kıyasla, biraz daha hafif yapısı olan Linux derleme sistemi Buildroot'a; Gemstone desteği
-getirilecektir.
+getirilecektir. Burada amaç buildroot'u indiren bir kişinin board olarak `T3-GEM-O1`'ü resmi buildroot 
+sisteminde görebilmesi, `Minimal` ve `Kiosk` isimli iki imaj türünü derleyerek geliştirme kartına
+yükleyebilmesidir.
 
 <Columns cols={1}>
   <Frame caption="Buildroot">
@@ -86,6 +95,11 @@ getirilecektir.
   </a>
   </Frame>
 </Columns>
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Buildroot içerisinde T3-GEM-O1 konfigürasyonu eklenerek [adresine](https://github.com/buildroot/buildroot) pull request oluşturulması                 | Gönüllü Geliştirici Bekleniyor |
+| Minimal ve Kiosk isminde iki imaj türü oluşturularak aynı şekilde merge request oluşturulması | Gönüllü Geliştirici Bekleniyor |
 
 ## Phoenix RTOS
 

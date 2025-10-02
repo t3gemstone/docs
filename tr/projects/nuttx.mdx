@@ -20,20 +20,26 @@ işlemlere uygun R5F çekirdeklerinde çalıştırılabilmektedir.
 
 ## 1. Derleme
 
-### 1.1. Toolchain Kurulumu
+### 1.1. Gereksinimleri ve Toolchain'i Kurma
 
-NuttX'i derleyebilmek için ARM Cortex-R5F çekirdekleri ile uyumlu bir çapraz derleyiciye ihtiyacımız vardır.
+NuttX'i derleyebilmek için sistemde çeşitli gereksinimlerin bulunması gerekmektedir. Aynı zamanda ARM Cortex-R5F 
+çekirdekleri ile uyumlu bir çapraz derleyiciye ihtiyacımız vardır.
 `gcc-arm-none-eabi` toolchain'i bu ihtiyacımızı karşılayan standart çözümdür.
 
-Ubuntu/Debian sistemlerde toolchain'i paket yöneticisi ile kurabilirsiniz:
+Ubuntu/Debian sistemlerde gereksinimleri ve toolchain'i paket yöneticisi ile kurabilirsiniz:
 
 ```bash
 sudo apt update
-sudo apt install gcc-arm-none-eabi
+sudo apt install \
+    bison flex gettext texinfo libncurses5-dev libncursesw5-dev xxd \
+    git gperf automake libtool pkg-config build-essential gperf genromfs \
+    libgmp-dev libmpc-dev libmpfr-dev libisl-dev binutils-dev libelf-dev \
+    libexpat1-dev gcc-multilib g++-multilib picocom u-boot-tools util-linux \
+    kconfig-frontends gcc-arm-none-eabi
 ```
 
-Alternatif olarak, ARM'ın resmi sitesinden en güncel sürümü indirerek manuel kurulum yapabilirsiniz. Kurulumun ardından
-`arm-none-eabi-gcc --version` komutuyla toolchain'in düzgün çalıştığını doğrulayabilirsiniz.
+Alternatif olarak, ARM'ın resmi sitesinden toolchain'in en güncel sürümünü indirerek manuel kurulum yapabilirsiniz.
+Kurulumun ardından `arm-none-eabi-gcc --version` komutuyla toolchain'in düzgün çalıştığını doğrulayabilirsiniz.
 
 ### 1.2. Kaynak Kodları İndirme
 
