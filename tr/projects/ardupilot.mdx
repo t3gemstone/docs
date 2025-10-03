@@ -1,6 +1,417 @@
 ---
-title: 'Ardupilot'
-description: 'Ardupilotu Gemstone üzerinde kullanmak'
+title: 'ArduPilot'
+description: 'T3 Gemstone kartları için açık kaynaklı otopilot sistemi'
 ---
 
-Yapım aşamasında..
+import SnippetArduPilotPinout from '/snippets/boards/o1/ardupilot-pinout.mdx';
+
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
+</Frame>
+
+## Genel Bakış
+
+ArduPilot; sabit kanatlı, döner kanatlı, kara araçları ve denizaltılar dahil olmak üzere çeşitli araç türlerini
+destekleyen olgun, özellik açısından zengin bir açık kaynaklı otopilot sistemidir.
+
+Bu kılavuz, T3 Gemstone O1 geliştirme kartlarında ArduPilot çalıştırmayı kapsar.
+
+## Donanım Özellikleri
+
+### Atalet Ölçüm Birimi (IMU)
+- **Model**: InvenSense ICM-20948
+- **Arayüz**: SPI
+
+### Manyetometre (Pusula)
+- **Model**: AKM AK09916
+- **Arayüz**: Dahili (ICM-20948 üzerinden)
+- **Harici I2C Pusula Taraması**: Etkin
+
+### Barometre
+- **Model**: Bosch BMP390
+- **Arayüz**: SPI
+
+### CAN Veri Yolu
+- **Transceiver**: TCAN1462-Q1
+- **Arayüz**: 1x CAN arayüzü mevcut
+
+### Batarya İzleyici
+- **Model**: ADS1115
+- **Arayüz**: 0x48 adresinde I2C-MCU0 üzerinden harici olarak bağlanabilir
+- **Kanallar**: Voltaj/akım algılama için 4 kanallı 16-bit ADC
+
+### Durum Göstergeleri
+- **LED'ler**: Yeşil-kırmızı durum LED'leri
+- **Buzzer**: GPIO-26 üzerinden harici olarak bağlanabilir
+
+### GPS, RC Girişi ve PWM Çıkışları
+- **GPS**: UART-MAIN6 üzerinden seri iletişim, I2C-MCU0 üzerinden harici pusula
+- **RC Girişi**: UART-WKUP0 üzerinden SBUS iletişimi
+- **PWM Çıkışları**: 40-pin GPIO başlığından erişilebilen 7 adet donanımsal PWM kanalı
+
+## Kart Yönlendirmesi
+
+Kartı aracınıza **GemStone logosunun aracın önüne bakacak şekilde** monte edin. Bu, uygun sensör yönlendirmesi ve
+koordinat sistemi hizalamasını sağlar.
+
+## Durum LED'leri
+
+CSI/DSI portlarının yakınında bulunan yeşil-kırmızı durum LED'leri uçuş kontrolcüsünün mevcut durumunu gösterir.
+Ayrıntılı LED desenleri ve anlamları için
+[ArduPilot'un dokümanına](https://ardupilot.org/copter/docs/common-leds-pixhawk.html#boards-with-1-or-2-notify-leds) bakınız.
+
+## Kurulum
+
+ArduPilot, T3 Gemstone APT deposu aracılığıyla bir Debian paketi olarak dağıtılır. Paket, tüm araç türleri için önceden
+derlenmiş binary dosyaları ve gerekli yapılandırma dosyalarını içerir.
+
+```bash
+gemstone@t3-gem-o1:~$ sudo apt update
+gemstone@t3-gem-o1:~$ sudo apt install t3-gem-ardupilot
+```
+
+Kurulum aşağıdaki dizin yapısını oluşturur:
+
+```
+/opt/ardupilot/
+├── bin/
+│   ├── arducopter
+│   ├── arduplane
+│   ├── ardurover
+│   └── ardusub
+├── etc/
+│   ├── ardupilot.env
+│   └── ardupilot.parm
+└── var/
+    ├── log/
+    ├── storage/
+    └── terrain/
+```
+
+<Note>
+ArduPilot'u kaynaktan derlemeyi tercih ederseniz, derleme talimatları
+[github.com/t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot/) adresinde mevcuttur
+</Note>
+
+## Device-tree Overlay'leri
+
+ArduPilot'u çalıştırmadan önce, gerekli çevre birimleri yapılandırmak için çeşitli device-tree overlay'lerini
+etkinleştirmelisiniz.
+
+`/boot/uEnv.txt` dosyasını düzenleyin ve aşağıdaki overlay'leri `overlays=` satırına ekleyin:
+
+```
+k3-am67a-t3-gem-o1-spidev0-1cs.dtbo
+k3-am67a-t3-gem-o1-i2c1-400000.dtbo
+k3-am67a-t3-gem-o1-uart-ttys0.dtbo
+k3-am67a-t3-gem-o1-uart-ttys6.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo
+k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo
+k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo
+```
+
+**Örnek `/boot/uEnv.txt` yapılandırması:**
+
+```
+overlays=k3-am67a-t3-gem-o1-spidev0-1cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-uart-ttys0.dtbo k3-am67a-t3-gem-o1-uart-ttys6.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo
+```
+
+Değişikliklerin etkili olması için kartı yeniden başlatın:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo reboot
+```
+
+## Systemd Servis Yönetimi
+
+Her ArduPilot araç türünün kendi systemd servisi vardır:
+
+- `arducopter.service` - Çok rotorlu döner kanatlılar
+- `arduplane.service` - Sabit kanatlı uçaklar
+- `ardurover.service` - Kara araçları
+- `ardusub.service` - Su altı araçları
+
+<Warning>
+Birbirleriyle çakıştıkları için aynı anda yalnızca bir araç servisi etkinleştirilebilir.
+</Warning>
+
+### Araç Başlatma
+
+Araç türünüze göre ArduPilot'u çalıştırmak için ilgili servisi etkinleştirin ve başlatın:
+
+```bash
+# Döner kanatlılar için
+gemstone@t3-gem-o1:~$ sudo systemctl enable arducopter.service
+gemstone@t3-gem-o1:~$ sudo systemctl start arducopter.service
+```
+
+### Araç Türlerini Değiştirme
+
+Farklı bir araç türüne geçmek için önce mevcut servisi devre dışı bırakın:
+
+```bash
+# Mevcut aracı devre dışı bırak
+gemstone@t3-gem-o1:~$ sudo systemctl disable arducopter.service
+gemstone@t3-gem-o1:~$ sudo systemctl stop arducopter.service
+
+# Yeni aracı etkinleştir
+gemstone@t3-gem-o1:~$ sudo systemctl enable arduplane.service
+gemstone@t3-gem-o1:~$ sudo systemctl start arduplane.service
+```
+
+### Sistem Yapılandırma Servisi
+
+`ardupilot-sysconfig.service`, GPIO pinlerini ve diğer çevre birimleri yapılandırarak kartı ArduPilot çalıştırmaya
+hazırlayan tek seferlik bir servistir. Bu servis herhangi bir araç servisi etkinleştirildiğinde otomatik olarak çalışır
+ve manuel müdahale gerektirmez.
+
+### Servis Durumunu Kontrol Etme
+
+ArduPilot servis durumunu ve günlüklerini izleyin:
+
+```bash
+# Servis durumunu kontrol et
+gemstone@t3-gem-o1:~$ sudo systemctl status arducopter.service
+
+# Gerçek zamanlı günlükleri görüntüle
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -f
+
+# Son günlükleri görüntüle
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -r
+```
+
+## GPIO Pinout
+
+40-pin GPIO başlığı çevre birimlere, PWM çıkışlarına ve iletişim arayüzlerine erişim sağlar.
+Aşağıdaki tablo, device-tree overlay'leri uygulandıktan sonra GPIO başlığındaki her pinin işlevini gösterir. Tablo,
+kartın GemStone logosunu dik görebileceğiniz şekilde yönlendirildiğini varsayar.
+
+<SnippetArduPilotPinout func="İŞLEV" />
+
+### Çevre Birimi Yolları
+
+Her çevre birimi için Linux cihaz yolları:
+
+```
+UART-WKUP0:   /dev/ttyS0
+UART-MAIN6:   /dev/ttyS6
+
+I2C-MCU0:     /dev/i2c-1
+
+SPI-MCU0 CS0: /dev/spidev0.0
+
+PWM-0A:       /sys/class/pwm/pwmchip3/pwm0
+PWM-0B:       /sys/class/pwm/pwmchip3/pwm1
+PWM-1A:       /sys/class/pwm/pwmchip5/pwm0
+PWM-1B:       /sys/class/pwm/pwmchip5/pwm1
+PWM-ECAP0:    /sys/class/pwm/pwmchip0/pwm0
+PWM-ECAP1:    /sys/class/pwm/pwmchip1/pwm0
+PWM-ECAP2:    /sys/class/pwm/pwmchip2/pwm0
+```
+
+## Yapılandırma Dosyaları
+
+### Ortam Yapılandırması
+
+`/opt/ardupilot/etc/ardupilot.env` dosyası, seri port yapılandırması, dizin yolları ve performans seçenekleri dahil
+olmak üzere ArduPilot için
+[komut satırı argümanlarını](https://ardupilot.org/dev/docs/ardupilot-on-linux-starting.html) tanımlar.
+
+**Seri Port Yapılandırması:**
+
+```bash
+# USB Gadget Ethernet - MAVLink2 (Varsayılan)
+SERIAL0=--serial0 udp:192.168.7.255:14550:bcast
+
+# GPS UART 230400 Baud
+SERIAL3=--serial3 /dev/ttyS6
+
+# SBUS RC Girişi UART 100000 Baud
+SERIAL5=--serial5 /dev/ttyS0
+```
+
+Gerektiğinde ek seri portları yorum satırından çıkarın ve yapılandırın:
+
+```bash
+# Telemetri UART 57600 Baud - MAVLink1
+SERIAL1=--serial1 /dev/ttyUSB0
+```
+
+Seri portlar hakkında ek bilgiler
+[ArduPilot'un dokümanında](https://ardupilot.org/copter/docs/common-serial-options.html) bulunabilir.
+
+**Dizin Yolları (İsteğe Bağlı):**
+
+```bash
+LOG_DIRECTORY=--log-directory /opt/ardupilot/var/log
+TERRAIN_DIRECTORY=--terrain-directory /opt/ardupilot/var/terrain
+STORAGE_DIRECTORY=--storage-directory /opt/ardupilot/var/storage
+MODULE_DIRECTORY=--module-directory /usr/lib/ardupilot/modules
+```
+
+### Parametre Yapılandırması
+
+`/opt/ardupilot/etc/ardupilot.parm` dosyası başlangıçta yüklenen varsayılan parametreleri tanımlar.
+
+```
+# SERIAL5'i SBUS RC girişi olarak ayarla
+SERIAL5_PROTOCOL,23
+SERIAL5_BAUD,100
+```
+
+Ek parametreler [ArduPilot'un dokümanını](https://ardupilot.org/copter/docs/parameters.html) takip ederek eklenebilir.
+
+<Note>
+Yapılandırma dosyalarını değiştirdikten sonra, değişikliklerin etkili olması için ArduPilot servisini yeniden başlatın:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo systemctl restart arducopter.service
+```
+</Note>
+
+## QGroundControl Bağlantısı
+
+QGroundControl (QGC), ArduPilot için önerilen yer kontrol istasyonudur. UDP veya seri telemetri üzerinden
+bağlanabilirsiniz.
+
+### USB-Ethernet Bağlantısı (Varsayılan)
+
+Gemstone kartını USB Type-C kablosu ile bilgisayarınıza bağlayın. Kart, otomatik IP yapılandırmasıyla USB üzerinden
+Ethernet sağlamak için USB Gadget API kullanır:
+
+- **Kart IP'si**: `192.168.7.2`
+- **PC IP'si**: DHCP üzerinden atanır (genellikle `192.168.7.59`)
+- **MAVLink Portu**: `192.168.7.255:14550` adresinde UDP yayını
+
+QGC, UDP otomatik bağlantı etkinse (varsayılan ayar) araca otomatik olarak algılayacak ve bağlanacaktır.
+
+### Seri Telemetri Bağlantısı
+
+Radyo modülleri kullanarak kablosuz telemetri için:
+
+1. **Telemetri radyosunu Gemstone kartına bağlayın**
+   - Telemetri modülünü kartın USB portuna takın. Modülün USB arayüzü yoksa USB-to-TTL adaptöründen yararlanabilirsiniz.
+   - Oluşturulan TTY cihazını not edin (örn. `/dev/ttyUSB0`)
+
+2. **ArduPilot'u yapılandırın**
+
+   `/opt/ardupilot/etc/ardupilot.env` dosyasını düzenleyin ve SERIAL1'i etkinleştirin:
+
+   ```bash
+   SERIAL1=--serial1 /dev/ttyUSB0
+   ```
+
+   Servisi yeniden başlatın:
+
+   ```bash
+   gemstone@t3-gem-o1:~$ sudo systemctl restart arducopter.service
+   ```
+
+3. **Telemetri radyosunu bilgisayara bağlayın**
+   - İkinci radyo modülünü bilgisayarınıza takın
+   - Oluşturulan TTY cihazını not edin
+
+4. **QGroundControl'ü yapılandırın**
+   - **Application Settings → Comm Links** açın
+   - **Add** düğmesine tıklayın
+   - Doğru seri portu ve **57600** baud hızını seçin
+   - Yapılandırmayı kaydedin ve **Connect** butonuna tıklayın
+
+MAVLink mesajları artık gelmeli ve QGC'de aracın durumunu görmelisiniz.
+
+## Gelişmiş Yapılandırma
+
+### Gerçek Zamanlı Performans için CPU İzolasyonu
+
+Linux, CPU çekirdeklerini kernel işlem zamanlayıcısından izole etmeyi destekler. Bu, ArduPilot'un gerçek zamanlı
+olmayan işlemlerden etkilenmeden kendine adanmış çekirdeklerde çalışmasına izin vererek gecikme ve jitter karakteristiklerini
+iyileştirir.
+
+ArduPilot için 2 ve 3 numaralı çekirdekleri izole etmek için:
+
+1. **Kernel önyükleme parametrelerini düzenleyin**
+
+   `/boot/uEnv.txt` dosyasını açın ve kernel argümanlarına `isolcpus=2,3` ekleyin:
+
+   ```
+   args_mmc=setenv bootargs isolcpus=2,3 console=${console} ...
+   ```
+
+2. **CPU atamasını yapılandırın**
+
+   `/opt/ardupilot/etc/ardupilot.env` dosyasını düzenleyin ve CPU_AFFINITY satırını yorum satırından çıkarın:
+
+   ```bash
+   CPU_AFFINITY=--cpu-affinity 2,3
+   ```
+
+3. **Kartı yeniden başlatın**
+
+   ```bash
+   gemstone@t3-gem-o1:~$ sudo reboot
+   ```
+
+Yeniden başlatma sonrasında ArduPilot yalnızca 2 ve 3 numaralı çekirdeklerde çalışırken, sistem işlemleri 0 ve 1
+numaralı çekirdekleri kullanır.
+
+## Veri Loglama
+
+ArduPilot, uçuş log'larını `/opt/ardupilot/var/log/` dizininde binary BIN formatında saklar.
+Log'lar otomatik olarak döndürülür ve `LASTLOG.TXT` en son log numarasını gösterir.
+
+Bu log'lar [UAV Log Viewer](https://plot.ardupilot.org/) kullanılarak analiz edilebilir.
+
+## Sorun Giderme
+
+### ArduPilot Servisi Başlamıyor
+
+Servis durumunu ve günlüklerini kontrol edin:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo systemctl status arducopter.service
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -r
+```
+
+### MAVLink Bağlantısı Yok
+
+Bilgisayardan ağ yapılandırmasını doğrulayın:
+
+```bash
+ubuntu@host:~$ ping 192.168.7.2
+```
+
+Gemstone kartından ArduPilot'un çalıştığını ve yayın yaptığını kontrol edin:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo netstat -u -n | grep 14550
+```
+
+Uygulama Ayarlarında QGC UDP otomatik bağlantının etkin olduğundan emin olun.
+
+### GPS Algılanmıyor
+
+GPS, UART-MAIN6'ya (GPIO-4 ve GPIO-17) ve I2C-MCU0'a (GPIO-2 ve GPIO-3 pinleri) bağlı olmalıdır.
+GPIO başlık pinlerinde GPS bağlantısını kontrol edin ve yapılandırmayı doğrulayın:
+
+```bash
+gemstone@t3-gem-o1:~$ cat /opt/ardupilot/etc/ardupilot.env | grep SERIAL3
+```
+
+### PWM Çıkışları veya Seri Portlar Çalışmıyor
+
+Device-tree overlay'lerinin yüklendiğini doğrulayın:
+
+```bash
+gemstone@t3-gem-o1:~$ ls /proc/device-tree/chosen/overlays
+```
+
+[Device-tree Overlay'leri](#device-tree-overlayleri) bölümünde listelenen isimleri görmelisiniz. 
+Eksik varsa, `/boot/uEnv.txt` yapılandırmasını kontrol edin ve kartı yeniden başlatın.
+
+## Ek Kaynaklar
+
+- [Resmi ArduPilot Dokümanı](https://ardupilot.org/ardupilot/)
+- [QGroundControl Kullanıcı Kılavuzu](https://docs.qgroundcontrol.com/)
+- [T3 Gemstone ArduPilot Deposu](https://github.com/t3gemstone/ardupilot/)
