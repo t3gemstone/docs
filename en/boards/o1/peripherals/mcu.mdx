@@ -162,7 +162,7 @@ interface and supports many drivers not available in SBL, enabling more sophisti
 ### 2.3. U-Boot
 
 After the SBL, U-Boot takes control of the development board. Based on the configurations defined in the
-[Device Tree](../../../faq#device-tree-nedir), it activates the relevant hardware drivers and executes predefined
+[Device Tree](/en/faq#what-is-device-tree), it activates the relevant hardware drivers and executes predefined
 commands to load components like the Linux Kernel and Initrd into RAM, then hands control over to the Linux Kernel.
 
 #### 2.3.1. U-Boot Console Exercises
@@ -182,7 +182,7 @@ You can quickly skim the documents below.
 
 ### 2.4. Linux Kernel
 
-Loads the drivers for the hardware defined in the [Device Tree](../../../faq#device-tree-nedir). Then, if present,
+Loads the drivers for the hardware defined in the [Device Tree](/en/faq#what-is-device-tree). Then, if present,
 it starts the initrd/initramfs and executes the `init` program located in the rootfs.
 
 <Tip>

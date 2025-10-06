@@ -35,24 +35,40 @@ icon: "circle-question"
     It is the website from which software is downloaded when you run commands like `sudo apt install` in Linux.
   </Accordion>
 
-  <Accordion title="What is Device Tree?">
-    In Linux, these are .dts/.dtb files that contain information about which peripheral devices and hardware 
-    on the board are used by ARM architecture processors, through which data bus, and all related settings. 
-    When the kernel core starts, it reads this file to determine how to access each hardware component and which 
-    driver to load.
+  <Accordion title="What Is a Device Tree?">
+    In operating systems like Linux, a Device Tree is a "map" that describes the hardware components connected to
+    the processor  (for example, sensors, GPIO, I2C, SPI, LEDs, UART, etc.). 
+    In other words, it answers the question: "What hardware exists on this device, which pins are they connected to,
+    and how do they operate?" These descriptions are typically stored in files with extensions like
+    .dts (device tree source) or .dtb (compiled binary form). 
+    When the kernel starts, it uses this file to understand how to access each hardware component 
+    and which driver to initialize, allowing the system to boot properly.
   </Accordion>
 
-  <Accordion title="What is Device Tree Overlay?">
-    Todo
+  <Accordion title="What Is a Device Tree Overlay?">
+      On embedded development boards (for example: Gemstone, Raspberry Pi, BeagleBone etc.),
+      the operating system cannot automatically detect the hardware.  That’s why a "Device Tree" (hardware map)
+      file exists. This file tells the OS things like: "Use GPIO pin 2 as UART, GPIO 17 is connected to an
+      LED, I2C-1 is located here," essentially describing what each pin does.
+
+      Sometimes, you may want to modify or extend these definitions. However, rewriting the entire hardware
+      map from scratch would be inefficient. That’s where a Device Tree Overlay (DTO) comes in. "Overlay" means
+      "to layer on top of" or "temporarily modify." For instance, suppose GPIO pin 2 is configured as UART, 
+      but you want to use that pin as an LED output instead. You can load a new Device Tree Overlay that
+      says, "GPIO 2 is now an LED output." This overlay changes only that specific pin — all other
+      settings remain intact.
+
+      In short, DTOs (Device Tree Overlays) allow you to modify pin functions or hardware behavior, or to add
+      new devices like sensors, motors, or displays — all while preserving the main system configuration files.
   </Accordion>
 
   <Accordion title="How to Become a Volunteer Developer?">
     To become a Volunteer Developer, you need to read all the necessary documentation, examine the projects 
     on GitHub, and choose a topic from the [Roadmap](./roadmap) section to work on. 
     Visit the [community forum](https://community.t3gemstone.org) for your questions.
-</Accordion>
+  </Accordion>
 
-<Accordion title="What are the Development Rules?">
+  <Accordion title="What are the Development Rules?">
     Various development standards are specified below for those who want to contribute to open-source projects by
     joining the Gemstone community.
 
@@ -79,6 +95,6 @@ icon: "circle-question"
     Similarly, when preparing a README file for a new project, why the project was created (define the problem)
     should come first, followed by what was done (what was done for the solution), and finally, an explanation of
     what the work does (or how to use it if it is an application).
-</Accordion>
+  </Accordion>
 
 </AccordionGroup>

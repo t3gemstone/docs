@@ -163,7 +163,7 @@ arayüzüne ve SBL'de mümkün olmayan bir çok sürücüye sahip olduğu için 
 
 ### 2.3. U-Boot
 
-SBL sonrası geliştirme kartının kontrolünü devralan U-Boot, [Device Tree'de](../../../faq#device-tree-nedir)
+SBL sonrası geliştirme kartının kontrolünü devralan U-Boot, [Device Tree'de](/tr/faq#device-tree-nedir)
 tanımlanmış olan konfigürasyonlara göre ilgili donanımların sürücülerini aktifleştirir ve ön tanımlı bir takım komutları
 çalıştırarak Linux Kernel, Initrd gibi bileşenleri RAM'e yükleyerek kontrolü Linux Kernel'e devreder.
 
@@ -184,11 +184,11 @@ Aşağıda bulunan dokümanlara hızlıca göz gezdirebilirsiniz.
 
 ### 2.4. Linux Kernel
 
-[Device Tree'de](../../../faq#device-tree-nedir) tanımlanan donanımların sürücülerini yükler. Ardından
+[Device Tree'de](/tr/faq#device-tree-nedir) tanımlanan donanımların sürücülerini yükler. Ardından
 varsa initrd'yi/initramfs'i başlatır ve rootfs'te bulunan `init` programını çalıştırır.
 
 <Tip>
-  U-Boot ve Linux kernelin device tree dosyaları birbirinden farklıdır. U-Boot'taki devicetreede
+  U-Boot ve Linux kernelin [Device Tree](/tr/faq#device-tree-nedir) dosyaları birbirinden farklıdır. U-Boot'taki devicetreede
   genellikle sadece kernel ve initramfs'i çeşitli depolama aygıtlarından (MMC, SSD, SPI flash, ...)
   RAM'e yüklemeye yetecek kadar donanım aktif edilir. Asıl donanım aktif etme işlemlerini kernel yapar.
 </Tip>

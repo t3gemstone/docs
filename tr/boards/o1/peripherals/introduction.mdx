@@ -46,11 +46,11 @@ USB takılıyken 12V batarya ters bağlanırsa, geliştirme kartı ciddi şekild
 
 Kart üzerinde bulunan **40-pin expansion header** olarak isimlendirilen Giriş/Çıkış (I/O) pinleri; UART (seri port), I2C,
 SPI, PWM ve PCM gibi arayüzleri sağlamaktadır. 40-pin giriş/çıkış portlarının kullanım amaçları ve varsayılan
-konfigürasyonda hangi arayüzlere tahsis edildiğine değinilecek, sonraki bölümde ise **Device Tree Overlay**
+konfigürasyonda hangi arayüzlere tahsis edildiğine değinilecek, sonraki bölümde ise [Device Tree Overlay](/tr/faq#device-tree-overlay-nedir)
 dosyaları ile pinlerin nasıl farklı kullanımlara açılabileceği izah edilecektir.
 
 Örneğin `GPIO-7` isimli pin varsayılan konfigürasyonda `SPI-MCU0 CS1` olarak belirlenmiş
-olup **Device Tree Overlay** ismi verilen dosya aktif edilerek `UART-WKUP0 RX` fonksiyonuna dönüştürülebilmektedir.
+olup [Device Tree Overlay](/tr/faq#device-tree-overlay-nedir) ismi verilen dosya aktif edilerek `UART-WKUP0 RX` fonksiyonuna dönüştürülebilmektedir.
 Benzer şekilde [Gemstone VTOL](../../../projects/vtol) projesinde Bluetooth ihtiyacı olmadığından, ilgili pinler devre
 dışı bırakılarak `UART-MAIN6`'ya dönüştürülmüştür.
 
@@ -126,7 +126,7 @@ pini sayesinde de DAC gibi bir dijital ses cihazına veri çıkışı sağlanabi
 ## 2. Device Tree
 
 Kart üzerindeki 40-pin giriş/çıkış portlarının kullanılabileceği konfigürasyonlar (UART, PWM, I2C, GPIO, ...)
-**device tree overlay** adı verilen dosyalarda tanımlanmıştır. İstenen konfigürasyonun/konfigürasyonların aktif
+[Device Tree Overlay](/tr/faq#device-tree-overlay-nedir) adı verilen dosyalarda tanımlanmıştır. İstenen konfigürasyonun/konfigürasyonların aktif
 edilebilmesi için ilgili overlay dosyalarının bulunup, bootloader'a liste olarak verilmesi gerekmektedir.
 
 Texas Instruments ARM64 tabanlı SoC'ler için tüm overlay dosyalarının kaynak kodları
@@ -146,9 +146,8 @@ kullanılabileceği görülmektedir.
 
 #### 2.1.2. İlgili Overlay Dosyasının Bulunması
 
-Sonraki aşamada istenen konfigürasyonu hangi device tree overlay dosyasının yaptığının
-bulunması gerekmektedir.
-Device tree overlay dosyalarının tümü geliştirme kartının içerisindeki `/boot/overlays` klasöründe bulunmaktadır.
+Sonraki aşamada istenen konfigürasyonu hangi [Device Tree Overlay](/tr/faq#device-tree-overlay-nedir) dosyasının yaptığının
+bulunması gerekmektedir, bu dosyalarının tümü geliştirme kartının içerisindeki `/boot/overlays` klasöründe bulunmaktadır.
 `ls /boot/overlays` komutu çalıştırılarak hepsi listelenebilir.
 
 <SnippetDeviceTreeOverlays />
