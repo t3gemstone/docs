@@ -457,6 +457,20 @@ the [Training Guides](./guides/introduction).
 sudo apt update && sudo apt upgrade
 ```
 
+### 2.5. WiFi Connection
+
+If you wish to connect the development board to a new WiFi network after the initial setup, rather than
+during it, open a Terminal using any of the methods described above to connect to the board.
+Then, run the command `sudo nmtui` and select the network information you wish to join from
+the **Activate Connection** section. An example is provided in the video below.
+After this process, your development board will join the specified WiFi network and obtain an
+IP address. Consequently, you will be able to establish an SSH connection to the respective IP address
+from your laptop/computer.
+
+<Frame caption="Todo: asciinema record gif -> minicom ttl -> gemstone@t3-gem-o1 $ sudo nmtui -> sudo ip a">
+  <img className="rounded-lg" noZoom src="/images/under-construction.png" />
+</Frame>
+
 # 3. Conclusion
 
 This documentation will provide explanations for all software and hardware ecosystems of Gemstone development

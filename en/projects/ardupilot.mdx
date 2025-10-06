@@ -1,6 +1,423 @@
 ---
-title: 'Ardupilot'
-description: 'Using Ardupilot with Gemstone Board'
+title: 'ArduPilot'
+description: 'Open-source autopilot system for T3 Gemstone boards'
 ---
 
-Under construction..
+import SnippetArduPilotPinout from '/snippets/boards/o1/ardupilot-pinout.mdx';
+
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
+</Frame>
+
+## Overview
+
+ArduPilot is a mature, feature-rich open-source autopilot system supporting various vehicle types including planes,
+copters, rovers, and submarines. 
+
+This guide covers running ArduPilot on T3 Gemstone O1 development boards.
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/g7lm5u7EQis"
+  title="T3 Gemstone O1 Quadcopter"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+## Hardware Specifications
+
+### Inertial Measurement Unit (IMU)
+- **Model**: InvenSense ICM-20948
+- **Interface**: SPI
+
+### Magnetometer (Compass)
+- **Model**: AKM AK09916
+- **Interface**: Internal (via ICM-20948)
+- **External I2C Compass Probing**: Enabled
+
+### Barometer
+- **Model**: Bosch BMP390
+- **Interface**: SPI
+
+### CAN Bus
+- **Transceiver**: TCAN1462-Q1
+- **Interface**: 1x CAN interface available
+
+### Battery Monitor
+- **Model**: ADS1115
+- **Interface**: Can be connected externally via I2C-MCU0 at address 0x48
+- **Channels**: 4-channel 16-bit ADC for voltage/current sensing
+
+### Status Indicators
+- **LEDs**: Green-red status LEDs
+- **Buzzer**: Can be connected externally via GPIO-26
+
+### GPS, RC Input & PWM Outputs
+- **GPS**: Serial communication via UART-MAIN6, external compass via I2C-MCU0
+- **RC Input**: SBUS communication via UART-WKUP0
+- **PWM Outputs**: 7x hardware PWM channels accessible from 40-pin GPIO header
+
+## Board Orientation
+
+Mount the board in your vehicle with the **GemStone logo pointing toward the front** of the vehicle. This ensures proper
+sensor orientation and coordinate system alignment.
+
+## Status LEDs
+
+The green-red status LEDs located near CSI/DSI ports indicate the flight controller's current state.
+Refer to [ArduPilot's documentation](https://ardupilot.org/copter/docs/common-leds-pixhawk.html#boards-with-1-or-2-notify-leds)
+for detailed LED patterns and their meanings.
+
+## Installation
+
+ArduPilot is distributed as a Debian package via the T3 Gemstone APT repository. The package includes pre-compiled
+binaries for all vehicle types and necessary configuration files.
+
+```bash
+gemstone@t3-gem-o1:~$ sudo apt update
+gemstone@t3-gem-o1:~$ sudo apt install t3-gem-ardupilot
+```
+
+The installation creates the following directory structure:
+
+```
+/opt/ardupilot/
+├── bin/
+│   ├── arducopter
+│   ├── arduplane
+│   ├── ardurover
+│   └── ardusub
+├── etc/
+│   ├── ardupilot.env
+│   └── ardupilot.parm
+└── var/
+    ├── log/
+    ├── storage/
+    └── terrain/
+```
+
+<Note>
+If you prefer to compile ArduPilot from source, build instructions are available at
+[github.com/t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot/)
+</Note>
+
+## Device-tree Overlays
+
+Before running ArduPilot, you must enable the required device-tree overlays to configure the necessary peripherals.
+
+Edit `/boot/uEnv.txt` and append the following overlays to the `overlays=` line:
+
+```
+k3-am67a-t3-gem-o1-spidev0-1cs.dtbo
+k3-am67a-t3-gem-o1-i2c1-400000.dtbo
+k3-am67a-t3-gem-o1-uart-ttys0.dtbo
+k3-am67a-t3-gem-o1-uart-ttys6.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo
+k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo
+k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo
+```
+
+**Example `/boot/uEnv.txt` configuration:**
+
+```
+overlays=k3-am67a-t3-gem-o1-spidev0-1cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-uart-ttys0.dtbo k3-am67a-t3-gem-o1-uart-ttys6.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo
+```
+
+Reboot the board for the changes to take effect:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo reboot
+```
+
+## Systemd Service Management
+
+Each ArduPilot vehicle type has its own systemd service:
+
+- `arducopter.service` - Multirotor copters
+- `arduplane.service` - Fixed-wing aircraft
+- `ardurover.service` - Ground vehicles
+- `ardusub.service` - Underwater vehicles
+
+<Warning>
+Only one vehicle service can be enabled at a time as they conflict with each other.
+</Warning>
+
+### Starting a Vehicle
+
+To run ArduPilot for your vehicle type, enable and start the corresponding service:
+
+```bash
+# For copters
+gemstone@t3-gem-o1:~$ sudo systemctl enable arducopter.service
+gemstone@t3-gem-o1:~$ sudo systemctl start arducopter.service
+```
+
+### Switching Vehicle Types
+
+To switch to a different vehicle type, first disable the current service:
+
+```bash
+# Disable current vehicle
+gemstone@t3-gem-o1:~$ sudo systemctl disable arducopter.service
+gemstone@t3-gem-o1:~$ sudo systemctl stop arducopter.service
+
+# Enable new vehicle
+gemstone@t3-gem-o1:~$ sudo systemctl enable arduplane.service
+gemstone@t3-gem-o1:~$ sudo systemctl start arduplane.service
+```
+
+### System Configuration Service
+
+The `ardupilot-sysconfig.service` is a oneshot service that prepares the board for running ArduPilot by configuring GPIO
+pins and other peripherals. This service runs automatically when any vehicle service is enabled and does not need manual
+intervention.
+
+### Checking Service Status
+
+Monitor the ArduPilot service status and logs:
+
+```bash
+# Check service status
+gemstone@t3-gem-o1:~$ sudo systemctl status arducopter.service
+
+# View real-time logs
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -f
+
+# View recent logs
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -r
+```
+
+## GPIO Pinout
+
+The 40-pin GPIO header provides access to peripherals, PWM outputs, and communication interfaces.
+The following table shows the function of each pin in the GPIO header after applying device-tree overlays. The table
+assumes the board is oriented so that you can see the GemStone logo upright.
+
+<SnippetArduPilotPinout func="FUNCTION" />
+
+### Peripheral Paths
+
+Linux device paths for each peripheral:
+
+```
+UART-WKUP0:   /dev/ttyS0
+UART-MAIN6:   /dev/ttyS6
+
+I2C-MCU0:     /dev/i2c-1
+
+SPI-MCU0 CS0: /dev/spidev0.0
+
+PWM-0A:       /sys/class/pwm/pwmchip3/pwm0
+PWM-0B:       /sys/class/pwm/pwmchip3/pwm1
+PWM-1A:       /sys/class/pwm/pwmchip5/pwm0
+PWM-1B:       /sys/class/pwm/pwmchip5/pwm1
+PWM-ECAP0:    /sys/class/pwm/pwmchip0/pwm0
+PWM-ECAP1:    /sys/class/pwm/pwmchip1/pwm0
+PWM-ECAP2:    /sys/class/pwm/pwmchip2/pwm0
+```
+
+## Configuration Files
+
+### Environment Configuration
+
+`/opt/ardupilot/etc/ardupilot.env` file defines
+[command-line arguments](https://ardupilot.org/dev/docs/ardupilot-on-linux-starting.html)
+for ArduPilot, including serial port configuration, directory paths, and performance options.
+
+**Serial Port Configuration:**
+
+```bash
+# USB Gadget Ethernet - MAVLink2 (Default)
+SERIAL0=--serial0 udp:192.168.7.255:14550:bcast
+
+# GPS UART 230400 Baud
+SERIAL3=--serial3 /dev/ttyS6
+
+# SBUS RC Input UART 100000 Baud
+SERIAL5=--serial5 /dev/ttyS0
+```
+
+Uncomment and configure additional serial ports as needed:
+
+```bash
+# Telemetry UART 57600 Baud - MAVLink1
+SERIAL1=--serial1 /dev/ttyUSB0
+```
+
+Additional information about serial ports can be found in
+[ArduPilot's documentation](https://ardupilot.org/copter/docs/common-serial-options.html).
+
+**Directory Paths (Optional):**
+
+```bash
+LOG_DIRECTORY=--log-directory /opt/ardupilot/var/log
+TERRAIN_DIRECTORY=--terrain-directory /opt/ardupilot/var/terrain
+STORAGE_DIRECTORY=--storage-directory /opt/ardupilot/var/storage
+MODULE_DIRECTORY=--module-directory /usr/lib/ardupilot/modules
+```
+
+### Parameter Configuration
+
+`/opt/ardupilot/etc/ardupilot.parm` file defines default parameters loaded on startup.
+
+```
+# Setup SERIAL5 as SBUS RC input
+SERIAL5_PROTOCOL,23
+SERIAL5_BAUD,100
+```
+
+Additional parameters can be added following
+[ArduPilot's documentation](https://ardupilot.org/copter/docs/parameters.html).
+
+<Note>
+After modifying configuration files, restart the ArduPilot service for changes to take effect:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo systemctl restart arducopter.service
+```
+</Note>
+
+## QGroundControl Connection
+
+QGroundControl (QGC) is the recommended ground control station for ArduPilot. You can connect via UDP or serial
+telemetry.
+
+### USB-Ethernet Connection (Default)
+
+Connect the Gemstone board to your PC via USB Type-C cable. The board uses USB Gadget API to provide Ethernet-over-USB
+with automatic IP configuration:
+
+- **Board IP**: `192.168.7.2`
+- **PC IP**: Assigned via DHCP (typically `192.168.7.59`)
+- **MAVLink Port**: UDP broadcast at `192.168.7.255:14550`
+
+QGC will automatically detect and connect to the vehicle if UDP autoconnect is enabled (default setting).
+
+### Serial Telemetry Connection
+
+For wireless telemetry using radio modules:
+
+1. **Connect telemetry radio to Gemstone board**
+   - Insert telemetry module to board's USB port. If the module does not have USB interface, you can use USB-to-TTL adapter.
+   - Note the created TTY device (e.g., `/dev/ttyUSB0`)
+
+2. **Configure ArduPilot**
+
+   Edit `/opt/ardupilot/etc/ardupilot.env` and enable SERIAL1:
+
+   ```bash
+   SERIAL1=--serial1 /dev/ttyUSB0
+   ```
+
+   Restart the service:
+
+   ```bash
+   gemstone@t3-gem-o1:~$ sudo systemctl restart arducopter.service
+   ```
+
+3. **Connect telemetry radio to PC**
+   - Insert the second radio module to your PC
+   - Note the created TTY device
+
+4. **Configure QGroundControl**
+   - Open **Application Settings → Comm Links**
+   - Click **Add** button
+   - Select the correct serial port and **57600** baud rate
+   - Save configuration and click **Connect** button
+
+MAVLink messages should now arrive, and you should see the vehicle's status in QGC.
+
+## Advanced Configuration
+
+### CPU Isolation for Real-Time Performance
+
+Linux supports isolating CPU cores from the kernel process scheduler. This allows ArduPilot to run on dedicated cores
+without interference from non-real-time processes, improving latency and jitter characteristics.
+
+To isolate cores 2 and 3 for ArduPilot:
+
+1. **Edit kernel boot parameters**
+
+   Open `/boot/uEnv.txt` and add `isolcpus=2,3` to the kernel arguments:
+
+   ```
+   args_mmc=setenv bootargs isolcpus=2,3 console=${console} ...
+   ```
+
+2. **Configure CPU affinity**
+
+   Edit `/opt/ardupilot/etc/ardupilot.env` and uncomment the CPU_AFFINITY line:
+
+   ```bash
+   CPU_AFFINITY=--cpu-affinity 2,3
+   ```
+
+3. **Reboot the board**
+
+   ```bash
+   gemstone@t3-gem-o1:~$ sudo reboot
+   ```
+
+After reboot, ArduPilot will run exclusively on cores 2 and 3, while system processes use cores 0 and 1.
+
+## Data Logging
+
+ArduPilot stores flight logs in `/opt/ardupilot/var/log/` using the binary BIN format.
+Logs are automatically rotated, with `LASTLOG.TXT` indicating the most recent log number.
+
+These logs can be analyzed using [UAV Log Viewer](https://plot.ardupilot.org/).
+
+## Troubleshooting
+
+### ArduPilot Service Won't Start
+
+Check service status and logs:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo systemctl status arducopter.service
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -r
+```
+
+### No MAVLink Connection
+
+Verify network configuration from PC:
+
+```bash
+ubuntu@host:~$ ping 192.168.7.2
+```
+
+Check if ArduPilot is running and broadcasting from Gemstone board:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo netstat -u -n | grep 14550
+```
+
+Ensure QGC UDP autoconnect is enabled in Application Settings.
+
+### GPS Not Detected
+
+GPS should be connected to UART-MAIN6 (GPIO-4 and GPIO-17) and I2C-MCU0 (pins GPIO-2 and GPIO-3).
+Check GPS connection on GPIO header pins and verify configuration:
+
+```bash
+gemstone@t3-gem-o1:~$ cat /opt/ardupilot/etc/ardupilot.env | grep SERIAL3
+```
+
+### PWM Outputs or Serial Ports Not Working
+
+Verify device-tree overlays are loaded:
+
+```bash
+gemstone@t3-gem-o1:~$ ls /proc/device-tree/chosen/overlays
+```
+
+You should see names listed in [Device-tree Overlays](#device-tree-overlays). 
+If some overlays are missing, check `/boot/uEnv.txt` configuration and reboot the board.
+
+## Additional Resources
+
+- [Official ArduPilot Documentation](https://ardupilot.org/ardupilot/)
+- [QGroundControl User Guide](https://docs.qgroundcontrol.com/)
+- [T3 Gemstone ArduPilot Repository](https://github.com/t3gemstone/ardupilot/)

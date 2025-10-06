@@ -469,6 +469,19 @@ okuyarak deneyim kazanabilirsiniz.
 sudo apt update && sudo apt upgrade
 ```
 
+### 2.5. Wifi Bağlantısı
+
+Kurulum esnasında değil de kurulum yapıldıktan sonra geliştirme kartını yeni bir wifi ağına dahil etmek isterseniz 
+yukarıdaki yöntemlerden herhangi biri ile karta bağlanarak Terminal açınız ve `sudo nmtui` komutunu
+çalıştırıp **Activate Connection** kısmından dahil olmak istediğiniz ağ bilgilerini seçiniz.
+Aşağıdaki videoda örnek mevcuttur. Bu işlem sonrası geliştirme kartınız belirlediğiniz Wifi ağına dahil olarak 
+bir ip adresi alacaktır. Dolayısıyla laptop/bilgisayar üzerinden ilgili IP adresine ssh bağlantısı kurmanız 
+mümkün olacaktır.
+
+<Frame caption="Todo: asciinema record gif -> minicom ttl -> gemstone@t3-gem-o1 $ sudo nmtui -> sudo ip a">
+  <img className="rounded-lg" noZoom src="/images/under-construction.png" />
+</Frame>
+
 # 3. Son
 
 Bu dokümanda zengin proje örnekleri ile birlikte Gemstone Geliştirme kartlarının bütün yazılım ve donanım
