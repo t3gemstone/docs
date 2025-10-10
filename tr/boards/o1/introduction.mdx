@@ -3,13 +3,16 @@ title: 'Kart Özellikleri'
 description: 'T3 Gemstone Obsidian'
 ---
 
-import { Card, CardGroup } from '/components/Card';
 import { SnippetCardEntry } from '/snippets/boards/o1/card-entry.mdx';
 
-<Frame>
-  <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
-  <img className="rounded-lg" src="/images/o1-board/02-back.png" />
-</Frame>
+<Columns cols={2}>
+  <Frame>
+    <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
+  </Frame>
+  <Frame>
+    <img className="rounded-lg" src="/images/o1-board/02-back.png" />
+  </Frame>
+</Columns>
 
 <div className="text-2xl font-light mt-4 mb-8">
 Texas Instruments AM67A işlemcisi tabanlı yüksek performanslı geliştirme kartı
@@ -185,11 +188,11 @@ Texas Instruments AM67A işlemcisi tabanlı yüksek performanslı geliştirme ka
 
 <CardGroup cols={2}>
   <Card title="Güç Girişi" icon="plug">
-    <SnippetCardEntry header="USB Type-C Güç (5-9V/3A)">
+    <SnippetCardEntry header="USB Type-C Güç (5-9V / 3A)">
       USB Power Delivery desteği ile birincil güç girişi
     </SnippetCardEntry>
 
-    <SnippetCardEntry header="DC Güç Konnektörü (5-12V/3A)">
+    <SnippetCardEntry header="DC Güç Konnektörü (5-12V / 3A)">
       Alternatif güç girişi
     </SnippetCardEntry>
   </Card>
