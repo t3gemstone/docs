@@ -47,12 +47,12 @@ If the 12V battery is connected backwards while the USB is plugged in, the devel
 The Input/Output (I/O) pins on the board, referred to as the **40-pin expansion header**, provide interfaces such
 as UART (serial port), I2C, SPI, PWM, and PCM. The purposes of the 40-pin I/O ports and their default interface
 assignments will be explained. In the next section, it will be described how the pins can be reconfigured for
-different uses using **Device Tree Overlay** files.
+different uses using [Device Tree Overlay](/en/faq#what-is-device-tree-overlay) files.
 
 For example, the pin named `GPIO-7` is configured as `SPI-MCU0 CS1` by default but can be converted to
-the `UART-WKUP0 RX` function by activating a file called **Device Tree Overlay**. Similarly, in the
-[Gemstone VTOL](../../../projects/vtol) project, since Bluetooth was not needed, the relevant pins were
-disabled and converted to `UART-MAIN6`.
+the `UART-WKUP0 RX` function by activating a file called [Device Tree Overlay](/en/faq#what-is-device-tree-overlay).
+Similarly, in the [Gemstone VTOL](../../../projects/vtol) project, since Bluetooth was not needed,
+the relevant pins were disabled and converted to `UART-MAIN6`.
 
 <SnippetPinout func="FUNCTION" />
 
@@ -126,7 +126,7 @@ I2S microphone, and the `DOUT` pin allows data output to a digital audio device 
 ## 2. Device Tree
 
 The configurations (UART, PWM, I2C, GPIO, ...) that the 40-pin I/O ports on the board can be used for are defined
-in files called **device tree overlays**. To activate the desired configuration(s), the relevant overlay files
+in files called [Device Tree Overlay](/en/faq#what-is-device-tree-overlay). To activate the desired configuration(s), the relevant overlay files
 must be found and provided to the bootloader as a list.
 
 For Texas Instruments ARM64-based SoCs, the source code for all overlay files is located in the
@@ -145,9 +145,9 @@ When examining the T3-GEM-O1's pinout, it can be seen that pins 7 and 11 on the 
 
 #### 2.1.2. Finding the Relevant Overlay File
 
-The next step is to determine which device tree overlay file provides the desired configuration.  
-All device tree overlay files are located in the `/boot/overlays` folder on the development board. They can be
-listed by running the `ls /boot/overlays` command.
+The next step is to determine which [Device Tree Overlay](/en/faq#what-is-device-tree-overlay) file provides the
+desired configuration.  All [Device Tree Overlay](/en/faq#what-is-device-tree-overlay) files are located in
+the `/boot/overlays` folder on the development board. They can be listed by running the `ls /boot/overlays` command.
 
 <SnippetDeviceTreeOverlays />
 

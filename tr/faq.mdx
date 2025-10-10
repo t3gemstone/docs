@@ -31,11 +31,27 @@ icon: "circle-question"
   </Accordion>
 
   <Accordion title="Device Tree Nedir?">
-    Linuxta ARM mimari içeren işlemcilerin kart üzerindeki çevresel aygıt ve donanımlardan hangisini hangi veri yolu ile kullanıldığının ve ilgili donanımlara ait bütün ayarların yazılı olduğu .dts/.dtb uzantılı dosyalar. Kernel çekirdek başladığı zaman hangi donanıma nasıl ulaşacağını ve hangi sürücüyü başlatacağını bu dosya aracılığıyla okuyup sistemi başlatır.
+    Linux gibi işletim sistemlerinde işlemciye bağlı donanım bileşenlerini (örneğin sensör, GPIO, I2C, SPI, LED, UART vs.) tanımlayan
+    bir "harita"dır. Yani "Bu cihazda hangi donanımlar var, hangi pine bağlılar, nasıl çalışıyorlar?"
+    sorusunun cevabını veren bir metin dosyasıdır. Bu dosyalar genelde .dts (device tree source) veya 
+    .dtb (derlenmiş binary hali) olarak bulunur. Kernel (çekirdek) başladığı zaman hangi donanıma nasıl ulaşacağını ve
+    hangi sürücüyü başlatacağını bu dosya aracılığıyla okuyup sistemi başlatır.
   </Accordion>
 
   <Accordion title="Device Tree Overlay Nedir?">
-    Todo
+    Bir gömülü geliştirme kartında (Örneğin: Gemstone, Raspberry Pi, BeagleBone)
+    işletim sistemi, donanımı kendi kendine tanıyamaz. Bu yüzden bir "Device Tree" (donanım haritası) dosyası vardır.
+    Bu dosya işletim sistemine der ki: "GPIO 2 pinini UART olarak kullan, GPIO 17 LED’e bağlı, I2C-1 burada"
+    yani donanımın hangi pin ne işe yarıyor bilgisini anlatır.
+
+    Bazen bu tanımları değiştirmek veya ekleme yapmak gerekebilir. Ama tüm haritayı yeniden yazmak gereksiz olabilir.
+    İşte bu durumda Device Tree Overlay (DTO) kullanılır. Overlay = "Üstüne eklemek / geçici olarak değiştirmek" demek.
+    Söz gelimi kartta GPIO 2 pini UART olarak ayarlı, ama siz bu pini LED çıkışı yapmak istiyorsunuz.
+    Bunun için yeni bir Device Tree Overlay yükleyerek "GPIO 2 artık LED çıkışı olsun." demiş olursunuz.
+    Bu overlay, sadece o pini değiştirir — diğer tanımlar aynı kalır.
+
+    Dolayısıyla DTO (Device Tree Overlays) Donanımın pinlerini veya işlevlerini değiştirmeyi, yeni sensör, motor,
+    ekran vb. eklemeyi, ana sistem dosyalarını koruyarak değişiklik yapılabilmesini sağlar.
   </Accordion>
 
   <Accordion title="Nasıl Gönüllü Geliştirici Olunur?">
@@ -63,6 +79,14 @@ icon: "circle-question"
     * Projelere veya dokümantasyona fotoğraf, resim eklenirken görsellerin çözünürlüklerin çok yüksek olmaması, eklenen
     görselin dosya boyutunun maksimum 1 MB'ı geçmemesi gerekmektedir. Ekosistemdeki diğer fotoğraflara bakılarak
     örnek alınabilir. Dokümantasyon yazma konusunda ipuçları için [tıklayınız.](https://leerob.com/docs)
+
+    * Bütün çalışmalarda (Geliştirme, Dokümantasyon vb.) açıklama yazılırken `"Neden"`, `"Ne"`, `"Nasıl"` 
+    prensibi takip edilmelidir; "Bu çalışma neden yapıldı, ne yapıldı, nasıl yapıldı?".
+    Örneğin [bu adresteki](https://github.com/t3gemstone/sdk/pull/23) çalışma incelendiğinde
+    "bir zorluğun mevcut olduğu, bu zorluğun ne olduğu ve çözüme yönelik ne yapıldığı" açıklanmıştır.
+    Benzer şekilde yeni bir projenin README dosyası hazırlanırken, ilgili projenin ne yaptığından önce
+    neden böyle bir proje yapıldığı (problemi tanımla), ne yapıldığı (çözüm için ne yapıldığı) en sonda ise
+    çalışmanın neler yaptığı (veya çalışma bir uygulama ise nasıl kullanıldığı) açıklanmalıdır.
   </Accordion>
 
 </AccordionGroup>
