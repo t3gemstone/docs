@@ -3,6 +3,7 @@ title: 'Serial Port'
 description: 'Serial Port Usage'
 ---
 
+import SnippetDevices from '/snippets/boards/o1/serial/devices.mdx';
 import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
 import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
 
@@ -19,9 +20,28 @@ microcontrollers. This communication typically occurs via the `UART (Universal A
 protocol and is ideal for low-speed data transmission. For example, serial ports are often preferred when
 communicating with external modules like GPS or Radio Transmitters.
 
+### Serial Port Interfaces
+
+The serial port interfaces on the T3-GEM-O1 card are listed in the table below.
+
 <Frame caption="Todo: Pins where the seriport connection can be made">
   <img className="rounded-lg" noZoom src="/images/under-construction.png" />
 </Frame>
+
+<SnippetDevices int="Interface" device="Device" file="Overlay File" notes="Notes" />
+
+<Note>
+- Access to the Linux terminal is obtained from the UART‑MAIN0 serial port.
+- The UART‑MAIN1 serial port becomes disabled when the `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtso` overlay is activated.
+- Bluetooth becomes disabled when the UART‑MAIN6 serial port is activated.
+
+</Note>
+
+The names of the overlay files for the interfaces to be enabled must be added to the `overlays` variable
+in the `/boot/uEnv.txt` file. Detailed information about overlays can be found in the
+[Device Tree](./introduction/#2-device-tree) section.
+
+### Serial Port Usage
 
 <Steps>
   <Step title="SSH/VNC Connection">
@@ -36,7 +56,7 @@ communicating with external modules like GPS or Radio Transmitters.
   </Step>
 </Steps>
 
-### 1. Creating a Shell Script
+#### 1. Creating a Shell Script
 
 Create a script file for opening the serial port and sending data.
 
@@ -44,7 +64,7 @@ Create a script file for opening the serial port and sending data.
 touch serial-test.sh
 ```
 
-### 2. Using a Text Editor
+#### 2. Using a Text Editor
 
 Open the `serial-test.sh` file using the `nano` text editor from the terminal interface.
 
@@ -58,13 +78,13 @@ After copying the following code, paste it into the `serial-test.sh` file.
 
 Press `CTRL+X`, then press `Y` to save and exit the nano editor.
 
-### 3. Running the Shell Script
+#### 3. Running the Shell Script
 
 Make the `serial-test.sh` file executable using the `chmod` command and start it.
 
 <SnippetExamplesSerial />
 
-### 4. Communication
+#### 4. Communication
 
 <Frame >
   <video controls className="w-full aspect-video" src="/videos/seri-test.mp4"></video>

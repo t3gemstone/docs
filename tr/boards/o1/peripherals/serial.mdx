@@ -3,31 +3,50 @@ title: 'Seri Port'
 description: 'Seri Port kullanımı'
 ---
 
+import SnippetDevices from '/snippets/boards/o1/serial/devices.mdx';
 import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
 import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
 
 <Tip>
 Bölüm bitiminde aşağıdaki konularda deneyim kazanacaksınız
 
-- USB TTL kablosu aracılığıyla Geliştirici bilgisayarı ve Gemstone arasında seriport bağlantısı kurmak.
+- USB TTL kablosu aracılığıyla Geliştirici bilgisayarı ve Gemstone arasında seri port bağlantısı kurmak.
 - Terminal aracılığıyla her iki bilgisayarı haberleştirmek.
 - [t3gemstone/examples/serial](https://github.com/t3gemstone/examples/tree/main/serial) projesi için ön hazırlık.
 </Tip>
 
-Seri port, bilgisayarlar ve mikrodenetleyiciler gibi cihazlar arasında veri iletimini sağlayan, 
-bir iletişim yoludur. Bu iletişim genellikle `UART (Universal Asynchronous Receiver-Transmitter)` 
-protokolü üzerinden gerçekleşir ve düşük hızda veri iletimi için idealdir. Örneğin GPS, Radio Transmitter 
-gibi harici modüllerle haberleşme kurulurken çoğu zaman Seriport tercih edilir.
+Seri port, bilgisayarlar ve mikrodenetleyiciler gibi cihazlar arasında veri iletimini sağlayan,
+bir iletişim yoludur. Bu iletişim genellikle `UART (Universal Asynchronous Receiver-Transmitter)`
+protokolü üzerinden gerçekleşir ve düşük hızda veri iletimi için idealdir. Örneğin GPS, Radio Transmitter
+gibi harici modüllerle haberleşme kurulurken çoğu zaman seri port tercih edilir.
 
-<Frame caption="Todo: Seriport bağlantısının yapılabileceği pinler">
+### Seri Port Arayüzleri
+
+T3-GEM-O1 kartta yer alan seri port arayüzleri aşağıdaki tabloda listelenmiştir.
+
+<Frame caption="Todo: Seri port pinlerinin işaretlendiği kart görseli">
   <img className="rounded-lg" noZoom src="/images/under-construction.png" />
 </Frame>
+
+<SnippetDevices int="Arayüz" device="Cihaz" file="Overlay Dosyası" notes="Notlar" />
+
+<Note>
+- UART-MAIN0 seri portundan Linux terminaline erişilmektedir.
+- `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtso` overlay'i aktif edildiği zaman UART-MAIN1 seri portu devre dışı kalmaktadır.
+- UART-MAIN6 seri portu aktif edildiği zaman Bluetooth devre dışı kalmaktadır.
+</Note>
+
+Aktif edilmek istenen arayüzlerin overlay dosyalarının isimleri `/boot/uEnv.txt` dosyasındaki `overlays` değişkenine
+eklenmelidir. Overlay'ler hakkında detaylı bilgiye [Device Tree](./introduction/#2-device-tree) bölümünden
+erişilebilir.
+
+### Seri Port Kullanımı
 
 <Steps>
   <Step title="SSH/VNC Bağlantısı">
   [SSH](../../../quickstart#2-3-ssh-ile-network-üzerinden-bağlantı) veya
   [VNC](../../../quickstart#2-2-vnc-ile-tarayıcıdan-uzak-masaüstü-bağlantısı) yöntemlerinden birisiyle Geliştirme kartına
-  bağlan.    
+  bağlan.
   </Step>
   <Step title="Shell">
   Bash Shell scriptlerini oluştur.
@@ -38,7 +57,7 @@ gibi harici modüllerle haberleşme kurulurken çoğu zaman Seriport tercih edil
   </Step>
 </Steps>
 
-### 1. Shell Script Oluşturulması
+#### 1. Shell Script Oluşturulması
 
 Seri port açma ve veri gönderme işlemleri için script dosyası oluşturunuz.
 
@@ -46,7 +65,7 @@ Seri port açma ve veri gönderme işlemleri için script dosyası oluşturunuz.
 touch serial-test.sh
 ```
 
-### 2. Metin Editörü Kullanımı
+#### 2. Metin Editörü Kullanımı
 
 Terminal arayüzünden `nano` isimli metin editörünü kullanarak `serial-test.sh` dosyasını açınız.
 
@@ -60,13 +79,13 @@ Aşağıdaki kodu kopyaladıktan sonra `serial-test.sh` dosyasına yapıştırı
 
 `CTRL+X`'e bastıktan sonra `Y` tuşuna basıp nano editöründen çıkış yaparak kaydetme işlemini tamamlayınız.
 
-### 3. Shell Scriptinin Çalıştırılması
+#### 3. Shell Scriptinin Çalıştırılması
 
 `chmod` komutu ile `serial-test.sh` dosyasını çalıştırılabilir hale getirerek başlatınız.
 
 <SnippetExamplesSerial />
 
-### 4. Haberleşme
+#### 4. Haberleşme
 
 <Frame >
   <video controls className="w-full aspect-video" src="/videos/seri-test.mp4"></video>
