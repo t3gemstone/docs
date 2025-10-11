@@ -1,22 +1,22 @@
-| {func}                          | PINS          | PINS         | {func}                            |
-|--------------------------------:|:-------------:|:------------:|:----------------------------------|
-| 3v3 Power                       | **3v3 Power** | **5v Power** | 5v Power                          |
-| I2C-MCU0 SDA **(GPS, ADS1115)** | **GPIO-2**    | **5v Power** | 5v Power                          |
-| I2C-MCU0 SCL **(GPS, ADS1115)** | **GPIO-3**    | **GND**      | GND                               |
-| UART-MAIN6 RX **(GPS)**         | **GPIO-4**    | **GPIO-14**  | PWM-0B **(RCOut-2)**              |
-| GND                             | **GND**       | **GPIO-15**  |                                   |
-| UART-MAIN6 TX **(GPS)**         | **GPIO-17**   | **GPIO-18**  | PWM-ECAP2 **(RCOut-7)**           |
-|                                 | **GPIO-27**   | **GND**      | GND                               |
-|                                 | **GPIO-22**   | **GPIO-23**  |                                   |
-| 3v3 Power                       | **3v3 Power** | **GPIO-24**  | UART-WKUP0 TX **(SBUS RC Input)** |
-| SPI-MCU0 MOSI                   | **GPIO-10**   | **GND**      | GND                               |
-| SPI-MCU0 MISO                   | **GPIO-9**    | **GPIO-25**  |                                   |
-| SPI-MCU0 SCLK                   | **GPIO-11**   | **GPIO-8**   | SPI-MCU0 CS0                      |
-| GND                             | **GND**       | **GPIO-7**   | UART-WKUP0 RX **(SBUS RC Input)** |
-| I2C-WKUP0 SDA (Reserved)        | **GPIO-0**    | **GPIO-1**   | I2C-WKUP0 SCL (Reserved)          |
-| PWM-0A **(RCOut-1)**            | **GPIO-5**    | **GND**      | GND                               |
-| PWM-1A **(RCOut-3)**            | **GPIO-6**    | **GPIO-12**  | PWM-ECAP0 **(RCOut-5)**           |
-| PWM-1B **(RCOut-4)**            | **GPIO-13**   | **GND**      | GND                               |
-|                                 | **GPIO-19**   | **GPIO-16**  | PWM-ECAP1 **(RCOut-6)**           |
-| **Buzzer**                      | **GPIO-26**   | **GPIO-20**  |                                   |
-| GND                             | **GND**       | **GPIO-21**  |                                   |
+| {func}                          | PINS          | PINS         | {func}                        |
+|--------------------------------:|:-------------:|:------------:|:------------------------------|
+| 3v3 Power                       | **3v3 Power** | **5v Power** | 5v Power                      |
+| I2C-MCU0 SDA **(GPS, ADS1115)** | **GPIO-2**    | **5v Power** | 5v Power                      |
+| I2C-MCU0 SCL **(GPS, ADS1115)** | **GPIO-3**    | **GND**      | GND                           |
+| UART-MAIN6 RX **(GPS)**         | **GPIO-4**    | **GPIO-14**  | PWM-0B **(RCOut-2)**          |
+| GND                             | **GND**       | **GPIO-15**  | UART-MAIN1 RX **(RCIn SBUS)** |
+| UART-MAIN6 TX **(GPS)**         | **GPIO-17**   | **GPIO-18**  | PWM-ECAP2 **(RCOut-7)**       |
+|                                 | **GPIO-27**   | **GND**      | GND                           |
+|                                 | **GPIO-22**   | **GPIO-23**  |                               |
+| 3v3 Power                       | **3v3 Power** | **GPIO-24**  | UART-WKUP0 TX **(Telemetry)** |
+| SPI-MCU0 MOSI                   | **GPIO-10**   | **GND**      | GND                           |
+| SPI-MCU0 MISO                   | **GPIO-9**    | **GPIO-25**  |                               |
+| SPI-MCU0 SCLK                   | **GPIO-11**   | **GPIO-8**   | SPI-MCU0 CS0                  |
+| GND                             | **GND**       | **GPIO-7**   | UART-WKUP0 RX **(Telemetry)** |
+| I2C-WKUP0 SDA (Reserved)        | **GPIO-0**    | **GPIO-1**   | I2C-WKUP0 SCL (Reserved)      |
+| PWM-0A **(RCOut-1)**            | **GPIO-5**    | **GND**      | GND                           |
+| PWM-1A **(RCOut-3)**            | **GPIO-6**    | **GPIO-12**  | PWM-ECAP0 **(RCOut-5)**       |
+| PWM-1B **(RCOut-4)**            | **GPIO-13**   | **GND**      | GND                           |
+|                                 | **GPIO-19**   | **GPIO-16**  | PWM-ECAP1 **(RCOut-6)**       |
+| **Buzzer**                      | **GPIO-26**   | **GPIO-20**  |                               |
+| GND                             | **GND**       | **GPIO-21**  |                               |
