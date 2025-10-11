@@ -32,9 +32,9 @@ The serial port interfaces on the T3-GEM-O1 card are listed in the table below.
 
 <Note>
 - Access to the Linux terminal is obtained from the UART‑MAIN0 serial port.
-- The UART‑MAIN1 serial port becomes disabled when the `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtso` overlay is activated.
+- When the `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtso` overlay is enabled, the UART‑MAIN1 TX pin is disabled, while
+  the RX pin continues to function normally.
 - Bluetooth becomes disabled when the UART‑MAIN6 serial port is activated.
-
 </Note>
 
 The names of the overlay files for the interfaces to be enabled must be added to the `overlays` variable
