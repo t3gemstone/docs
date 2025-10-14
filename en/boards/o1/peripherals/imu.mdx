@@ -1,6 +1,118 @@
 ---
 title: 'IMU'
-description: 'IMU'
+description: 'Inertial Measurement Unit (IMU)'
 ---
 
-Under construction..
+import SnippetImuOutput from '/snippets/boards/o1/imu-output.mdx';
+
+An Inertial Measurement Unit (IMU) is a sensor device that measures and reports motion, orientation, and gravitational
+forces. IMUs combine multiple sensors to provide comprehensive motion tracking capabilities, making them essential for
+applications such as robotics, drone stabilization, motion sensing, orientation tracking, and navigation systems.
+
+Modern IMUs typically integrate a 3-axis accelerometer (measuring linear acceleration), a 3-axis gyroscope (measuring
+angular velocity), and often a 3-axis magnetometer (measuring magnetic field) to create a complete 9-axis motion
+tracking solution.
+
+## 1. ICM-20948 IMU
+
+Your board is equipped with the InvenSense ICM-20948, a high-performance 9-axis motion tracking device. The sensor
+combines a 3-axis gyroscope, 3-axis accelerometer, and 3-axis magnetometer in a single package.
+
+### 1.1. Key Features
+
+- **3-Axis Gyroscope** with programmable full-scale ranges: ±250, ±500, ±1000, ±2000 DPS
+- **3-Axis Accelerometer** with programmable full-scale ranges: ±2g, ±4g, ±8g, ±16g
+- **3-Axis Magnetometer** (AK09916) for compass functionality
+- **Digital-output temperature sensor** for temperature compensation
+- **User-programmable interrupts** for motion detection and data ready signals
+- **Low-power modes** for battery-powered applications
+- **Digital Low Pass Filter (DLPF)** for noise reduction
+
+### 1.2. Hardware Connection
+
+The ICM-20948 on your board is connected via SPI interface at `/dev/spidev0.3`.
+
+## 2. Example Application
+
+`imu` project included in [t3gemstone/examples](https://github.com/t3gemstone/examples)
+repository provides a complete C library and test application to interact with the IMU sensor. 
+The library handles all low-level communication and provides an API for reading sensor data.
+
+### 2.1. Test Application
+
+The test application performs the following sequence:
+
+1. **Initialization** - Opens the SPI device at `/dev/spidev0.3` and initializes the sensor
+2. **Configuration** - Sets accelerometer to ±8g and gyroscope to ±2000 DPS range
+3. **Information** - Prints configuration values and temperature at start
+4. **Continuous monitoring** - Reads accelerometer and gyroscope data every 10ms and prints calculated angles
+5. **Angle calculation** - Applies Kalman filtering to compute orientation angles
+6. **Auto-recovery** - Monitors sensor connectivity and reconfigures if needed
+
+<Tip>
+The Kalman filter implementation provides smooth angle estimates by fusing accelerometer and gyroscope data, reducing
+noise while maintaining responsiveness to real motion.
+</Tip>
+
+<SnippetImuOutput />
+
+### 2.2. API Reference
+
+The `icm20948` library provides:
+
+- **Bus initialization** for both I2C and SPI interfaces
+- **Sensor configuration** with customizable full-scale ranges
+- **Raw data reading** for accelerometer, gyroscope, and temperature
+- **Angle calculation** using Kalman filtering for smooth orientation tracking
+- **Auto-recovery** with online status checking and reconfiguration
+- **Flexible data access** through a structured data interface
+
+#### 2.2.1. Initialization
+
+```c
+icm20948_handle_t icm20948_create(icm20948_data_t* data, char* tag);
+int icm20948_spi_bus_init(icm20948_handle_t sensor, const char* dev_path);
+int icm20948_configure(icm20948_handle_t sensor, 
+                       icm20948_acce_fs_t acce_fs, 
+                       icm20948_gyro_fs_t gyro_fs);
+```
+
+#### 2.2.2. Data Reading
+
+```c
+int icm20948_get_acce(icm20948_handle_t sensor);
+int icm20948_get_gyro(icm20948_handle_t sensor);
+int icm20948_get_temp(icm20948_handle_t sensor);
+void icm20948_get_angle(icm20948_handle_t sensor, float dt);
+```
+
+#### 2.2.3. Configuration
+
+```c
+int icm20948_set_acce_fs(icm20948_handle_t sensor, icm20948_acce_fs_t acce_fs);
+int icm20948_set_gyro_fs(icm20948_handle_t sensor, icm20948_gyro_fs_t gyro_fs);
+float icm20948_get_acce_sensitivity(icm20948_handle_t sensor);
+float icm20948_get_gyro_sensitivity(icm20948_handle_t sensor);
+```
+
+#### 2.2.4. Utility
+
+```c
+int icm20948_check_online(icm20948_handle_t sensor);
+void icm20948_delete(icm20948_handle_t sensor);
+```
+
+#### 2.2.5. Data Structure
+
+The sensor data is accessed through the `icm20948_data_t` structure:
+
+```c
+typedef struct {
+    int16_t ax_raw, ay_raw, az_raw; // Raw accelerometer data
+    int16_t gx_raw, gy_raw, gz_raw; // Raw gyroscope data
+    float ax, ay, az;               // Accelerometer (g)
+    float gx, gy, gz;               // Gyroscope (deg/s)
+    float anglex, angley, anglez;   // Computed angles (deg)
+    float temp;                     // Temperature (°C)
+} icm20948_data_t;
+```

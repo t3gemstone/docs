@@ -1,0 +1,40 @@
+```bash
+gemstone@t3-gem-o1:examples$ sudo ./build/examples/preempt-rt/preempt-rt
+# Linux Preempt-RT Real-Time Task Example
+# ========================================
+# Real-time kernel: YES
+# Creating RT task with priority 80...
+# RT task created successfully
+# Running for 10000 iterations (period: 1.000 ms)...
+# Press Ctrl+C to stop early
+# 
+# RT Task started (TID: 900)
+# RT Task completed 10000 iterations
+# 
+# === REAL-TIME PERFORMANCE STATISTICS ===
+# Total iterations: 10000
+# Task period: 1000000 ns (1.000 ms)
+# 
+# LATENCY STATISTICS:
+#   Min latency:        10190 ns (10.190 μs)
+#   Max latency:        76534 ns (76.534 μs)
+#   Avg latency:      11667.5 ns (11.668 μs)
+#   Std deviation:      696.9 ns ( 0.697 μs)
+# 
+# JITTER STATISTICS:
+#   Min jitter:             2 ns ( 0.002 μs)
+#   Max jitter:         64724 ns (64.724 μs)
+#   Avg jitter:         158.2 ns ( 0.158 μs)
+# 
+# LATENCY DISTRIBUTION:
+#   < 1 μs:          0 (  0.0%)
+#   1-10 μs:         0 (  0.0%)
+#   10-100 μs:   10000 (100.0%)
+#   100-1000 μs:     0 (  0.0%)
+#   > 1000 μs:       0 (  0.0%)
+# 
+# === SYSTEM INFORMATION ===
+# Process PID: 899
+# Scheduling policy: SCHED_FIFO
+# RT Priority: 80
+```

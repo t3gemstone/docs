@@ -1,6 +1,118 @@
 ---
 title: 'IMU'
-description: 'IMU'
+description: 'Inertial Measurement Unit (IMU)'
 ---
 
-Yapım aşamasında..
+import SnippetImuOutput from '/snippets/boards/o1/imu-output.mdx';
+
+Atalet Ölçüm Birimi (IMU), hareket, yönelim ve yerçekimi kuvvetlerini ölçen ve raporlayan bir sensör cihazıdır. IMU'lar,
+robotik, drone stabilizasyonu, hareket algılama, yönelim takibi ve navigasyon sistemleri gibi uygulamalar için
+vazgeçilmez olmalarını sağlayan kapsamlı hareket takibi yetenekleri sunmak için birden fazla sensörü birleştirir.
+
+Modern IMU'lar tipik olarak, eksiksiz bir 9 eksenli hareket takibi çözümü oluşturmak için 3 eksenli ivmeölçer (doğrusal
+ivmeyi ölçen), 3 eksenli jiroskop (açısal hızı ölçen) ve genellikle 3 eksenli manyetometre (manyetik alanı ölçen)
+entegre eder.
+
+## 1. ICM-20948 IMU
+
+Kartınız, yüksek performanslı 9 eksenli hareket takibi cihazı InvenSense ICM-20948 ile donatılmıştır. Sensör, tek bir
+pakette 3 eksenli jiroskop, 3 eksenli ivmeölçer ve 3 eksenli manyetometre barındırır.
+
+### 1.1. Temel Özellikler
+
+- Programlanabilir tam ölçek aralıklarına sahip **3 Eksenli Jiroskop**: ±250, ±500, ±1000, ±2000 DPS
+- Programlanabilir tam ölçek aralıklarına sahip **3 Eksenli İvmeölçer**: ±2g, ±4g, ±8g, ±16g
+- Pusula işlevselliği için **3 Eksenli Manyetometre** (AK09916)
+- Sıcaklık kompanzasyonu için **dijital çıkışlı sıcaklık sensörü**
+- Hareket algılama ve veri hazır sinyalleri için **kullanıcı tarafından programlanabilir kesintiler**
+- Pil ile çalışan uygulamalar için **düşük güç modları**
+- Gürültü azaltma için **Dijital Alçak Geçiren Filtre (DLPF)**
+
+### 1.2. Donanım Bağlantısı
+
+Kartınızdaki ICM-20948, `/dev/spidev0.3` adresinde SPI arabirimi üzerinden bağlanmıştır.
+
+## 2. Örnek Uygulama
+
+[t3gemstone/examples](https://github.com/t3gemstone/examples) reposunda yer alan `imu` projesi, IMU sensörü ile
+etkileşim kurmak için eksiksiz bir C kütüphanesi ve test uygulaması sağlar. Kütüphane, tüm düşük seviyeli iletişimi
+yönetir ve sensör verilerini okumak için bir API sağlar.
+
+### 2.1. Test Uygulaması
+
+Test uygulaması aşağıdaki adımları gerçekleştirir:
+
+1. **İlklendirme** - `/dev/spidev0.3` adresindeki SPI cihazını açar ve sensörü başlatır
+2. **Yapılandırma** - İvmeölçeri ±8g ve jiroskopu ±2000 DPS aralığına ayarlar
+3. **Bilgilendirme** - Başlangıçta yapılandırma değerlerini ve sıcaklığı yazdırır
+4. **Sürekli izleme** - Her 10ms'de ivmeölçer ve jiroskop verilerini okur ve hesaplanan açıları yazdırır
+5. **Açı hesaplama** - Yönelim açılarını hesaplamak için Kalman filtrelemesi uygular
+6. **Otomatik kurtarma** - Sensör bağlantısını izler ve gerekirse yeniden yapılandırır
+
+<Tip>
+Kalman filtresi uygulaması, ivmeölçer ve jiroskop verilerini birleştirerek gürültüyü azaltırken gerçek harekete karşı
+duyarlılığı koruyarak düzgün açı tahminleri sağlar.
+</Tip>
+
+<SnippetImuOutput />
+
+### 2.2. API Referansı
+
+`icm20948` kütüphanesi şunları sağlar:
+
+- Hem I2C hem de SPI arabirimleri için **veri yolu başlatma**
+- Özelleştirilebilir tam ölçek aralıklarıyla **sensör yapılandırması**
+- İvmeölçer, jiroskop ve sıcaklık için **ham veri okuma**
+- Düzgün yönelim takibi için Kalman filtrelemesi kullanarak **açı hesaplama**
+- Çevrimiçi durum kontrolü ve yeniden yapılandırma ile **otomatik kurtarma**
+- Yapılandırılmış bir veri arabirimi aracılığıyla **esnek veri erişimi**
+
+#### 2.2.1. İlklendirme
+
+```c
+icm20948_handle_t icm20948_create(icm20948_data_t* data, char* tag);
+int icm20948_spi_bus_init(icm20948_handle_t sensor, const char* dev_path);
+int icm20948_configure(icm20948_handle_t sensor, 
+                       icm20948_acce_fs_t acce_fs, 
+                       icm20948_gyro_fs_t gyro_fs);
+```
+
+#### 2.2.2. Veri Okuma
+
+```c
+int icm20948_get_acce(icm20948_handle_t sensor);
+int icm20948_get_gyro(icm20948_handle_t sensor);
+int icm20948_get_temp(icm20948_handle_t sensor);
+void icm20948_get_angle(icm20948_handle_t sensor, float dt);
+```
+
+#### 2.2.3. Yapılandırma
+
+```c
+int icm20948_set_acce_fs(icm20948_handle_t sensor, icm20948_acce_fs_t acce_fs);
+int icm20948_set_gyro_fs(icm20948_handle_t sensor, icm20948_gyro_fs_t gyro_fs);
+float icm20948_get_acce_sensitivity(icm20948_handle_t sensor);
+float icm20948_get_gyro_sensitivity(icm20948_handle_t sensor);
+```
+
+#### 2.2.4. Yardımcı Araçlar
+
+```c
+int icm20948_check_online(icm20948_handle_t sensor);
+void icm20948_delete(icm20948_handle_t sensor);
+```
+
+#### 2.2.5. Veri Yapısı
+
+Sensör verilerine `icm20948_data_t` yapısı aracılığıyla erişilir:
+
+```c
+typedef struct {
+    int16_t ax_raw, ay_raw, az_raw; // Ham ivmeölçer verisi
+    int16_t gx_raw, gy_raw, gz_raw; // Ham jiroskop verisi
+    float ax, ay, az;               // İvmeölçer (g)
+    float gx, gy, gz;               // Jiroskop (derece/s)
+    float anglex, angley, anglez;   // Hesaplanan açılar (derece)
+    float temp;                     // Sıcaklık (°C)
+} icm20948_data_t;
+```
