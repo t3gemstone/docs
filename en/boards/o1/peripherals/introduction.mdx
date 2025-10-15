@@ -49,7 +49,7 @@ as UART (serial port), I2C, SPI, PWM, and PCM. The purposes of the 40-pin I/O po
 assignments will be explained. In the next section, it will be described how the pins can be reconfigured for
 different uses using [Device Tree Overlay](/en/faq#what-is-device-tree-overlay) files.
 
-For example, the pin named `GPIO-7` is configured as `SPI-MCU0 CS1` by default but can be converted to
+For example, the pin named `GPIO-7` is configured as `SPI-MCU0 CS2` by default but can be converted to
 the `UART-WKUP0 RX` function by activating a file called [Device Tree Overlay](/en/faq#what-is-device-tree-overlay).
 Similarly, in the [Gemstone VTOL](../../../projects/vtol) project, since Bluetooth was not needed,
 the relevant pins were disabled and converted to `UART-MAIN6`.
@@ -89,8 +89,8 @@ no HAT will be connected to the board, these pins should be left unconnected.
 
 #### 1.4. SPI-MCU0
 
-This SPI interface can be accessed via the `/dev/spidev0.0` and `/dev/spidev0.1` devices on the Gemstone board.  
-`/dev/spidev0.0` corresponds to SPI-MCU0 CS0, and `/dev/spidev0.1` corresponds to SPI-MCU0 CS1.
+This SPI interface can be accessed via the `/dev/spidev0.0` and `/dev/spidev0.2` devices on the Gemstone board.  
+`/dev/spidev0.0` corresponds to SPI-MCU0 CS0, and `/dev/spidev0.2` corresponds to SPI-MCU0 CS2.
 
 To test the SPI line from the command line, you can use the `spi-pipe` program.  
 `spi-pipe` sends data from stdin to the SPI line specified by the `--device` setting and outputs the data received

@@ -49,7 +49,7 @@ SPI, PWM ve PCM gibi arayüzleri sağlamaktadır. 40-pin giriş/çıkış portla
 konfigürasyonda hangi arayüzlere tahsis edildiğine değinilecek, sonraki bölümde ise [Device Tree Overlay](/tr/faq#device-tree-overlay-nedir)
 dosyaları ile pinlerin nasıl farklı kullanımlara açılabileceği izah edilecektir.
 
-Örneğin `GPIO-7` isimli pin varsayılan konfigürasyonda `SPI-MCU0 CS1` olarak belirlenmiş
+Örneğin `GPIO-7` isimli pin varsayılan konfigürasyonda `SPI-MCU0 CS2` olarak belirlenmiş
 olup [Device Tree Overlay](/tr/faq#device-tree-overlay-nedir) ismi verilen dosya aktif edilerek `UART-WKUP0 RX` fonksiyonuna dönüştürülebilmektedir.
 Benzer şekilde [Gemstone VTOL](../../../projects/vtol) projesinde Bluetooth ihtiyacı olmadığından, ilgili pinler devre
 dışı bırakılarak `UART-MAIN6`'ya dönüştürülmüştür.
@@ -89,8 +89,8 @@ Eğer karta HAT bağlanmayacaksa bu pinler boşta bırakılmalıdır.
 
 #### 1.4. SPI-MCU0
 
-Bu SPI arayüzüne Gemstone kartta yer alan `/dev/spidev0.0` ve `/dev/spidev0.1` cihazları üzerinden erişilebilmektedir.
-`/dev/spidev0.0` cihazı SPI-MCU0 CS0, `/dev/spidev0.1` cihazı ise SPI-MCU0 CS1'e karşılık gelmektedir.
+Bu SPI arayüzüne Gemstone kartta yer alan `/dev/spidev0.0` ve `/dev/spidev0.2` cihazları üzerinden erişilebilmektedir.
+`/dev/spidev0.0` cihazı SPI-MCU0 CS0, `/dev/spidev0.2` cihazı ise SPI-MCU0 CS2'e karşılık gelmektedir.
 
 Komut satırından SPI hattını test etmek için `spi-pipe` programından yararlanabilirsiniz.
 `spi-pipe` programı stdin'den gelen verileri `--device` ayarıyla belirtilen SPI hattına basıp, hattan gelen veriyi de
