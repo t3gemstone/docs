@@ -136,6 +136,42 @@ Sistem başlangıcında, remoteproc mekanizması firmware'leri ilgili çekirdekl
 - Dinamik yükleme sırasında beklenmeyen davranışlar gözlemlendiğinde
 </Warning>
 
+### 1.8. Derlenmiş projenin U-Boot aşamasında çalıştırılması
+
+`2. Boot Diyagramı` bölümündeki şekilde görüldüğü gibi bir önceki bölümde anlatılan çalıştırma yöntemi kullanıldığında mcu uygulamasının çalışabilmesi için
+Linux'un başlama sürecini tamamlayıp çekirdeklerin yazılımlarını yükleyip başlatması gerekir. Bu süreç bazı uygulamalarda istenmeyen gecikmelere neden
+olabilir. Bu gecikme uzak çekirdekler bootloader (U-Boot) aşamasında başlatılarak önlenebilir.
+
+1. Öncelikle derlenen uygulamayı `/boot/mcu-fw/` dizinine kopyalanır.
+2. /boot/uEnv.txt dosyasında derlenilen uygulama hangi çekirdeğe aitse aşağıdaki tablo kullanılarak gerekli parametre tanımlanır.
+
+| Çekirdek       | Değişken Adı           |
+|----------------|------------------------|
+| main-r5fss0-0  | main_r5f_firmware_name |
+| mcu-r5fss0-0   | mcu_r5f_firmware_name  |
+| wkup-r5fss0-0  | wkup_r5f_firmware_name |
+| c7xss0-0       | c7x0_dsp_firmware_name |
+| c7xss1-0       | c7x1_dsp_firmware_name |
+
+Örneğin `blink_main_r5` isimli bir uygulamayı U-Boot aşamasında main-r5fss0-0 çekirdeğinde çalıştırılmak istendiğinde öncelikle uygulama aşağıda görüldüğü gibi
+`/boot/mcu-fw` dizinine kopyalanır.
+
+```sh
+gemstone@t3-gem-o1:~$ ls /boot/mcu-fw/
+total 102K
+drwxr-xr-x 2 root root  512 Jan  1  2000 ./
+drwxr-xr-x 4 root root 1.0K Jan  1  1970 ../
+-rwxr-xr-x 1 root root 101K Jan  1  2000 blink_main_r5*
+```
+
+Ardından `/boot/uEnv.txt` dosyasına aşağıdaki satır eklenir.
+
+```txt
+main_r5f_firmware_name=blink_main_r5
+```
+
+Artık `blink_main_r5` uygulaması Linux'un başlamasını beklemek yerine doğrudan bootloader aşamasında başlatılacak.
+
 ## 2. Boot Diyagramı
 
 Aşağıda belirtilen akış şeması Gemstone Obsidyen geliştirme kartı için olmakla birlikte

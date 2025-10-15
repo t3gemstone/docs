@@ -135,6 +135,42 @@ During system startup, the remoteproc mechanism will automatically load the firm
 - When unexpected behavior is observed during dynamic loading
 </Warning>
 
+### 1.8. Running the Compiled Project at the U-Boot Stage
+
+As shown in the figure in the `2. Boot Diagram` section, when using the execution method described in the previous section, for the MCU application to run, 
+Linux must complete its boot process and load/start the software for the cores. This process can cause undesirable delays in some applications. 
+This delay can be prevented by starting the remote cores at the bootloader (U-Boot) stage.
+
+1.  First, the compiled application is copied to the `/boot/mcu-fw/` directory.
+2.  In the `/boot/uEnv.txt` file, the necessary parameter is defined using the table below, depending on which core the compiled application belongs to.
+
+| Core           | Variable Name           |
+|----------------|-------------------------|
+| main-r5fss0-0  | main_r5f_firmware_name  |
+| mcu-r5fss0-0   | mcu_r5f_firmware_name   |
+| wkup-r5fss0-0  | wkup_r5f_firmware_name  |
+| c7xss0-0       | c7x0_dsp_firmware_name  |
+| c7xss1-0       | c7x1_dsp_firmware_name  |
+
+For example, if you want an application named `blink_main_r5` to run on the main-r5fss0-0 core during the U-Boot stage, first the application is copied to the
+`/boot/mcu-fw/` directory as shown below.
+
+```sh
+gemstone@t3-gem-o1:~$ ls /boot/mcu-fw/
+total 102K
+drwxr-xr-x 2 root root  512 Jan  1  2000 ./
+drwxr-xr-x 4 root root 1.0K Jan  1  1970 ../
+-rwxr-xr-x 1 root root 101K Jan  1  2000 blink_main_r5*
+```
+
+Then, the following line is added to the `/boot/uEnv.txt` file.
+
+```txt
+main_r5f_firmware_name=blink_main_r5
+```
+
+Now, the `blink_main_r5` application will be started directly at the bootloader stage, without waiting for Linux to boot.
+
 ## 2. Boot Diagram
 
 The flowchart below is specific to the Gemstone Obsidian development board, but many ARM-based embedded Linux
