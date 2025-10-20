@@ -13,6 +13,7 @@ import SnippetUpload from '/snippets/boards/o1/mcu/upload.mdx';
 import SnippetHelloWorld from '/snippets/boards/o1/mcu/helloworld.mdx';
 import SnippetFirmwares from '/snippets/boards/o1/mcu/firmwares.mdx';
 import SnippetRemoteproc from '/snippets/boards/o1/mcu/remoteproc.mdx';
+import SnippetResources from '/snippets/boards/o1/mcu/resource-table.mdx';
 
 While the primary focus of the **T3-GEM-O1** development board is Linux, it also leverages the power of the R5
 and C7x cores within the Texas AM67 microprocessor. This section will explore topics such as how to compile
@@ -75,6 +76,10 @@ for the `mcu-r5fss0-0_freertos` core of the `hello_world` project.
 </Frame>
 
 The peripherals used by the project (GPIO, I2C, UART, etc.) and their configurations are defined in the `.syscfg` file.
+
+<Warning>
+Before using the SysConfig GUI tool, read the [Resource Sharing Between Cores](/en/boards/o1/peripherals/mcu#3-resource-sharing-between-cores) section to properly allocate resources and avoid unexpected conflicts.
+</Warning>
 
 The SysConfig GUI tool is used to add new peripherals or modify the Pin Mux settings of existing ones. To launch
 SysConfig for an MCU project:
@@ -245,7 +250,61 @@ program located in `/init`, `/sbin/init`, or a similar directory in the rootfs. 
 drivers (kernel modules), starts system services (such as network connectivity, time synchronization, package
 updates, and Bluetooth), and launches the desktop environment (gnome, kde, xfce, etc.).
 
-## 3. Conclusion
+## 3. Resource Sharing Between Cores
+
+The AM67 is a multi-core processor, requiring its resources to be shared among the cores. For instance, the main_uart1 peripheral cannot be used
+simultaneously by the Linux (A53 cores) and the main-r5fss0-0 core. If this UART is to be used by the MCU, it must be ensured that it is not in use
+by the Linux side.
+
+### 3.1 Default Resource Allocation Table
+
+The table below provides information on the HAT pin-to-SOC pin mapping, available peripheral functions (Pinmux), default usage by Linux, 
+and instructions for disabling them.
+<SnippetResources />
+
+To disable a pin, refer to the `How to Disable` column in the table. This column lists device-tree overlay files (e.g., k3-am67a-t3-gem-o1-xxxxxx.dtbo). 
+These files instruct the Linux kernel on how to configure the hardware. To disable an overlay, open the `/boot/uEnv.txt` file and remove the 
+corresponding filename from the overlays variable.
+
+Some pins in the `How to Disable` column may indicate that they must be disabled via the device-tree (e.g., mcu_spi0). To disable these:
+
+- Clone the `github.com/t3gemstone/devicetrees` repository.
+- Open the `src/arm64/ti/k3-am67a-t3-gem-o1.dts` file and add the following code snippet with the appropriate modifications:
+```c
+&mcu_spi0 {
+  status = "disabled";
+};
+```
+- Run the `$ make` command in the repository directory to compile the device-tree.
+
+- Backup the current device-tree: `$ sudo mv /boot/k3-am67a-t3-gem-o1.dtb /boot/k3-am67a-t3-gem-o1.dtb.bak`
+  
+- Copy the newly compiled `src/arm64/ti/k3-am67a-t3-gem-o1.dtb` file to the `/boot` directory.
+
+- Reboot the board and verify functionality.
+
+<Info>
+  If an issue arises after these steps, the backup device-tree can be restored using: `$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb` 
+</Info>
+
+After this procedure, `mcu_spi0` is available for use by the MCU cores. However, as noted in the Linux Usage Purpose column of the table, 
+this SPI interface is used for the BMP390 pressure sensor and ICM20948 IMU. These devices will no longer be accessible from Linux and must
+now be driven by the MCU.
+
+### 3.2 Driving a Servo Motor from the MCU using PWM
+
+Consider a scenario where an SG90 model servo motor must be driven from an MCU core. First, select a PWM pin available on the HAT. Suppose we choose the GPIO-12 pin. Consulting the table reveals that this pin is used by Linux. To disable it, check the How to Disable column, which lists a single overlay file. To disable it, open the /boot/uEnv.txt file and inspect the overlays variable.
+```txt
+overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
+```
+
+Locate the overlay k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo as indicated in the table and remove it. The overlays variable should now appear as follows:
+```txt
+overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
+```
+After a reboot, this pin can be controlled by the MCU.
+
+## 4. Conclusion
 
 <Tip>
 Below are a few example articles about the boot process.

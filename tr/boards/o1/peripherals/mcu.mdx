@@ -13,6 +13,8 @@ import SnippetUpload from '/snippets/boards/o1/mcu/upload.mdx';
 import SnippetHelloWorld from '/snippets/boards/o1/mcu/helloworld.mdx';
 import SnippetFirmwares from '/snippets/boards/o1/mcu/firmwares.mdx';
 import SnippetRemoteproc from '/snippets/boards/o1/mcu/remoteproc.mdx';
+import SnippetResources from '/snippets/boards/o1/mcu/kaynak-tablosu.mdx';
+
 
 **T3-GEM-O1** geliştirme kartının birincil odak noktası Linux olmakla birlikte, üzerinde bulunan Texas AM67
 mikroişlemcisinin barındırdığı R5 ve C7x çekirdeklerinin de gücünden faydalanılmaktadır. Bu bölümde R5 çekirdekleri
@@ -78,6 +80,13 @@ Projenin hangi çevre birimleri (GPIO, I2C, UART vb.) kullandığı ve bunların
 tanımlanmıştır.
 
 Yeni çevre birimler eklemek veya mevcut olanların Pin Mux ayarlarını değiştirmek için SysConfig GUI aracı kullanılır.
+
+<Warning>
+SysConfig GUI aracını kullanmadan önce kaynakları doğru bir şekilde paylaştırmak ve beklenmedik hatalarla karşılaşmamak için 
+[Kaynakların çekirdekler arasında paylaştırılması](/tr/boards/o1/peripherals/mcu#3-kaynakların-çekirdekler-arasında-paylaştırılması)
+bölümünü okuyun.
+</Warning>
+
 Bir MCU projesinde SysConfig'i başlatmak için:
 
 - `SYSCONFIG_TARGET` değişkenini istenen proje olarak değiştirin.
@@ -143,7 +152,7 @@ Linux'un başlama sürecini tamamlayıp çekirdeklerin yazılımlarını yükley
 olabilir. Bu gecikme uzak çekirdekler bootloader (U-Boot) aşamasında başlatılarak önlenebilir.
 
 1. Öncelikle derlenen uygulamayı `/boot/mcu-fw/` dizinine kopyalanır.
-2. /boot/uEnv.txt dosyasında derlenilen uygulama hangi çekirdeğe aitse aşağıdaki tablo kullanılarak gerekli parametre tanımlanır.
+2. `/boot/uEnv.txt` dosyasında derlenilen uygulama hangi çekirdeğe aitse aşağıdaki tablo kullanılarak gerekli parametre tanımlanır.
 
 | Çekirdek       | Değişken Adı           |
 |----------------|------------------------|
@@ -153,7 +162,7 @@ olabilir. Bu gecikme uzak çekirdekler bootloader (U-Boot) aşamasında başlat�
 | c7xss0-0       | c7x0_dsp_firmware_name |
 | c7xss1-0       | c7x1_dsp_firmware_name |
 
-Örneğin `blink_main_r5` isimli bir uygulamayı U-Boot aşamasında main-r5fss0-0 çekirdeğinde çalıştırılmak istendiğinde öncelikle uygulama aşağıda görüldüğü gibi
+Örneğin `blink_main_r5` isimli bir uygulama U-Boot aşamasında main-r5fss0-0 çekirdeğinde çalıştırılmak istendiğinde öncelikle uygulama aşağıda görüldüğü gibi
 `/boot/mcu-fw` dizinine kopyalanır.
 
 ```sh
@@ -248,8 +257,69 @@ Bu program, bazı donanımların sürücülerini yükler (kernel modüllerini), 
 (ağ bağlantısı, saat senkronizasyonu, paket güncelleme ve bluetooth gibi servisleri) ve masaüstü ortamını
 başlatır (gnome, kde, xfce, ...).
 
-## 3. Son
+## 3. Kaynakların Çekirdekler Arasında Paylaştırılması
 
+AM67 çok çekirdekli bir işlemci olduğundan dolayı sahip olduğu kaynakların bu çekirdekler arasında paylaştırılması gerekiyor. Örneğin
+`main_uart1` uart çevre birimi hem Linux (A53 çekirdekler) tarafından hemde main-r5fss0-0 çekirdeği tarafından aynı anda kullanılamaz. Eğer
+bu uart çevre birimi mcu tarafından kullanılacaksa Linux tarafından bu birimin kullanılmadığından emin olunması gerekir.
+
+
+### 3.1 Varsayılan Kaynak Dağılımı Tablosu
+
+Aşağıda verilen tabloda HAT'a çıkan pinlerin SOC'de hangi pinlere denk geldiği, hangi çevre birim olarak kullanılabilecekleri (Pinmux), Linux
+tarafından varsayılan olarak kullanılıp kullanılmadığı, kullanılıyorsa hangi amaçla kullanıldığı ve bunun nasıl devre dışı bırakılabileceği gibi
+bilgiler bulunabilir. 
+
+<SnippetResources />
+
+Devre dışı bırakılacak pinin tabloda `Devre Dışı Bırakmak için` isimli sütununa bakılır. Bu sütunda k3-am67a-t3-gem-o1-xxxxxx.dtbo şeklinde listelenen
+device-tree overlay ismi verilen dosyalar var. Bunlar Linux'a belirtilen çevre birimi nasıl kullanması gerektiğini bildiren ayar dosyaları. Bunları
+devre dışı bırakmak için `/boot/uEnv.txt` dosyasını açıp `overlays` ismi verilen değişkenden bu dosyanın silinmesi yeterlidir. Bazı pinlerin
+`Devre Dışı Bırakmak için` sütünunda overlaylerin haricinde `Device-tree ile devre dışı bırakılmalı. (mcu_spi0)` benzeri yönergeler bulunuyor.
+Bunları devre dışı bırakmak için;
+
+- `github.com/t3gemstone/devicetrees` reposu klonlanır.
+- `src/arm64/ti/k3-am67a-t3-gem-o1.dts` dosyası açılır ve aşağıdaki kod parçası gerekli değişiklikler yapılarak eklenir.
+```c
+&mcu_spi0 {
+  status = "disabled";
+};
+```
+- Repo dizininde `make` komutu çalıştırılarak device-tree derlenir.
+- Eski device-tree `$ sudo mv /boot/k3-am67a-t3-gem-o1.dtb /boot/k3-am67a-t3-gem-o1.dtb.bak` komutu ile yedeklenir.
+- Derleme sonucu oluşan `src/arm64/ti/k3-am67a-t3-gem-o1.dtb` dosyası `/boot/` altına kopyalanır.
+- Kart yeniden başlatılır ve çalışıp çalışmadığı test edilir.
+
+<Info>
+  Yukarıdaki işlemler sonucu istenmeyen bir durum oluşursa `$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb` komutu ile
+yedeklenen device-tree geri yüklenebilir.
+</Info>
+
+Yukarıdaki işlemler sonucunda artık `mcu_spi0` mcu çekirdeklerden kullanılabilir durumda. Ancak tabloda bulunan `Linux'ta Kullanım Amacı` bölümünde
+`- BMP390 basınç ve ICM20948 imu spi` için kullanıldığı belirtilmiş. Bu cihazlara artık Linux'ta erişim yok bu sebeple bunların mcu tarafından
+sürülmesi gerekmektedir. 
+
+### 3.2 PWM ile MCU'dan Servo Motorun Sürülmesi
+
+  Elimizde bulunan SG90 model bir servo motoru MCU çekirdekten sürmemiz gerektiği bir senaryoda öncelikle HAT pinleri üzerinde bulunan bir PWM pinini
+seçmeliyiz. `GPIO-12` pinini seçtiğimizi hayal edelim. Tabloya baktığımızda bu pinin Linux tarafından kullanımda olduğunu görebiliriz. Bu pini Linux'ta
+devre dışı bırakmak için `Devre Dışı Bırakmak için` sütununa baktığımızda yalnızca bir overlay dosyası bulunuyor. Bunu kapatmak için `/boot/uEnv.txt`
+dosyasını açıp `overlays` değişkenini kontrol ediyoruz.
+
+```txt
+overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
+```
+
+Burada tabloda belirtilen `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` dosyasının adını görebiliriz. Bunu siliyoruz ve overlays değişkeni aşağıdaki
+şekle geliyor.
+
+```txt
+overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
+```
+
+Kart yeniden başlatıldığında bu pin MCU tarafından kontrol edilebilir.
+
+## 4. Son
 <Tip>
 Boot süreci hakkında bir kaç makale örneği aşağıda verilmiştir.
 

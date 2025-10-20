@@ -1,0 +1,238 @@
+<table>
+<thead>
+<tr>
+<th>HAT Pin Adı</th>
+<th>SOC Pin Adı</th>
+<th>Pinmux</th>
+<th>Linux Varsayılan Olarak Kullanıyor mu?</th>
+<th>Linux'ta Kullanım Amacı</th>
+<th>Devre Dışı Bırakmak için</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPIO-0</td>
+<td>D11</td>
+<td>0 -&gt; WKUP_I2C0_SDA<br/>7 -&gt; MCU_GPIO0_20</td>
+<td>Evet</td>
+<td>EEPROM, RTC ve PMIC ile haberleşmek üzere I2C SDA</td>
+<td>Device-tree ile devre dışı bırakılmalı (wkup_i2c0).</td>
+</tr>
+<tr>
+<td>GPIO-1</td>
+<td>B9</td>
+<td>0 -&gt; WKUP_I2C0_SCL<br/>7 -&gt; MCU_GPIO0_19</td>
+<td>Evet</td>
+<td>EEPROM, RTC ve PMIC ile haberleşmek üzere I2C SCL</td>
+<td>Device-tree ile devre dışı bırakılmalı (wkup_i2c0).</td>
+</tr>
+<tr>
+<td>GPIO-2</td>
+<td>E11</td>
+<td>0 -&gt; MCU_I2C0_SDA<br/>7 -&gt; MCU_GPIO0_18</td>
+<td>Hayır</td>
+<td>Waveshare Dokunmatik Ekran için I2C SDA</td>
+<td>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-h-panel.dtbo<br/>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-panel.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-3</td>
+<td>B13</td>
+<td>0 -&gt; MCU_I2C0_SCL<br/>7 -&gt; MCU_GPIO0_17</td>
+<td>Hayır</td>
+<td>Waveshare Dokunmatik Ekran için I2C SCL</td>
+<td>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-h-panel.dtbo<br/>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-panel.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-4</td>
+<td>W26</td>
+<td>0 -&gt; GPMC0_WAIT1<br/>1 -&gt; VOUT0_EXTPCLKIN<br/>2 -&gt; GPMC0_A21<br/>3 -&gt; UART6_RXD<br/>4 -&gt; AUDIO_EXT_REFCLK2<br/>7 -&gt; GPIO0_38<br/>8 -&gt; EQEP2_I</td>
+<td>Evet</td>
+<td>Bluetooth için UART RX</td>
+<td>- k3-am67a-t3-gem-o1-uart-ttys6.dtbo<br/> - Device-tree ile devre dışı bırakılmalı (main_uart6) </td>
+</tr>
+<tr>
+<td>GPIO-5</td>
+<td>B20</td>
+<td>0 -&gt; SPI0_CS0<br/>2 -&gt; EHRPWM0_A<br/>7 -&gt; GPIO1_15</td>
+<td>Hayır</td>
+<td>Genel amaçlı PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio14.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-6</td>
+<td>D20</td>
+<td>0 -&gt; SPI0_CLK<br/>1 -&gt; CP_GEMAC_CPTS0_TS_SYNC<br/>2 -&gt; EHRPWM1_A<br/>7 -&gt; GPIO1_17</td>
+<td>Evet</td>
+<td>Genel amaçlı PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-7</td>
+<td>B3</td>
+<td>0 -&gt; WKUP_UART0_RXD<br/>2 -&gt; MCU_SPI0_CS2<br/>7 -&gt; MCU_GPIO0_9</td>
+<td>Evet</td>
+<td>- Linux spidev ile kullanmak üzere SPI Chip select 2<br/>- Wakeup domain UART0 Rx</td>
+<td>- k3-am67a-t3-gem-o1-spidev0-1cs.dtbo<br/>- k3-am67a-t3-gem-o1-spidev0-2cs.dtbo<br/>- k3-am67a-t3-gem-o1-uart-ttys0.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-8</td>
+<td>C12</td>
+<td>0 -&gt; MCU_SPI0_CS0<br/>4 -&gt; WKUP_TIMER_IO1<br/>7 -&gt; MCU_GPIO0_0</td>
+<td>Evet</td>
+<td>Linux spidev ile kullanmak üzere SPI Chip select 0</td>
+<td>- k3-am67a-t3-gem-o1-spidev0-1cs.dtbo<br/>- k3-am67a-t3-gem-o1-spidev0-2cs.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-9</td>
+<td>C11</td>
+<td>0 -&gt; MCU_SPI0_D1<br/>7 -&gt; MCU_GPIO0_4</td>
+<td>Evet</td>
+<td>- BMP390 basınç ve icm20948 imu spi data1<br/>- Linux spidev ile kullanmak üzere SPI DATA1 (MOSI veya MISO olarak atanabilir)</td>
+<td>Device-tree ile devre dışı bırakılmalı. (mcu_spi0)</td>
+</tr>
+<tr>
+<td>GPIO-10</td>
+<td>B12</td>
+<td>0 -&gt; MCU_SPI0_D0<br/>7 -&gt; MCU_GPIO0_3</td>
+<td>Evet</td>
+<td>- BMP390 basınç ve icm20948 imu spi data0<br/>- Linux spidev ile kullanmak üzere SPI DATA0 (MOSI veya MISO olarak atanabilir)</td>
+<td>Device-tree ile devre dışı bırakılmalı. (mcu_spi0)</td>
+</tr>
+<tr>
+<td>GPIO-11</td>
+<td>A9</td>
+<td>0 -&gt; MCU_SPI0_CLK<br/>7 -&gt; MCU_GPIO0_2</td>
+<td>Hayır</td>
+<td>Linux spidev ile kullanmak üzere SPI Clock</td>
+<td>Device-tree ile devre dışı bırakılmalı. (mcu_spi0)</td>
+</tr>
+<tr>
+<td>GPIO-12</td>
+<td>C20</td>
+<td>0 -&gt; SPI0_CS1<br/>1 -&gt; CP_GEMAC_CPTS0_TS_COMP<br/>2 -&gt; EHRPWM0_B<br/>3 -&gt; ECAP0_IN_APWM_OUT<br/>5 -&gt; MAIN_ERRORn<br/>7 -&gt; GPIO1_16<br/>9 -&gt; EHRPWM_TZn_IN5</td>
+<td>Evet</td>
+<td>Genel amaçlı PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-13</td>
+<td>E19</td>
+<td>0 -&gt; SPI0_D0<br/>1 -&gt; CP_GEMAC_CPTS0_HW1TSPUSH<br/>2 -&gt; EHRPWM1_B<br/>7 -&gt; GPIO1_18</td>
+<td>Evet</td>
+<td>Genel amaçlı PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-14</td>
+<td>F24</td>
+<td>0 -&gt; MCASP0_ACLKR<br/>1 -&gt; SPI2_CLK<br/>2 -&gt; UART1_TXD<br/>6 -&gt; EHRPWM0_B<br/>7 -&gt; GPIO1_14<br/>8 -&gt; EQEP1_I</td>
+<td>Evet</td>
+<td>- Linux /dev/ttyS3 seri cihazı olarak kullanılıyor.<br/>- İstenirse overlay ile genel amaçlı PWM olarak ayarlanabilir</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio14.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo<br/>- Device-tree ile devre dışı bırakılmalı. (main_uart1)</td>
+</tr>
+<tr>
+<td>GPIO-15</td>
+<td>C27</td>
+<td>0 -&gt; MCASP0_AFSR<br/>1 -&gt; SPI2_CS0<br/>2 -&gt; UART1_RXD<br/>6 -&gt; EHRPWM0_A<br/>7 -&gt; GPIO1_13<br/>8 -&gt; EQEP1_S</td>
+<td>Evet</td>
+<td>- Linux /dev/ttyS3 seri cihazı olarak</td>
+<td>Device-tree ile devre dışı bırakılmalı. (main_uart1)</td>
+</tr>
+<tr>
+<td>GPIO-16</td>
+<td>A25</td>
+<td>0 -&gt; MCASP0_AXR3<br/>1 -&gt; SPI2_D0<br/>2 -&gt; UART1_CTSn<br/>3 -&gt; UART6_RXD<br/>5 -&gt; ECAP1_IN_APWM_OUT<br/>7 -&gt; GPIO1_7<br/>8 -&gt; EQEP0_A</td>
+<td>Hayır</td>
+<td>Genel amaçlı PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-17</td>
+<td>A26</td>
+<td>0 -&gt; MCASP0_AXR2<br/>1 -&gt; SPI2_D1<br/>2 -&gt; UART1_RTSn<br/>3 -&gt; UART6_TXD<br/>5 -&gt; ECAP2_IN_APWM_OUT<br/>7 -&gt; GPIO1_8<br/>8 -&gt; EQEP0_B</td>
+<td>Evet</td>
+<td>Bluetooth için UART TX</td>
+<td>- k3-am67a-t3-gem-o1-uart-ttys6.dtbo<br/>- Device-tree ile devre dışı bırakılmalı. (main_uart6)</td>
+</tr>
+<tr>
+<td>GPIO-18</td>
+<td>D25</td>
+<td>0 -&gt; MCASP0_ACLKX<br/>1 -&gt; SPI2_CS1<br/>2 -&gt; ECAP2_IN_APWM_OUT<br/>7 -&gt; GPIO1_11<br/>8 -&gt; EQEP1_A</td>
+<td>Hayır</td>
+<td>Genel amaçlı PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-19</td>
+<td>C26</td>
+<td>0 -&gt; MCASP0_AFSX<br/>1 -&gt; SPI2_CS3<br/>2 -&gt; AUDIO_EXT_REFCLK1<br/>7 -&gt; GPIO1_12<br/>8 -&gt; EQEP1_B</td>
+<td>Hayır</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-20</td>
+<td>F23</td>
+<td>0 -&gt; MCASP0_AXR0<br/>2 -&gt; AUDIO_EXT_REFCLK0<br/>6 -&gt; EHRPWM1_B<br/>7 -&gt; GPIO1_10<br/>8 -&gt; EQEP0_I</td>
+<td>Hayır</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-21</td>
+<td>B25</td>
+<td>0 -&gt; MCASP0_AXR1<br/>1 -&gt; SPI2_CS2<br/>2 -&gt; ECAP1_IN_APWM_OUT<br/>5 -&gt; MAIN_ERRORn<br/>6 -&gt; EHRPWM1_A<br/>7 -&gt; GPIO1_9<br/>8 -&gt; EQEP0_S</td>
+<td>Evet</td>
+<td>Soğutma fanını kontrol amacıyla</td>
+<td>- k3-am67a-t3-gem-o1-gpio-fan.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-22</td>
+<td>R27</td>
+<td>0 -&gt; GPMC0_CSn0<br/>1 -&gt; I2C4_SCL<br/>3 -&gt; MCASP2_AXR14<br/>6 -&gt; TRC_DATA15<br/>7 -&gt; GPIO0_41</td>
+<td>Hayır</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-23</td>
+<td>B5</td>
+<td>0 -&gt; MCU_UART0_CTSn<br/>1 -&gt; MCU_TIMER_IO0<br/>3 -&gt; MCU_SPI1_D0<br/>7 -&gt; MCU_GPIO0_7</td>
+<td>Hayır</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-24</td>
+<td>C8</td>
+<td>0 -&gt; WKUP_UART0_TXD<br/>2 -&gt; MCU_SPI1_CS2<br/>8 -&gt; MCU_GPIO0_10</td>
+<td>Hayır</td>
+<td>Wake Up domain UART0 Tx</td>
+<td>- k3-am67a-t3-gem-o1-uart-ttys0.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-25</td>
+<td>P21</td>
+<td>0 -&gt; GPMC0_CSn1<br/>1 -&gt; I2C4_SDA<br/>3 -&gt; MCASP2_AXR15<br/>6 -&gt; TRC_DATA16<br/>7 -&gt; GPIO0_42</td>
+<td>Hayır</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-26</td>
+<td>P26</td>
+<td>0 -&gt; GPMC0_BE1n<br/>3 -&gt; MCASP2_AXR12<br/>6 -&gt; TRC_DATA11<br/>7 -&gt; GPIO0_36</td>
+<td>Hayır</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-27</td>
+<td>N22</td>
+<td>0 -&gt; GPMC0_OEn_REn<br/>2 -&gt; MCASP1_AXR1<br/>6 -&gt; TRC_DATA8<br/>7 -&gt; GPIO0_33</td>
+<td>Hayır</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>

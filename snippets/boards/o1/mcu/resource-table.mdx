@@ -1,0 +1,238 @@
+<table>
+<thead>
+<tr>
+<th>HAT Pin Name</th>
+<th>SoC Pin Name</th>
+<th>Pinmux</th>
+<th>Enabled in Linux by Default?</th>
+<th>Purpose in Linux</th>
+<th>How to Disable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPIO-0</td>
+<td>D11</td>
+<td>0 → WKUP_I2C0_SDA<br/>7 → MCU_GPIO0_20</td>
+<td>Yes</td>
+<td>I2C SDA for communication with EEPROM, RTC, and PMIC</td>
+<td>Must be disabled via Device-tree (wkup_i2c0).</td>
+</tr>
+<tr>
+<td>GPIO-1</td>
+<td>B9</td>
+<td>0 → WKUP_I2C0_SCL<br/>7 → MCU_GPIO0_19</td>
+<td>Yes</td>
+<td>I2C SCL for communication with EEPROM, RTC, and PMIC</td>
+<td>Must be disabled via Device-tree (wkup_i2c0).</td>
+</tr>
+<tr>
+<td>GPIO-2</td>
+<td>E11</td>
+<td>0 → MCU_I2C0_SDA<br/>7 → MCU_GPIO0_18</td>
+<td>No</td>
+<td>I2C SDA for Waveshare Touchscreen</td>
+<td>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-h-panel.dtbo<br/>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-panel.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-3</td>
+<td>B13</td>
+<td>0 → MCU_I2C0_SCL<br/>7 → MCU_GPIO0_17</td>
+<td>No</td>
+<td>I2C SCL for Waveshare Touchscreen</td>
+<td>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-h-panel.dtbo<br/>- k3-am67a-t3-gem-o1-dsi-waveshare-7inch-panel.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-4</td>
+<td>W26</td>
+<td>0 → GPMC0_WAIT1<br/>1 → VOUT0_EXTPCLKIN<br/>2 → GPMC0_A21<br/>3 → UART6_RXD<br/>4 → AUDIO_EXT_REFCLK2<br/>7 → GPIO0_38<br/>8 → EQEP2_I</td>
+<td>Yes</td>
+<td>UART RX for Bluetooth</td>
+<td>- k3-am67a-t3-gem-o1-uart-ttys6.dtbo<br/> - Must be disabled via Device-tree (main_uart6) </td>
+</tr>
+<tr>
+<td>GPIO-5</td>
+<td>B20</td>
+<td>0 → SPI0_CS0<br/>2 → EHRPWM0_A<br/>7 → GPIO1_15</td>
+<td>No</td>
+<td>General Purpose PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio14.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-6</td>
+<td>D20</td>
+<td>0 → SPI0_CLK<br/>1 → CP_GEMAC_CPTS0_TS_SYNC<br/>2 → EHRPWM1_A<br/>7 → GPIO1_17</td>
+<td>Yes</td>
+<td>General Purpose PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-7</td>
+<td>B3</td>
+<td>0 → WKUP_UART0_RXD<br/>2 → MCU_SPI0_CS2<br/>7 → MCU_GPIO0_9</td>
+<td>Yes</td>
+<td>- SPI Chip Select 2 for Linux spidev<br/>- Wakeup Domain UART0 Rx</td>
+<td>- k3-am67a-t3-gem-o1-spidev0-1cs.dtbo<br/>- k3-am67a-t3-gem-o1-spidev0-2cs.dtbo<br/>- k3-am67a-t3-gem-o1-uart-ttys0.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-8</td>
+<td>C12</td>
+<td>0 → MCU_SPI0_CS0<br/>4 → WKUP_TIMER_IO1<br/>7 → MCU_GPIO0_0</td>
+<td>Yes</td>
+<td>SPI Chip Select 0 for Linux spidev</td>
+<td>- k3-am67a-t3-gem-o1-spidev0-1cs.dtbo<br/>- k3-am67a-t3-gem-o1-spidev0-2cs.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-9</td>
+<td>C11</td>
+<td>0 → MCU_SPI0_D1<br/>7 → MCU_GPIO0_4</td>
+<td>Yes</td>
+<td>- SPI DATA1 for BMP390 Pressure Sensor and ICM20948 IMU<br/>- SPI DATA1 for Linux spidev (configurable as MOSI or MISO)</td>
+<td>Must be disabled via Device-tree (mcu_spi0).</td>
+</tr>
+<tr>
+<td>GPIO-10</td>
+<td>B12</td>
+<td>0 → MCU_SPI0_D0<br/>7 → MCU_GPIO0_3</td>
+<td>Yes</td>
+<td>- SPI DATA0 for BMP390 Pressure Sensor and ICM20948 IMU<br/>- SPI DATA0 for Linux spidev (configurable as MOSI or MISO)</td>
+<td>Must be disabled via Device-tree (mcu_spi0).</td>
+</tr>
+<tr>
+<td>GPIO-11</td>
+<td>A9</td>
+<td>0 → MCU_SPI0_CLK<br/>7 → MCU_GPIO0_2</td>
+<td>No</td>
+<td>SPI Clock for Linux spidev</td>
+<td>Must be disabled via Device-tree (mcu_spi0).</td>
+</tr>
+<tr>
+<td>GPIO-12</td>
+<td>C20</td>
+<td>0 → SPI0_CS1<br/>1 → CP_GEMAC_CPTS0_TS_COMP<br/>2 → EHRPWM0_B<br/>3 → ECAP0_IN_APWM_OUT<br/>5 → MAIN_ERRORn<br/>7 → GPIO1_16<br/>9 → EHRPWM_TZn_IN5</td>
+<td>Yes</td>
+<td>General Purpose PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-13</td>
+<td>E19</td>
+<td>0 → SPI0_D0<br/>1 → CP_GEMAC_CPTS0_HW1TSPUSH<br/>2 → EHRPWM1_B<br/>7 → GPIO1_18</td>
+<td>Yes</td>
+<td>General Purpose PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-14</td>
+<td>F24</td>
+<td>0 → MCASP0_ACLKR<br/>1 → SPI2_CLK<br/>2 → UART1_TXD<br/>6 → EHRPWM0_B<br/>7 → GPIO1_14<br/>8 → EQEP1_I</td>
+<td>Yes</td>
+<td>- Used as Linux serial device /dev/ttyS3.<br/>- Can be configured as General Purpose PWM via overlay.</td>
+<td>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio14.dtbo<br/>- k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo<br/>- Must be disabled via Device-tree (main_uart1).</td>
+</tr>
+<tr>
+<td>GPIO-15</td>
+<td>C27</td>
+<td>0 → MCASP0_AFSR<br/>1 → SPI2_CS0<br/>2 → UART1_RXD<br/>6 → EHRPWM0_A<br/>7 → GPIO1_13<br/>8 → EQEP1_S</td>
+<td>Yes</td>
+<td>- Used as Linux serial device /dev/ttyS3.</td>
+<td>Must be disabled via Device-tree (main_uart1).</td>
+</tr>
+<tr>
+<td>GPIO-16</td>
+<td>A25</td>
+<td>0 → MCASP0_AXR3<br/>1 → SPI2_D0<br/>2 → UART1_CTSn<br/>3 → UART6_RXD<br/>5 → ECAP1_IN_APWM_OUT<br/>7 → GPIO1_7<br/>8 → EQEP0_A</td>
+<td>No</td>
+<td>General Purpose PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-17</td>
+<td>A26</td>
+<td>0 → MCASP0_AXR2<br/>1 → SPI2_D1<br/>2 → UART1_RTSn<br/>3 → UART6_TXD<br/>5 → ECAP2_IN_APWM_OUT<br/>7 → GPIO1_8<br/>8 → EQEP0_B</td>
+<td>Yes</td>
+<td>UART TX for Bluetooth</td>
+<td>- k3-am67a-t3-gem-o1-uart-ttys6.dtbo<br/>- Must be disabled via Device-tree (main_uart6).</td>
+</tr>
+<tr>
+<td>GPIO-18</td>
+<td>D25</td>
+<td>0 → MCASP0_ACLKX<br/>1 → SPI2_CS1<br/>2 → ECAP2_IN_APWM_OUT<br/>7 → GPIO1_11<br/>8 → EQEP1_A</td>
+<td>No</td>
+<td>General Purpose PWM</td>
+<td>- k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-19</td>
+<td>C26</td>
+<td>0 → MCASP0_AFSX<br/>1 → SPI2_CS3<br/>2 → AUDIO_EXT_REFCLK1<br/>7 → GPIO1_12<br/>8 → EQEP1_B</td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-20</td>
+<td>F23</td>
+<td>0 → MCASP0_AXR0<br/>2 → AUDIO_EXT_REFCLK0<br/>6 → EHRPWM1_B<br/>7 → GPIO1_10<br/>8 → EQEP0_I</td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-21</td>
+<td>B25</td>
+<td>0 → MCASP0_AXR1<br/>1 → SPI2_CS2<br/>2 → ECAP1_IN_APWM_OUT<br/>5 → MAIN_ERRORn<br/>6 → EHRPWM1_A<br/>7 → GPIO1_9<br/>8 → EQEP0_S</td>
+<td>Yes</td>
+<td>Cooling Fan Control</td>
+<td>- k3-am67a-t3-gem-o1-gpio-fan.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-22</td>
+<td>R27</td>
+<td>0 → GPMC0_CSn0<br/>1 → I2C4_SCL<br/>3 → MCASP2_AXR14<br/>6 → TRC_DATA15<br/>7 → GPIO0_41</td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-23</td>
+<td>B5</td>
+<td>0 → MCU_UART0_CTSn<br/>1 → MCU_TIMER_IO0<br/>3 → MCU_SPI1_D0<br/>7 → MCU_GPIO0_7</td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-24</td>
+<td>C8</td>
+<td>0 → WKUP_UART0_TXD<br/>2 → MCU_SPI1_CS2<br/>8 → MCU_GPIO0_10</td>
+<td>No</td>
+<td>Wake Up Domain UART0 Tx</td>
+<td>- k3-am67a-t3-gem-o1-uart-ttys0.dtbo</td>
+</tr>
+<tr>
+<td>GPIO-25</td>
+<td>P21</td>
+<td>0 → GPMC0_CSn1<br/>1 → I2C4_SDA<br/>3 → MCASP2_AXR15<br/>6 → TRC_DATA16<br/>7 → GPIO0_42</td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-26</td>
+<td>P26</td>
+<td>0 → GPMC0_BE1n<br/>3 → MCASP2_AXR12<br/>6 → TRC_DATA11<br/>7 → GPIO0_36</td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GPIO-27</td>
+<td>N22</td>
+<td>0 → GPMC0_OEn_REn<br/>2 → MCASP1_AXR1<br/>6 → TRC_DATA8<br/>7 → GPIO0_33</td>
+<td>No</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
