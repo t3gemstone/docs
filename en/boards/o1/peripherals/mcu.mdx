@@ -252,7 +252,7 @@ updates, and Bluetooth), and launches the desktop environment (gnome, kde, xfce,
 
 ## 3. Resource Sharing Between Cores
 
-The AM67 is a multi-core processor, requiring its resources to be shared among the cores. For instance, the main_uart1 peripheral cannot be used
+The AM67 is a multi-core processor, requiring its resources to be shared among the cores. For instance, the `main_uart1` peripheral cannot be used
 simultaneously by the Linux (A53 cores) and the main-r5fss0-0 core. If this UART is to be used by the MCU, it must be ensured that it is not in use
 by the Linux side.
 
@@ -276,11 +276,8 @@ Some pins in the `How to Disable` column may indicate that they must be disabled
 };
 ```
 - Run the `$ make` command in the repository directory to compile the device-tree.
-
 - Backup the current device-tree: `$ sudo mv /boot/k3-am67a-t3-gem-o1.dtb /boot/k3-am67a-t3-gem-o1.dtb.bak`
-  
 - Copy the newly compiled `src/arm64/ti/k3-am67a-t3-gem-o1.dtb` file to the `/boot` directory.
-
 - Reboot the board and verify functionality.
 
 <Info>
@@ -288,17 +285,21 @@ Some pins in the `How to Disable` column may indicate that they must be disabled
 </Info>
 
 After this procedure, `mcu_spi0` is available for use by the MCU cores. However, as noted in the Linux Usage Purpose column of the table, 
-this SPI interface is used for the BMP390 pressure sensor and ICM20948 IMU. These devices will no longer be accessible from Linux and must
+this SPI interface is used for the `BMP390 pressure sensor and ICM20948 IMU`. These devices will no longer be accessible from Linux and must
 now be driven by the MCU.
 
-### 3.2 Driving a Servo Motor from the MCU using PWM
+### 3.2 Example Scenario: Driving a Servo Motor from the MCU using PWM
 
-Consider a scenario where an SG90 model servo motor must be driven from an MCU core. First, select a PWM pin available on the HAT. Suppose we choose the GPIO-12 pin. Consulting the table reveals that this pin is used by Linux. To disable it, check the How to Disable column, which lists a single overlay file. To disable it, open the /boot/uEnv.txt file and inspect the overlays variable.
+Consider a scenario where an SG90 model servo motor must be driven from an MCU core. First, select a PWM pin available on the HAT. Suppose we choose
+the `GPIO-12` pin. Consulting the table reveals that this pin is used by Linux. To disable it, check the How to Disable column, which lists a single
+overlay file. To disable it, open the `/boot/uEnv.txt` file and inspect the `overlays` variable.
+
 ```txt
 overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
 ```
 
-Locate the overlay k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo as indicated in the table and remove it. The overlays variable should now appear as follows:
+Locate the overlay `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` as indicated in the table and remove it. The overlays variable should now appear as
+follows:
 ```txt
 overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
 ```
