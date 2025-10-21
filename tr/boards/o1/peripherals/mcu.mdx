@@ -13,21 +13,99 @@ import SnippetUpload from '/snippets/boards/o1/mcu/upload.mdx';
 import SnippetHelloWorld from '/snippets/boards/o1/mcu/helloworld.mdx';
 import SnippetFirmwares from '/snippets/boards/o1/mcu/firmwares.mdx';
 import SnippetRemoteproc from '/snippets/boards/o1/mcu/remoteproc.mdx';
-import SnippetResources from '/snippets/boards/o1/mcu/kaynak-tablosu.mdx';
-
-
-**T3-GEM-O1** geliştirme kartının birincil odak noktası Linux olmakla birlikte, üzerinde bulunan Texas AM67
-mikroişlemcisinin barındırdığı R5 ve C7x çekirdeklerinin de gücünden faydalanılmaktadır. Bu bölümde R5 çekirdekleri
-için nasıl yazılım derleneceği, debug yapılacağı vb. konular irdelenecektir.
+import SnippetResources from '/snippets/boards/o1/mcu/resource-table-tr.mdx';
 
 <Tip>
 Bölüm bitiminde aşağıdaki konularda bilgi ve deneyim kazanacaksınız.
 
 * Texas AM67 MCU yazılımı derleyerek Gemstone Obsidyen üzerinde çalıştırmak
 * Geliştirme kartına ilk güç verildiğinde hangi aşamalarla sistemin başladığını öğrenmek
+* Geliştirme kartında bulunan Cortex-A (Linux) ve Cortex-R (MCU) farklı mimarilerde eşzamanlı olarak yazılım çalıştırılabildiğinin farkındalığını kazanmak
 </Tip>
 
-## 1. MCU Yazılım Geliştirme
+**T3-GEM-O1** geliştirme kartının birincil odak noktası Linux olmakla birlikte, üzerinde bulunan Texas AM67
+mikroişlemcisinin barındırdığı R5 ve C7x çekirdeklerinin de gücünden faydalanılmaktadır. 
+Örneğin Linux (Cortex-A) üzerinde görüntü işleme çeşitli işlemler yapıp bunları MCU (Cortex-R5) yazılımlarına
+aktararak çeşitli servoların sürülmesi, sensörlerin okunması gibi senaryolara imkan sağlanabilmektedir.
+Bu bölümde R5 çekirdekleri için nasıl yazılım derleneceği, debug yapılacağı vb. konular irdelenecektir.
+
+## 1. Boot Diyagramı
+
+Aşağıda belirtilen akış şeması Gemstone Obsidyen geliştirme kartı için olmakla birlikte bir çok ARM mimarili gömülü
+Linux geliştirme kartlarında benzer bir yapı bulunmaktadır.
+
+<SnippetBootflow/>
+
+### 1.1. ROM Bootloader (RBL)
+
+Üreticiler tarafından çoğu zaman kaynak kodları verilmeden sadece derlenmiş program olarak dağıtılan
+RBL (Room Bootloader)'in temel amacı; karta ilk enerji verildiğinde donanım sağlık kontrolleri ve
+ilklendirme vb. işlemleri yaparak, kaynak kodları değiştirilebilir olan SBL (Secondary Bootloader) isimli ikinci
+Bootloader'a geçiş yapmaktır. SBL'in nereden okunarak başlatılacağı ise RBL tarafından Bootmode switchlerinden
+tespit edilir.
+
+### 1.2. Secondary Bootloader (SBL)
+
+Secondary Boot Loader'un _T3-GEM-O1_ geliştirme kartlarındaki kullanım amacı
+U-Boot isimli daha gelişmiş Bootloader'ı başlatmak ve Gemstone Imager isimli uygulama aracılığıyla imajların
+[eMMC'ye yazılmasını](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319) sağlamaktır.
+
+Linux Kernel içeren gömülü kartlarda çoğunlukla U-Boot tercih edilmektedir. SBL gibi ön yükleyiciler daha temel seviyede
+ilklendirme işlemleri yapabilirken, U-Boot çok daha gelişmiş özelliklere sahiptir. Örneğin U-Boot kendi Terminal/Konsol
+arayüzüne ve SBL'de mümkün olmayan bir çok sürücüye sahip olduğu için daha gelişmiş özelleştirmelere imkan sağlar.
+
+### 1.3. U-Boot
+
+SBL sonrası geliştirme kartının kontrolünü devralan U-Boot, [Device Tree'de](/tr/faq#device-tree-nedir)
+tanımlanmış olan konfigürasyonlara göre ilgili donanımların sürücülerini aktifleştirir ve ön tanımlı bir takım komutları
+çalıştırarak Linux Kernel, Initrd gibi bileşenleri RAM'e yükleyerek kontrolü Linux Kernel'e devreder.
+
+#### 1.3.1. U-Boot Konsol Alıştırmaları
+
+<Tip>
+Bu kısımda Gemstone geliştirme kartına TTL aracılığıyla bağlanılıp U-Boot konsol kullanımı gösterilmiştir.
+Aşağıda bulunan dokümanlara hızlıca göz gezdirebilirsiniz.
+
+- https://cm.e-ale.org/2018/u-boot/u-boot.pdf
+- [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
+
+</Tip>
+
+<Frame caption="U-Boot Konsolu">
+  <img className="rounded-lg" noZoom src="/images/tabby-uboot-console.png" />
+</Frame>
+
+### 1.4. Linux Kernel
+
+[Device Tree'de](/tr/faq#device-tree-nedir) tanımlanan donanımların sürücülerini yükler. Ardından
+varsa initrd'yi/initramfs'i başlatır ve rootfs'te bulunan `init` programını çalıştırır.
+
+<Tip>
+  U-Boot ve Linux kernelin [Device Tree](/tr/faq#device-tree-nedir) dosyaları birbirinden farklıdır. U-Boot'taki devicetreede
+  genellikle sadece kernel ve initramfs'i çeşitli depolama aygıtlarından (MMC, SSD, SPI flash, ...)
+  RAM'e yüklemeye yetecek kadar donanım aktif edilir. Asıl donanım aktif etme işlemlerini kernel yapar.
+</Tip>
+
+### 1.5. Initial RAM Disk (Initrd)
+
+Rootfs başlatılmadan önce çeşitli kernel modüllerini yükleme, disk şifresini çözme, yazılım güncellemesi
+yapma gibi ara işlemleri gerçekleştirmeyi sağlayan ve RAM üzerinde bulunan geçici dosya sistemidir.
+
+<Tip>
+  Rootfs diskte şifreli olarak tutuluyorsa, kernel direkt olarak `init` programını başlatamaz.
+  Öncelikle disk şifresinin initramfs tarafından çözülmesi gerekir.
+</Tip>
+
+### 1.6. Root Filesystem (Rootfs)
+
+Initrd, işlemlerini bitirdikten sonra rootfs olarak adlandırılan; sistem ve kullanıcı programlarını,
+kütüphaneleri ve çeşitli konfigürasyon dosyalarını içeren dosya sistemini `/` dizinine bağlar.
+Ardından kernel, rootfs'te `/init`, `/sbin/init` ya da benzeri bir dizinde bulunan `init` programını çalıştırır.
+Bu program, bazı donanımların sürücülerini yükler (kernel modüllerini), sistem servislerini
+(ağ bağlantısı, saat senkronizasyonu, paket güncelleme ve bluetooth gibi servisleri) ve masaüstü ortamını
+başlatır (gnome, kde, xfce).
+
+## 2. MCU Yazılım Geliştirme
 
 MCU projelerini derleyebilmek için gerekli araçlar aşağıda listelenmiştir.
 
@@ -36,19 +114,21 @@ MCU projelerini derleyebilmek için gerekli araçlar aşağıda listelenmiştir.
 3. Texas Instruments Code Generation Tools C7000
 4. Texas Instruments Code Generation Tools ARM LLVM
 
-Bunları Texas Instruments sitesinden tek tek indirip kurulumlarını gerçekleştirmek zahmetli olduğu için
-[t3gemstone/examples](https://github.com/t3gemstone/examples)
-reposunda gerekli tüm araçları indirip MCU projelerini derleyebilmek için altyapı oluşturulmuştur.
+<Tip>
+Bu araçların Texas Instruments web sitesinden tek tek indirilip kurulumlarını gerçekleştirmek zahmetli olduğu için
+[t3gemstone/examples](https://github.com/t3gemstone/examples) reposunda gerekli tüm araçları indirip
+MCU projelerini derleyebilmek için altyapı oluşturulmuştur. Projeyi klonladığınızda otomatik kurulmaktadır.
+</Tip>
 
-### 1.1. Git clone işlemi ile örnek projeleri indir
+### 2.1. Git clone işlemi ile örnek projeleri indir
 
 <SnippetClone />
 
-### 1.2. Derleme için gerekli araçları ve kütüphaneleri kur
+### 2.2. Derleme için gerekli araçları ve kütüphaneleri kur
 
 <SnippetInstallDeps />
 
-### 1.3. Taslak proje oluştur
+### 2.3. Taslak proje oluştur
 
 [t3gemstone/examples](https://github.com/t3gemstone/examples) reposunda yer alan `mcu` projesinde iki R5F gerçek zamanlı
 çekirdek ve iki C7x DSP çekirdeğinde çalışan örnek projeler bulunmaktadır. Bunlara benzer örnekler
@@ -70,21 +150,29 @@ projesinin `mcu-r5fss0-0_freertos` çekirdeği için örnek gösterilmiştir.
 
 <SnippetTargets />
 
-### 1.4. SysConfig ile çevre birimleri yapılandır
+### 2.4. SysConfig ile çevre birimleri yapılandır
 
-<Frame caption="Todo: MCU&MAIN Domains' capabilities and differences">
-  <img className="rounded-lg" noZoom src="/images/under-construction.png" />
-</Frame>
+SysConfig, Texas Instruments (TI) tarafından geliştirilen bir yapılandırma aracı (configuration tool)’dur.
+TI’nin mikrodenetleyici (MCU) ve işlemci tabanlı geliştirme ortamlarında kullanılır. Temel amacı donanım ve yazılım
+ayarlarını görsel olarak yapılandırılmasını sağlar. Yani doğrudan karmaşık başlatma kodları yazmak yerine, bir
+GUI üzerinden seçenekleri tıklayarak sistem yapılandırmasına imkan sağlar.
+
+**Başlıca özellikleri:**
+
+- Pin Muxing (Pin Yönlendirme): Hangi pinin hangi fonksiyonu üstleneceğini (UART, SPI, GPIO vb.) belirler.
+- Peripheral Ayarları: UART, I2C, Timer, ADC gibi donanımların konfigürasyonunu yapar.
+- Driver ve RTOS yapılandırması: TI-Drivers veya FreeRTOS bileşenlerini etkinleştirir.
+- Otomatik Kod Üretimi: Yapılan ayarların C kaynak dosyalarını (.c, .h) otomatik oluşturur.
+- Hata önleme: Uygun olmayan pin veya modül kombinasyonlarını algılayıp uyarır.
 
 Projenin hangi çevre birimleri (GPIO, I2C, UART vb.) kullandığı ve bunların yapılandırması `.syscfg` dosyasında
-tanımlanmıştır.
-
-Yeni çevre birimler eklemek veya mevcut olanların Pin Mux ayarlarını değiştirmek için SysConfig GUI aracı kullanılır.
+tanımlanmıştır. Yeni çevre birimler eklemek veya mevcut olanların Pin Mux ayarlarını değiştirmek için SysConfig
+GUI aracı kullanılır.
 
 <Warning>
 SysConfig GUI aracını kullanmadan önce kaynakları doğru bir şekilde paylaştırmak ve beklenmedik hatalarla karşılaşmamak için 
 [Kaynakların çekirdekler arasında paylaştırılması](/tr/boards/o1/peripherals/mcu#3-kaynakların-çekirdekler-arasında-paylaştırılması)
-bölümünü okuyun.
+bölümünü okuyunuz.
 </Warning>
 
 Bir MCU projesinde SysConfig'i başlatmak için:
@@ -108,15 +196,15 @@ yapılmış olması gerekmektedir. Yeni bir proje kopyalandıktan sonra aşağı
 4. `Ctrl + S` kısayol tuşuyla `.syscfg` dosyası kaydedilip çıkılır.
 </Warning>
 
-### 1.5. Projeyi derle
+### 2.5. Projeyi derle
 
 <SnippetBuild />
 
-### 1.6. Derlenmiş projeyi geliştirme kartına yükle
+### 2.6. Derlenmiş projeyi geliştirme kartına yükle
 
 <SnippetUpload />
 
-### 1.7. Derlenmiş projeyi çalıştır
+### 2.7. Derlenmiş projeyi çalıştır
 
 Remoteproc ile çekirdeklere yüklenecek `.out` dosyaları `/lib/firmware` dizini altına önceden tanımlı isimlerde
 kopyalanmalıdır. Her bir çekirdek için firmware ismi aşağıdaki tabloda verilmiştir.
@@ -145,14 +233,17 @@ Sistem başlangıcında, remoteproc mekanizması firmware'leri ilgili çekirdekl
 - Dinamik yükleme sırasında beklenmeyen davranışlar gözlemlendiğinde
 </Warning>
 
-### 1.8. Derlenmiş projenin U-Boot aşamasında çalıştırılması
+### 2.8. Derlenmiş projenin U-Boot aşamasında çalıştırılması
 
-[Boot Diyagramı](/tr/boards/o1/peripherals/mcu#2-boot-diyagramı) bölümündeki şekilde görüldüğü gibi bir önceki bölümde anlatılan çalıştırma yöntemi kullanıldığında mcu uygulamasının çalışabilmesi için
-Linux'un başlama sürecini tamamlayıp çekirdeklerin yazılımlarını yükleyip başlatması gerekir. Bu süreç bazı uygulamalarda istenmeyen gecikmelere neden
-olabilir. Bu gecikme uzak çekirdekler bootloader (U-Boot) aşamasında başlatılarak önlenebilir.
+[Boot Diyagramı](/tr/boards/o1/peripherals/mcu#1-boot-diyagramı) bölümündeki şekilde görüldüğü gibi bir önceki
+bölümde anlatılan çalıştırma yöntemi kullanıldığında MCU uygulamasının çalışabilmesi için
+Linux'un başlama sürecini tamamlayıp çekirdeklerin yazılımlarını yükleyip başlatması gerekir.
+Bu süreç bazı uygulamalarda istenmeyen gecikmelere neden olabilir. Bu gecikme uzak çekirdekler bootloader (U-Boot)
+aşamasında başlatılarak önlenebilir.
 
-1. Öncelikle derlenen uygulamayı `/boot/mcu-fw/` dizinine kopyalanır.
-2. `/boot/uEnv.txt` dosyasında derlenilen uygulama hangi çekirdeğe aitse aşağıdaki tablo kullanılarak gerekli parametre tanımlanır.
+1. Öncelikle derlenen uygulama `/boot/mcu-fw/` dizinine kopyalanır.
+2. `/boot/uEnv.txt` dosyasında derlenen uygulama hangi çekirdeğe aitse aşağıdaki tablo kullanılarak gerekli
+   parametre tanımlanır.
 
 | Çekirdek       | Değişken Adı           |
 |----------------|------------------------|
@@ -162,8 +253,8 @@ olabilir. Bu gecikme uzak çekirdekler bootloader (U-Boot) aşamasında başlat�
 | c7xss0-0       | c7x0_dsp_firmware_name |
 | c7xss1-0       | c7x1_dsp_firmware_name |
 
-Örneğin `blink_main_r5` isimli bir uygulama U-Boot aşamasında main-r5fss0-0 çekirdeğinde çalıştırılmak istendiğinde öncelikle uygulama aşağıda görüldüğü gibi
-`/boot/mcu-fw` dizinine kopyalanır.
+Örneğin `blink_main_r5` isimli bir uygulama U-Boot aşamasında main-r5fss0-0 çekirdeğinde çalıştırılmak istendiğinde
+öncelikle uygulama aşağıda görüldüğü gibi `/boot/mcu-fw` dizinine kopyalanır.
 
 ```sh
 gemstone@t3-gem-o1:~$ ls /boot/mcu-fw/
@@ -179,139 +270,67 @@ Ardından `/boot/uEnv.txt` dosyasına aşağıdaki satır eklenir.
 main_r5f_firmware_name=blink_main_r5
 ```
 
-Artık `blink_main_r5` uygulaması Linux'un başlamasını beklemek yerine doğrudan bootloader aşamasında başlatılacak.
-
-## 2. Boot Diyagramı
-
-Aşağıda belirtilen akış şeması Gemstone Obsidyen geliştirme kartı için olmakla birlikte
-bir çok ARM mimarili gömülü Linux geliştirme kartlarında benzer bir yapı bulunmaktadır.
-
-<SnippetBootflow/>
-
-### 2.1. ROM Bootloader (RBL)
-
-Üreticiler tarafından çoğu zaman kaynak kodları verilmeden sadece derlenmiş program olarak dağıtılan
-RBL (Room Bootloader)'in temel amacı; karta ilk enerji verildiğinde donanım sağlık kontrolleri ve
-ilklendirme vb. işlemleri yaparak, kaynak kodları değiştirilebilir olan SBL (Secondary Bootloader) isimli ikinci
-Bootloader'a geçiş yapmaktır. SBL'in nereden okunarak başlatılacağı ise RBL tarafından Bootmode switchlerinden
-tespit edilir.
-
-### 2.2. Secondary Bootloader (SBL)
-
-Secondary Boot Loader'un _T3-GEM-O1_ geliştirme kartlarındaki kullanım amacı
-U-Boot isimli daha gelişmiş Bootloader'ı başlatmak ve Gemstone Imager isimli uygulama aracılığıyla imajların
-[eMMC'ye yazılmasını](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319) sağlamaktır.
-
-Linux Kernel içeren gömülü kartlarda çoğunlukla U-Boot tercih edilmektedir. SBL gibi ön yükleyiciler daha temel seviyede
-ilklendirme işlemleri yapabilirken, U-Boot çok daha gelişmiş özelliklere sahiptir. Örneğin U-Boot kendi Terminal/Konsol
-arayüzüne ve SBL'de mümkün olmayan bir çok sürücüye sahip olduğu için daha gelişmiş özelleştirmelere imkan sağlar.
-
-### 2.3. U-Boot
-
-SBL sonrası geliştirme kartının kontrolünü devralan U-Boot, [Device Tree'de](/tr/faq#device-tree-nedir)
-tanımlanmış olan konfigürasyonlara göre ilgili donanımların sürücülerini aktifleştirir ve ön tanımlı bir takım komutları
-çalıştırarak Linux Kernel, Initrd gibi bileşenleri RAM'e yükleyerek kontrolü Linux Kernel'e devreder.
-
-#### 2.3.1. U-Boot Konsol Alıştırmaları
-
-<Tip>
-Bu kısımda Gemstone geliştirme kartına TTL aracılığıyla bağlanılıp U-Boot konsol kullanımı gösterilmiştir.
-Aşağıda bulunan dokümanlara hızlıca göz gezdirebilirsiniz.
-
-- https://cm.e-ale.org/2018/u-boot/u-boot.pdf
-- [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
-
-</Tip>
-
-<Frame caption="U-Boot Konsolu">
-  <img className="rounded-lg" noZoom src="/images/tabby-uboot-console.png" />
-</Frame>
-
-### 2.4. Linux Kernel
-
-[Device Tree'de](/tr/faq#device-tree-nedir) tanımlanan donanımların sürücülerini yükler. Ardından
-varsa initrd'yi/initramfs'i başlatır ve rootfs'te bulunan `init` programını çalıştırır.
-
-<Tip>
-  U-Boot ve Linux kernelin [Device Tree](/tr/faq#device-tree-nedir) dosyaları birbirinden farklıdır. U-Boot'taki devicetreede
-  genellikle sadece kernel ve initramfs'i çeşitli depolama aygıtlarından (MMC, SSD, SPI flash, ...)
-  RAM'e yüklemeye yetecek kadar donanım aktif edilir. Asıl donanım aktif etme işlemlerini kernel yapar.
-</Tip>
-
-### 2.5. Initial RAM Disk (Initrd)
-
-Rootfs başlatılmadan önce çeşitli kernel modüllerini yükleme, disk şifresini çözme, yazılım güncellemesi
-yapma gibi ara işlemleri gerçekleştirmeyi sağlayan ve RAM üzerinde bulunan geçici dosya sistemidir.
-
-<Tip>
-  Rootfs diskte şifreli olarak tutuluyorsa, kernel direkt olarak `init` programını başlatamaz.
-  Öncelikle disk şifresinin initramfs tarafından çözülmesi gerekir.
-</Tip>
-
-### 2.6. Root Filesystem (Rootfs)
-
-Initrd, işlemlerini bitirdikten sonra rootfs olarak adlandırılan; sistem ve kullanıcı programlarını,
-kütüphaneleri ve çeşitli konfigürasyon dosyalarını içeren dosya sistemini `/` dizinine bağlar.
-Ardından kernel, rootfs'te `/init`, `/sbin/init` ya da benzeri bir dizinde bulunan `init` programını çalıştırır.
-Bu program, bazı donanımların sürücülerini yükler (kernel modüllerini), sistem servislerini
-(ağ bağlantısı, saat senkronizasyonu, paket güncelleme ve bluetooth gibi servisleri) ve masaüstü ortamını
-başlatır (gnome, kde, xfce, ...).
+Artık `blink_main_r5` uygulaması Linux'un başlamasını beklemek yerine doğrudan bootloader aşamasında başlatılacaktır.
 
 ## 3. Kaynakların Çekirdekler Arasında Paylaştırılması
 
-AM67 çok çekirdekli bir işlemci olduğundan dolayı sahip olduğu kaynakların bu çekirdekler arasında paylaştırılması gerekiyor. Örneğin
-`main_uart1` uart çevre birimi hem Linux (A53 çekirdekler) tarafından hemde main-r5fss0-0 çekirdeği tarafından aynı anda kullanılamaz. Eğer
-bu uart çevre birimi mcu tarafından kullanılacaksa Linux tarafından bu birimin kullanılmadığından emin olunması gerekir.
+AM67'nin çok çekirdekli bir işlemci olması dolayısıyla, sahip olduğu kaynakların bu çekirdekler arasında
+paylaştırılması gerekmektedir. Örneğin `main_uart1` uart çevre birimi hem Linux (A53 çekirdekler) tarafından hem de
+main-r5fss0-0 çekirdeği tarafından aynı anda kullanılamaz. Eğer bu UART çevre birimi MCU tarafından kullanılacaksa
+Linux tarafından bu birimin kullanılmadığının belirtilmesi gerekmektedir.
 
+### 3.1. Varsayılan Kaynak Dağılımı Tablosu
 
-### 3.1 Varsayılan Kaynak Dağılımı Tablosu
-
-Aşağıda verilen tabloda HAT'a çıkan pinlerin SOC'de hangi pinlere denk geldiği, hangi çevre birim olarak kullanılabilecekleri (Pinmux), Linux
-tarafından varsayılan olarak kullanılıp kullanılmadığı, kullanılıyorsa hangi amaçla kullanıldığı ve bunun nasıl devre dışı bırakılabileceği gibi
-bilgiler bulunabilir. 
+Aşağıda verilen tabloda HAT'a çıkan pinlerin SOC'de hangi pinlere denk geldiği, hangi çevre birim olarak
+kullanılabilecekleri (Pinmux), Linux tarafından varsayılan olarak kullanılıp kullanılmadığı, kullanılıyorsa
+hangi amaçla kullanıldığı ve bunun nasıl devre dışı bırakılabileceği gibi bilgiler bulunabilir. 
 
 <SnippetResources />
 
-Devre dışı bırakılacak pinin tabloda `Devre Dışı Bırakmak için` isimli sütununa bakılır. Bu sütunda k3-am67a-t3-gem-o1-xxxxxx.dtbo şeklinde listelenen
-device-tree overlay ismi verilen dosyalar var. Bunlar Linux'a belirtilen çevre birimi nasıl kullanması gerektiğini bildiren ayar dosyaları. Bunları
-devre dışı bırakmak için `/boot/uEnv.txt` dosyasını açıp `overlays` ismi verilen değişkenden bu dosyanın silinmesi yeterlidir. Bazı pinlerin
-`Devre Dışı Bırakmak için` sütünunda overlaylerin haricinde `Device-tree ile devre dışı bırakılmalı. (mcu_spi0)` benzeri yönergeler bulunuyor.
-Bunları devre dışı bırakmak için;
+Devre dışı bırakılacak pinin tabloda `Devre Dışı Bırakmak için` isimli sütununa bakılır. Bu sütunda
+k3-am67a-t3-gem-o1-xxxxxx.dtbo şeklinde listelenen device-tree overlay ismi verilen dosyalar Linux'a belirtilen
+çevre birimi nasıl kullanması gerektiğini bildiren ayar dosyalarıdır.
 
-- `github.com/t3gemstone/devicetrees` reposu klonlanır.
+İlgili ayarları devre dışı bırakmak için `/boot/uEnv.txt` dosyasını açıp `overlays` ismi verilen değişkenden bu
+dosyanın silinmesi yeterlidir. Bazı pinlerin `Devre Dışı Bırakmak için` sütünunda overlaylerin
+haricinde `Device-tree ile devre dışı bırakılmalı. (mcu_spi0)` benzeri yönergeler mevcuttur. Bunları devre dışı
+bırakmak için;
+
+- https://github.com/t3gemstone/devicetrees reposu klonlanır.
 - `src/arm64/ti/k3-am67a-t3-gem-o1.dts` dosyası açılır ve aşağıdaki kod parçası gerekli değişiklikler yapılarak eklenir.
-```c
-&mcu_spi0 {
-  status = "disabled";
-};
-```
+  ```c
+  &mcu_spi0 {
+    status = "disabled";
+  };
+  ```
 - Repo dizininde `make` komutu çalıştırılarak device-tree derlenir.
 - Eski device-tree `$ sudo mv /boot/k3-am67a-t3-gem-o1.dtb /boot/k3-am67a-t3-gem-o1.dtb.bak` komutu ile yedeklenir.
 - Derleme sonucu oluşan `src/arm64/ti/k3-am67a-t3-gem-o1.dtb` dosyası `/boot/` altına kopyalanır.
 - Kart yeniden başlatılır ve çalışıp çalışmadığı test edilir.
 
-<Info>
-  Yukarıdaki işlemler sonucu istenmeyen bir durum oluşursa `$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb` komutu ile
-yedeklenen device-tree geri yüklenebilir.
-</Info>
+<Note>
+Yukarıdaki işlemler sonucu istenmeyen bir durum oluşursa
+`$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb` komutu ile yedeklenen device-tree geri yüklenebilir.
+</Note>
 
-Yukarıdaki işlemler sonucunda artık `mcu_spi0` mcu çekirdeklerden kullanılabilir durumda. Ancak tabloda bulunan `Linux'ta Kullanım Amacı` bölümünde
-`- BMP390 basınç ve ICM20948 imu spi` için kullanıldığı belirtilmiş. Bu cihazlara artık Linux'ta erişim yok bu sebeple bunların mcu tarafından
-sürülmesi gerekmektedir. 
+Yukarıdaki işlemler sonucunda artık `mcu_spi0` mcu çekirdeklerden kullanılabilir durumda olacaktır. Ancak tabloda
+bulunan `Linux'ta Kullanım Amacı` bölümünde `- BMP390 basınç ve ICM20948 imu spi` için kullanıldığı belirtilmiştir.
+Dolayısıyla bu çevresel birimlere Linux'ta erişim kapatılmış olacak ve MCU tarafından sürülmesi gerekecektir. 
 
-### 3.2 Örnek Senaryo: PWM ile MCU'dan Servo Motorun Sürülmesi
+### 3.2. Örnek Senaryo: PWM ile MCU'dan Servo Motorun Sürülmesi
 
-  Elimizde bulunan SG90 model bir servo motoru MCU çekirdekten sürmemiz gerektiği bir senaryoda öncelikle HAT pinleri üzerinde bulunan bir PWM pinini
-seçmeliyiz. `GPIO-12` pinini seçtiğimizi hayal edelim. Tabloya baktığımızda bu pinin Linux tarafından kullanımda olduğunu görebiliriz. Bu pini Linux'ta
-devre dışı bırakmak için `Devre Dışı Bırakmak için` sütununa baktığımızda yalnızca bir overlay dosyası bulunuyor. Bunu kapatmak için `/boot/uEnv.txt`
-dosyasını açıp `overlays` değişkenini kontrol ediyoruz.
+Elimizde bulunan SG90 model bir servo motoru MCU çekirdekten sürmemiz gerektiği bir senaryoda öncelikle HAT
+pinleri üzerinde bulunan bir PWM pinini seçmeliyiz. Örneğin `GPIO-12` pini seçilmiş olsun. Tabloya
+baktığımızda bu pinin Linux tarafından kullanımda olduğunu görebiliriz. Bu pini Linux'ta
+devre dışı bırakmak için `Devre Dışı Bırakmak için` sütununa baktığımızda yalnızca bir overlay dosyası bulunduğu
+görülür. Kapatmak için `/boot/uEnv.txt` dosyasını açıp `overlays` değişkenini kontrol ediyoruz.
 
 ```txt
 overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
 ```
 
-Burada tabloda belirtilen `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` dosyasının adını görebiliriz. Bunu siliyoruz ve overlays değişkeni aşağıdaki
-şekle geliyor.
+Burada tabloda belirtilen `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` dosyasının adını görebiliriz. Bunu siliyoruz ve
+overlays değişkeni aşağıdaki şekle geliyor.
 
 ```txt
 overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
@@ -320,6 +339,7 @@ overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13
 Kart yeniden başlatıldığında bu pin MCU tarafından kontrol edilebilir.
 
 ## 4. Son
+
 <Tip>
 Boot süreci hakkında bir kaç makale örneği aşağıda verilmiştir.
 

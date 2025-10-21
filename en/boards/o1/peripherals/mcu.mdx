@@ -15,18 +15,95 @@ import SnippetFirmwares from '/snippets/boards/o1/mcu/firmwares.mdx';
 import SnippetRemoteproc from '/snippets/boards/o1/mcu/remoteproc.mdx';
 import SnippetResources from '/snippets/boards/o1/mcu/resource-table.mdx';
 
-While the primary focus of the **T3-GEM-O1** development board is Linux, it also leverages the power of the R5
-and C7x cores within the Texas AM67 microprocessor. This section will explore topics such as how to compile
-software for the R5 cores, perform debugging, and more.
-
 <Tip>
-By the end of this section, you will gain knowledge and experience in the following areas:
+By the end of this section, you will gain knowledge and experience in the following topics.
 
 * Compiling Texas AM67 MCU software and running it on the Gemstone Obsidian
-* Understanding the boot stages of the system when the development board is first powered on
+* Learning the stages the system goes through when the development board is first powered on
+* Gaining awareness that software can run concurrently on the different architectures present on the development board, namely Cortex-A (Linux) and Cortex-R (MCU)
 </Tip>
 
-## 1. MCU Software Development
+While the primary focus of the **T3-GEM-O1** development board is Linux, it also leverages the power of the 
+R5 and C7x cores housed within the Texas AM67 microprocessor. For example, it is possible to perform various image
+processing tasks on Linux (Cortex-A) and transfer these to MCU (Cortex-R5) software, enabling scenarios such as
+driving various servos, reading sensors, etc. This section will cover topics such as how to compile software
+for the R5 cores, debugging, etc.
+
+## 1. Boot Diagram
+
+The flow chart specified below is for the Gemstone Obsidian development board, but a similar structure is found in
+many ARM-based embedded Linux development boards.
+
+<SnippetBootflow/>
+
+### 1.1. ROM Bootloader (RBL)
+
+The primary purpose of the RBL (ROM Bootloader), which is often distributed only as a compiled program without
+source code by manufacturers, is to perform hardware health checks and initialization etc., when the board is first
+powered on, and then transition to the second bootloader called SBL (Secondary Bootloader), whose source code can be
+modified. Where the SBL is read from and started is determined by the RBL from the Bootmode switches.
+
+### 1.2. Secondary Bootloader (SBL)
+
+The purpose of the Secondary Boot Loader on _T3-GEM-O1_ development boards is to start the more advanced bootloader
+called U-Boot and to enable writing images to
+[eMMC via the Gemstone Imager application](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319).
+
+U-Boot is often preferred in embedded boards containing the Linux Kernel. While pre-loaders like SBL can perform
+more basic level initialization operations, U-Boot has much more advanced features. For example, U-Boot has its own 
+Terminal/Console interface and many drivers not available in SBL, allowing for more advanced customizations.
+
+### 1.3. U-Boot
+
+U-Boot, which takes control of the development board after SBL, activates the drivers of the relevant hardware 
+according to the configurations defined in the [Device Tree](/en/faq#what-is-a-device-tree) and executes a set of 
+predefined commands to load components like the Linux Kernel and Initrd into RAM, handing over control to the Linux Kernel.
+
+#### 1.3.1. U-Boot Console Exercises
+
+<Tip>
+This section demonstrates the use of the U-Boot console by connecting to the Gemstone development board via TTL.
+You can quickly browse the documents below.
+
+- https://cm.e-ale.org/2018/u-boot/u-boot.pdf
+- [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
+
+</Tip>
+
+<Frame caption="U-Boot Console">
+  <img className="rounded-lg" noZoom src="/images/tabby-uboot-console.png" />
+</Frame>
+
+### 1.4. Linux Kernel
+
+It loads the drivers for the hardware defined in the [Device Tree](/en/faq#what-is-a-device-tree). Then, if any, 
+it starts the initrd/initramfs and runs the `init` program found in the rootfs.
+
+<Tip>
+  The [Device Tree](/en/faq#what-is-a-device-tree) files for U-Boot and the Linux kernel are different from each other. 
+  The devicetree in U-Boot typically only activates enough hardware to load the kernel and initramfs from various 
+  storage devices (MMC, SSD, SPI flash, ...) into RAM. The main hardware activation is done by the kernel.
+</Tip>
+
+### 1.5. Initial RAM Disk (Initrd)
+
+It is a temporary filesystem located in RAM that performs intermediate tasks such as loading various kernel modules, 
+decrypting the disk, performing software updates, etc., before the rootfs is started.
+
+<Tip>
+  If the rootfs is stored encrypted on the disk, the kernel cannot directly start the `init` program.
+  First, the disk encryption must be decrypted by the initramfs.
+</Tip>
+
+### 1.6. Root Filesystem (Rootfs)
+
+After the initrd finishes its operations, it mounts the filesystem called rootfs, which contains system and user 
+programs, libraries, and various configuration files, to the `/` directory.
+Then the kernel runs the `init` program located in the rootfs at `/init`, `/sbin/init`, or a similar directory.
+This program loads drivers for some hardware (kernel modules), system services (services such as network 
+connection, time synchronization, package update, and bluetooth) and starts the desktop environment (gnome, kde, xfce).
+
+## 2. MCU Software Development
 
 The tools required to compile MCU projects are listed below.
 
@@ -35,130 +112,143 @@ The tools required to compile MCU projects are listed below.
 3. Texas Instruments Code Generation Tools C7000
 4. Texas Instruments Code Generation Tools ARM LLVM
 
-Since downloading and installing these tools one by one from the Texas Instruments website is cumbersome,
-the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository has been set up to download
-all the necessary tools and provide the infrastructure to compile MCU projects.
+<Tip>
+Since downloading these tools one by one from the Texas Instruments website and performing their installations 
+is cumbersome, an infrastructure has been set up in the [t3gemstone/examples](https://github.com/t3gemstone/examples) 
+repo to download all the necessary tools and compile MCU projects. It is installed automatically when you clone the project.
+</Tip>
 
-### 1.1. Download example projects via Git clone
+### 2.1. Download the sample projects with Git clone
 
 <SnippetClone />
 
-### 1.2. Install tools and libraries required for compilation
+### 2.2. Install the necessary tools and libraries for compilation
 
 <SnippetInstallDeps />
 
-### 1.3. Create a template project
+### 2.3. Create a template project
 
-The `mcu` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repository contains sample
-projects for two R5F real-time cores and two C7x DSP cores. Similar examples can be found in
-the `build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples` directory.
-It is recommended to find an example project that suits your purpose, copy it to the `mcu` project directory,
+The `mcu` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repo contains sample 
+projects running on two R5F real-time cores and two C7x DSP cores. Similar examples can be found in 
+the `build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples` directory. 
+It is recommended to find an example project suitable for your purpose, copy it to the `mcu` project directory, 
 and develop on it.
 
-Each example project has subdirectories for different cores. For example, the `hello_world` project contains
-the following directories:
+Under each sample project, there are subdirectories for different cores.
+For example, the `hello_world` project has the following directories.
 
 <SnippetHelloWorld />
 
-Development should be done in the directory corresponding to the core where the code will run, and the compiled
-outputs from that directory should be used.
+The code to be written should be developed in the directory of the core on which it is intended to run, and the 
+compiled outputs from that directory should be used.
 
-The MCU projects to be compiled are defined in the `.env` file as the `MCU_TARGETS` variable. Add the absolute
-or relative path of the project's `makefile` directory to the `MCU_TARGETS` variable. Below is an example
-for the `mcu-r5fss0-0_freertos` core of the `hello_world` project.
+The MCU projects to be compiled are defined as the `MCU_TARGETS` variable in the `.env` file. Add the absolute or 
+relative path of the `makefile` directory of the project you want to compile to the `MCU_TARGETS` variable. Below 
+is an example for the `mcu-r5fss0-0_freertos` core of the `hello_world` project.
 
 <SnippetTargets />
 
-### 1.4. Configure peripherals with SysConfig
+### 2.4. Configure peripherals with SysConfig
 
-<Frame caption="Todo: MCU&MAIN Domains' capabilities and differences">
-  <img className="rounded-lg" noZoom src="/images/under-construction.png" />
-</Frame>
+SysConfig is a configuration tool developed by Texas Instruments (TI). It is used in TI's microcontroller (MCU) 
+and processor-based development environments. Its main purpose is to allow the configuration of hardware and 
+software settings visually. Instead of writing complex initialization code directly, it allows system 
+configuration via a GUI by clicking options.
 
-The peripherals used by the project (GPIO, I2C, UART, etc.) and their configurations are defined in the `.syscfg` file.
+**Main features:**
+
+- Pin Muxing: Determines which pin will serve which function (UART, SPI, GPIO, etc.).
+- Peripheral Settings: Configures peripherals like UART, I2C, Timer, ADC.
+- Driver and RTOS configuration: Enables TI-Drivers or FreeRTOS components.
+- Automatic Code Generation: Automatically generates C source files (.c, .h) based on the settings made.
+- Error prevention: Detects inappropriate pin or module combinations and warns.
+
+Which peripherals (GPIO, I2C, UART, etc.) the project uses and their configuration are defined in the `.syscfg` file. 
+The SysConfig GUI tool is used to add new peripherals or change the Pin Mux settings of existing ones.
 
 <Warning>
-Before using the SysConfig GUI tool, read the [Resource Sharing Between Cores](/en/boards/o1/peripherals/mcu#3-resource-sharing-between-cores) section to properly allocate resources and avoid unexpected conflicts.
+Before using the SysConfig GUI tool, read the 
+[Sharing Resources Between Cores](/en/boards/o1/peripherals/mcu#3-sharing-resources-between-cores) section to 
+correctly allocate resources and avoid unexpected errors.
 </Warning>
 
-The SysConfig GUI tool is used to add new peripherals or modify the Pin Mux settings of existing ones. To launch
-SysConfig for an MCU project:
+To launch SysConfig for an MCU project:
 
 - Change the `SYSCONFIG_TARGET` variable to the desired project.
-    - You can edit this variable in the `.env` file or
+    - You can edit this variable inside the `.env` file or
     - Pass it as an environment variable to the `task` program.
 
 <SnippetSysconfig />
 
-After saving your changes with the `Ctrl + S` shortcut, you can close the SysConfig interface.
+After saving your changes with the `Ctrl + S` shortcut key, you can close the SysConfig interface.
 
 <Warning>
-The remoteproc infrastructure is used to remotely load software onto the R5F and C7x cores from Linux. Certain
-settings must be configured in the SysConfig interface for a compiled `.out` file to be loaded via remoteproc.
-After copying a new project, follow these steps:
+  The remoteproc infrastructure is used to allow remote software loading to the R5F and C7x cores from the Linux side.
+  For a project's compiled `.out` file to be loadable via remoteproc, certain settings must be made in the 
+  SysConfig interface. After copying a new project, the following steps should be followed.
 
-1. Open the `IPC` tab under `TI DRIVERS`.
-2. Click the `ADD` button.
-3. Ensure the `Linux A53 IPC RP Message` setting is active.
-4. Save the `.syscfg` file with the `Ctrl + S` shortcut and exit.
+  1. Open the `IPC` tab under `TI DRIVERS`.
+  2. Click the `ADD` button.
+  3. Ensure the `Linux A53 IPC RP Message` setting is active.
+  4. Save the `.syscfg` file with the `Ctrl + S` shortcut key and exit.
 </Warning>
 
-### 1.5. Compile the project
+### 2.5. Build the project
 
 <SnippetBuild />
 
-### 1.6. Upload the compiled project to the development board
+### 2.6. Upload the compiled project to the development board
 
 <SnippetUpload />
 
-### 1.7. Run the compiled project
+### 2.7. Run the compiled project
 
-The `.out` files to be loaded onto the cores via remoteproc must be copied to the `/lib/firmware` directory with
-predefined names. The firmware names for each core are listed in the table below.
+The `.out` files to be loaded to the cores via Remoteproc must be copied under the `/lib/firmware` directory 
+with predefined names. The firmware name for each core is given in the table below.
 
 <SnippetFirmwares />
 
-The firmware names and which core corresponds to which remoteproc device can be accessed with the
-`head /sys/class/remoteproc/remoteproc*/firmware` command. Since the cores may correspond to different
-remoteproc devices after each boot, this must be checked.
+The firmware names and which core corresponds to which remoteproc device can be accessed with the 
+`head /sys/class/remoteproc/remoteproc*/firmware` command. This needs to be checked because after each boot, 
+the cores can correspond to different remoteproc devices.
 
 <SnippetRemoteProc />
 
 <Warning>
-The above procedure ensures that the remote cores are shut down and restarted smoothly. In some cases, a
-smooth shutdown may fail. In such cases, we recommend the following steps:
+  The above procedure ensures a clean shutdown and restart of the remote cores. In some cases, the clean shutdown 
+  process may fail. In this case, we recommend the following steps:
 
-1. Place the new firmware files in the `/lib/firmware` directory.
-2. Reboot the board.
+  1. Place the new firmware files in the `/lib/firmware` directory.
+  2. Reboot the board.
 
-During system startup, the remoteproc mechanism will automatically load the firmware onto the relevant cores.
+  Upon system startup, the remoteproc mechanism will automatically load the firmwares to the relevant cores.
 
-**Note:** This approach is particularly useful in the following scenarios:
+  **Note:** This approach is particularly useful in the following situations:
 
-- When core crashes occur
-- When IPC communication is interrupted
-- When unexpected behavior is observed during dynamic loading
+  - When core crashes occur
+  - When IPC communication is interrupted
+  - When unexpected behavior is observed during dynamic loading
 </Warning>
 
-### 1.8. Running the Compiled Project at the U-Boot Stage
+### 2.8. Running the Compiled Project at the U-Boot Stage
 
-As shown in the figure in the [Boot Diagram](/en/boards/o1/peripherals/mcu#2-boot-diagram) section, when using the execution method described in the previous section, for the MCU application to run, 
-Linux must complete its boot process and load/start the software for the cores. This process can cause undesirable delays in some applications. 
-This delay can be prevented by starting the remote cores at the bootloader (U-Boot) stage.
+As seen in the diagram in the [Boot Diagram](/en/boards/o1/peripherals/mcu#1-boot-diagram) section, when using the 
+execution method described in the previous section, for the MCU application to run, Linux must complete its startup process and load and start the core software. This process can cause unwanted delays in some applications. This delay can be prevented by starting the remote cores at the bootloader (U-Boot) stage.
 
-1.  First, the compiled application is copied to the `/boot/mcu-fw/` directory.
-2.  In the `/boot/uEnv.txt` file, the necessary parameter is defined using the table below, depending on which core the compiled application belongs to.
+1. First, the compiled application is copied to the `/boot/mcu-fw/` directory.
+2. In the `/boot/uEnv.txt` file, the necessary parameter is defined using the table below, depending on which 
+core the compiled application belongs to.
 
-| Core           | Variable Name           |
-|----------------|-------------------------|
-| main-r5fss0-0  | main_r5f_firmware_name  |
-| mcu-r5fss0-0   | mcu_r5f_firmware_name   |
-| wkup-r5fss0-0  | wkup_r5f_firmware_name  |
-| c7xss0-0       | c7x0_dsp_firmware_name  |
-| c7xss1-0       | c7x1_dsp_firmware_name  |
+| Core          | Variable Name          |
+|---------------|------------------------|
+| main-r5fss0-0 | main_r5f_firmware_name |
+| mcu-r5fss0-0  | mcu_r5f_firmware_name  |
+| wkup-r5fss0-0 | wkup_r5f_firmware_name |
+| c7xss0-0      | c7x0_dsp_firmware_name |
+| c7xss1-0      | c7x1_dsp_firmware_name |
 
-For example, if you want an application named `blink_main_r5` to run on the main-r5fss0-0 core during the U-Boot stage, first the application is copied to the
-`/boot/mcu-fw/` directory as shown below.
+For example, when an application named `blink_main_r5` is desired to run on the main-r5fss0-0 core at the U-Boot 
+stage, first the application is copied to the `/boot/mcu-fw` directory as shown below.
 
 ```sh
 gemstone@t3-gem-o1:~$ ls /boot/mcu-fw/
@@ -174,141 +264,76 @@ Then, the following line is added to the `/boot/uEnv.txt` file.
 main_r5f_firmware_name=blink_main_r5
 ```
 
-Now, the `blink_main_r5` application will be started directly at the bootloader stage, without waiting for Linux to boot.
+Now the `blink_main_r5` application will be started directly at the bootloader stage, without waiting for Linux to start.
 
-## 2. Boot Diagram
+## 3. Sharing Resources Between Cores
 
-The flowchart below is specific to the Gemstone Obsidian development board, but many ARM-based embedded Linux
-development boards have a similar structure.
+Due to the AM67 being a multi-core processor, the resources it possesses must be shared among these cores. For 
+example, the `main_uart1` uart peripheral cannot be used simultaneously by both Linux (A53 cores) and the 
+main-r5fss0-0 core. If this UART peripheral is to be used by the MCU, it must be indicated that it is not used by Linux.
 
-<SnippetBootflow/>
+### 3.1. Default Resource Allocation Table
 
-### 2.1. ROM Bootloader (RBL)
+The table below provides information such as which SOC pins the pins on the HAT correspond to, which peripherals 
+they can be used as (Pinmux), whether they are used by default by Linux, if so for what purpose, and how this 
+can be disabled.
 
-The RBL (ROM Bootloader), often distributed only as compiled binaries without source code by manufacturers,
-has the primary purpose of performing hardware health checks and initialization when the board is first powered
-on, then transitioning to the SBL (Secondary Bootloader), whose source code can be modified. The location from
-which the SBL is read and started is determined by the RBL based on Bootmode switches.
-
-### 2.2. Secondary Bootloader (SBL)
-
-The purpose of the Secondary Boot Loader on the _T3-GEM-O1_ development boards is to start the more advanced
-U-Boot bootloader and enable the writing of images to
-[eMMC](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319) via the Gemstone Imager application.
-
-U-Boot is commonly preferred in embedded boards running Linux. While pre-bootloaders like SBL can perform basic
-initialization, U-Boot offers many more advanced features. For example, U-Boot has its own Terminal/Console
-interface and supports many drivers not available in SBL, enabling more sophisticated customizations.
-
-### 2.3. U-Boot
-
-After the SBL, U-Boot takes control of the development board. Based on the configurations defined in the
-[Device Tree](/en/faq#what-is-device-tree), it activates the relevant hardware drivers and executes predefined
-commands to load components like the Linux Kernel and Initrd into RAM, then hands control over to the Linux Kernel.
-
-#### 2.3.1. U-Boot Console Exercises
-
-<Tip>
-This section demonstrates the use of the U-Boot console by connecting to the Gemstone development board via TTL.
-You can quickly skim the documents below.
-
-- https://cm.e-ale.org/2018/u-boot/u-boot.pdf
-- [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
-
-</Tip>
-
-<Frame caption="U-Boot Console">
-  <img className="rounded-lg" noZoom src="/images/tabby-uboot-console.png" />
-</Frame>
-
-### 2.4. Linux Kernel
-
-Loads the drivers for the hardware defined in the [Device Tree](/en/faq#what-is-device-tree). Then, if present,
-it starts the initrd/initramfs and executes the `init` program located in the rootfs.
-
-<Tip>
-  The device tree files for U-Boot and the Linux kernel are different. The device tree in U-Boot typically only
-  activates enough hardware to load the kernel and initramfs into RAM from various storage devices (MMC, SSD,
-  SPI flash, etc.). The actual hardware activation is performed by the kernel.
-</Tip>
-
-### 2.5. Initial RAM Disk (Initrd)
-
-A temporary filesystem in RAM that performs intermediate tasks such as loading kernel modules, decrypting disks,
-or performing software updates before the rootfs is started.
-
-<Tip>
-  If the rootfs is stored encrypted on disk, the kernel cannot directly start the `init` program. First, the disk
-  encryption must be decrypted by the initramfs.
-</Tip>
-
-### 2.6. Root Filesystem (Rootfs)
-
-After completing its tasks, the initrd mounts the root filesystem (rootfs), which contains system and user programs,
-libraries, and various configuration files, to the `/` directory. The kernel then executes the `init`
-program located in `/init`, `/sbin/init`, or a similar directory in the rootfs. This program loads some hardware
-drivers (kernel modules), starts system services (such as network connectivity, time synchronization, package
-updates, and Bluetooth), and launches the desktop environment (gnome, kde, xfce, etc.).
-
-## 3. Resource Sharing Between Cores
-
-The AM67 is a multi-core processor, requiring its resources to be shared among the cores. For instance, the `main_uart1` peripheral cannot be used
-simultaneously by the Linux (A53 cores) and the main-r5fss0-0 core. If this UART is to be used by the MCU, it must be ensured that it is not in use
-by the Linux side.
-
-### 3.1 Default Resource Allocation Table
-
-The table below provides information on the HAT pin-to-SOC pin mapping, available peripheral functions (Pinmux), default usage by Linux, 
-and instructions for disabling them.
 <SnippetResources />
 
-To disable a pin, refer to the `How to Disable` column in the table. This column lists device-tree overlay files (e.g., k3-am67a-t3-gem-o1-xxxxxx.dtbo). 
-These files instruct the Linux kernel on how to configure the hardware. To disable an overlay, open the `/boot/uEnv.txt` file and remove the 
-corresponding filename from the overlays variable.
+Look at the column named `To Disable` for the pin to be disabled. The files listed in this column 
+as `k3-am67a-t3-gem-o1-xxxxxx.dtbo` are called device-tree overlay files, which inform Linux how to use the specified 
+peripheral.
 
-Some pins in the `How to Disable` column may indicate that they must be disabled via the device-tree (e.g., mcu_spi0). To disable these:
+To disable the relevant settings, open the `/boot/uEnv.txt` file and remove this file from the variable 
+named `overlays`. For some pins, the `To Disable` column contains instructions other than overlays, 
+such as `Must be disabled via Device-tree. (mcu_spi0)`. To disable these;
 
-- Clone the `github.com/t3gemstone/devicetrees` repository.
-- Open the `src/arm64/ti/k3-am67a-t3-gem-o1.dts` file and add the following code snippet with the appropriate modifications:
-```c
-&mcu_spi0 {
-  status = "disabled";
-};
-```
-- Run the `$ make` command in the repository directory to compile the device-tree.
-- Backup the current device-tree: `$ sudo mv /boot/k3-am67a-t3-gem-o1.dtb /boot/k3-am67a-t3-gem-o1.dtb.bak`
-- Copy the newly compiled `src/arm64/ti/k3-am67a-t3-gem-o1.dtb` file to the `/boot` directory.
-- Reboot the board and verify functionality.
+- Clone the https://github.com/t3gemstone/devicetrees repo.
+- Open the `src/arm64/ti/k3-am67a-t3-gem-o1.dts` file and add the following code snippet with the necessary modifications. 
+  ```c
+  &mcu_spi0 {
+    status = "disabled";
+  };
+  ```
+- Run the `make` command in the repo directory to compile the device-tree.
+- Back up the old device-tree with the command `$ sudo mv /boot/k3-am67a-t3-gem-o1.dtb /boot/k3-am67a-t3-gem-o1.dtb.bak`.
+- Copy the resulting `src/arm64/ti/k3-am67a-t3-gem-o1.dtb` file from the compilation to `/boot/`.
+- Reboot the board and test if it works.
 
-<Info>
-  If an issue arises after these steps, the backup device-tree can be restored using: `$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb` 
-</Info>
+<Note>
+  If an undesirable situation occurs as a result of the above operations, the backed-up device-tree can be restored 
+  with the command `$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb`.
+</Note>
 
-After this procedure, `mcu_spi0` is available for use by the MCU cores. However, as noted in the Linux Usage Purpose column of the table, 
-this SPI interface is used for the `BMP390 pressure sensor and ICM20948 IMU`. These devices will no longer be accessible from Linux and must
-now be driven by the MCU.
+As a result of the above operations, `mcu_spi0` will now be available for use by the mcu cores. However, 
+the `Usage Purpose in Linux` section in the table indicates that it is 
+`- Used for BMP390 pressure and ICM20948 imu spi`. Therefore, access to these peripherals from Linux will be 
+closed and they will need to be driven by the MCU.
 
-### 3.2 Example Scenario: Driving a Servo Motor from the MCU using PWM
+### 3.2. Example Scenario: Driving a Servo Motor from the MCU with PWM
 
-Consider a scenario where an SG90 model servo motor must be driven from an MCU core. First, select a PWM pin available on the HAT. Suppose we choose
-the `GPIO-12` pin. Consulting the table reveals that this pin is used by Linux. To disable it, check the How to Disable column, which lists a single
-overlay file. To disable it, open the `/boot/uEnv.txt` file and inspect the `overlays` variable.
+In a scenario where we need to drive an SG90 model servo motor from an MCU core, we must first select a PWM pin 
+on the HAT pins. For example, let's select the `GPIO-12` pin. Looking at the table, we can see that this pin is 
+in use by Linux. To disable this pin in Linux, when we look at the `To Disable` column, we see that there is only 
+one overlay file. To disable it, we open the `/boot/uEnv.txt` file and check the `overlays` variable.
 
 ```txt
 overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
 ```
 
-Locate the overlay `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` as indicated in the table and remove it. The overlays variable should now appear as
-follows:
+Here we can see the name of the `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` file specified in the table. We delete it, 
+and the overlays variable becomes as follows.
+
 ```txt
 overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
 ```
-After a reboot, this pin can be controlled by the MCU.
+
+When the board is rebooted, this pin can be controlled by the MCU.
 
 ## 4. Conclusion
 
 <Tip>
-Below are a few example articles about the boot process.
+A few example articles about the boot process are given below.
 
 - [BeagleBone Black Linux Boot Process](https://serbayozkan.medium.com/embedded-linux-boot-s%C3%BCreci-beagle-bone-black-ba9d378bd3bd)
 - [Booting Embedded Linux On BeagleBone](https://medium.com/@kshitijvaze/booting-embedded-linux-on-beaglebone-black-a-look-beyond-the-code-20854568fb66)
