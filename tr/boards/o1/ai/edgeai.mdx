@@ -1,0 +1,102 @@
+---
+title: 'Edge-AI Studio'
+description: 'Bulut Üzerinden Görüntü İşleme Modeli Hazırlama'
+---
+
+<Tip>
+Bölüm sonunda aşağıdaki konularında tecrübe edineceksiniz
+
+- Gemstone O1 geliştirme kartının görüntü işleme kabiliyetlerini kullanabilmek için gerekli olan modeli
+Edge-AI üzerinden nasıl hazırlandığı.
+</Tip>
+
+Edge AI Studio, Texas Instruments tarafından geliştirilen, grafik kullanıcı arayüzü ile veri toplama, veri etiketleme,
+model eğitimi ve model derleme işlemlerinin yapılmasına olanak sağlayan bir ekosistemdir.
+TI Model Zoo’daki önceden eğitilmiş modeller arasından seçim yapabilir ve isterseniz kendi verilerinizle
+yeniden eğiterek doğruluk ve performansı artırabilirsiniz. Edge AI Studio, bulut tabanlı olarak,
+bilgisayarınıza yüklemeden kullanılabilir.
+
+<Frame caption="EdgeAI Studio Anasayfa">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-homepage.png" />
+</Frame>
+
+[EdgeAI](https://dev.ti.com/modelcomposer/) adresine giderek yeni bir proje oluşturabilir, mevcut projenize 
+giriş yapabilir veya örnek projeleri inceleyebilirsiniz.
+
+<Frame caption="EdgeAI Studio Yeni Proje">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-new-project.png" />
+</Frame>
+
+Yukarıdaki görselde görüldüğü üzere çeşitli görev türleri seçilebilmektedir.
+Bu bölümde görüntü işleme uygulaması gerçekleştirileceği için “Sensors” sekmesinde yalnızca kamera sensörü aktif bırakılmıştır.
+Bu seçime bağlı olarak yapılabilecek görevler “Fotoğraf Sınıflandırma”, “Nesne Tespiti” ve “Anlamsal Segmentasyon” olarak listelenmektedir.
+
+“Tools” bölümünde “Model Maker - Processor SDK 10.1” seçilmelidir. Son adımda ise projeye bir isim verilerek proje oluşturma işlemi tamamlanabilir.
+
+<Frame caption="EdgeAI Studio Görüntü Yakalama">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-capture.png" />
+</Frame>
+
+Bir sonraki ekran olan “Capture” bölümünde, bilgisayarın dosya sisteminden veya bilgisayara bağlı bir
+görüntü yakalama aygıtından sisteme görüntü eklenebilmektedir.
+
+<Frame caption="EdgeAI Studio Görüntü Etiketleme">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-annotate.png" />
+</Frame>
+
+Bir sonraki adım olan “Annotate” bölümünde, fotoğraflardaki tüm nesneleri seçerek modeli eğitmek için sınıflandırma işlemi yapılmalıdır.
+Bu işlem için yukarıdaki görselde gösterilen “Create Box” seçeneğine tıklanarak, kutu oluşturma aracı ile nesneler işaretlenebilir.
+
+<Frame caption="EdgeAI Studio Görüntü Etiketleme">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-annotate-2.png" />
+</Frame>
+
+Yukarıda görüldüğü üzere bir kutu oluşturulduktan sonra, mevcut tanımlı sınıf isimlerinden biri seçilebilir
+veya yeni bir metin yazarak farklı bir sınıf oluşturulabilir.
+
+<Frame caption="EdgeAI Studio Cihaz ve Model Seçimi">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-model-selection.png" />
+</Frame>
+
+Bir sonraki aşama olan model seçimi kısmında, “Device Selection” bölümü Gemstone O1 Geliştirme Kartı için
+**AM67A seçilmelidir.** “Model Selection” alanında yer alan “Use Recommended” seçeneği işaretlenerek,
+üst kısımda belirtilen yüksek doğruluk (high accuracy) veya yüksek performans (high performance) seçeneklerinden biri
+tercih edilerek sistemin önerdiği model kullanılabilir. Eğer modeli manuel olarak seçmek isterseniz,
+“Use Selected Model” seçeneğini işaretleyerek açılan menüden istediğiniz modeli belirleyebilirsiniz.
+
+Cihaz ve model seçimi tamamlandıktan sonra, sistem yaklaşık benchmark değerlerini otomatik olarak görüntüleyecektir.
+
+<Frame caption="EdgeAI Studio Model Eğitme">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-training.png" />
+</Frame>
+
+Modelin eğitildiği “Training” bölümünde, belirlenen parametrelere göre eğitim işlemi gerçekleştirilebilir.
+
+**Epoch** modelin tüm eğitim verilerini bir kez tamamen görmesi demektir. Epoch sayısını artırmak, 
+modelin veriden daha fazla öğrenmesine izin verir ancak çok fazla epoch overfitting riskini
+(yani model ezberler bu istenmeyen bir durumdur) arttırır. 
+
+**Batch**, modelin her adımda işlediği örnek sayısıdır. Bu parametre GPU belleğine göre ayarlanır, yüksek batch
+değerleri daha stabil ama daha yavaş veya daha fazla bellek ister.
+
+**Learning Rate**, modelin hata geri yayılımı (backpropagation) sırasında ağırlıklarını ne kadar değiştireceğini
+belirleyen katsayıdır.
+
+**Weight Decay**, ağırlıkların çok büyük değerlere ulaşmasını engellemek için kayıp fonksiyonuna eklenen bir
+ceza terimidir.
+
+Bu parametreler hakkında önceden bilgi sahibiyseniz değerleri güncellemeniz tavsiye edilir. Ancak, bu kavramlarla
+ilk kez karşılaşıyorsanız varsayılan ayarları değiştirmeniz önerilmez.
+
+Son olarak, “Start Training” butonuna tıklayarak eğitim sürecini başlatabilirsiniz. Eğitim süresi, girdiğiniz
+veri setinin büyüklüğüne ve seçtiğiniz modele göre değişiklik gösterebilir.
+
+<Frame caption="EdgeAI Studio Modelin Dışarıya Aktarılması">
+  <img height="600" width="800" src="/images/o1-board/ai/edgeai-compile.png" />
+</Frame>
+
+Son adımda, yukarıda görüldüğü üzere önceden tanımlanmış ön ayarlardan (preset) size en uygun olanı seçtikten
+sonra “Start Compiling” butonuna tıklayarak modelin derleme sürecini başlatabilirsiniz.
+
+Model oluşturma işlemi tamamlandıktan sonra, “Export Compiled Model” butonuna tıklayarak modeli bilgisayarınıza
+indirebilirsiniz.

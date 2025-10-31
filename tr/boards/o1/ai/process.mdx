@@ -1,0 +1,309 @@
+---
+title: 'Model Hazırlama'
+description: 'Görüntü İşleme İçin Model Hazırlama'
+---
+
+import SnippetAIObjClassification from '/snippets/ai/object-class.mdx';
+import SnippetAIObjDetection from '/snippets/ai/object-detection.mdx';
+import SnippetAIKeypointDetection from '/snippets/ai/keypoint-detection.mdx';
+import SnippetAISegmentation from '/snippets/ai/segmentation.mdx';
+
+Bu bölümde, görüntü işleme işlemlerinde nesne tanıma vb. amaçlar için nasıl model hazırlandığına değinilecektir.
+Önceki bölümde anlatılan ```edgeai-tensorlab``` edgeai-tensorlab projesinin kurulumunu tamamladıysanız 3
+adımda modelinizi derleyebilirsiniz.
+
+<Steps>
+  <Step title="Projeyi İndir ve Kur">
+    edgeai-tensorlab projesi çalışmaya hazır hale getir ve distrobox içerisine gir
+  </Step>
+  <Step title="Config Dosyasını Düzenle">
+    Hazırlanmak istenilen modele göre config dosyasını düzenle
+  </Step>
+  <Step title="Modeli Derle">
+    Model derlemesini başlat
+  </Step>
+</Steps>
+
+## 1. Yapılandırma Dosyaları
+
+Yapılandırma dosyaları, EdgeAI-ModelMaker aracının eğitimden derlemeye kadar tüm akışı yapılandırılabilir
+şekilde yürütmesini sağlar. Kullanıcı bu dosyalarda proje özelinde parametreleri tanımlayarak kendine
+özgü modeli oluşturabilir.
+
+Örnek olması amacıyla ```configs``` klasörünün içinde 4 ana görüntü işleme tipi için örnek
+yapılandırma dosyası verilmiştir.
+
+## 2. Nesne Sınıflandırma
+
+EdgeAI Model Maker içerisinde yer alan nesne sınıflandırma (object classification) konfigürasyon dosyası,
+model eğitimi ve değerlendirme süreçlerini tanımlamak için kullanılır. Bu dosya içinde veri kümesinin yolu,
+eğitim parametreleri (örneğin batch size, epoch sayısı ve öğrenme oranı), model mimarisi
+(örneğin MobileNetV2 veya RegNetX) ve optimizasyon ayarları gibi bilgileri içerir. Aşağıda örnek bir nesne
+sınıflandırma yapılandırma dosyasının içeriği yer almaktadır.
+
+<SnippetAIObjClassification />
+
+Yukarıdaki YAML dosyasını kendi ihtiyaçlarına göre düzenleyebilirisiniz.
+
+<ParamField body="DATASET_NAME" required>
+Veri Kümesinin Adı
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+Veri Kümesinin Yolu (İnternet sitesi veya dosya sisteminizden bir yol girebilirsiniz.)
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="mobilenet_v2_lite" required>
+Nesne sınıflandırma için kullanacağınız temel modeli girmeniz beklenmektedir.  
+Şu anda desteklenen modeller: `mobilenet_v2_lite`, `regnet_x_400mf`, `regnet_x_800mf`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+Eğitimde kullanılacak epoch sayısı
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+Eğitimde kullanılacak batch boyutu
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+Öğrenme oranı
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+Kullanılacak GPU sayısı
+</ParamField>
+
+### 2.1. MobileNet V2
+
+MobileNet V2, Google tarafından geliştirilen, özellikle gömülü sistemler ve mobil cihazlar gibi kısıtlı donanımlarda yüksek verimlilik sağlayan bir evrişimsel sinir ağı (CNN) mimarisidir.
+Model, önceki sürüm olan MobileNet V1’e göre daha az parametreyle daha yüksek doğruluk sunar. Bunu, Inverted Residual Block ve Linear Bottleneck adı verilen iki temel yapı sayesinde başarır.
+
+Bu özellikler sayesinde:
+- Model boyutu küçülür.
+- Hesaplama maliyeti azalır.
+- Gerçek zamanlı uygulamalarda yüksek hız elde edilir.
+
+EdgeAI Model Maker içinde yer alan bu konfigürasyon dosyasında, bu mimarinin lite (daha düşük kaynak tüketimli) sürümüne ait parametreleri içerir ve genellikle nesne sınıflandırma görevlerinde kullanıldığı için tercih edilmiştir.
+
+### 2.3. RegNet
+
+RegNet, Facebook AI Research (FAIR) tarafından geliştirilen bir ölçeklenebilir ağ mimarisi ailesidir.
+RegNet modelleri, yapılandırma parametreleri (örneğin kanal sayısı, blok sayısı, genişlik oranı) sistematik olarak
+değiştirilebilen bir tasarım felsefesine sahiptir. Bu sayede, küçük gömülü cihazlardan büyük sunucu ortamlarına
+kadar farklı donanımlarda aynı mimari mantık korunarak modeller oluşturulabilir.
+
+- RegNetX-400MF: 400 milyon FLOP civarında işlem maliyetine sahip, hafif bir sürümdür.
+- RegNetX-800MF: Daha yüksek doğruluk sunan, orta seviye kaynaklara uygun bir sürümdür.
+
+Bu modeller, özellikle verimlilik ve doğruluk dengesine ihtiyaç duyulan sınıflandırma projelerinde tercih edilir.
+
+## 3. Nesne Tespiti
+
+EdgeAI Model Maker içerisinde yer alan nesne tespiti (object detection) konfigürasyon dosyası, model eğitimi ve
+değerlendirme süreçlerini tanımlamak için kullanılır. Aşağıda örnek bir nesne sınıflandırma yapılandırma dosyasının
+içeriği yer almaktadır.
+
+<SnippetAIObjDetection />
+
+Yukarıdaki YAML dosyasını kendi ihtiyaçlarına göre düzenleyebilirisiniz.
+
+<ParamField body="DATASET_NAME" required>
+Veri Kümesinin Adı
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+Veri Kümesinin Yolu (İnternet sitesi veya dosya sisteminizden bir yol girebilirsiniz.)
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="yolox_s_lite" required>
+Nesne sınıflandırma için kullanacağınız temel modeli girmeniz beklenmektedir.  
+Şu anda desteklenen modeller: `yolox_s_lite`, `yolox_tiny_lite`, `yolox_nano_lite`, `yolox_pico_lite`, `yolox_femto_lite`, `yolov7_l_lite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+Eğitimde kullanılacak epoch sayısı
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+Eğitimde kullanılacak batch boyutu
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+Öğrenme oranı
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+Kullanılacak GPU sayısı
+</ParamField>
+
+### 3.1. Yolo Nedir ?
+
+***YOLO (You Only Look Once)***, gerçek zamanlı nesne tespiti için geliştirilmiş derin öğrenme tabanlı bir
+algoritmadır. YOLO, bir görüntüdeki nesnelerin sınıflarını ve konumlarını tek bir ileri besleme işlemiyle
+tahmin eder. Bu yaklaşım, geleneksel iki aşamalı yöntemlerden (örneğin R-CNN) farklı olarak, hem sınıflandırma
+hem de konumlandırma işlemlerini tek bir evrede gerçekleştirir. YOLO algoritması, girdiyi bir ızgara yapısına
+böler. Her hücre, görüntüde belirli bir bölgeyi temsil eder ve bu bölgedeki olası nesneler için:
+
+- Sınıf olasılıklarını,
+- Koordinat bilgilerini (x, y, genişlik, yükseklik),
+- Güven skorlarını (confidence score)
+
+tahmin eder. Böylece model, görüntüdeki tüm nesneleri aynı anda analiz ederek yüksek hızda çıktı üretir.
+
+YOLO’nun en önemli avantajı, hız ve gerçek zamanlılık sağlamasıdır. Özellikle gömülü sistemlerde, robotik
+uygulamalarda ve otonom araçlarda bu özellik büyük önem taşır. Bununla birlikte, küçük boyutlu nesnelerde veya
+yoğun sahnelerde doğruluk oranı diğer yöntemlere kıyasla daha düşük olabilir.
+
+<Frame caption="YOLO Model Kıyaslama Grafiği">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-yolo-comparison.png" />
+</Frame>
+
+Zaman içerisinde YOLO algoritması farklı sürümlerle geliştirilmiştir. YOLOv1’den YOLOv11’e kadar gelen
+versiyonlarda hem model mimarisi hem de performans anlamında önemli iyileştirmeler yapılmıştır.
+
+### 3.2. Anahtar Nokta Tespiti
+
+EdgeAI Model Maker içerisinde yer alan anahtar nokta tespiti (keypoint detection) konfigürasyon dosyası, model
+eğitimi ve değerlendirme süreçlerini tanımlamak için kullanılır.
+
+Anahtar Nokta Tespiti, bir görüntü üzerindeki belirli noktaların (örneğin insan vücudundaki eklemler, yüz
+üzerindeki referans noktaları veya nesnelerin karakteristik köşe noktaları) konumlarını tespit etmeye yönelik
+modelin eğitim ve değerlendirme parametrelerini tanımlar.
+
+Aşağıda örnek bir yer alan anahtar nokta tespiti yapılandırma dosyasının içeriği yer almaktadır.
+
+<SnippetAIKeypointDetection />
+
+Yukarıdaki YAML dosyasını kendi ihtiyaçlarına göre düzenleyebilirisiniz.
+
+<ParamField body="ANNOTATION_PREFIX" default="instances" required>
+Etiket dosyasının öneki. Varsayılan değer 'instances' olarak tanımlıdır.
+</ParamField>
+
+<ParamField body="SPLIT_NAMES" default="['train', 'val']" required>
+Veri kümesindeki eğitim ve doğrulama bölümlerinin adlarını belirtir.
+</ParamField>
+
+<ParamField body="MAX_NUM_FILES" default="[750, 250]">
+  Eğitim ve doğrulama bölümlerinden yüklenecek maksimum dosya sayısını sınırlar.  
+  Örneğin `[750, 250]` değeri, 750 eğitim ve 250 doğrulama örneği yükler.
+</ParamField>
+
+<ParamField body="DATASET_NAME" required>
+  Veri Kümesinin Adı
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+  Veri Kümesinin Yolu (İnternet sitesi veya dosya sisteminizden bir yol girebilirsiniz.)
+</ParamField>
+
+<ParamField body="INPUT_ANNOTATION_PATH" required>
+  Veri kümesine ait etiket dosyasının (annotation file) yerel yolunu tanımlar.
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="yolox_s_keypoint" required>
+  Anahtar nokta tespiti için kullanacağınız temel modeli girmeniz beklenmektedir.  
+  Şu anda desteklenen modeller: `yolox_s_keypoint`, `yoloxpose_tiny_lite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+  Eğitimde kullanılacak epoch sayısı
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+  Eğitimde kullanılacak batch boyutu
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+  Öğrenme oranı
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+  Kullanılacak GPU sayısı
+</ParamField>
+
+### 3.3. YOLOX-Pose Nedir?
+
+YOLOX-Pose, popüler YOLOX (You Only Look Once - eXtended) mimarisinin bir uzantısı olup, insan vücudu üzerindeki
+anahtar noktaları (keypoints) tespit etmek için tasarlanmış bir derin öğrenme modelidir. Bu model, klasik nesne
+tespitine ek olarak, tespit edilen her kişi için eklem konumlarını (örneğin omuz, dirsek, diz, ayak bileği gibi)
+koordinat bazında tahmin eder.
+
+### 3.4. YOLOX-S-Keypoint Nedir?
+
+YOLOX-S-Keypoint, YOLOX-S modelinin anahtar nokta tespiti (keypoint detection) için uyarlanmış versiyonudur.
+Temel olarak, YOLOX-S’in hızlı ve hafif nesne tespit yeteneklerini, insan veya nesne üzerindeki belirli
+noktaların (keypoints) tahmini yapmak üzere genişletir.
+
+## 4. Görüntü Segmantasyonu
+
+EdgeAI Model Maker içerisinde yer alan görüntü segmentasyonu (Image Segmentation) konfigürasyon dosyası, model
+eğitimi ve değerlendirme süreçlerini tanımlamak için kullanılır.
+
+Görüntü segmentasyonu (Image Segmentation), bir görüntüyü anlamlı bölgelere ayırma işlemidir.
+Her pikselin, görüntüdeki nesne veya arka planla ilişkili bir sınıfa ait olduğu belirlenir. Bu sayede, sadece
+nesnelerin konumu değil, tam şekilleri ve sınırları da belirlenmiş olur.
+
+Aşağıda örnek bir yer alan anahtar nokta tespiti yapılandırma dosyasının içeriği yer almaktadır.
+
+<SnippetAISegmentation />
+
+Yukarıdaki YAML dosyasını kendi ihtiyaçlarına göre düzenleyebilirisiniz.
+
+<ParamField body="ANNOTATION_PREFIX" default="instances" required>
+Etiket dosyasının öneki. Varsayılan değer 'instances' olarak tanımlıdır.
+</ParamField>
+
+<ParamField body="SPLIT_NAMES" default="['train', 'val']" required>
+Veri kümesindeki eğitim ve doğrulama bölümlerinin adlarını belirtir.
+</ParamField>
+
+<ParamField body="MAX_NUM_FILES" default="[750, 250]">
+Eğitim ve doğrulama bölümlerinden yüklenecek maksimum dosya sayısını sınırlar.  
+Örneğin `[750, 250]` değeri, 750 eğitim ve 250 doğrulama örneği yükler.
+</ParamField>
+
+<ParamField body="DATASET_NAME" required>
+Veri Kümesinin Adı
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+Veri Kümesinin Yolu (İnternet sitesi veya dosya sisteminizden bir yol girebilirsiniz.)
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="fpn_aspp_regnetx800mf_edgeailite" required>
+Anahtar nokta tespiti için kullanacağınız temel modeli girmeniz beklenmektedir.  
+Şu anda desteklenen modeller: `fpn_aspp_regnetx800mf_edgeailite`, `unet_aspp_mobilenetv2_tv_edgeailite`, `deeplabv3plus_mobilenetv2_tv_edgeailite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+Eğitimde kullanılacak epoch sayısı
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+Eğitimde kullanılacak batch boyutu
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+Öğrenme oranı
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+Kullanılacak GPU sayısı
+</ParamField>
+
+### 4.1. REGNETx800MF
+
+Bu model, görüntüdeki nesneleri detaylı bir şekilde ayırmak için kullanılır. Farklı boyutlardaki nesneleri iyi
+tanır ve daha karmaşık görevlerde yüksek doğruluk sağlar. Daha çok endüstriyel ve gömülü sistemlerde tercih edilir.
+
+### 4.2. UNET-MOBILENET
+
+Hafif ve hızlı bir segmentasyon modelidir. Düşük kaynak kullanımı ile mobil cihazlar ve küçük bilgisayarlar için
+uygundur. Görüntüdeki nesnelerin sınırlarını net bir şekilde çıkarır.
+
+### 4.3. DEEPLABV3plus-MOBILENET
+
+Hafif ama detaylı sonuçlar verir. Görüntüdeki nesnelerin alanını ve sınırlarını doğru bir şekilde tahmin eder.
+Edge cihazlarda orta seviyede doğruluk ve hız isteyen uygulamalar için uygundur.

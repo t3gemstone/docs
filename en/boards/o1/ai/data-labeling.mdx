@@ -1,0 +1,81 @@
+---
+title: 'Data Labeling'
+description: 'Data Labeling for Image Processing'
+---
+
+This section will provide information on how to perform labeling operations when you want to train your own models.
+
+Label Studio is an open-source platform for managing labeling (annotation) and data preparation processes for different data types.
+It allows labeling on image, text, audio, video, or time series data and facilitates the preparation of datasets to be used in training machine learning models.
+
+<Frame caption="Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeling.png" />
+</Frame>
+
+Start Label Studio on the edgeai-tensorlab environment using the following command.
+
+<Note>
+Before performing these operations, you must have completed the installation of the edgeai-tensorlab project from the previous step and be operating inside the distrobox using ```task box```.
+</Note>
+
+```bash
+task label-studio
+```
+
+<Frame caption="Label Studio Login Page">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-login.png" />
+</Frame>
+
+If you have an existing account, you can log in. If you don't have an account yet, you can create a new one by clicking the "Sign Up" button.
+
+<Frame caption="Label Studio Registration Page">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-signup.png" />
+</Frame>
+
+After filling in the required information, you can create your account by clicking the "Create Account" button.
+
+<Frame caption="Label Studio Homepage">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-home.png" />
+</Frame>
+
+If you are using it for the first time, you will encounter a screen similar to the one above. You can create a new project by clicking the "Create Project" button.
+
+<Frame caption="Label Studio Create New Project">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-1.png" />
+</Frame>
+
+When creating a project, you need to fill in the project name and project description fields.
+
+<Frame caption="Label Studio New Project: Data Entry">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-2.png" />
+</Frame>
+
+In the next stage, the file upload section, you can add raw photos or labeled photos as an archive to the system.
+
+<Frame caption="Label Studio New Project: Labeling Setup">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-label-setup.png" />
+</Frame>
+
+In the "Label Setuping" section, you must select the appropriate template for your project. For object detection, the "Object Detection with Bounding Boxes" option should be selected.
+
+<Frame caption="Label Studio New Project: Labeling Interface">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-label-interface.png" />
+</Frame>
+
+On this screen, you need to enter the label names that will be used in your model. Each line will be defined as one label. You can add label names by clicking the "Add" button, and you can edit the colors or delete the added labels by clicking on them. After adding all the labels, you can create your project by pressing the "Save" button.
+
+<Frame caption="Label Studio Data Labeling">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeling.png" />
+</Frame>
+
+At this stage, you can start labeling your data. After clicking on one of the labels below the selected photo, you can apply the relevant label to the photo. After labeling the photo, you can complete the labeling process by pressing the "Submit" button.
+
+<Frame caption="Label Studio Data List">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeled.png" />
+</Frame>
+
+After labeling all the photos, you must press the "Export" button. On the screen that opens, the "YOLO With Images" option should be selected, and the "Export" button at the bottom should be clicked. With this process, you will have successfully created your own dataset.
+
+<Frame caption="Label Studio Export">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-export.png" />
+</Frame>

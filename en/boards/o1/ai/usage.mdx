@@ -1,0 +1,35 @@
+---
+title: 'Model Usage'
+description: 'Preparing Image Processing Applications'
+---
+
+import SnippetAIUsageE1 from '/snippets/ai/usage-e1.mdx';
+
+This section will provide information on how to use image processing models that you have prepared with your own dataset or acquired as pre-trained models.
+
+## Integrating with Your Existing Python Code
+
+TensorFlow Lite runs models on the device's CPU (Central Processing Unit) by default.
+
+A "Delegate" is a mechanism that "delegates" some or all of the computations in your TFLite model to more specialized hardware instead of the CPU. To use these specialized hardware components (such as the image processing accelerators found in the T3 Gemstone O1 Development Board), you need to load the required shared library file (.so, .dll, etc.).
+
+<SnippetAIUsageE1 />
+
+## Edge AI GStreamer Apps
+
+This project is a collection of open-source reference applications provided by Texas Instruments that can be used to rapidly develop AI applications on devices like the T3 Gemstone O1. It primarily operates on a GStreamer-based architecture and offers ready-made solutions for performing image processing, object detection, streaming, and other AI workflows on Texas Instruments processors and SoC hardware.
+
+The configs folder contains examples for multiple applications. It allows you to run the project in both Python and C++ languages.
+
+<CodeGroup>
+  ```bash Python
+  /opt/edgeai-gst-apps/apps_python# ./app_edgeai.py ../configs/image_classification.yaml
+  ```
+  ```bash C++
+  # Todo: How to compile?
+  # After compiling the application with CMake, you can run the sample application with the following command.
+  /opt/edgeai-gst-apps/apps_cpp# ./bin/Release/app_edgeai ../configs/image_classification.yaml
+  ```
+</CodeGroup>
+
+The source code is available in Texas Instruments' [edgeai-gst-apps](https://github.com/TexasInstruments/edgeai-gst-apps) repository on GitHub.

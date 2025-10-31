@@ -1,0 +1,27 @@
+---
+title: 'Giriş'
+description: 'Edge-AI'
+---
+
+<Frame>
+  <img src="/images/o1-board/ai/edge-ai.png" />
+</Frame>
+
+Edge AI (Edge Artificial Intelligence), yapay zekâ işlemlerinin bulutta değil, verinin toplandığı cihazın
+üzerinde (edge’de) gerçekleştirilmesi anlamına gelir. Yani veriler sensör, kamera, drone, IoT cihazı gibi
+uç noktada işlenir; analiz için sürekli buluta gönderilmez. Amaç: Gecikmeyi azaltmak, gizliliği artırmak
+ve ağ trafiğini düşürmektir.
+
+Yapay zeka ve görüntü işleme projelerinde, büyük miktarda veri kullanılmakta ve yüksek işlem gücü gerekmektedir.
+AM67A işlemcisi, bu tür hesaplamaları hızlandırmak için özel bir donanım birimi olan **MMA** (Matrix Multiply
+Accelerator / Matris Çarpım Hızlandırıcısı) içerir. Bu birim, görüntü verilerini ve yapay zeka modellerini hızlı
+bir şekilde işler. MMA, işlemciye bağlı olarak çalışır ve ana CPU’nun yükünü hafifleterek hesaplamaların daha verimli
+olmasını sağlar.
+
+Kartın işlemcisi ayrıca C7x Dijital Sinyal İşlemcisi (DSP) ile birlikte çalışarak farklı türde
+hesaplamaları (tensor, vektör, skaler) yüksek hız ve düşük enerji tüketimi ile yapabilir. MMA’nın kendi hafıza ve
+veri taşıma sistemi bulunur, böylece veriler hızlı bir şekilde işlenir ve enerji tasarrufu sağlanır.
+
+Texas AM67A ekosistemindeki temel Yapay Zeka kabiliyet ve kullanım mantığı, önceden eğitilmiş çeşitli modellerin 
+MMU/C7x modülleriyle hızlandırılmış biçimde yürütülerek görev icra etmesi ve CPU/MCU tarafından bu sonuçlara
+ulaşabilmesi üzerine kuruludur.

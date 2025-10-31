@@ -1,0 +1,64 @@
+<CodeGroup>
+
+  ```bash Terminal lines
+  task box
+  ```
+
+  ```bash Output lines
+  📦 devbox:edgeai-tensorlab> task box
+  task: [box] distrobox-list | grep -q 'gemstone-edgeai' || docker build -f Dockerfile -t gemstone-edgeai:latest .
+  [+] Building 0.1s (9/9) FINISHED                                 docker:default
+  => [internal] load build definition from Dockerfile                       0.0s
+  => => transferring dockerfile: 1.21kB                                     0.0s
+  => [internal] load metadata for docker.io/library/ubuntu:22.04            0.0s
+  => [internal] load .dockerignore                                          0.0s
+  => => transferring context: 2B                                            0.0s
+  => [1/5] FROM docker.io/library/ubuntu:22.04                              0.0s
+  => CACHED [2/5] RUN apt-get update &&     apt-get upgrade -y &&     apt-  0.0s
+  => CACHED [3/5] RUN sed -i 's/pam_unix\.so obscure/pam_unix.so minlen=1   0.0s
+  => CACHED [4/5] RUN echo gemstone > /etc/hostname                         0.0s
+  => CACHED [5/5] RUN curl --location https://taskfile.dev/install.sh | su  0.0s
+  => exporting to image                                                     0.0s
+  => => exporting layers                                                    0.0s
+  => => writing image sha256:9671fd0552dfcab17e321871b140c89b0aa242eabed98  0.0s
+  => => naming to docker.io/library/gemstone-edgeai:latest                  0.0s
+  task: [box] distrobox-assemble create --file distrobox.ini
+  - Creating gemstone-edgeai...
+  Creating 'gemstone-edgeai' using image gemstone-edgeai	 [ OK ]
+  Distrobox 'gemstone-edgeai' successfully created.
+  To enter, run:
+
+  distrobox enter gemstone-edgeai
+
+  Successfully copied 2.05kB to /tmp/gemstone-edgeai.os-release
+  Starting container...                   	 [ OK ]
+  Installing basic packages...            	 [ OK ]
+  Setting up devpts mounts...             	 [ OK ]
+  Setting up read-only mounts...          	 [ OK ]
+  Setting up read-write mounts...         	 [ OK ]
+  Setting up host's sockets integration...	 [ OK ]
+  Integrating host's themes, icons, fonts...	 [ OK ]
+  Setting up distrobox profile...         	 [ OK ]
+  Setting up sudo...                      	 [ OK ]
+  Setting up user groups...               	 [ OK ]
+  Setting up user's group list...         	 [ OK ]
+  Adding user...                          	 [ OK ]
+  Ensuring user's access...               	 [ OK ]
+  Setting up skel...                      	 [ OK ]
+  Executing init hooks...                 	 [ OK ]
+  Setting up init system...               	 [ OK ]
+  Firing up init system...                	 [ OK ]
+
+  Container Setup Complete!
+  task: [box] distrobox-enter --additional-flags "--tty" --name gemstone-edgeai --no-workdir
+  To run a command as administrator (user "root"), use "sudo <command>".
+  See "man sudo_root" for details.
+
+  ⚠️  First time user password setup ⚠️ 
+  New password: 
+  Retype new password: 
+  passwd: password updated successfully
+  🚀 distrobox:workdir> 
+  ```
+
+</CodeGroup>
