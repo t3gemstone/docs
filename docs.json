@@ -108,8 +108,21 @@
                       "tr/boards/o1/peripherals/touchscreen",
                       "tr/boards/o1/peripherals/rtc",
                       "tr/boards/o1/peripherals/jtag",
-                      "tr/boards/o1/peripherals/mcu",
-                      "tr/boards/o1/peripherals/ai"
+                      "tr/boards/o1/peripherals/mcu"
+                    ]
+                  },
+                  {
+                    "group": "Yapay Zeka",
+                    "pages": [
+                      "tr/boards/o1/ai/introduction",
+                      "tr/boards/o1/ai/ecosystem",
+                      "tr/boards/o1/ai/edgeai",
+                      "tr/boards/o1/ai/edgeai-tensorlab",
+                      "tr/boards/o1/ai/data-labeling",
+                      "tr/boards/o1/ai/process",
+                      "tr/boards/o1/ai/usage",
+                      "tr/boards/o1/ai/examples",
+                      "tr/boards/o1/ai/advanced"
                     ]
                   },
                   "tr/boards/o1/pcb"
@@ -247,8 +260,21 @@
                       "en/boards/o1/peripherals/touchscreen",
                       "en/boards/o1/peripherals/rtc",
                       "en/boards/o1/peripherals/jtag",
-                      "en/boards/o1/peripherals/mcu",
-                      "en/boards/o1/peripherals/ai"
+                      "en/boards/o1/peripherals/mcu"
+                    ]
+                  },
+                  {
+                    "group": "Edge AI",
+                    "pages": [
+                      "en/boards/o1/ai/introduction",
+                      "en/boards/o1/ai/ecosystem",
+                      "en/boards/o1/ai/edgeai",
+                      "en/boards/o1/ai/edgeai-tensorlab",
+                      "en/boards/o1/ai/data-labeling",
+                      "en/boards/o1/ai/process",
+                      "en/boards/o1/ai/usage",
+                      "en/boards/o1/ai/examples",
+                      "en/boards/o1/ai/advanced"
                     ]
                   },
                   "en/boards/o1/pcb"

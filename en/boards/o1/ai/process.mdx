@@ -1,0 +1,291 @@
+---
+title: 'Model Preparation'
+description: 'Model Preparation for Image Processing'
+---
+
+import SnippetAIObjClassification from '/snippets/ai/object-class.mdx';
+import SnippetAIObjDetection from '/snippets/ai/object-detection.mdx';
+import SnippetAIKeypointDetection from '/snippets/ai/keypoint-detection.mdx';
+import SnippetAISegmentation from '/snippets/ai/segmentation.mdx';
+
+This section will cover how models are prepared for purposes such as object recognition in image processing operations.
+If you have completed the installation of the ```edgeai-tensorlab``` project described in the previous section, you can compile your model in 3 steps.
+
+<Steps>
+  <Step title="Download and Install Project">
+    Get the edgeai-tensorlab project ready and enter the distrobox
+  </Step>
+  <Step title="Edit Config File">
+    Edit the config file according to the model you want to prepare
+  </Step>
+  <Step title="Compile Model">
+    Start the model compilation
+  </Step>
+</Steps>
+
+## 1. Configuration Files
+
+Configuration files allow the EdgeAI-ModelMaker tool to execute the entire flow from training to compilation in a configurable manner.
+By defining project-specific parameters in these files, the user can create their own unique model.
+
+As an example, sample configuration files for 4 main image processing types are provided inside the ```configs``` folder.
+
+## 2. Object Classification
+
+The object classification configuration file included in EdgeAI Model Maker is used to define the model training and evaluation processes.
+This file contains information such as the dataset path, training parameters (e.g., batch size, number of epochs, and learning rate), model architecture (e.g., MobileNetV2 or RegNetX), and optimization settings.
+Below is the content of a sample object classification configuration file.
+
+<SnippetAIObjClassification />
+
+You can edit the above YAML file according to your own needs.
+
+<ParamField body="DATASET_NAME" required>
+Dataset Name
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+Dataset Path (You can enter a path from a website or your file system.)
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="mobilenet_v2_lite" required>
+You are expected to enter the base model you will use for object classification.
+Currently supported models: `mobilenet_v2_lite`, `regnet_x_400mf`, `regnet_x_800mf`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+Number of epochs to be used in training
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+Batch size to be used in training
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+Learning rate
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+Number of GPUs to be used
+</ParamField>
+
+### 2.1. MobileNet V2
+
+MobileNet V2 is a convolutional neural network (CNN) architecture developed by Google that provides high efficiency especially in constrained hardware like embedded systems and mobile devices.
+The model offers higher accuracy with fewer parameters compared to the previous version, MobileNet V1. It achieves this through two key structures called Inverted Residual Block and Linear Bottleneck.
+
+Thanks to these features:
+- Model size is reduced.
+- Computational cost decreases.
+- High speed is achieved in real-time applications.
+
+The configuration file included in EdgeAI Model Maker contains the parameters for the lite (lower resource consumption) version of this architecture and is preferred because it is generally used in object classification tasks.
+
+### 2.2. RegNet
+
+RegNet is a family of scalable network architectures developed by Facebook AI Research (FAIR).
+RegNet models have a design philosophy where configuration parameters (e.g., number of channels, number of blocks, width ratio) can be systematically changed.
+This way, models can be created using the same architectural logic across different hardware, from small embedded devices to large server environments.
+
+- RegNetX-400MF: A lightweight version with a computational cost around 400 million FLOPs.
+- RegNetX-800MF: A version that offers higher accuracy, suitable for mid-level resources.
+
+These models are preferred especially in classification projects that require a balance between efficiency and accuracy.
+
+## 3. Object Detection
+
+The object detection configuration file included in EdgeAI Model Maker is used to define the model training and evaluation processes.
+Below is the content of a sample object detection configuration file.
+
+<SnippetAIObjDetection />
+
+You can edit the above YAML file according to your own needs.
+
+<ParamField body="DATASET_NAME" required>
+Dataset Name
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+Dataset Path (You can enter a path from a website or your file system.)
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="yolox_s_lite" required>
+You are expected to enter the base model you will use for object detection.
+Currently supported models: `yolox_s_lite`, `yolox_tiny_lite`, `yolox_nano_lite`, `yolox_pico_lite`, `yolox_femto_lite`, `yolov7_l_lite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+Number of epochs to be used in training
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+Batch size to be used in training
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+Learning rate
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+Number of GPUs to be used
+</ParamField>
+
+### 3.1. What is YOLO?
+
+***YOLO (You Only Look Once)*** is a deep learning-based algorithm developed for real-time object detection.
+YOLO predicts the classes and locations of objects in an image in a single forward pass.
+This approach, unlike traditional two-stage methods (e.g., R-CNN), performs both classification and localization operations in a single stage.
+The YOLO algorithm divides the input into a grid structure.
+Each cell represents a specific region in the image and for possible objects in this region, it predicts:
+
+- Class probabilities,
+- Coordinate information (x, y, width, height),
+- Confidence scores
+
+Thus, the model analyzes all objects in the image simultaneously and produces output at high speed.
+
+The most important advantage of YOLO is that it provides speed and real-time capability.
+This feature is of great importance especially in embedded systems, robotics applications, and autonomous vehicles.
+However, the accuracy rate may be lower compared to other methods for small-sized objects or in dense scenes.
+
+<Frame caption="YOLO Model Comparison Chart">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-yolo-comparison.png" />
+</Frame>
+
+Over time, the YOLO algorithm has been developed with different versions. Significant improvements have been made in both model architecture and performance in versions from YOLOv1 to YOLOv11.
+
+### 3.2. Keypoint Detection
+
+The keypoint detection configuration file included in EdgeAI Model Maker is used to define the model training and evaluation processes.
+
+Keypoint Detection defines the training and evaluation parameters of the model for detecting the positions of specific points on an image (e.g., joints on the human body, reference points on the face, or characteristic corner points of objects).
+
+Below is the content of a sample keypoint detection configuration file.
+
+<SnippetAIKeypointDetection />
+
+You can edit the above YAML file according to your own needs.
+
+<ParamField body="ANNOTATION_PREFIX" default="instances" required>
+Annotation file prefix. Default value is defined as 'instances'.
+</ParamField>
+
+<ParamField body="SPLIT_NAMES" default="['train', 'val']" required>
+Specifies the names of the training and validation splits in the dataset.
+</ParamField>
+
+<ParamField body="MAX_NUM_FILES" default="[750, 250]">
+  Limits the maximum number of files to be loaded from the training and validation splits.
+  For example, the value `[750, 250]` loads 750 training and 250 validation examples.
+</ParamField>
+
+<ParamField body="DATASET_NAME" required>
+  Dataset Name
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+  Dataset Path (You can enter a path from a website or your file system.)
+</ParamField>
+
+<ParamField body="INPUT_ANNOTATION_PATH" required>
+  Defines the local path of the annotation file belonging to the dataset.
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="yolox_s_keypoint" required>
+  You are expected to enter the base model you will use for keypoint detection.
+  Currently supported models: `yolox_s_keypoint`, `yoloxpose_tiny_lite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+  Number of epochs to be used in training
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+  Batch size to be used in training
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+  Learning rate
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+  Number of GPUs to be used
+</ParamField>
+
+### 3.3. What is YOLOX-Pose?
+
+YOLOX-Pose is an extension of the popular YOLOX (You Only Look Once - eXtended) architecture, designed to detect keypoints on the human body.
+This model, in addition to classic object detection, predicts the joint positions (e.g., shoulder, elbow, knee, ankle, etc.) on a coordinate basis for each detected person.
+
+### 3.4. What is YOLOX-S-Keypoint?
+
+YOLOX-S-Keypoint is an adapted version of the YOLOX-S model for keypoint detection.
+Basically, it extends the fast and lightweight object detection capabilities of YOLOX-S to predict specific points (keypoints) on humans or objects.
+
+## 4. Image Segmentation
+
+The image segmentation configuration file included in EdgeAI Model Maker is used to define the model training and evaluation processes.
+
+Image Segmentation is the process of dividing an image into meaningful regions.
+Each pixel is determined to belong to a class associated with an object or background in the image.
+This way, not only the location of the objects but also their exact shapes and boundaries are determined.
+
+Below is the content of a sample image segmentation configuration file.
+
+<SnippetAISegmentation />
+
+You can edit the above YAML file according to your own needs.
+
+<ParamField body="ANNOTATION_PREFIX" default="instances" required>
+Annotation file prefix. Default value is defined as 'instances'.
+</ParamField>
+
+<ParamField body="SPLIT_NAMES" default="['train', 'val']" required>
+Specifies the names of the training and validation splits in the dataset.
+</ParamField>
+
+<ParamField body="MAX_NUM_FILES" default="[750, 250]">
+Limits the maximum number of files to be loaded from the training and validation splits.
+For example, `[750, 250]` value loads 750 training and 250 validation examples.
+</ParamField>
+
+<ParamField body="DATASET_NAME" required>
+Dataset Name
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+Dataset Path (You can enter a path from a website or your file system.)
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="fpn_aspp_regnetx800mf_edgeailite" required>
+You are expected to enter the base model you will use for image segmentation.
+Currently supported models: `fpn_aspp_regnetx800mf_edgeailite`, `unet_aspp_mobilenetv2_tv_edgeailite`, `deeplabv3plus_mobilenetv2_tv_edgeailite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+Number of epochs to be used in training
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+Batch size to be used in training
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+Learning rate
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+Number of GPUs to be used
+</ParamField>
+
+### 4.1. REGNETx800MF
+
+This model is used to separate objects in the image in detail. It recognizes objects of different sizes well and provides high accuracy in more complex tasks. It is preferred more in industrial and embedded systems.
+
+### 4.2. UNET-MOBILENET
+
+A lightweight and fast segmentation model. Suitable for mobile devices and small computers with low resource usage. Clearly extracts the boundaries of objects in the image.
+
+### 4.3. DEEPLABV3plus-MOBILENET
+
+Provides lightweight but detailed results. Accurately predicts the area and boundaries of objects in the image. Suitable for applications requiring medium accuracy and speed on edge devices.

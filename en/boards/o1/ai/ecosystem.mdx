@@ -1,0 +1,38 @@
+---
+title: 'Ecosystem'
+description: 'Image Processing Software Architecture'
+---
+
+This section briefly summarizes the Python/C++ libraries used for image processing.
+
+<Frame caption="Development Tools">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-sw-arch.png" />
+</Frame>
+
+The relevant libraries are used for both compiling deep learning models and loading and running them on the development board. The supported libraries are indicated in the image below.
+
+<Frame caption="Used Libraries">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-dev-env.png" />
+</Frame>
+
+Developers can first test their models on their own computers (e.g., on a Linux-based system) and then transfer them to the Gemstone O1 development board with minimal changes. This speeds up the development process and minimizes hardware dependency.
+
+<Frame caption="Development Environment Structure">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-dev-pc-edge.png" />
+</Frame>
+
+### Development Steps
+
+<Steps>
+  <Step title="Model Preparation">
+    Deep learning communities on the internet offer many open-source and pre-trained models.
+    Developers can use these models by fine-tuning them (Transfer Learning) with their own datasets.
+    Gemstone offers a model pool called ModelZoo to facilitate this process. The models in ModelZoo are trained on industry-standard datasets like ImageNet1k and COCO and optimized for embedded systems. Additionally, developers can include their own models in the system.
+  </Step>
+  <Step title="Model Compilation">
+    Models are compiled on the Host Computer (PC x86) before being run on the embedded hardware. In this process, "artifact" files are created using Python or C++ APIs to transfer specific layers of the model to the C7x/MMA processors. Different optimization and quantization options can be applied during compilation.
+  </Step>
+  <Step title="Model Deployment and Execution">
+    The "artifact" files generated after compilation enable the model to run on the embedded hardware. In this step, the model is put into use for real-time inference operations.
+  </Step>
+</Steps>

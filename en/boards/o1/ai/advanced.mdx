@@ -1,0 +1,42 @@
+---
+title: 'Advanced Level'
+description: 'Using Mathematical Functions with Acceleration Chips'
+---
+
+The C7x DSP cores in AM67A Series SoCs are optimized for high-performance signal and image processing tasks.
+These cores can be used across a wide range of applications, from low-level to advanced, through optimized libraries provided by Texas Instruments.
+
+### DSPLIB
+
+DSPLIB (Digital Signal Processing Library) is a library that provides high efficiency for low-level signal processing functions.
+Basic DSP algorithms such as FFT, FIR/IIR filtering, correlation, convolution, and matrix operations can be performed with hardware acceleration through this library.
+These functions run at high speeds by leveraging the parallel processing capacity of the C7 cores and provide significant performance gains, especially in image pre-processing stages (e.g., noise reduction, signal filtering).
+
+You can access the DSPLIB User Guide [here](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/11_01_00_04/exports/docs/dsplib/docs/user_guide/index.html).
+
+### VXLIB
+
+VXLIB (Vision Acceleration Library) is a library containing low-level image processing functions, compatible with the OpenVX standard.
+Basic image processing steps such as edge detection, histogram calculation, morphological operations, and color space conversions can be performed optimally with this library.
+When used together with DSPLIB, VXLIB provides high efficiency in all stages of the image processing pipeline (pre-processing, feature extraction, segmentation).
+
+You can access the VXLIB User Guide [here](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/11_01_00_04/exports/docs/vxlib_11_00_00_01/docs/user_guide/index.html).
+
+### MMALIB
+
+MMALIB (Matrix Multiply and Linear Algebra Library) provides optimized functions for convolutional neural networks (CNN), linear algebra (LINALG), and advanced digital signal processing (DSP) operations.
+This library enables maximum utilization of the hardware potential of the C7 cores, especially in deep learning-based image processing applications (e.g., object recognition, classification, segmentation).
+
+You can access the MMALIB User Guide [here](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/11_01_00_04/exports/docs/mmalib_11_01_00_06/docs/user_guide/modules.html).
+
+### Potential Use Cases
+
+When these three libraries are used together, the C7 cores on the AM67A SoC can form the basis not only for low-level processing but also for advanced applications such as complex image analytics, machine learning inference operations, and real-time image optimization.
+
+For example:
+
+- Signal pre-processing with DSPLIB,
+- Image-based feature extraction with VXLIB,
+- Neural network-based classification operations with MMALIB can be applied sequentially in the same processing pipeline.
+
+This way, while the overall system load on the CPU is reduced, energy-efficient and real-time capable image processing and mathematical computation solutions can be developed.

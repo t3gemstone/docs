@@ -1,0 +1,29 @@
+```python Python lines
+#!/usr/bin/python3
+
+import numpy as np
+from tflite_runtime.interpreter import Interpreter
+from tflite_runtime.interpreter import load_delegate
+
+# 1. Edge AI delegate kütüphanesini yükle
+try:
+    edgetpu_delegate = load_delegate('/usr/lib/libtidl_tfl_delegate.so')
+    delegates_list = [edgetpu_delegate]
+    print("Edge TPU bulundu ve yüklendi.")
+except (ValueError, OSError):
+    delegates_list = [] # TPU bulunamazsa, normal CPU'da çalıştır
+    print("Edge TPU bulunamadı, CPU kullanılacak.")
+
+# 2. Modeli yükle ve Interpreter'ı başlatırken delegate'i kullan
+interpreter = Interpreter(
+    model_path="modelinizin_adi.tflite",
+    experimental_delegates=delegates_list
+)
+
+# 3. Kalan standart TFLite adımları...
+interpreter.allocate_tensors()
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+# ... (Giriş verisini ayarla, modeli çalıştır, vb.)
+```

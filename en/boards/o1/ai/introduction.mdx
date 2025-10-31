@@ -1,0 +1,19 @@
+---
+title: 'Introduction'
+description: 'Edge-AI'
+---
+
+<Frame>
+  <img src="/images/o1-board/ai/edge-ai.png" />
+</Frame>
+
+Edge AI (Edge Artificial Intelligence) means that artificial intelligence operations are performed on the device where the data is collected (at the edge), not in the cloud. That is, data is processed at the endpoint such as a sensor, camera, drone, IoT device; it is not constantly sent to the cloud for analysis. The aim is to reduce latency, increase privacy, and reduce network traffic.
+
+In artificial intelligence and image processing projects, large amounts of data are used, and high processing power is required.
+The AM67A processor contains **MMA** (Matrix Multiply Accelerator), a special hardware unit to accelerate such computations.
+This unit processes image data and AI models quickly. MMA works connected to the processor and lightens the load on the main CPU, making computations more efficient.
+
+The board's processor also works together with the C7x Digital Signal Processor (DSP) to perform different types of calculations (tensor, vector, scalar) with high speed and low energy consumption.
+MMA has its own memory and data transfer system, so data is processed quickly, and energy savings are achieved.
+
+The basic AI capability and usage logic in the Texas AM67A ecosystem is based on executing various pre-trained models in an accelerated manner with the MMU/C7x modules to perform tasks and allowing the CPU/MCU to access these results.

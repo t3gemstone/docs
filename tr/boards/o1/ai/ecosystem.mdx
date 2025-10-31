@@ -1,0 +1,46 @@
+---
+title: 'Ekosistem'
+description: 'Görüntü İşleme Yazılım Mimarisi'
+---
+
+Bu bölümde, görüntü işleme için kullanılan Python/C++ kütüphanelerinin neler olduğu özet olarak belirtilmiştir.
+
+<Frame caption="Geliştirme Araçları">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-sw-arch.png" />
+</Frame>
+
+İlgili kütüphaneler, hem derin öğrenme modellerinin derlenmesi hem de geliştirme kartına yüklenip çalıştırılması 
+için kullanılmaktadır. Aşağıdaki resimde desteklenen kütüphaneler belirtilmiştir.
+
+<Frame caption="Kullanılan Kütüphaneler">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-dev-env.png" />
+</Frame>
+
+Geliştiriciler, modellerini önce kendi bilgisayarlarında (örneğin Linux tabanlı bir sistemde) test edip,
+ardından minimum değişiklikle Gemstone O1 geliştirme kartına aktarabilirler. Böylece geliştirme süreci
+hızlanır ve donanım bağımlılığı en aza iner.
+
+<Frame caption="Geliştirme Ortamı Yapısı">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-dev-pc-edge.png" />
+</Frame>
+
+### Geliştirme Adımları
+
+<Steps>
+  <Step title="Model Hazırlama">
+    İnternetteki derin öğrenme toplulukları birçok açık kaynaklı ve önceden eğitilmiş model sunmaktadır.
+    Geliştiriciler bu modelleri kendi veri kümeleriyle ince ayar (Transfer Learning) yaparak kullanabilirler.
+    Gemstone bu süreci kolaylaştırmak için ModelZoo adlı model havuzunu sunmaktadır. ModelZoo’daki modeller,
+    ImageNet1k ve COCO gibi endüstri standardı veri kümelerinde eğitilmiş, gömülü sistemler için optimize
+    edilmiştir. Ayrıca geliştiriciler, kendi modellerini de sisteme dahil edebilirler.
+  </Step>
+  <Step title="Model Derleme">
+    Modeller, gömülü donanımda çalıştırılmadan önce Host Bilgisayar (PC x86) üzerinde derlenir. Bu süreçte
+    Python veya C++ API’leri kullanılarak modelin belirli katmanları C7x/MMA işlemcilerine aktarılacak şekilde
+    “artifact” dosyaları oluşturulur. Derleme sırasında farklı optimizasyon ve kuantizasyon seçenekleri uygulanabilir.
+  </Step>
+  <Step title="Model Dağıtımı ve Çalıştırma">
+    Derleme sonrası üretilen “artifact” dosyaları, modelin gömülü donanım üzerinde çalıştırılmasını sağlar.
+    Bu adımda model, gerçek zamanlı çıkarım işlemleri için kullanıma alınır.
+  </Step>
+</Steps>

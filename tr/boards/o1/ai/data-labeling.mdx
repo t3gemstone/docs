@@ -1,0 +1,94 @@
+---
+title: 'Veri Etiketleme'
+description: 'Görüntü İşleme için Veri Etiketleme'
+---
+
+Bu bölümde kendi modellerinizi eğitmek istediğinizde etiketleme işlemlerinin nasıl yapılacağı hakkında bilgi verilecektir.
+
+Label Studio, farklı veri türleri için etiketleme (annotation) ve veri hazırlama sürecini yönetmeye yönelik
+açık kaynaklı bir platformdur. Görüntü, metin, ses, video veya zaman serisi verileri üzerinde etiketleme yapmayı
+sağlar ve makine öğrenimi modellerinin eğitiminde kullanılacak veri setlerinin hazırlanmasını kolaylaştırır.
+
+<Frame caption="Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeling.png" />
+</Frame>
+
+Label Studio'yu, edgeai-tensorlab ortamı üzerinden aşağıdaki komutla başlatınız.
+
+<Note>
+Bu işlemleri yapmadan önce bir önceki adımda olan edgeai-tensorlab projesinin kurulumunu tamamlamış 
+ve ```task box``` ile distrobox içinde işlemleri yapmış olmalısınız.
+</Note>
+
+```bash
+task label-studio
+```
+
+<Frame caption="Label Studio Giriş Sayfası">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-login.png" />
+</Frame>
+
+Mevcut bir hesabınız varsa giriş yapabilirsiniz. Henüz bir hesabınız yoksa, "Sign Up" butonuna tıklayarak yeni
+bir hesap oluşturabilirsiniz.
+
+<Frame caption="Label Studio Kayıt Sayfası">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-signup.png" />
+</Frame>
+
+Gerekli bilgileri doldurduktan sonra, "Create Account" butonuna tıklayarak hesabınızı oluşturabilirsiniz.
+
+<Frame caption="Label Studio Anasayfa">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-home.png" />
+</Frame>
+
+İlk kez kullanıyorsanız, yukarıdakine benzer bir ekran ile karşılaşacaksınız. "Create Project" butonuna
+tıklayarak yeni bir proje oluşturabilirsiniz.
+
+<Frame caption="Label Studio Yeni Proje Oluşturma">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-1.png" />
+</Frame>
+
+Proje oluştururken, proje adı ve proje açıklaması alanlarını doldurmanız gerekmektedir.
+
+<Frame caption="Label Studio Yeni Proje: Veri Girişi">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-2.png" />
+</Frame>
+
+Bir sonraki aşama olan dosya yükleme bölümünde, ham fotoğrafları veya etiketlenmiş fotoğrafları arşiv olarak
+sisteme ekleyebilirsiniz.
+
+<Frame caption="Label Studio Yeni Proje: Etiketleme Kurulumu">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-label-setup.png" />
+</Frame>
+
+"Label Setuping" bölümünde projeniz için uygun olan temayı seçmelisiniz. Nesne tespiti için "Object Detection
+with Bounding Boxes" seçeneği işaretlenmelidir.
+
+<Frame caption="Label Studio Yeni Proje: Etiketleme Arayüzü">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-label-interface.png" />
+</Frame>
+
+Bu ekranda modelinizde kullanılacak etiket adlarını girmeniz gerekmektedir. Her bir satır bir etiket olarak
+tanımlanacaktır. "Add" butonuna tıklayarak etiket adlarını ekleyebilir, eklenen etiketlere tıklayarak
+renklerini düzenleyebilir veya silebilirsiniz. Tüm etiketleri ekledikten sonra "Save" butonuna basarak
+projenizi oluşturabilirsiniz.
+
+<Frame caption="Label Studio Veri Etiketleme">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeling.png" />
+</Frame>
+
+Bu aşamada verilerinizi etiketlemeye başlayabilirsiniz. Seçtiğiniz fotoğrafın altında yer alan etiketlerden
+birine tıkladıktan sonra, ilgili etiketi fotoğraf üzerinde uygulayabilirsiniz. Fotoğrafı etiketledikten sonra
+"Submit" butonuna basarak etiketleme işlemini tamamlayabilirsiniz.
+
+<Frame caption="Label Studio Veri Listesi">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeled.png" />
+</Frame>
+
+Tüm fotoğrafları etiketledikten sonra "Export" butonuna basılmalıdır. Açılan ekranda "YOLO With Images"
+seçeneği işaretlenmeli ve alt tarafta yer alan "Export" butonuna tıklanmalıdır. Bu işlemle kendi veri setinizi
+başarılı bir şekilde oluşturmuş olursunuz.
+
+<Frame caption="Label Studio Dışarı Aktarma">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-export.png" />
+</Frame>

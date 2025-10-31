@@ -1,0 +1,46 @@
+---
+title: 'Model Kullanma'
+description: 'Görüntü İşleme Uygulaması Hazırlama'
+---
+
+import SnippetAIUsageE1 from '/snippets/ai/usage-e1.mdx';
+
+Bu bölümde, kendi veri setinizle veya hazır olarak edindiğiniz görüntü işleme modellerini nasıl
+kullanacağınız hakkında bilgi verilecektir.
+
+## Mevcut Python Kodunuza Entegre Etme
+
+TensorFlow Lite, modelleri varsayılan olarak cihazın CPU'sunda (Merkezi İşlem Birimi) çalıştırır.
+
+"Delegate" (Temsilci/Vekil), TFLite modelinizdeki hesaplamaların bir kısmını veya tamamını CPU yerine daha
+özelleşmiş bir donanıma "devretme" (delegate etme) mekanizmasıdır. Bu özel donanımları (örneğin T3 Gemstone O1
+Geliştirme Kartı içerisinde yer alan görüntü işleme hızlandırıcıları) kullanabilmek için gereken paylaşımlı
+kütüphane dosyasını (.so, .dll vb.) yüklemeniz gerekmektedir.
+
+<SnippetAIUsageE1 />
+
+## Edge AI GStreamer Apps
+
+Bu proje, Texas Instruments tarafından sağlanan ve T3 Gemstone O1 gibi cihazlarda yapay zeka uygulamalarını
+hızla geliştirmek için kullanılabilecek bir açık kaynak referans uygulamaları koleksiyonudur. Temel olarak,
+GStreamer tabanlı bir mimariyle çalışmakta olup Texas Instruments işlemcileri ve SoC donanımları üzerinde görüntü
+işleme, nesne algılama, akış (streaming) ve diğer yapay zeka iş akışlarını gerçekleştirmek için hazır
+çözümler sunmaktadır.
+
+Configs klasörü içinde birden fazla uygulama için örnekler mevcuttur. Python ve C++ dillerinde projeyi
+çalıştırmanıza olanak sağlamaktadır.
+
+<CodeGroup>
+  ```bash Python
+  /opt/edgeai-gst-apps/apps_python# ./app_edgeai.py ../configs/image_classification.yaml
+  ```
+  ```bash C++
+  # Todo: Nasıl derleniyor?
+  # CMake ile uygulamayı derledikten sonra aşağıdaki komut ile örnek uygulamayı çalıştırabilirsiniz.
+  /opt/edgeai-gst-apps/apps_cpp# ./bin/Release/app_edgeai ../configs/image_classification.yaml
+  ```
+</CodeGroup>
+
+Kaynak kodları Texas Instruments'ın GitHub üzerindeki 
+[edgeai-gst-apps](https://github.com/TexasInstruments/edgeai-gst-apps) deposunda mevcuttur.
+
