@@ -16,4 +16,21 @@ This unit processes image data and AI models quickly. MMA works connected to the
 The board's processor also works together with the C7x Digital Signal Processor (DSP) to perform different types of calculations (tensor, vector, scalar) with high speed and low energy consumption.
 MMA has its own memory and data transfer system, so data is processed quickly, and energy savings are achieved.
 
-The basic AI capability and usage logic in the Texas AM67A ecosystem is based on executing various pre-trained models in an accelerated manner with the MMU/C7x modules to perform tasks and allowing the CPU/MCU to access these results.
+In this section of the documentation, we will explain the concept of "AI Capability" on the Development Board,
+discuss which tools will be used, where, and for what purpose, and describe example projects.
+
+The fundamental AI capability and usage logic on the development board is based on the execution of various
+pre-trained models in an accelerated manner using the MMU/C7x modules to perform tasks, allowing the CPU/MCU to
+access these results. It contains 2 Deep Learning Accelerators and has a processing power of 4 TOPS 
+(Trillion Operations Per Second).
+
+The table below shows the [estimated processing power required](https://community.t3gemstone.org/t/do-you-really-need-100-tops-right-sizing-ai-performance-for-real-world-edge-applications/369) for which technologies.
+
+| Use Case                                 | Approximate Processing Power |
+| ---------------------------------------- | ---------------------------- |
+| Object detection (e.g., YOLOv5s)         | 1-2 TOPS                     |
+| Face recognition                         | 1 TOPS                       |
+| Anomaly detection (with vibration data)  | 0.5 TOPS                     |
+| License plate recognition                | 2 TOPS                       |
+| Voice command processing                 | 1 TOPS                       |
+| Optical character recognition (OCR)      | 1.5-3 TOPS                   |

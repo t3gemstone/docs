@@ -22,6 +22,21 @@ Kartın işlemcisi ayrıca C7x Dijital Sinyal İşlemcisi (DSP) ile birlikte ça
 hesaplamaları (tensor, vektör, skaler) yüksek hız ve düşük enerji tüketimi ile yapabilir. MMA’nın kendi hafıza ve
 veri taşıma sistemi bulunur, böylece veriler hızlı bir şekilde işlenir ve enerji tasarrufu sağlanır.
 
-Texas AM67A ekosistemindeki temel Yapay Zeka kabiliyet ve kullanım mantığı, önceden eğitilmiş çeşitli modellerin 
+Dokümantasyonun bu bölümünde, Geliştirme Kartında bulunan "Yapay Zeka Kabiliyeti" kavramının ne olduğu, hangi
+araçların nerelerde hangi amaçla kullanılacağına değinilecek ve örnek projeler anlatılacaktır.
+
+Geliştirme kartındaki temel Yapay Zeka kabiliyet ve kullanım mantığı, önceden eğitilmiş çeşitli modellerin
 MMU/C7x modülleriyle hızlandırılmış biçimde yürütülerek görev icra etmesi ve CPU/MCU tarafından bu sonuçlara
-ulaşabilmesi üzerine kuruludur.
+ulaşabilmesi üzerine kuruludur. 2 adet Derin Öğrenme Hızlandırıcısı bulunmaktadır ve 4
+TOPS (Trillion Operations Per Second/Saniyede kaç trilyon operasyon gerçekleştiği) işlem gücüne sahiptir.
+
+Aşağıdaki tabloda [tahmini olarak hangi teknolojiler](https://community.t3gemstone.org/t/do-you-really-need-100-tops-right-sizing-ai-performance-for-real-world-edge-applications/369) için ne kadarlık işlem gücü gerektiği belirtilmiştir.
+
+| Kullanım Yeri                          | Yaklaşık İşlem Gücü |
+| -------------------------------------- | ------------------- |
+| Nesne algılama (örneğin YOLOv5s)       | 1-2 TOPS            |
+| Yüz tanıma:                            | 1 TOPS              |
+| Anomali tespiti (titreşim verileriyle) | 0.5 TOPS            |
+| Plaka tanıma:                          | 2 TOPS              |
+| Sesli komut işleme:                    | 1 TOPS              |
+| Optik karakter tanıma (OCR)            | 1.5-3 TOPS          |
