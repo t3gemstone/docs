@@ -12,15 +12,6 @@ import SnippetPWM1B from '/snippets/boards/o1/pwm/pwm-1b.mdx';
 import SnippetPWMEcap0 from '/snippets/boards/o1/pwm/pwm-ecap0.mdx';
 import SnippetCheckDTBS from '/snippets/boards/o1/check-dtbs.mdx';
 
-<Columns cols={1}>
-  <Frame caption="Front">
-    <img className="rounded-lg" src="/images/o1-board/29-front.jpg" />
-  </Frame>
-  <Frame caption="Back">
-    <img className="rounded-lg" src="/images/o1-board/30-back.jpg" />
-  </Frame>
-</Columns>
-
 This section will demonstrate examples of how to use the sensors and data lines on the board.  
 All examples will be performed via the Terminal/Console after establishing a serial port connection,
 so it is assumed that you have read the explanations about Terminal usage in the [Quick Start](../../../quickstart)
@@ -29,8 +20,15 @@ browser, connecting via SSH/Ethernet, or connecting via the console over the ser
 
 ## Power Connection
 
-<Frame caption="Example of power connection">
-  <img className="rounded-lg" src="/images/o1-board/28-power-with-battery.jpg" />
+<Frame caption="Power connection">
+  <Columns cols={2}>
+  <Frame caption="With USB-C">
+    <img className="rounded-lg" src="/images/o1-board/31-usb-connection.jpg" />
+  </Frame>
+  <Frame caption="With External Power">
+    <img className="rounded-lg" src="/images/o1-board/28-power-with-battery.jpg" />
+  </Frame>
+</Columns>
 </Frame>
 
 The Gemstone O1 development board's external power input is designed to operate within the 5V–12V / 5A range. Any suitable external power source within this range can be connected. On the USB side, the USB PD (Power Delivery) IC is set to 9V. If the connected device supports 9V, the development board is powered at 9V / 3A; if the device is not compatible, the board continues to draw power at 5V / 3A.

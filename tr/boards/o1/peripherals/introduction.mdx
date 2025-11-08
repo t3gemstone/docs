@@ -12,15 +12,6 @@ import SnippetPWM1B from '/snippets/boards/o1/pwm/pwm-1b.mdx';
 import SnippetPWMEcap0 from '/snippets/boards/o1/pwm/pwm-ecap0.mdx';
 import SnippetCheckDTBS from '/snippets/boards/o1/check-dtbs.mdx';
 
-<Columns cols={1}>
-  <Frame caption="Ön Yüz">
-    <img className="rounded-lg" src="/images/o1-board/29-front.jpg" />
-  </Frame>
-  <Frame caption="Arka Yüz">
-    <img className="rounded-lg" src="/images/o1-board/30-back.jpg" />
-  </Frame>
-</Columns>
-
 Bu bölümde, kart üzerinde bulunan sensörlerin ve veri hatlarının kullanımlarına dair örnekler gösterilecektir.
 Bütün örnekler seri port bağlantısı kurularak Terminal/Konsol üzerinden yapılacağı için
 [Hızlı Başlangıç](../../../quickstart) bölümünde Terminal kullanımına dair açıklamaları okumuş olduğunuz
@@ -29,9 +20,14 @@ veya seri port üzerinden konsol ile bağlanma yöntemlerinden birini tercih ede
 
 ## Güç bağlantısı
 
-<Frame caption="Örnek güç bağlantısı görseli">
-  <img className="rounded-lg" src="/images/o1-board/28-power-with-battery.jpg" />
-</Frame>
+  <Columns cols={2}>
+  <Frame caption="USB-C ile">
+    <img className="rounded-lg" src="/images/o1-board/31-usb-connection.jpg" />
+  </Frame>
+  <Frame caption="Harici güç kaynağı ile">
+    <img className="rounded-lg" src="/images/o1-board/28-power-with-battery.jpg" />
+  </Frame>
+</Columns>
 
 Gemstone O1 geliştirme kartının harici güç girişi 5V–12V / 5A aralığında çalışacak şekilde tasarlanmıştır. Bu aralıkta herhangi bir uygun harici güç kaynağı bağlanabilir. USB tarafında ise USB PD (Güç Dağıtım) entegresi 9V’a ayarlanmıştır. Eğer bağlı cihaz 9V desteğine sahipse, geliştirme kartı 9V / 3A ile beslenir; cihaz uygun değilse kart, 5V / 3A ile güç almaya devam eder.
 
