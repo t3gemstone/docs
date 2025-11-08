@@ -12,6 +12,15 @@ import SnippetPWM1B from '/snippets/boards/o1/pwm/pwm-1b.mdx';
 import SnippetPWMEcap0 from '/snippets/boards/o1/pwm/pwm-ecap0.mdx';
 import SnippetCheckDTBS from '/snippets/boards/o1/check-dtbs.mdx';
 
+<Columns cols={1}>
+  <Frame caption="Front">
+    <img className="rounded-lg" src="/images/o1-board/29-front.jpg" />
+  </Frame>
+  <Frame caption="Back">
+    <img className="rounded-lg" src="/images/o1-board/30-back.jpg" />
+  </Frame>
+</Columns>
+
 This section will demonstrate examples of how to use the sensors and data lines on the board.  
 All examples will be performed via the Terminal/Console after establishing a serial port connection,
 so it is assumed that you have read the explanations about Terminal usage in the [Quick Start](../../../quickstart)
@@ -24,7 +33,7 @@ browser, connecting via SSH/Ethernet, or connecting via the console over the ser
   <img className="rounded-lg" src="/images/o1-board/28-power-with-battery.jpg" />
 </Frame>
 
-The Gemstone Obsidian development board's external power input is designed to operate within the 5V–12V / 5A range. Any suitable external power source within this range can be connected. On the USB side, the USB PD (Power Delivery) IC is set to 9V. If the connected device supports 9V, the development board is powered at 9V / 3A; if the device is not compatible, the board continues to draw power at 5V / 3A.
+The Gemstone O1 development board's external power input is designed to operate within the 5V–12V / 5A range. Any suitable external power source within this range can be connected. On the USB side, the USB PD (Power Delivery) IC is set to 9V. If the connected device supports 9V, the development board is powered at 9V / 3A; if the device is not compatible, the board continues to draw power at 5V / 3A.
 
 <Tip>
 When the battery is connected and a USB is plugged in, the power source automatically switches to the USB and the battery is disabled. When the USB is removed, the battery automatically re-engages and continues to supply power to the development board.
