@@ -47,16 +47,22 @@ Kurulum için ihtiyaç duyulan donanımlar aşağıda belirtilmiştir.
     </Frame>
   </Accordion>
 
-  <Accordion title="Ethernet kablosu">
+  <Accordion title="Ethernet kablosu (Opsiyonel)">
     <Frame caption="Bilgisayar ve Gemstone kartını birbirine bağlayacak ethernet kablosu">
       <img height="600" width="800" src="/images/ethernet-cable-wire.png" />
     </Frame>
   </Accordion>
 
   <Accordion title="USB TTL dönüştürücü (Opsiyonel)">
-    <Frame caption="Başlangıç için gerekli değildir. Ethernet kablosunun olmadığı durumlarda Seriport aracılığıyla kart bağlantısı için kullanılmaktadır.">
-      <img height="600" width="800" src="/images/pl2303-ta-usb-ttl-seri.jpg" />
+    Başlangıç için gerekli değildir. Ethernet kablosunun olmadığı durumlarda Seriport aracılığıyla kart bağlantısı için kullanılmaktadır.
+    <Columns cols={2}>
+    <Frame caption="Dönüştürücünün karta bağlantısı">
+      <img className="rounded-lg" src="/images/o1-board/35-serial-port-ttl-2.png" />
     </Frame>
+    <Frame caption="USB to TTL dönüştürücü">
+      <img className="rounded-lg" src="/images/usb-to-ttl-converter.jpg" />
+    </Frame>
+    </Columns>
   </Accordion>
 
 </AccordionGroup>
