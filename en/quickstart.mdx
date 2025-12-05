@@ -377,6 +377,10 @@ An advantage of this method is that it allows you to view the console outputs of
 Gemstone boards. While network initialization is required for outputs to appear over Ethernet, with TTL, outputs are
 visible from the start.
 
+<Note>
+The default serial terminal baud rate value is **115200**.
+</Note>
+
 #### 2.1.1. Terminal/Console Application
 
 For Terminal/Console operations, you can use [Putty](https://www.putty.org/) on Windows, Gnome Terminal on Linux,
@@ -396,6 +400,32 @@ After completing the installation, run it and select the serial port as shown in
 
 <Frame caption="Tabby terminal and serial port">
   <img src="/images/tabby-serial-port.png" />
+</Frame>
+
+#### 2.1.3. Connection with Putty terminal
+
+[Go to the Putty Download page](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) and download the Putty installation file suitable for your operating system. 
+
+After completing the setup, run the program and connect to your board by selecting the connection type shown in the screenshot below.
+
+<Frame caption="Putty startup screen" >
+  <img src="/images/putty-terminal.png" />
+</Frame>
+
+You need to identify your serial port and enter it into PuTTY. The baud rate for the connection is 115200.
+
+For example: COM9 (for Windows devices), 115200
+
+You can log in using the username and password you specified in the Gemstone Imager program.
+
+<Frame caption="Gemstone terminal startup screen">
+  <img src="/images/gemstone-terminal-splash-screen.png" />
+</Frame>
+
+Congratulations! You have successfully established a connection between Gemstone and the terminal.
+
+<Frame caption="Gemstone terminal connection completed">
+  <img src="/images/terminal-connection-completed.png" />
 </Frame>
 
 ### 2.2. VNC remote desktop connection via browser
