@@ -408,6 +408,46 @@ Kurulumu tamamladıktan sonra çalıştırınız ve aşağıdaki ekran görünt�
   <img src="/images/tabby-serial-port.png" />
 </Frame>
 
+#### 2.1.3. Putty terminal ile bağlantı
+
+[Putty İndirme sayfasına giderek](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) kullandığınız işletim sistemine uygun putty kurulum dosyasını indiriniz. 
+
+Kurulumu tamamladıktan sonra çalıştırınız ve aşağıdaki ekran görüntüsünde yer alan bağlantı türünü seçerek kartınıza bağlantı yapabilirsiniz.
+
+<Frame caption="Putty açılış ekranı" >
+  <img src="/images/putty-terminal.png" />
+</Frame>
+
+Bilgisayarım simgesine sağ tıklayarak Yönet → Aygıt Yöneticisi bölümünden hangi seri portun oluştuğunu tespit etmeniz ve putty’e onu girmeniz gerekmektedir. Bağlantı için baudrate speed değeri 115200'dir.
+
+Örneğin: COM9, 115200
+
+Putty seri porta bağlandığınızda putty terminal ekranı aşağıdaki gibi olabilir, bu durum kartın kendini aya kaldırmadan önce terminal bağlantısı yapılmadığı anlamına gelir. Bağlantıyı yeniden başlatmak için kart üzerinde bulunan reset butonun basarak kartı resetleyip terminal bağlantısını sağlayabilirsiniz.
+
+<Frame caption="Putty Terminal Bağlantısı">
+  <img src="/images/Putty-first-opening.png" />
+</Frame>
+
+Kartınızı resetlemek için aşağıda görselde belirtilen butona basmanız yeterlidir.
+
+<Frame caption="Gemsotone Reset Buton">
+  <img src="/images/Gemstone-reset-button.png" />
+</Frame>
+
+Terminale direkt bağlantı için ilk olarak putty terminali açmanız, ardından karta güç vermeniz tasiye edilir.
+
+Gemstone Imager programında belirlemiş olduğunuz kullanıcı adı ve şifre ile giriş yapabilirsiniz.
+
+<Frame caption="Gemstone terminal açılış ekranı">
+  <img src="/images/Gemstone-terminal-splash-screen.png" />
+</Frame>
+
+Tebrikler! Gemstone ile terminal üzerinden bağlantıyı başarı ile gerçekleştirdiniz.
+
+<Frame caption="Gemstone terminal bağlantısı tamamlandı">
+  <img src="/images/terminal-connection-completed.png" />
+</Frame>
+
 ### 2.2. VNC ile tarayıcıdan uzak masaüstü bağlantısı
 
 <Note>

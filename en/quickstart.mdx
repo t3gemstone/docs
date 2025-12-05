@@ -398,6 +398,46 @@ After completing the installation, run it and select the serial port as shown in
   <img src="/images/tabby-serial-port.png" />
 </Frame>
 
+#### 2.1.3. Connection with Putty terminal
+
+[Go to the Putty Download page](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) and download the Putty installation file suitable for your operating system. 
+
+After completing the setup, run the program and connect to your card by selecting the connection type shown in the screenshot below.
+
+<Frame caption="Putty startup screen" >
+  <img src="/images/putty-terminal.png" />
+</Frame>
+
+Right-click on the Computer icon, select Manage → Device Manager, identify which serial port has been created, and enter it into PuTTY. The baud rate for the connection is 115200.
+
+For example: COM9, 115200
+
+When you connect to the serial port, the Putty terminal screen may appear as follows. This means that the terminal connection was not established before the card booted up. To restart the connection, press the reset button on the card to reset it and establish the terminal connection.
+
+<Frame caption="Putty Terminal Connection">
+  <img src="/images/Putty-first-opening.png" />
+</Frame>
+
+To reset your card, simply press the button shown in the image below.
+
+<Frame caption="Gemsotone Reset Button">
+  <img src="/images/Gemstone-reset-button.png" />
+</Frame>
+
+To connect directly to the terminal, it is recommended that you first open the putty terminal, then power the card.
+
+You can log in using the username and password you specified in the Gemstone Imager program.
+
+<Frame caption="Gemstone terminal açılış ekranı">
+  <img src="/images/Gemstone-terminal-splash-screen.png" />
+</Frame>
+
+Congratulations! You have successfully established a connection between Gemstone and the terminal.
+
+<Frame caption="Gemstone terminal connection completed">
+  <img src="/images/terminal-connection-completed.png" />
+</Frame>
+
 ### 2.2. VNC remote desktop connection via browser
 
 <Note>
