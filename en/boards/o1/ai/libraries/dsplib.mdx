@@ -1,0 +1,76 @@
+---
+title: 'DSPLIB'
+description: 'Use of digital signal processing functions with acceleration chips'
+---
+
+import SnippetMcuBuild from '/snippets/ai/advanced/mcu-build.mdx';
+import SnippetDemo from '/snippets/ai/advanced/dsplib/demo.mdx';
+import SnippetPathCpp from '/snippets/ai/advanced/dsplib/path-cpp.mdx';
+import SnippetIncludesCommon from '/snippets/ai/advanced/dsplib/path-includes-common.mdx';
+import SnippetCflagsCommon from '/snippets/ai/advanced/cflags-common.mdx';
+import SnippetLibsPath from '/snippets/ai/advanced/dsplib/libs-path.mdx';
+import SnippetLibsCommon from '/snippets/ai/advanced/dsplib/libs-common.mdx';
+import SnippetObjsDeps from '/snippets/ai/advanced/objs-deps.mdx';
+import SnippetInclude from '/snippets/ai/advanced/dsplib/include.mdx';
+
+<Tip>C7-based MCU projects using the DSPLIB library operate by utilizing the DSP accelerator unit within the processor. This allows fundamental DSP operations such as filtering, convolution, correlation, and similar tasks to be accelerated in hardware, resulting in high performance for real-time applications.</Tip>
+
+This document describes the integration steps and sample project for the Texas Instruments DSPLIB library in MCU projects developed on the T3 Gemstone O1 development board.
+DSPLIB is a software library optimized for the C7x architecture that contains low-level Digital Signal Processing (DSP) functions.
+It is designed to perform filtering, correlation, convolution, transformations, and other basic DSP operations with high efficiency and is used specifically to reduce processor load in real-time DSP/MCU applications.
+
+## Example Project
+
+A working example project that you can examine by referencing the integration of the DSPLIB library is provided in the ```MCU``` directory under the ```examples``` repository on T3 Gemstone GitHub.
+
+While in the ```devbox shell``` within the examples repository, you should run the following command.
+
+<SnippetMcuBuild />
+
+```examples/mcu/dsplib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000``` and ```examples/mcu/dsplib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000``` contain the ```dsplib_demo. out``` file in the following directories is now executable on C7 cores.
+
+To run it on the development board, you can follow the steps in the section [Running the compiled project in the U-Boot phase](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage).
+
+The outputs generated in this example project are transmitted via the UART1 interface. (You can find the relevant pin connections in the [Pinout documentation](/en/boards/o1/peripherals/introduction#1-pinout).)
+
+The terminal display of the DSPLIB example project's outputs is as follows.
+
+<SnippetDemo />
+
+## Integrating into Your Current MCU Project via Makefile
+
+To integrate the DSPLIB library into your current MCU project, you must define the root directory path of the SDK and the ```.cpp``` file you will be using.
+
+<SnippetPathCpp />
+
+Next, you should add DSPLIB's src directory to the list of included folders (INCLUDES_common variable) as follows. You may need to change the path depending on your DSPLIB version.
+
+<SnippetIncludesCommon />
+
+You must add the following definitions to the compiler's FLAGS parameters (the ```CFLAGS_common``` variable) for the library to compile correctly.
+
+<SnippetCflagsCommon />
+
+You must add the compiled library directory of DSPLIB to the library path definitions (```LIBS_PATH_common``` variable).
+
+<SnippetLibsPath />
+
+You must add the name of the DSPLIB library to the list of included library files (```LIBS_common``` variable) as follows.
+
+<SnippetLibsCommon />
+
+In order for .cpp files to be compiled in the project, the following additions must be made immediately below the line where the ```OBJS``` and ```DEPS``` definitions are made.
+
+<SnippetObjsDeps />
+
+After completing these steps, the DSPLIB library will be successfully integrated into the project via Makefile.
+
+## Integrating DSPLIB into the Existing CPP File
+
+After completing the necessary configurations via Makefile, you must add the relevant header file to the .cpp file in your project to use the DSPLIB library. After this step, you can directly use the functions and definitions belonging to DSPLIB within your existing project.
+
+You can access all modules in the DSPLIB library [via this link](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/10_01_00_04/exports/docs/dsplib/docs/user_guide/index.html) ulaşabilirsiniz.
+
+<SnippetInclude />
+
+With this process, the DSPLIB integration will be complete.

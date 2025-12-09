@@ -1,0 +1,75 @@
+---
+title: 'MATHLIB'
+description: 'Hızlandırma çipleri ile matematiksel fonksiyonların kullanımı'
+---
+
+import SnippetMcuBuild from '/snippets/ai/advanced/mcu-build.mdx';
+import SnippetDemo from '/snippets/ai/advanced/mathlib/demo.mdx';
+import SnippetPathCpp from '/snippets/ai/advanced/mathlib/path-cpp.mdx';
+import SnippetIncludesCommon from '/snippets/ai/advanced/mathlib/path-includes-common.mdx';
+import SnippetCflagsCommon from '/snippets/ai/advanced/cflags-common.mdx';
+import SnippetLibsPath from '/snippets/ai/advanced/mathlib/libs-path.mdx';
+import SnippetLibsCommon from '/snippets/ai/advanced/mathlib/libs-common.mdx';
+import SnippetObjsDeps from '/snippets/ai/advanced/objs-deps.mdx';
+import SnippetInclude from '/snippets/ai/advanced/mathlib/include.mdx';
+
+<Tip>MATHLIB kütüphanesini kullanan C7 tabanlı MCU projeleri, işlemcide yer alan AI Hızlandırıcı (C7x DSP / MMA) biriminden faydalanarak çalışmaktadır. Bu sayede matematiksel işlemler, vektörel hesaplamalar ve yoğun hesaplama gerektiren fonksiyonlar donanımsal hızlandırma ile yürütülür ve uygulama performansı önemli ölçüde artırılır.</Tip>
+
+Bu doküman, T3 Gemstone O1 geliştirme kartı üzerinde geliştirilen MCU projelerine Texas Instruments MATHLIB kütüphanesinin entegrasyon adımlarını ve örnek projeyi açıklamaktadır.
+MATHLIB, yüksek performanslı matematiksel fonksiyonlar (trigonometrik, logaritmik, karekök vb.) için optimize edilmiş Texas Instruments tarafından geliştirilen yazılım kütüphanesidir ve özellikle düşük güç tüketen DSP/MCU uygulamalarında işlemci yükünü azaltmak amacıyla kullanılır.
+
+## Örnek Proje
+
+MATHLIB kütüphanesinin entegrasyonunu referans alarak inceleyebileceğiniz çalışır bir örnek proje, T3 Gemstone GitHub'daki ```examples``` reposu içerisinde yer alan ```MCU``` dizini altında sunulmaktadır.
+
+Examples reposunun içinde ```devbox shell``` içindeyken aşağıdaki komutu çalıştırmalısınız.
+
+<SnippetMcuBuild />
+
+```examples/mcu/mathlib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000``` ve ```examples/mcu/mathlib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000``` içinde yer alan ```mathlib_demo.out``` dosyası artık C7 çekirdeklerinde çalıştırlabilir hale gelmiştir.
+
+Geliştirme kartı üzerinde çalıştırmak için [Derlenmiş projenin U-Boot aşamasında çalıştırılması](/tr/boards/o1/peripherals/mcu#2-8-derlenmiş-projenin-u-boot-aşamasında-çalıştırılması) bölümündeki adımları takip edebilirsiniz.
+
+Bu örnek projede üretilen çıktılar UART1 arabirimi üzerinden iletilmektedir. (İlgili pin bağlantılarına [Pinout dokümantasyonundan](/tr/boards/o1/peripherals/introduction#1-pinout) ulaşabilirsiniz.)
+
+MATHLIB örnek projesinin çıktılarının terminal görüntüsü aşağıdaki gibidir.
+
+<SnippetDemo />
+
+## Mevcut MCU Projesine MakeFile Üzerinden Entegre Etme
+
+Mathlib kütüphanesini mevcut MCU projenize entegre edebilmek için, SDK’ya ait kök dizin yolunu ve kullanacağınız ```.cpp``` dosyasını tanımlamanız gerekmektedir.
+
+<SnippetPathCpp />
+
+Ardından, include edilen klasörler listesine (```INCLUDES_common``` değişkeni) MATHLIB’in ```src``` dizinini aşağıdaki şekilde eklemelisiniz.
+
+<SnippetIncludesCommon />
+
+Derleyiciye ait FLAGS parametrelerine (```CFLAGS_common``` değişkeni), kütüphanenin doğru şekilde derlenebilmesi için gerekli olan aşağıdaki tanımlamaları eklemeniz gerekmektedir.
+
+<SnippetCflagsCommon />
+
+Kütüphane yol tanımlarına (```LIBS_PATH_common``` değişkeni), MATHLIB’in derlenmiş kütüphane dizinini eklemelisiniz.
+
+<SnippetLibsPath />
+
+Dahil edilen kütüphane dosyaları listesine (```LIBS_common``` değişkeni) mathlib kütüphanesinin adını aşağıdaki gibi eklemeniz gerekmektedir.
+
+<SnippetLibsCommon />
+
+Projede .cpp dosyalarının derlenebilmesi için, ```OBJS``` ve ```DEPS``` tanımlarının yapıldığı satırın hemen altına aşağıdaki eklemelerin yapılması gerekmektedir.
+
+<SnippetObjsDeps />
+
+Bu adımların tamamlanmasının ardından MATHLIB kütüphanesi, projeye Makefile üzerinden başarıyla entegre edilmiş olacaktır.
+
+## Mevcut CPP Dosyasına MATHLIB Entegrasyonu
+
+Makefile üzerinden gerekli yapılandırmalar tamamlandıktan sonra, MATHLIB kütüphanesini kullanabilmek için ilgili header dosyasını projenizde yer alan .cpp dosyasına eklemeniz gerekmektedir. Bu adımın ardından, mevcut projeniz içerisinde MATHLIB’e ait fonksiyonları ve tanımlamaları doğrudan kullanabilirsiniz.
+
+MATHLIB kütüphanesinde yer alan modüllerin tamamına [bu bağlantı üzerinden](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/latest/exports/docs/mathlib/docs/user_guide/modules.html) ulaşabilirsiniz.
+
+<SnippetInclude />
+
+Bu işlem ile birlikte MATHLIB entegrasyonu tamamlanmış olacaktır.

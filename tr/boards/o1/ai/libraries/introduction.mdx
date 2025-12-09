@@ -1,6 +1,6 @@
 ---
-title: 'İleri Düzey'
-description: 'Hızlandırma çipleri ile matematiksel fonksiyonların kullanımı'
+title: 'Giriş'
+description: 'Hızlandırma çipleri ile ileri seviye fonksiyonların kullanımı'
 ---
 
 AM67A Serisi SoC’lerde yer alan C7x DSP çekirdekleri, yüksek performanslı sinyal ve görüntü işleme görevleri
@@ -27,26 +27,24 @@ verimlilik sağlar.
 
 VXLIB Kullanıcı Kılavuzuna [buradan](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/11_01_00_04/exports/docs/vxlib_11_00_00_01/docs/user_guide/index.html) ulaşabilirsiniz.
 
-### MMALIB
+###  MATHLIB
 
-MMALIB (Matrix Multiply and Linear Algebra Library), konvolüsyonel sinir ağları (CNN), lineer cebir (LINALG) ve 
-ileri düzey dijital sinyal işleme (DSP) işlemleri için optimize edilmiş fonksiyonlar sunar. Bu kütüphane, 
-özellikle derin öğrenme tabanlı görüntü işleme uygulamalarında (örneğin nesne tanıma, sınıflandırma, segmentasyon) 
-C7 çekirdeklerinin donanımsal potansiyelinden maksimum düzeyde yararlanılmasını sağlar.
+MATHLIB, temel ve ileri düzey matematiksel işlemler (trigonometrik fonksiyonlar, logaritmik hesaplamalar, üstel işlemler, karekök, vektörel matematik vb.) için optimize edilmiş fonksiyonlar sunan bir kütüphanedir. 
+Bu kütüphane, özellikle yoğun matematiksel hesaplamalar içeren gerçek zamanlı DSP/MCU uygulamalarında C7 çekirdeklerinin donanımsal kapasitesinden en verimli şekilde yararlanılmasını sağlar.
 
-MMALIB Kullanıcı Kılavuzuna [buradan](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/11_01_00_04/exports/docs/mmalib_11_01_00_06/docs/user_guide/modules.html) ulaşabilirsiniz.
+MATHLIB Kullanıcı Kılavuzuna [buradan](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/latest/exports/docs/mathlib/docs/user_guide/index.html) ulaşabilirsiniz.
 
 ### Potansiyel Kullanım Yerleri
 
 Bu üç kütüphane bir arada kullanıldığında, AM67A SoC üzerindeki C7 çekirdekleri sadece düşük seviye işleme değil, 
-aynı zamanda karmaşık görüntü analitiği, makine öğrenmesi çıkarım işlemleri ve gerçek zamanlı görüntü optimizasyonu 
+aynı zamanda karmaşık görüntü analitiği, matematiksel hesaplama süreçleri ve gerçek zamanlı görüntü optimizasyonu 
 gibi ileri seviye uygulamaların da temelini oluşturabilir.
 
 Örneğin:
 
 - DSPLIB ile sinyal ön işleme,
 - VXLIB ile görüntü tabanlı özellik çıkarımı,
-- MMALIB ile sinir ağı tabanlı sınıflandırma işlemleri aynı işlem hattında ardışık şekilde uygulanabilir.
+- MATHLIB ile yoğun matematiksel hesaplamaların yüksek performansla yürütülmesi.
 
 Bu sayede sistem genelinde CPU üzerindeki yük azaltılırken, enerji verimliliği yüksek ve gerçek zamanlı 
 çalışabilen görüntü işleme ve matematiksel hesaplama çözümleri geliştirilebilir.

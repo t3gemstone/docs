@@ -1,6 +1,6 @@
 ---
-title: 'Advanced Level'
-description: 'Using Mathematical Functions with Acceleration Chips'
+title: 'Introduction'
+description: 'Using Advanced Functions with Acceleration Chips'
 ---
 
 The C7x DSP cores in AM67A Series SoCs are optimized for high-performance signal and image processing tasks.
@@ -22,12 +22,12 @@ When used together with DSPLIB, VXLIB provides high efficiency in all stages of 
 
 You can access the VXLIB User Guide [here](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/11_01_00_04/exports/docs/vxlib_11_00_00_01/docs/user_guide/index.html).
 
-### MMALIB
+### MATHLIB
 
-MMALIB (Matrix Multiply and Linear Algebra Library) provides optimized functions for convolutional neural networks (CNN), linear algebra (LINALG), and advanced digital signal processing (DSP) operations.
-This library enables maximum utilization of the hardware potential of the C7 cores, especially in deep learning-based image processing applications (e.g., object recognition, classification, segmentation).
+MATHLIB is a library that provides optimized functions for basic and advanced mathematical operations (trigonometric functions, logarithmic calculations, exponential operations, square roots, vector mathematics, etc.). 
+This library enables C7 cores to utilize their hardware capabilities most efficiently, particularly in real-time DSP/MCU applications involving intensive mathematical calculations.
 
-You can access the MMALIB User Guide [here](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/11_01_00_04/exports/docs/mmalib_11_01_00_06/docs/user_guide/modules.html).
+You can access the MATHLIB User Guide [here](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/latest/exports/docs/mathlib/docs/user_guide/index.html).
 
 ### Potential Use Cases
 
@@ -37,6 +37,6 @@ For example:
 
 - Signal pre-processing with DSPLIB,
 - Image-based feature extraction with VXLIB,
-- Neural network-based classification operations with MMALIB can be applied sequentially in the same processing pipeline.
+- High-performance execution of intensive mathematical calculations with MATHLIB. 
 
 This way, while the overall system load on the CPU is reduced, energy-efficient and real-time capable image processing and mathematical computation solutions can be developed.
