@@ -1,6 +1,6 @@
 ---
 title: 'Examples'
-description: 'Sample Projects'
+description: 'Example Projects'
 ---
 
 ### Real-Time Object Detection Application
@@ -9,12 +9,15 @@ description: 'Sample Projects'
   <img height="600" width="800" src="/images/o1-board/ai/example-object-detection.png" />
 </Frame>
 
-This application included in the sample application enables hardware-accelerated object detection using the C7x/MMA cores on the AM67A SoC.
-The camera image is acquired via the GStreamer infrastructure; inference is performed on the TensorFlow Lite model, and the results are transmitted to the browser in real-time via an MJPEG server.
+This application, included within the sample projects, enables hardware-accelerated object detection using
+the C7x/MMA cores on the AM67A SoC. The camera feed is captured via the GStreamer framework; inference is
+performed using a TensorFlow Lite model, and the results are streamed in real-time to a browser via an MJPEG server.
 
-The application runs the model inference on the C7x DSP using the TIDL (TI Deep Learning) delegate library. If the TIDL delegate is not found, it automatically continues to run on the CPU.
+The application uses the TIDL (TI Deep Learning) delegate library to run model inference on the C7x DSP.
+If the TIDL delegate is not available, it automatically falls back to running on the CPU.
 
-The source code is available in T3 Gemstone's [examples repository](https://github.com/t3gemstone/examples/tree/main/camera) on GitHub.
+The source code is available in T3 Gemstone's GitHub
+[examples repository](https://github.com/t3gemstone/examples/tree/main/camera).
 
 ### Audio-Visual Conference
 
@@ -22,9 +25,11 @@ The source code is available in T3 Gemstone's [examples repository](https://gith
   <img height="600" width="800" src="/images/o1-board/ai/example-audio-visual.png" />
 </Frame>
 
-This demo demonstrates an audio-visual system that processes both audio and video data, detecting voice commands to control the areas the camera focuses on and recognizing and displaying faces on the screen using deep learning.
+This demo showcases an audio-visual system that processes both audio and video data. It detects voice commands
+to control the camera's focus area and uses deep learning to recognize and display faces on the screen.
 
-The source code is available in Texas Instruments' [edgeai-demo-audio-visual repository](https://github.com/TexasInstruments-Sandbox/edgeai-demo-audio-visual) on GitHub.
+The source code is available on Texas Instruments' GitHub
+[edgeai-demo-audio-visual repository](https://github.com/TexasInstruments-Sandbox/edgeai-demo-audio-visual).
 
 ### Barcode Reader
 
@@ -32,11 +37,19 @@ The source code is available in Texas Instruments' [edgeai-demo-audio-visual rep
   <img height="600" width="800" src="/images/o1-board/ai/example-barcode-reader.png" />
 </Frame>
 
-Barcodes play a critical role in areas such as inventory management, asset tracking, ticketing, and information sharing. While laser-based scanners are sufficient for one-dimensional (1-D) barcodes, cameras are required for two-dimensional (2-D) barcodes (e.g., QR codes). Camera-based systems are often called "barcode imagers." The most computationally intensive process in barcode imagers is not decoding the barcode but finding it, and deep learning techniques are very effective at this stage.
+Barcodes play a critical role in areas such as inventory management, asset tracking, ticketing, and information
+sharing. One-dimensional (1-D) and two-dimensional (2-D) barcodes condense information into a visual encoding
+format. While laser-based scanners are sufficient for 1-D barcodes, cameras are required for 2-D barcodes
+(e.g., QR codes). Camera-based systems are often called "barcode imagers." In barcode imagers, the most
+computationally intensive task is not decoding the barcode but rather locating it, and deep learning
+techniques are highly effective at this stage.
 
-This demo runs a specially trained YOLOX-nano neural network to detect 1-D and 2-D barcodes. The detected barcode regions are cropped and converted to grayscale for decoding with the zbar open-source library. The barcode decoding is displayed along with the bounding box obtained from object detection.
+This demo runs a specially trained YOLOX-nano neural network to detect 1-D and 2-D barcodes. The detected
+barcode regions are cropped and converted to grayscale for decoding using the open-source zbar library.
+The decoded barcode is displayed alongside the bounding box obtained from object detection.
 
-The source code is available in Texas Instruments' [edgeai-gst-apps-barcode-reader repository](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-barcode-reader) on GitHub.
+The source code is available on Texas Instruments' GitHub
+[edgeai-gst-apps-barcode-reader repository](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-barcode-reader).
 
 ### Smart Store Checkout Scanner
 
@@ -44,14 +57,18 @@ The source code is available in Texas Instruments' [edgeai-gst-apps-barcode-read
   <img height="600" width="800" src="/images/o1-board/ai/example-smart-checkout.png" />
 </Frame>
 
-Self-checkout systems in retail and grocery stores have greatly facilitated the customer experience.
-Simple and user-friendly kiosks allow customers to scan their products and make low-contact payments.
-This field is increasingly moving towards more automated systems, and customers can scan multiple products at the same time without having to search for barcodes or place products in a specific way.
-Such systems offer additional advantages such as speeding up the process, reducing contact surfaces, and increasing overall efficiency.
+Self-checkout systems in retail and grocery stores have significantly improved the customer experience.
+Simple and user-friendly kiosks allow customers to scan their products and make low-contact payments. This
+field is increasingly moving towards more automated systems, where customers can scan multiple items
+simultaneously without needing to search for barcodes or position items in a specific way. Such systems
+offer additional advantages like speeding up the process, reducing contact surfaces, and increasing
+overall efficiency.
 
-This demo demonstrates an automated retail checkout scanner that detects 12 different food types (banana, apple, chip bag, soda can, etc.) using a deep learning model.
+This demo showcases an automated retail checkout scanner that uses a deep learning model to detect 12 different
+types of food items (banana, apple, chip bag, soda can, etc.).
 
-The source code is available in Texas Instruments' [edgeai-gst-apps-retail-checkout repository](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-retail-checkout) on GitHub.
+The source code is available on Texas Instruments' GitHub
+[edgeai-gst-apps-retail-checkout repository](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-retail-checkout).
 
 ### People Tracking
 
@@ -59,14 +76,16 @@ The source code is available in Texas Instruments' [edgeai-gst-apps-retail-check
   <img height="600" width="800" src="/images/o1-board/ai/example-people-tracking.png" />
 </Frame>
 
-Image-based people tracking can be applied in many areas such as retail, building automation, security, and safety.
-This demo uses the YOLOX-S-Lite machine learning model to detect individuals in a video stream.
-The output of the model is used to track the movements of people in the scene, and the open-source library Norfair comes into play in this process.
+Image-based people tracking can be applied in many fields such as retail, building automation, security, and
+safety. This demo uses the YOLOX-S-Lite machine learning model to detect individuals in a video stream. The
+model's output is used to track the movements of people in the scene, leveraging the open-source Norfair library.
 
-The demo provides live tracking of individuals in the scene and offers timers showing the duration each person has spent in their current location.
-It also includes a control panel showing statistics such as total visitor count, current occupancy, and the distribution of time individuals spent on the scene.
-Additionally, there is a heatmap highlighting frequently visited areas.
-This feature provides valuable information for understanding human behavior.
-For example, it can help optimize shelf layout in retail stores, thereby improving the customer experience.
+The demo provides live tracking of individuals in the scene and displays timers showing the duration each
+person has spent in their current location. It also includes a control panel showing statistics such as total
+visitor count, current occupancy, and the distribution of time individuals spend in the scene.
+Additionally, a heatmap highlights frequently visited areas. This feature provides valuable insights
+for understanding human behavior. For example, in retail stores, it can help optimize shelf layout to
+improve customer experience.
 
-The source code is available in Texas Instruments' [edgeai-gst-apps-people-tracking repository](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-people-tracking) on GitHub.
+The source code is available on Texas Instruments' GitHub
+[edgeai-gst-apps-people-tracking repository](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-people-tracking).

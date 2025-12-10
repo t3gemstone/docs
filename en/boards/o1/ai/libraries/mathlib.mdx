@@ -1,6 +1,6 @@
 ---
 title: 'MATHLIB'
-description: 'Use of mathematical functions with acceleration chips'
+description: 'Using mathematical functions with acceleration chips'
 ---
 
 import SnippetMcuBuild from '/snippets/ai/advanced/mcu-build.mdx';
@@ -13,62 +13,71 @@ import SnippetLibsCommon from '/snippets/ai/advanced/mathlib/libs-common.mdx';
 import SnippetObjsDeps from '/snippets/ai/advanced/objs-deps.mdx';
 import SnippetInclude from '/snippets/ai/advanced/mathlib/include.mdx';
 
-<Tip>C7-based MCU projects using the MATHLIB library operate by utilizing the AI Accelerator (C7x DSP / MMA) unit located in the processor. This allows mathematical operations, vector calculations, and functions requiring intensive computation to be executed with hardware acceleration, significantly improving application performance.</Tip>
-
-This document explains the steps for integrating the Texas Instruments MATHLIB library into MCU projects developed on the T3 Gemstone O1 development board and provides a sample project.
-MATHLIB is a software library developed by Texas Instruments that is optimized for high-performance mathematical functions (trigonometric, logarithmic, square root, etc.) and is used specifically to reduce processor load in low-power DSP/MCU applications.
+<Tip>C7-based MCU projects using the MATHLIB library leverage the AI Accelerator (C7x DSP / MMA) unit
+within the processor. This allows mathematical operations, vector calculations, and compute-intensive
+functions to be executed with hardware acceleration, significantly increasing application performance.</Tip>
 
 ## Example Project
 
-A working sample project that you can examine by referencing the integration of the MATHLIB library is available in the ```MCU``` directory under the ```examples``` repository on T3 Gemstone GitHub.
+A working example project that you can examine as a reference for MATHLIB library integration is
+provided in the `MCU` directory within T3 Gemstone's GitHub `examples` repository.
 
-While in the ```devbox shell``` within the examples repository, you should run the following command.
+While inside the `devbox shell` within the examples repository, you should run the following command.
 
 <SnippetMcuBuild />
 
-```examples/mcu/mathlib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000``` and ```examples/mcu/mathlib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000``` contain the ```mathlib_demo. out``` file in the directory is now executable on C7 cores.
+The `mathlib_demo.out` file located in `examples/mcu/mathlib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000` and
+`examples/mcu/mathlib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000` is now ready to run on the C7 cores.
 
-To run it on the development board, you can follow the steps in the section [Running the compiled project in the U-Boot phase](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage).
+To run it on the development board, you can follow the steps in the
+[Running the compiled project at the U-Boot stage](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage) section.
 
-The outputs generated in this example project are transmitted via the UART1 interface. (You can find the relevant pin connections in the [Pinout documentation](/en/boards/o1/peripherals/introduction#1-pinout).)
+In this example project, the generated outputs are transmitted via the UART1 interface.
+(You can find the related pin connections in the [Pinout documentation](/en/boards/o1/peripherals/introduction#1-pinout).)
 
-The terminal output of the MATHLIB sample project is as follows.
+The terminal output of the MATHLIB example project is as follows.
 
 <SnippetDemo />
 
-## Integrating into Your Current MCU Project via Makefile
+## Integrating into an Existing MCU Project via MakeFile
 
-To integrate the Mathlib library into your current MCU project, you must define the root directory path of the SDK and the ```.cpp``` file you will be using.
+To integrate the Mathlib library into your existing MCU project, you need to define the root directory
+path of the SDK and the `.cpp` file you will use.
 
 <SnippetPathCpp />
 
-Next, you should add MATHLIB's src directory to the list of included directories (INCLUDES_common variable) as follows.
+Then, you should add MATHLIB's `src` directory to the list of included folders (`INCLUDES_common` variable) as follows.
 
 <SnippetIncludesCommon />
 
-You must add the following definitions to the compiler's FLAGS parameters (the ```CFLAGS_common``` variable) for the library to compile correctly.
+You must add the following necessary definitions to the compiler FLAGS parameters (`CFLAGS_common` variable) for
+the library to compile correctly.
 
 <SnippetCflagsCommon />
 
-You must add the compiled library directory of MATHLIB to the library path definitions (```LIBS_PATH_common``` variable).
+You should add MATHLIB's compiled library directory to the library path definitions (`LIBS_PATH_common` variable).
 
 <SnippetLibsPath />
 
-You must add the name of the mathlib library to the list of included library files (```LIBS_common``` variable) as follows.
+You need to add the name of the mathlib library to the list of included library files (`LIBS_common` variable) as follows.
 
 <SnippetLibsCommon />
 
-In order for .cpp files to be compiled in the project, the following additions must be made immediately below the line where the ```OBJS``` and ```DEPS``` definitions are made.
+To enable the compilation of .cpp files in the project, the following additions must be made right below the line
+where `OBJS` and `DEPS` definitions are made.
 
 <SnippetObjsDeps />
 
-After completing these steps, the MATHLIB library will be successfully integrated into the project via Makefile.
+Upon completion of these steps, the MATHLIB library will be successfully integrated into the project via Makefile.
 
-## MATHLIB Integration into the Existing CPP File
+## Integrating MATHLIB into an Existing CPP File
 
-After completing the necessary configurations via Makefile, you must add the relevant header file to the .cpp file in your project to be able to use the MATHLIB library. After this step, you can directly use the functions and definitions belonging to MATHLIB within your current project.
+After completing the necessary configurations via Makefile, to use the MATHLIB library, you need to include
+its header file in the .cpp file within your project. Following this step, you can directly use MATHLIB's
+functions and definitions within your existing project.
 
-You can access all modules in the MATHLIB library [via this link](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/latest/exports/docs/mathlib/docs/user_guide/modules.html).
+You can access all modules available in the MATHLIB library via
+[this link](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/latest/exports/docs/mathlib/docs/user_guide/modules.html).
 
 <SnippetInclude />
 

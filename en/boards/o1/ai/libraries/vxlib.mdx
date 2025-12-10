@@ -1,6 +1,6 @@
 ---
 title: 'VXLIB'
-description: 'Use of image processing functions with acceleration chips'
+description: 'Using image processing functions with acceleration chips'
 ---
 
 import SnippetMcuBuild from '/snippets/ai/advanced/mcu-build.mdx';
@@ -13,79 +13,91 @@ import SnippetLibsCommon from '/snippets/ai/advanced/vxlib/libs-common.mdx';
 import SnippetObjsDeps from '/snippets/ai/advanced/objs-deps.mdx';
 import SnippetInclude from '/snippets/ai/advanced/vxlib/include.mdx';
 
-<Tip>C7-based MCU projects using VXLIB run through the DSP accelerator core located in the processor. This allows image processing, filtering, feature extraction, and intensive matrix/pixel operations to be accelerated in hardware, significantly improving performance in real-time applications.</Tip>
-This document explains the steps for integrating the Texas Instruments VXLIB library into MCU projects developed on the T3 Gemstone O1 development board and provides an example application.
-VXLIB is a function library developed by Texas Instruments and optimized for image processing and computer vision applications.
-VXLIB is a comprehensive software library consisting of over 100 optimized cores used to accelerate image processing operations.
+<Tip>C7-based MCU projects using VXLIB run via the DSP accelerator core within the processor. This allows
+image processing, filtering, feature extraction, and intensive matrix/pixel operations to be hardware-accelerated,
+significantly boosting performance in real-time applications.</Tip>
 
 VXLIB provides the following core image processing capabilities:
+
 - Image filtering
 - Statistical information extraction
 - Feature detection
 - Tracking and recognition
 - Low-level pixel processing
 
-These cores can be used as building blocks in the following application areas:
-- Video analytics
-- Video surveillance
-- Automotive image processing
-- Embedded image processing
-- Gaming and entertainment image systems
-- Industrial machine vision
-- Consumer electronics
-- Augmented reality
+These cores can be used as fundamental building blocks in the following application areas:
+
+- Video Analytics
+- Video Surveillance
+- Automotive Image Processing
+- Embedded Image Processing
+- Gaming and Entertainment Imaging Systems
+- Industrial Machine Vision
+- Consumer Electronics
+- Augmented Reality
 
 ## Example Project
 
-A working sample project that you can examine by referencing the integration of the VXLIB library is available in the ```MCU``` directory under the ```examples``` repository on T3 Gemstone GitHub.
+A working example project that you can examine as a reference for VXLIB library integration is provided
+in the `MCU` directory within T3 Gemstone's GitHub `examples` repository.
 
-While in the ```devbox shell``` within the examples repository, you should run the following command.
+While inside the `devbox shell` within the examples repository, you should run the following command.
 
 <SnippetMcuBuild />
 
-```examples/mcu/vxlib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000``` and ```examples/mcu/vxlib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000``` contain the ```vxlib_demo. out``` file in the following directories is now executable on C7 cores.
+The `vxlib_demo.out` file located in `examples/mcu/vxlib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000` and
+`examples/mcu/vxlib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000` is now ready to run on the C7 cores.
 
-To run it on the development board, you can follow the steps in the section [Running the compiled project in the U-Boot phase](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage).
+To run it on the development board, you can follow the steps in the
+[Running the compiled project at the U-Boot stage](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage) section.
 
-The outputs generated in this example project are transmitted via the UART1 interface. (You can find the relevant pin connections in the [Pinout documentation](/en/boards/o1/peripherals/introduction#1-pinout).)
+In this example project, the generated outputs are transmitted via the UART1 interface.
+You can find the related pin connections in the [Pinout documentation](/en/boards/o1/peripherals/introduction#1-pinout).
 
-The terminal display of the VXLIB example project's outputs is as follows.
+The terminal output of the VXLIB example project is as follows.
 
 <SnippetDemo />
 
-## Integrating into Your Current MCU Project via Makefile
+## Integrating into an Existing MCU Project via MakeFile
 
-To integrate the VXLIB library into your current MCU project, you must define the root directory path of the SDK and the ```.cpp``` file you will be using.
+To integrate the VXLIB library into your existing MCU project, you need to define the root directory path of
+the SDK and the `.cpp` file you will use.
 
 <SnippetPathCpp />
 
-Next, you should add VXLIB's ```src``` and ```src/common``` directories to the list of included folders (the ```INCLUDES_common``` variable) as follows. You may need to change the path depending on your VXLIB version.
+Then, you should add VXLIB's `src` and `src/common` directories to the list of included
+folders (`INCLUDES_common` variable) as follows. You may need to adjust the path according to your VXLIB version.
 
 <SnippetIncludesCommon />
 
-You must add the following definitions to the compiler's FLAGS parameters (the ```CFLAGS_common``` variable) for the library to compile correctly.
+You must add the following necessary definitions to the compiler FLAGS parameters (`CFLAGS_common` variable)
+for the library to compile correctly.
 
 <SnippetCflagsCommon />
 
-You must add the compiled library directory of VXLIB to the library path definitions (```LIBS_PATH_common``` variable).
+You should add VXLIB's compiled library directory to the library path definitions (`LIBS_PATH_common` variable).
 
 <SnippetLibsPath />
 
-You must add the name of the VXLIB library to the list of included library files (```LIBS_common``` variable) as follows.
+You need to add the name of the VXLIB library to the list of included library files (`LIBS_common` variable) as follows.
 
 <SnippetLibsCommon />
 
-In order for .cpp files to be compiled in the project, the following additions must be made immediately below the line where the ```OBJS``` and ```DEPS``` definitions are made.
+To enable the compilation of .cpp files in the project, the following additions must be made right below the
+line where `OBJS` and `DEPS` definitions are made.
 
 <SnippetObjsDeps />
 
-After completing these steps, the VXLIB library will be successfully integrated into the project via Makefile.
+Upon completion of these steps, the VXLIB library will be successfully integrated into the project via Makefile.
 
-## Integrating VXLIB into the Existing CPP File
+## Integrating VXLIB into an Existing CPP File
 
-After completing the necessary configurations via Makefile, you must add the relevant header file to the .cpp file in your project to use the VXLIB library. After this step, you can directly use the functions and definitions belonging to VXLIB within your existing project.
+After completing the necessary configurations via Makefile, to use the VXLIB library, you need to include its
+header file in the .cpp file within your project. Following this step, you can directly use VXLIB's functions
+and definitions within your existing project.
 
-All modules in the VXLIB library [this link](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/10_01_00_04/exports/docs/vxlib_10_01_00_02/docs/user_guide/index.html).
+You can access all modules available in the VXLIB library via
+[this link](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/10_01_00_04/exports/docs/vxlib_10_01_00_02/docs/user_guide/index.html).
 
 <SnippetInclude />
 

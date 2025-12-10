@@ -9,12 +9,16 @@ description: 'Örnek Projeler'
   <img height="600" width="800" src="/images/o1-board/ai/example-object-detection.png" />
 </Frame>
 
-Örnek uygulama içinde yer alan bu uygulamada, AM67A SoC üzerindeki C7x/MMA çekirdekleri kullanılarak donanım hızlandırmalı nesne tespiti yapılmasını sağlar.
-Kamera görüntüsü, GStreamer altyapısı üzerinden alınır; TensorFlow Lite modelinde çıkarım (inference) yapılır ve sonuçlar bir MJPEG sunucusu üzerinden tarayıcıya gerçek zamanlı olarak iletilir.
+Örnek uygulama içinde yer alan bu uygulamada, AM67A SoC üzerindeki C7x/MMA çekirdekleri kullanılarak donanım
+hızlandırmalı nesne tespiti yapılmasını sağlar. Kamera görüntüsü, GStreamer altyapısı üzerinden alınır; TensorFlow
+Lite modelinde çıkarım (inference) yapılır ve sonuçlar bir MJPEG sunucusu üzerinden tarayıcıya gerçek zamanlı
+olarak iletilir.
 
-Uygulama, TIDL (TI Deep Learning) delegate kütüphanesini kullanarak model çıkarımını C7x DSP üzerinde çalıştırır. Eğer TIDL delegate bulunamazsa, otomatik olarak CPU üzerinde çalışmaya devam eder.
+Uygulama, TIDL (TI Deep Learning) delegate kütüphanesini kullanarak model çıkarımını C7x DSP üzerinde
+çalıştırır. Eğer TIDL delegate bulunamazsa, otomatik olarak CPU üzerinde çalışmaya devam eder.
 
-Kaynak kodları T3 Gemstone'un GitHub üzerindeki [examples deposunda](https://github.com/t3gemstone/examples/tree/main/camera) mevcuttur.
+Kaynak kodları T3 Gemstone'un GitHub üzerindeki
+[examples deposunda](https://github.com/t3gemstone/examples/tree/main/camera) mevcuttur.
 
 ### Görsel-İşitsel Konferans
 
@@ -22,9 +26,11 @@ Kaynak kodları T3 Gemstone'un GitHub üzerindeki [examples deposunda](https://g
   <img height="600" width="800" src="/images/o1-board/ai/example-audio-visual.png" />
 </Frame>
 
-Bu demo, sesli komutları algılayarak kameranın odaklandığı alanları kontrol eden ve derin öğrenme ile yüzleri tanıyıp ekranda gösteren, hem ses hem görüntü verilerini işleyen bir işitsel-görsel sistemi göstermektedir.
+Bu demo, sesli komutları algılayarak kameranın odaklandığı alanları kontrol eden ve derin öğrenme ile yüzleri
+tanıyıp ekranda gösteren, hem ses hem görüntü verilerini işleyen bir işitsel-görsel sistemi göstermektedir.
 
-Kaynak kodları Texas Instruments'ın GitHub üzerindeki [edgeai-demo-audio-visual deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-demo-audio-visual) mevcuttur.
+Kaynak kodları Texas Instruments'ın GitHub üzerindeki
+[edgeai-demo-audio-visual deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-demo-audio-visual) mevcuttur.
 
 ### Barkod Okuyucu
 
@@ -32,11 +38,20 @@ Kaynak kodları Texas Instruments'ın GitHub üzerindeki [edgeai-demo-audio-visu
   <img height="600" width="800" src="/images/o1-board/ai/example-barcode-reader.png" />
 </Frame>
 
-Barkodlar, envanter yönetimi, varlık takibi, biletleme ve bilgi paylaşımı gibi alanlarda kritik bir rol oynar. Tek boyutlu (1-D) ve iki boyutlu (2-D) barkodlar, bilgiyi görsel bir kodlama biçiminde yoğunlaştırır. 1-D barkodlar için lazer tabanlı tarayıcılar yeterliyken, 2-D barkodlar (ör. QR kodları) için kameralar gereklidir. Kamera tabanlı sistemler genellikle “barkod görüntüleyiciler” olarak adlandırılır. Barkod görüntüleyicilerde en fazla hesaplama gerektiren işlem, barkodu çözmekten ziyade barkodu bulmaktır ve bu aşamada derin öğrenme teknikleri oldukça etkilidir.
+Barkodlar, envanter yönetimi, varlık takibi, biletleme ve bilgi paylaşımı gibi alanlarda kritik bir rol oynar.
+Tek boyutlu (1-D) ve iki boyutlu (2-D) barkodlar, bilgiyi görsel bir kodlama biçiminde yoğunlaştırır. 1-D
+barkodlar için lazer tabanlı tarayıcılar yeterliyken, 2-D barkodlar (ör. QR kodları) için kameralar gereklidir.
+Kamera tabanlı sistemler genellikle “barkod görüntüleyiciler” olarak adlandırılır. Barkod görüntüleyicilerde
+en fazla hesaplama gerektiren işlem, barkodu çözmekten ziyade barkodu bulmaktır ve bu aşamada derin öğrenme
+teknikleri oldukça etkilidir.
 
-Bu demo, özel olarak eğitilmiş YOLOX-nano sinir ağını çalıştırarak 1-D ve 2-D barkodları tespit eder. Tespit edilen barkod bölgeleri kırpılır ve zbar açık kaynak kütüphanesi ile çözümleme için gri tonlamaya dönüştürülür. Barkod çözümü, nesne tespiti ile elde edilen sınırlayıcı kutu ile birlikte görüntülenir.
+Bu demo, özel olarak eğitilmiş YOLOX-nano sinir ağını çalıştırarak 1-D ve 2-D barkodları tespit eder. Tespit
+edilen barkod bölgeleri kırpılır ve zbar açık kaynak kütüphanesi ile çözümleme için gri tonlamaya dönüştürülür.
+Barkod çözümü, nesne tespiti ile elde edilen sınırlayıcı kutu ile birlikte görüntülenir.
 
-Kaynak kodları Texas Instruments'ın GitHub üzerindeki [edgeai-gst-apps-barcode-reader deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-barcode-reader) mevcuttur.
+Kaynak kodları Texas Instruments'ın GitHub üzerindeki
+[edgeai-gst-apps-barcode-reader deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-barcode-reader)
+mevcuttur.
 
 ### Akıllı Mağaza Satış Tarayıcısı
 
@@ -46,12 +61,16 @@ Kaynak kodları Texas Instruments'ın GitHub üzerindeki [edgeai-gst-apps-barcod
 
 Perakende ve marketlerdeki self-checkout sistemleri, müşteri deneyimini büyük ölçüde kolaylaştırmıştır. 
 Basit ve kullanıcı dostu kiosklar, müşterilerin ürünlerini tarayıp düşük temasta ödeme yapmalarını sağlar.
-Bu alan giderek daha otomatik sistemlere doğru ilerlemekte ve müşteriler, barkod aramak veya ürünleri belirli bir şekilde yerleştirmek zorunda kalmadan birden fazla ürünü aynı anda tarayabilmektedir. 
+Bu alan giderek daha otomatik sistemlere doğru ilerlemekte ve müşteriler, barkod aramak veya ürünleri belirli bir
+şekilde yerleştirmek zorunda kalmadan birden fazla ürünü aynı anda tarayabilmektedir. 
 Bu tür sistemler, süreci hızlandırma, temas yüzeylerini azaltma ve genel verimliliği artırma gibi ek avantajlar sunar.
 
-Bu demo, derin öğrenme modeli ile 12 farklı yiyecek türünü (muz, elma, cips paketi, gazlı içecek kutusu vb.) tespit eden otomatik perakende ödeme tarayıcısını göstermektedir.
+Bu demo, derin öğrenme modeli ile 12 farklı yiyecek türünü (muz, elma, cips paketi, gazlı içecek kutusu vb.)
+tespit eden otomatik perakende ödeme tarayıcısını göstermektedir.
 
-Kaynak kodları Texas Instruments'ın GitHub üzerindeki [edgeai-gst-apps-retail-checkout deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-retail-checkout) mevcuttur.
+Kaynak kodları Texas Instruments'ın GitHub üzerindeki
+[edgeai-gst-apps-retail-checkout deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-retail-checkout)
+mevcuttur.
 
 ### İnsan Takibi
 
@@ -61,12 +80,15 @@ Kaynak kodları Texas Instruments'ın GitHub üzerindeki [edgeai-gst-apps-retail
 
 Görüntü tabanlı insan takibi, perakende, bina otomasyonu, güvenlik ve emniyet gibi birçok alanda uygulanabilir.
 Bu demo, video akışındaki bireyleri tespit etmek için YOLOX-S-Lite makine öğrenimi modelini kullanır.
-Modelin çıktısı, sahnedeki insanların hareketlerini takip etmek için kullanılır ve bu süreçte Norfair adlı açık kaynak kütüphane devreye girer.
+Modelin çıktısı, sahnedeki insanların hareketlerini takip etmek için kullanılır ve bu süreçte Norfair adlı
+açık kaynak kütüphane devreye girer.
 
-Demo, sahnedeki bireylerin canlı takibini sağlar ve her kişinin mevcut konumunda geçirdiği süreyi gösteren zamanlayıcılar sunar.
-Ayrıca toplam ziyaretçi sayısı, mevcut doluluk ve bireylerin sahnede geçirdiği sürelerin dağılımı gibi istatistikleri gösteren bir kontrol paneli içerir.
-Ek olarak, sık ziyaret edilen alanları vurgulayan bir ısı haritası bulunur.
-Bu özellik, insan davranışlarını anlamak için değerli bilgiler sunar.
+Demo, sahnedeki bireylerin canlı takibini sağlar ve her kişinin mevcut konumunda geçirdiği süreyi gösteren
+zamanlayıcılar sunar. Ayrıca toplam ziyaretçi sayısı, mevcut doluluk ve bireylerin sahnede geçirdiği sürelerin
+dağılımı gibi istatistikleri gösteren bir kontrol paneli içerir. Ek olarak, sık ziyaret edilen alanları vurgulayan
+bir ısı haritası bulunur. Bu özellik, insan davranışlarını anlamak için değerli bilgiler sunar.
 Örneğin perakende mağazalarında raf düzeninin optimize edilmesine yardımcı olarak müşteri deneyimini iyileştirebilir.
 
-Kaynak kodları Texas Instruments'ın GitHub üzerindeki [edgeai-gst-apps-people-tracking deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-people-tracking) mevcuttur.
+Kaynak kodları Texas Instruments'ın GitHub üzerindeki 
+[edgeai-gst-apps-people-tracking deposunda](https://github.com/TexasInstruments-Sandbox/edgeai-gst-apps-people-tracking)
+mevcuttur.

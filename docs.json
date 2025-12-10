@@ -122,7 +122,6 @@
                       "tr/boards/o1/ai/process",
                       "tr/boards/o1/ai/usage",
                       "tr/boards/o1/ai/examples",
-                      "tr/boards/o1/ai/tf",
                       {
                         "group": "İleri Düzey",
                         "pages": [
