@@ -1,0 +1,9 @@
+```makefile
+OBJS += $(FILES_cpp:%.cpp=%.obj)
+DEPS := $(FILES:%.cpp=%.dpp)
+vpath %.cpp $(FILES_PATH)
+
+$(OBJDIR)/%.obj %.obj: %.cpp
+	@echo  Compiling: j722s:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).dpp -ppa -fr=$(OBJDIR)/ -fp=$<
+```

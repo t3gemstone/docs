@@ -1,0 +1,50 @@
+---
+title: 'Python Örneği'
+description: 'Python ile Yapay Zeka Hızlandırıcılarında Görüntü İşleme'
+---
+
+import SnippetAIObjClassification from '/snippets/ai/object-class.mdx';
+import SnippetAIObjDetection from '/snippets/ai/object-detection.mdx';
+import SnippetAIKeypointDetection from '/snippets/ai/keypoint-detection.mdx';
+import SnippetAISegmentation from '/snippets/ai/segmentation.mdx';
+
+### AI Hızlandırma Desteği ile Görüntü İşlemleri
+
+<Tooltip tip="CSI Kamera bağlanması durumunda overlay eklenmesi gerekmektedir." 
+cta="CSI Kamera eklemeye gözat" href="/tr/boards/o1/peripherals/camera">Kamera</Tooltip>
+bağlantımızı yaptıktan sonra T3 Gemstone O1 geliştirme kartına güç vererek kartı çalıştırınız.
+
+Aşağıdaki yöntemle derleme işlemi gerçekleştiriniz.
+
+```bash Terminal lines
+git clone https://github.com/t3gemstone/examples.git
+cd examples
+./setup.sh
+devbox shell
+task fetch
+PROJECT=camera-ai-accelerator task clean build 
+```
+
+Derlenen projenin ve model dosyalarının geliştirme kartına aktarılması yapılmalıdır. Aşağıda SCP üzerinden
+derlenmiş `camera-ai-accelerator` dosyası aktarılmıştır.
+
+```bash Terminal lines
+scp build/examples/camera-ai-accelerator/camera-ai-accelerator gemstone@192.168.7.2:/home/gemstone/
+```
+
+Projeyi çalıştırırken bir model dosyası belirtmeniz zorunludur. `<modelinizin-yolu>` alanına, hazır bir modeli
+veya derlemiş olduğunuz modelin yolunu girmeniz gerekmektedir.
+
+Varsayılan olarak proje, CSI üzerinden bağlanmış IMX219 kamera ile çalışacak şekilde yapılandırılmıştır.
+Farklı bir kamera sensörü kullanmanız durumunda kaynak kodunda gerekli değişiklikleri yapmanız gerekmektedir.
+Desteklenen kamera sensörlerinin listesi `/opt/imaging/` klasörü içerisinde bulunmaktadır.
+Farklı bir kamera ile çalışabilmek için GST Pipeline’ı bu dosyalara göre güncellemeniz yeterlidir.
+
+USB üzerinden bağlanan kameraları kullanmak için ise, projeyi çalıştırırken `--device=/dev/USBx` argümanınına
+kameranın bağlı olduğu USB cihazını eklemeniz yeterlidir. Bu sayede ek bir yapılandırma yapmadan USB cihazdan gelen
+görüntüyü projede kullanabilirsiniz.
+
+```bash Terminal lines
+chmod +x camera-ai-accelerator
+./camera-ai-accelerator --modeldir=<modelinizin-yolu>
+```

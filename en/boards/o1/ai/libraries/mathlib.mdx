@@ -1,0 +1,84 @@
+---
+title: 'MATHLIB'
+description: 'Using mathematical functions with acceleration chips'
+---
+
+import SnippetMcuBuild from '/snippets/ai/advanced/mcu-build.mdx';
+import SnippetDemo from '/snippets/ai/advanced/mathlib/demo.mdx';
+import SnippetPathCpp from '/snippets/ai/advanced/mathlib/path-cpp.mdx';
+import SnippetIncludesCommon from '/snippets/ai/advanced/mathlib/path-includes-common.mdx';
+import SnippetCflagsCommon from '/snippets/ai/advanced/cflags-common.mdx';
+import SnippetLibsPath from '/snippets/ai/advanced/mathlib/libs-path.mdx';
+import SnippetLibsCommon from '/snippets/ai/advanced/mathlib/libs-common.mdx';
+import SnippetObjsDeps from '/snippets/ai/advanced/objs-deps.mdx';
+import SnippetInclude from '/snippets/ai/advanced/mathlib/include.mdx';
+
+<Tip>C7-based MCU projects using the MATHLIB library leverage the AI Accelerator (C7x DSP / MMA) unit
+within the processor. This allows mathematical operations, vector calculations, and compute-intensive
+functions to be executed with hardware acceleration, significantly increasing application performance.</Tip>
+
+## Example Project
+
+A working example project that you can examine as a reference for MATHLIB library integration is
+provided in the `MCU` directory within T3 Gemstone's GitHub `examples` repository.
+
+While inside the `devbox shell` within the examples repository, you should run the following command.
+
+<SnippetMcuBuild />
+
+The `mathlib_demo.out` file located in `examples/mcu/mathlib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000` and
+`examples/mcu/mathlib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000` is now ready to run on the C7 cores.
+
+To run it on the development board, you can follow the steps in the
+[Running the compiled project at the U-Boot stage](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage) section.
+
+In this example project, the generated outputs are transmitted via the UART1 interface.
+(You can find the related pin connections in the [Pinout documentation](/en/boards/o1/peripherals/introduction#1-pinout).)
+
+The terminal output of the MATHLIB example project is as follows.
+
+<SnippetDemo />
+
+## Integrating into an Existing MCU Project via MakeFile
+
+To integrate the Mathlib library into your existing MCU project, you need to define the root directory
+path of the SDK and the `.cpp` file you will use.
+
+<SnippetPathCpp />
+
+Then, you should add MATHLIB's `src` directory to the list of included folders (`INCLUDES_common` variable) as follows.
+
+<SnippetIncludesCommon />
+
+You must add the following necessary definitions to the compiler FLAGS parameters (`CFLAGS_common` variable) for
+the library to compile correctly.
+
+<SnippetCflagsCommon />
+
+You should add MATHLIB's compiled library directory to the library path definitions (`LIBS_PATH_common` variable).
+
+<SnippetLibsPath />
+
+You need to add the name of the mathlib library to the list of included library files (`LIBS_common` variable) as follows.
+
+<SnippetLibsCommon />
+
+To enable the compilation of .cpp files in the project, the following additions must be made right below the line
+where `OBJS` and `DEPS` definitions are made.
+
+<SnippetObjsDeps />
+
+Upon completion of these steps, the MATHLIB library will be successfully integrated into the project via Makefile.
+
+## Integrating MATHLIB into an Existing CPP File
+
+After completing the necessary configurations via Makefile, to use the MATHLIB library, you need to include
+its header file in the .cpp file within your project. Following this step, you can directly use MATHLIB's
+functions and definitions within your existing project.
+
+You can access all modules available in the MATHLIB library via
+[this link](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/latest/exports/docs/mathlib/docs/user_guide/modules.html).
+
+<SnippetInclude />
+
+With this process, the MATHLIB integration will be complete.

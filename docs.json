@@ -122,7 +122,15 @@
                       "tr/boards/o1/ai/process",
                       "tr/boards/o1/ai/usage",
                       "tr/boards/o1/ai/examples",
-                      "tr/boards/o1/ai/advanced"
+                      {
+                        "group": "İleri Düzey",
+                        "pages": [
+                          "tr/boards/o1/ai/libraries/introduction",
+                          "tr/boards/o1/ai/libraries/mathlib",
+                          "tr/boards/o1/ai/libraries/vxlib",
+                          "tr/boards/o1/ai/libraries/dsplib"
+                        ]
+                      }
                     ]
                   },
                   "tr/boards/o1/pcb"
@@ -274,7 +282,15 @@
                       "en/boards/o1/ai/process",
                       "en/boards/o1/ai/usage",
                       "en/boards/o1/ai/examples",
-                      "en/boards/o1/ai/advanced"
+                      {
+                        "group": "Advanced Level",
+                        "pages": [
+                          "en/boards/o1/ai/libraries/introduction",
+                          "en/boards/o1/ai/libraries/mathlib",
+                          "en/boards/o1/ai/libraries/vxlib",
+                          "en/boards/o1/ai/libraries/dsplib"
+                        ]
+                      }
                     ]
                   },
                   "en/boards/o1/pcb"
