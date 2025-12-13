@@ -40,3 +40,43 @@ For example:
 - High-performance execution of intensive mathematical calculations with MATHLIB. 
 
 This way, while the overall system load on the CPU is reduced, energy-efficient and real-time capable image processing and mathematical computation solutions can be developed.
+
+## Edge AI Robotics and Software Ecosystem
+
+The table below lists Edge AI projects provided by Texas Instruments.
+
+### Repository Table
+
+| Repository | Description |
+|-----------|----------|
+| **[edgeai-robotics-sdk](https://github.com/TexasInstruments/edgeai-robotics-sdk)** | Provides the core framework and APIs for robotics applications. Facilitates the development of robotics and computer vision applications on TI processors. |
+| **[edgeai-robotics-demos](https://github.com/TexasInstruments/edgeai-robotics-demos)** | Contains ready-to-use robotics demo applications and sample code. Ideal for quick start and prototyping. |
+| **[edgeai-tidl-tools](https://github.com/TexasInstruments/edgeai-tidl-tools)**  | Includes the necessary tools and examples for running deep learning models on TI processors. |
+| **[edgeai-tiovx-apps](https://github.com/TexasInstruments/edgeai-tiovx-apps)** | Contains TI OpenVX (TIOVX) based computer vision applications and examples. Essential for performance optimization. |
+| **[edgeai-gst-plugins](https://github.com/TexasInstruments/edgeai-gst-plugins)** | Contains GStreamer plugins optimized for TI platforms. Enables building pipelines for video processing and AI tasks. |
+| **[edgeai-app-stack](https://github.com/TexasInstruments/edgeai-app-stack)** | Contains all required software, system configurations, and integration tools for Edge AI applications. |
+| **[edgeai-tensorlab](https://github.com/TexasInstruments/edgeai-tensorlab)** | Model optimization, calibration, and analysis tools. Used to improve model performance. (A simplified version can be found [here](/en/boards/o1/ai/edgeai-tensorlab).) |
+| **[edgeai-gst-apps](https://github.com/TexasInstruments/edgeai-gst-apps)** | This sample application allows developers to quickly understand and customize how to configure AI pipelines with model changes, camera sources, or output methods. |
+| **[edgeai-tiovx-kernels](https://git.ti.com/cgit/edgeai/edgeai-tiovx-kernels)** | Contains custom-developed, deep learning-based kernel functions for the TI OpenVX (TIOVX) framework. |
+| **[edgeai-dl-inferer](https://git.ti.com/cgit/edgeai/edgeai-dl-inferer)** | Provides deep learning libraries for running AI models. |
+| **[edgeai-apps-utils](https://git.ti.com/cgit/edgeai/edgeai-apps-utils)** | A collection of common utility functions and shared libraries for Edge AI applications. |
+
+### Dependency Relationships
+
+```mermaid
+flowchart TB
+    A["edgeai-gst-apps"] --> n1["edgeai-gst-plugins"]
+    n1 --> n3["edgeai-dl-inferer"] & n4["edgeai-tiovx-modules"] & n7["edgeai-apps-utils"]
+    n4 --> n6["edgeai-tiovx-kernels"]
+    n6 --> n7
+    n5["edgeai-tiovx-apps"] --> n7 & n6
+    n3 --> n7
+
+    A@{ shape: rounded}
+    n1@{ shape: rounded}
+    n3@{ shape: rounded}
+    n4@{ shape: rounded}
+    n7@{ shape: rounded}
+    n6@{ shape: rounded}
+    n5@{ shape: rounded}
+```

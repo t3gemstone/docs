@@ -48,3 +48,43 @@ gibi ileri seviye uygulamaların da temelini oluşturabilir.
 
 Bu sayede sistem genelinde CPU üzerindeki yük azaltılırken, enerji verimliliği yüksek ve gerçek zamanlı 
 çalışabilen görüntü işleme ve matematiksel hesaplama çözümleri geliştirilebilir.
+
+## Edge AI Robotics ve Yazılım Ekosistemi
+
+Aşağıdaki tabloda Texas Instruments tarafından sağlanan Edge AI projeleri bulunmaktadır.
+
+### Repository Tablosu
+
+| Repository | Açıklama |
+|-----------|----------|
+| **[edgeai-robotics-sdk](https://github.com/TexasInstruments/edgeai-robotics-sdk)** | Robotik uygulamalar için temel framework ve API'lar sağlar. TI işlemcilerinde robotik ve bilgisayarlı görü uygulamalarının geliştirilmesini kolaylaştırır. |
+| **[edgeai-robotics-demos](https://github.com/TexasInstruments/edgeai-robotics-demos)** | Hazır robotik demo uygulamaları ve örnek kodlar içerir. Hızlı başlangıç ve prototipleme için idealdir. |
+| **[edgeai-tidl-tools](https://github.com/TexasInstruments/edgeai-tidl-tools)**  | Derin öğrenme modellerinin TI işlemcilerinde çalıştırılması için gerekli araçları ve örnekleri içerir. |
+| **[edgeai-tiovx-apps](https://github.com/TexasInstruments/edgeai-tiovx-apps)** | TI OpenVX (TIOVX) tabanlı bilgisayarlı görü uygulamaları ve örneklerini içerir. Performans optimizasyonu için önemlidir. |
+| **[edgeai-gst-plugins](https://github.com/TexasInstruments/edgeai-gst-plugins)** | TI platformları için optimize edilmiş GStreamer plugin'leri içerir. Video işleme ve AI için gerekli olan pipeline'ları oluşturmayı sağlar. |
+| **[edgeai-app-stack](https://github.com/TexasInstruments/edgeai-app-stack)** | Edge AI uygulamaları için gerekli olan tüm yazılımları, sistem konfigürasyonları ve entegrasyon araçlarını içerir. |
+| **[edgeai-tensorlab](https://github.com/TexasInstruments/edgeai-tensorlab)** | Model optimizasyonu, kalibrasyon ve analiz araçları. Model performansını iyileştirmek için kullanılır. (Daha basit versiyonuna [buradan](/tr/boards/o1/ai/edgeai-tensorlab) ulaşabilirsiniz.) |
+| **[edgeai-gst-apps](https://github.com/TexasInstruments/edgeai-gst-apps)** | Bu örnek uygulama sayesinde geliştiricilerin AI işlem hatlarını (pipeline) model değişiklikleri, kamera kaynakları veya çıktı yöntemleriyle nasıl yapılandıracaklarını hızlıca anlamalarına ve özelleştirmelerine olanak tanır. |
+| **[edgeai-tiovx-kernels](https://git.ti.com/cgit/edgeai/edgeai-tiovx-kernels)** | TI OpenVX (TIOVX) çerçevesi için özel geliştirilmiş, derin öğrenme tabanlı özel çekirdek (kernel) işlevlerini içerir. |
+| **[edgeai-dl-inferer](https://git.ti.com/cgit/edgeai/edgeai-dl-inferer)** | AI modellerini çalıştırmak için derin öğrenme kütüphaneleri sağlar. |
+| **[edgeai-apps-utils](https://git.ti.com/cgit/edgeai/edgeai-apps-utils)** | Edge AI uygulamaları için ortak yardımcı programlar ve paylaşılan kütüphaneler koleksiyonudur. |
+
+### Bağımlılık İlişkileri
+
+```mermaid
+flowchart TB
+    A["edgeai-gst-apps"] --> n1["edgeai-gst-plugins"]
+    n1 --> n3["edgeai-dl-inferer"] & n4["edgeai-tiovx-modules"] & n7["edgeai-apps-utils"]
+    n4 --> n6["edgeai-tiovx-kernels"]
+    n6 --> n7
+    n5["edgeai-tiovx-apps"] --> n7 & n6
+    n3 --> n7
+
+    A@{ shape: rounded}
+    n1@{ shape: rounded}
+    n3@{ shape: rounded}
+    n4@{ shape: rounded}
+    n7@{ shape: rounded}
+    n6@{ shape: rounded}
+    n5@{ shape: rounded}
+```
