@@ -1,22 +1,22 @@
-# Home Assistant Supervisor
+# Home Assistant 
 
-> Gemstone Akıllı Ev Merkezi Yönetimi
+> T3-Gemstone-O1 Akıllı Ev Merkezi Yönetimi
 
 <Frame>
-  <img noZoom src="https://community-assets.home-assistant.io/original/4X/0/4/b/04b7e3172e215e6f727c17f55b039ade3986ebcb.png" alt="Home Assistant Supervisor" />
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/1.png" alt="Home Assistant Supervisor" />
 </Frame>
 
 <Tip>
-  Bu bölümün sonunda Gemstone geliştirme kartınıza başarıyla <strong>Home Assistant</strong> kurmuş olacaksınız.
+  Bu bölümün sonunda T3-Gemstone-O1 geliştirme kartınıza başarıyla <strong>Home Assistant</strong> kurmuş olacaksınız.
 </Tip>
 
 ## 1. Giriş
 
-Günümüzde ev otomasyonu verilerinin kontrolü ve akıllı cihazların güvenliği her zamankinden daha önemli. Aydınlatmalarınızı, güvenlik kameralarınızı, akıllı prizlerinizi ve sensörlerinizi Amazon, Google, Xiaomi veya Tuya gibi büyük bulut sağlayıcılarına bağımlı olmadan merkezi bir sistemde yönetmek isteyebilirsiniz. Bunun için kendi akıllı ev sunucunuzu kendi cihazınızda barındırmanız ve cihazlarınızı yerel ağ üzerinden kontrol etmeniz gerekir. Ancak evinizde böyle bir merkez çalıştırmak; farklı markalara ait cihazların birbiriyle haberleştirilmesi, dış dünyadan güvenli erişim sağlayamama ve sistemi sürekli ayakta tutma gibi teknik problemleri beraberinde getirir. Bu problemler çoğu zaman karmaşık konfigürasyonlar ve yüksek maliyetli donanımlar ile çözülür. Gemstone projesi, Home Assistant entegrasyonu ile bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
+Günümüzde ev otomasyonu verilerinin kontrolü ve akıllı cihazların güvenliği her zamankinden daha önemli. Aydınlatmalarınızı, güvenlik kameralarınızı, akıllı prizlerinizi ve sensörlerinizi Amazon, Google, Xiaomi veya Tuya gibi büyük bulut sağlayıcılarına bağımlı olmadan merkezi bir sistemde yönetmek isteyebilirsiniz. Bunun için kendi akıllı ev sunucunuzu kendi cihazınızda barındırmanız ve cihazlarınızı yerel ağ üzerinden kontrol etmeniz gerekir. Ancak evinizde böyle bir merkez çalıştırmak; farklı markalara ait cihazların birbiriyle haberleştirilmesi, dış dünyadan güvenli erişim sağlayamama ve sistemi sürekli ayakta tutma gibi teknik problemleri beraberinde getirir. Bu problemler çoğu zaman karmaşık konfigürasyonlar ve yüksek maliyetli donanımlar ile çözülür. T3-Gemstone-O1 projesi, Home Assistant entegrasyonu ile bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
 
 ## 2. Ön Hazırlık
 
-Kuruluma başlamadan önce Gemstone cihazınızda **Debian** işletim sisteminin kurulu olduğundan emin olmalısınız. Cihazınıza terminal bağlantısı yaptıktan sonra işletim sisteminizi doğrulamak için aşağıdaki komutu çalıştırabilirsiniz:
+Kuruluma başlamadan önce T3-Gemstone-O1 cihazınızda Gemstone Imager üzerinden kurulmuş **Debian** işletim sisteminin kurulu olduğundan emin olmalısınız. Cihazınıza terminal bağlantısı yaptıktan sonra işletim sisteminizi doğrulamak için aşağıdaki komutu çalıştırabilirsiniz:
 
 ```bash  theme={"system"}
 cat /etc/os-release
@@ -38,16 +38,20 @@ BUG_REPORT_URL="[https://bugs.debian.org/](https://bugs.debian.org/)"
 
 Eğer bu çıktıyı görüyorsanız sisteminiz kuruluma hazırdır.
 
+<Frame>
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/2.png" alt="Ön Hazırlık" />
+</Frame>
+
 ## 3. Kurulum Betiği İle Otomatik Kurulum
 
-Sizin için hazırladığımız kurulum betiği (`.sh`), gerekli tüm yapılandırmaları otomatik olarak gerçekleştirecektir. Gemstone terminaline aşağıdaki komutları sırasıyla girerek betiği sisteme çekin ve çalıştırın:
+Sizin için hazırladığımız kurulum betiği (`.sh`), gerekli tüm yapılandırmaları otomatik olarak gerçekleştirecektir. T3-Gemstone-O1 terminaline aşağıdaki komutları sırasıyla girerek betiği sisteme çekin ve çalıştırın:
 
 ```bash  theme={"system"}
 # Sistemi güncelleyelim
 sudo apt update
 
 # Kurulum betiğini indirin
-wget https://raw.githubusercontent.com/MehmetEmreee/gemstonehomeassistant/refs/heads/main/downloader.sh
+wget [https://raw.githubusercontent.com/MehmetEmreee/gemstonehomeassistant/refs/heads/main/downloader.sh](https://raw.githubusercontent.com/MehmetEmreee/gemstonehomeassistant/refs/heads/main/downloader.sh)
 
 # Betiğe çalışma izni verin
 chmod +x downloader.sh
@@ -56,7 +60,15 @@ chmod +x downloader.sh
 sudo ./downloader.sh
 ```
 
-## 4. Kurulum Sonrası Kontrol ve Erişim
+<Frame>
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.1.png" alt="Kurulum Adımı 1" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.2.png" alt="Kurulum Adımı 2" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.3.png" alt="Kurulum Adımı 3" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.4.png" alt="Kurulum Adımı 4" />
+</Frame>
 
 Kurulum bittikten sonra Supervisor'ın tüm hizmetleri indirip ayağa kaldırması internet hızınıza bağlı olarak 5-10 dakika sürebilir. Durumu aşağıdaki komutla takip edebilirsiniz:
 
@@ -68,15 +80,44 @@ Ekranda `hassio_supervisor` ve `homeassistant` hizmetlerinin `Up` (Çalışıyor
 
 `http://gemstone.local:8123` veya `http://<gemstone-ip-adresiniz>:8123`
 
-Ev dışından erişim sağlamak için önceki bölümlerde kurduğumuz **Tailscale** ağını kullanabilir, Tailscale IP adresiniz üzerinden (`http://<tailscale-ip>:8123`) sisteminize güvenle bağlanabilirsiniz.
+Ev dışından erişim sağlamak için kurulum rehberi bulunan **Tailscale** ağını kullanabilir, Tailscale IP adresiniz üzerinden (`http://<tailscale-ip>:8123`) sisteminize güvenle bağlanabilirsiniz.
+
+## 4. Home Assistant Arayüzüne Erişim ve İlk Kurulum
+
+Sistem hizmetleri aktif olduktan sonra tarayıcınız üzerinden arayüze ilk girişinizi yaptığınızda, Home Assistant sizi bir kurulum sihirbazı ile karşılayacaktır. Bu aşamada yönetici hesabınızı oluşturarak akıllı evinizin temel yapılandırmasını tamamlayabilirsiniz. Aşağıdaki görselleri takip ederek arayüz kurulumunu kolayca bitirebilirsiniz:
+
+<Note>
+  Eğer arayüze bağlanırken bir hata alıyorsanız, aşağıdaki görselleri takip ederek adres çubuğundaki `https://` kısmını `http://` yaparak çözebilirsiniz.
+</Note>
+
+<Frame>
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.png" alt="Arayüz Kurulumu Giriş" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.1.png" alt="Arayüz Kurulumu 1" />
+</Frame>
+
+Eğer hata almıyorsanız, buradan devam edebilirsiniz:
+
+<Frame>
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.2.png" alt="Arayüz Kurulumu 2" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.3.png" alt="Arayüz Kurulumu 3" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.4.png" alt="Arayüz Kurulumu 4" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.5.png" alt="Arayüz Kurulumu 5" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.6.png" alt="Arayüz Kurulumu 6" />
+
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.7.png" alt="Arayüz Kurulumu 7" />
+</Frame>
+
+Tebrikler! Kurulum adımlarını başarıyla tamamladınız ve artık Home Assistant ana ekranındasınız. T3-Gemstone-O1 üzerinden akıllı evinizin merkezini özgürce yapılandırmaya ve cihazlarınızı yönetmeye başlayabilirsiniz.
 
 ## 5. Sıkça Sorulan Sorular
 
-<AccordionGroup>
-  <Accordion title="Kurulum sonrası 'Unsupported System' uyarısı alıyorum, neden?">
-    Debian dışında bir işletim sistemi kullanıldığında veya sistemde manuel çalışan başka hizmetler (Nextcloud veya Tailscale gibi) olduğunda bu uyarı çıkabilir. Akıllı ev sisteminin kararlı çalışmasına engel bir durum değildir, sadece bilgilendirme amaçlıdır.
-  </Accordion>
-  <Accordion title="Eklenti (Add-on) mağazası ne zaman görünecek?">
-    Kurulum tamamlandıktan hemen sonra arayüze girerseniz Eklentiler menüsü görünmeyebilir. Sistem arka planda gerekli yapılandırmaları bitirdiğinde (genellikle 5-10 dakika içinde) 'Ayarlar -> Eklentiler' sekmesi otomatik olarak aktif olacaktır.
-  </Accordion>
-</AccordionGroup>
+**❓ Kurulum sonrası "Unsupported System" uyarısı alıyorum, neden?**
+> Home Assistant OS dışında bir işletim sistemi kullanıldığında veya sistemde manuel çalışan başka hizmetler (Nextcloud veya Tailscale gibi) olduğunda bu uyarı çıkabilir. Akıllı ev sisteminin kararlı çalışmasına engel bir durum değildir, sadece bilgilendirme amaçlıdır.
+
+**❓ Eklenti (Add-on) mağazası ne zaman görünecek?**
+> Kurulum tamamlandıktan hemen sonra arayüze girerseniz Eklentiler menüsü görünmeyebilir. Sistem arka planda gerekli yapılandırmaları bitirdiğinde (genellikle 5-10 dakika içinde) "Ayarlar -> Eklentiler" sekmesi otomatik olarak aktif olacaktır.
