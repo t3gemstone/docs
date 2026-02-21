@@ -73,7 +73,7 @@ sudo ./downloader.sh
 Kurulum bittikten sonra Supervisor'ın tüm hizmetleri indirip ayağa kaldırması internet hızınıza bağlı olarak 5-10 dakika sürebilir. Durumu aşağıdaki komutla takip edebilirsiniz:
 
 ```bash  theme={"system"}
-sudo docker ps
+sudo docker logs -f hassio_supervisor
 ```
 
 Ekranda `hassio_supervisor` ve `homeassistant` hizmetlerinin `Up` (Çalışıyor) durumunda olduğunu gördüğünüzde, tarayıcınızdan arayüze erişebilirsiniz:
