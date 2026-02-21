@@ -1,0 +1,82 @@
+# Home Assistant Supervisor
+
+> Gemstone Akıllı Ev Merkezi Yönetimi
+
+<Frame>
+  <img noZoom src="https://community-assets.home-assistant.io/original/4X/0/4/b/04b7e3172e215e6f727c17f55b039ade3986ebcb.png" alt="Home Assistant Supervisor" />
+</Frame>
+
+<Tip>
+  Bu bölümün sonunda Gemstone geliştirme kartınıza başarıyla <strong>Home Assistant</strong> kurmuş olacaksınız.
+</Tip>
+
+## 1. Giriş
+
+Günümüzde ev otomasyonu verilerinin kontrolü ve akıllı cihazların güvenliği her zamankinden daha önemli. Aydınlatmalarınızı, güvenlik kameralarınızı, akıllı prizlerinizi ve sensörlerinizi Amazon, Google, Xiaomi veya Tuya gibi büyük bulut sağlayıcılarına bağımlı olmadan merkezi bir sistemde yönetmek isteyebilirsiniz. Bunun için kendi akıllı ev sunucunuzu kendi cihazınızda barındırmanız ve cihazlarınızı yerel ağ üzerinden kontrol etmeniz gerekir. Ancak evinizde böyle bir merkez çalıştırmak; farklı markalara ait cihazların birbiriyle haberleştirilmesi, dış dünyadan güvenli erişim sağlayamama ve sistemi sürekli ayakta tutma gibi teknik problemleri beraberinde getirir. Bu problemler çoğu zaman karmaşık konfigürasyonlar ve yüksek maliyetli donanımlar ile çözülür. Gemstone projesi, Home Assistant entegrasyonu ile bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
+
+## 2. Ön Hazırlık
+
+Kuruluma başlamadan önce Gemstone cihazınızda **Debian** işletim sisteminin kurulu olduğundan emin olmalısınız. Cihazınıza terminal bağlantısı yaptıktan sonra işletim sisteminizi doğrulamak için aşağıdaki komutu çalıştırabilirsiniz:
+
+```bash  theme={"system"}
+cat /etc/os-release
+```
+
+Ekranda aşağıdaki gibi bir çıktı görmelisiniz:
+
+```text  theme={"system"}
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="[https://www.debian.org/](https://www.debian.org/)"
+SUPPORT_URL="[https://www.debian.org/support](https://www.debian.org/support)"
+BUG_REPORT_URL="[https://bugs.debian.org/](https://bugs.debian.org/)"
+```
+
+Eğer bu çıktıyı görüyorsanız sisteminiz kuruluma hazırdır.
+
+## 3. Kurulum Betiği İle Otomatik Kurulum
+
+Sizin için hazırladığımız kurulum betiği (`.sh`), gerekli tüm yapılandırmaları otomatik olarak gerçekleştirecektir. Gemstone terminaline aşağıdaki komutları sırasıyla girerek betiği sisteme çekin ve çalıştırın:
+
+```bash  theme={"system"}
+# Sistemi güncelleyelim
+sudo apt update
+
+# Kurulum betiğini indirin
+wget https://raw.githubusercontent.com/MehmetEmreee/gemstonehomeassistant/refs/heads/main/downloader.sh
+
+# Betiğe çalışma izni verin
+chmod +x downloader.sh
+
+# Kurulumu başlatın
+sudo ./downloader.sh
+```
+
+## 4. Kurulum Sonrası Kontrol ve Erişim
+
+Kurulum bittikten sonra Supervisor'ın tüm hizmetleri indirip ayağa kaldırması internet hızınıza bağlı olarak 5-10 dakika sürebilir. Durumu aşağıdaki komutla takip edebilirsiniz:
+
+```bash  theme={"system"}
+sudo docker ps
+```
+
+Ekranda `hassio_supervisor` ve `homeassistant` hizmetlerinin `Up` (Çalışıyor) durumunda olduğunu gördüğünüzde, tarayıcınızdan arayüze erişebilirsiniz:
+
+`http://gemstone.local:8123` veya `http://<gemstone-ip-adresiniz>:8123`
+
+Ev dışından erişim sağlamak için önceki bölümlerde kurduğumuz **Tailscale** ağını kullanabilir, Tailscale IP adresiniz üzerinden (`http://<tailscale-ip>:8123`) sisteminize güvenle bağlanabilirsiniz.
+
+## 5. Sıkça Sorulan Sorular
+
+<AccordionGroup>
+  <Accordion title="Kurulum sonrası 'Unsupported System' uyarısı alıyorum, neden?">
+    Debian dışında bir işletim sistemi kullanıldığında veya sistemde manuel çalışan başka hizmetler (Nextcloud veya Tailscale gibi) olduğunda bu uyarı çıkabilir. Akıllı ev sisteminin kararlı çalışmasına engel bir durum değildir, sadece bilgilendirme amaçlıdır.
+  </Accordion>
+  <Accordion title="Eklenti (Add-on) mağazası ne zaman görünecek?">
+    Kurulum tamamlandıktan hemen sonra arayüze girerseniz Eklentiler menüsü görünmeyebilir. Sistem arka planda gerekli yapılandırmaları bitirdiğinde (genellikle 5-10 dakika içinde) 'Ayarlar -> Eklentiler' sekmesi otomatik olarak aktif olacaktır.
+  </Accordion>
+</AccordionGroup>
