@@ -11,31 +11,269 @@ Gemstone işletim sisteminin SD kartın yanı sıra eMMC üzerinden de boot edil
 eMMC, yüksek performanslı ve güvenilir bir depolama çözümüdür. SD karta kıyasla daha hızlı veri erişimi ve daha
 sağlam fiziksel yapı sunması nedeniyle birçok uygulamada öncelikli olarak tercih edilmektedir.
 
-Çekirdek yazılımlarının(işletim sistemi, firmware ve bootloader gibi) eMMC'ye yazılabilmesi için Gemstone Imager'da
-depolama aygıtı olarak `Internal eMMC` seçeneği bulunmaktadır. Bu sayede eMMC’ye sorunsuz bir kurulum yapılması
-sağlanır ve SD karta bağımlı kalmadan daha hızlı ve dayanıklı bir çalışma ortamı elde edilir.
+Bu bölümde eMMC'ye imaj yazmanın iki farklı yöntemi anlatılmaktadır:
 
-Bu bölümde, eMMC'ye imaj yazma işleminin nasıl yapılacağı hakkında detaylı bilgiler yer almaktadır.
+- **Yöntem 1 — USB DFU:** Bootmode switch USB DFU konumuna alınarak doğrudan USB üzerinden imaj yüklenir.
+- **Yöntem 2 — Ethernet + UART:** Gem Imager uygulaması ağ üzerinden karta bağlanarak eMMC'ye imaj yazar.
 
-### 1.1. Gemstone'u bilgisayara bağla
+---
 
-Gemstone'a USB Type-C ve Ethernet bağlantılarını yaptıktan sonra UART0'a USB-TTL Uart dönüştürücü bağlantısını da yapınız.
+## Yöntem 1: USB DFU ile eMMC'ye İmaj Yazma
 
-<Warning>Eğer Linux işletim sistemini kullanıyorsanız yazma işlemini başlatmadan önce bilgisayarınızın kablolu ağ bağlantısını 
-kapatmanız gerekmektedir</Warning>
+USB DFU (Device Firmware Upgrade), T3 Gemstone O1'in USB üzerinden doğrudan programlanmasını sağlayan standarttır.
+SD karta veya çalışan bir sisteme gerek kalmadan eMMC'ye imaj yazılabilir.
 
-### 1.2. Yazma işleminin başlatılması
+<Note>
+  TI AM67A işlemcisi için resmi DFU dökümanı:
+  [USB Device Firmware Upgrade (DFU) — Processor SDK Linux for AM67A](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67a/10_00_00/exports/docs/linux/Foundational_Components/U-Boot/UG-DFU.html)
+</Note>
 
-[Hızlı Başlangıç](/tr/quickstart) sayfasındaki [İmaj yazma işlemi](/tr/quickstart#1-2-i̇maj-yazma-işlemi) kısmında
-depolama aygıtı seçimi kısmına kadar gelip seçiminizi `Internal eMMC` şeklinde yapınız.
+### 1.1. USB DFU Moduna Geçiş
 
-<Frame >
+<Warning>
+  **İşleme başlamadan önce kartı tamamen kapatınız.**
+  Kart çalışırken DFU moduna geçmeye çalışmak eMMC'yi bozabilir.
+</Warning>
+
+<Steps>
+  <Step title="Kartı kapatınız">
+    İşletim sistemi çalışıyorsa düzgün biçimde kapatınız, ardından T3 Gemstone O1'in güç bağlantısını kesiniz.
+  </Step>
+
+  <Step title="Bootmode switch'i USB DFU konumuna getiriniz">
+    Aşağıdaki diyagramda gösterilen switch pozisyonunu referans alarak bootmode switch'i USB DFU konumuna getiriniz.
+
+    <Frame caption="Bootmode switch fiziksel konumu (temsili)">
+      <img src="/images/o1-board/06-bootmode-2.png" />
+    </Frame>
+
+    <Note>
+      Yukarıdaki görsel, bootmode switch'in kart üzerindeki fiziksel konumunu göstermek amacıyla eklenmiştir ve temsilidir. DFU modu için switch pozisyonunu aşağıdaki diyagramdan takip ediniz.
+    </Note>
+
+    <Frame caption="USB DFU boot modu switch pozisyonu">
+      <img src="/images/bootmode/usb-dfu-bootmode.svg" />
+    </Frame>
+  </Step>
+
+  <Step title="USB-C kablosunu bağlayarak güç veriniz">
+    USB-C kablosunu kartın DFU portuna ve bilgisayarınıza takınız, ardından güç veriniz.
+
+  </Step>
+
+  <Step title="DFU cihazını doğrulayınız">
+    Kartın DFU cihazı olarak göründüğünü doğrulayınız.
+
+    <Tabs>
+      <Tab title="Linux">
+        ```bash
+        sudo dfu-util -l
+        ```
+      </Tab>
+      <Tab title="Windows">
+        `dfu-util` Windows ikili dosyasını [dfu-util ana sayfasının](http://dfu-util.sourceforge.net/)
+        Releases bölümünden indirip zip'i çıkartınız, ardından çalıştırınız:
+
+        ```powershell
+        dfu-util.exe -l
+        ```
+
+        <Note>
+          Windows'ta `dfu-util.exe -l` çıktısı boş geliyorsa, cihaza **WinUSB** sürücüsünü
+          [Zadig](https://zadig.akeo.ie/) ile yüklemeniz gerekmektedir:
+
+          1. [zadig.akeo.ie](https://zadig.akeo.ie/) adresinden Zadig'i indirip çalıştırınız
+             (kurulum gerektirmez; UAC yönetici onayı isteyecektir)
+          2. Kart listede görünmüyorsa **Options → List All Devices** seçeneğini etkinleştiriniz
+          3. Açılır listeden VID `0451` / PID `6165` olan cihazı seçiniz
+          4. Sürücü olarak **WinUSB**'ı seçip **Install Driver** butonuna tıklayınız
+          5. Yükleme tamamlandığında sürücü adı yeşil renkte görüntülenecektir
+        </Note>
+      </Tab>
+    </Tabs>
+
+    VID:PID **0451:6165** ile `bootloader` ve `SocId` alt ayarlarını içeren bir giriş
+    görmeniz gerekmektedir.
+
+    ```
+    Found DFU: [0451:6165] ver=0200, devnum=9, cfg=1, intf=0, path="1-2.2", alt=1, name="SocId", serial="01.00.00.00"
+    Found DFU: [0451:6165] ver=0200, devnum=9, cfg=1, intf=0, path="1-2.2", alt=0, name="bootloader", serial="01.00.00.00"
+    ```
+
+    Cihaz listede görünmüyorsa 1. adımdan itibaren tekrar deneyiniz.
+  </Step>
+</Steps>
+
+### 1.2. Gem Imager ile İmaj Yükleme
+
+Gem Imager tüm DFU yazma sürecini otomatik olarak yönetir — önyükleyici dosyaları işletim sistemi
+imajı ile birlikte gönderilir ve doğru sırayla yüklenir.
+
+<Steps>
+  <Step title="Gem Imager'ı açınız">
+    Bilgisayarınızda **Gem Imager**'ı başlatınız ve kullanmak istediğiniz kartı seçiniz.
+
+    <Warning>
+      Gem Imager'ın USB aygıtlarına erişebilmesi için **yönetici (administrator) olarak çalıştırılması** gerekmektedir.
+    </Warning>
+  </Step>
+
+  <Step title="İşletim sistemi imajını seçiniz">
+    **İşletim Sistemi Seçin** butonuna tıklayarak yüklemek istediğiniz imajı seçiniz.
+  </Step>
+
+  <Step title="Depolama aygıtını seçiniz">
+    **Hedef Seçin** butonuna tıklayınız ve **USB DFU** seçeneğini seçiniz.
+
+    <Frame>
+      <img src="/images/gem-imager/select-dfu.png" />
+    </Frame>
+  </Step>
+
+  <Step title="İmajı yazınız">
+    **İleri** butonuna tıklayarak OS özelleştirme seçeneklerini yapılandırın ([Özelleştirme](/tr/imager/customization)
+    sayfasına bakınız), ardından **Yaz** butonuna basınız.
+
+    <Warning>
+      Yazma işlemi sırasında USB kablosunu çıkarmayınız veya güç bağlantısını kesmeyiniz.
+    </Warning>
+
+    Gem Imager sırasıyla şu işlemleri gerçekleştirir:
+
+    1. Seçilen imajı indirir veya okur
+    2. Önyükleyici dosyalarını çıkarır (`tiboot3.bin`, `tispl.bin`, `u-boot.img`)
+    3. Her önyükleyici aşamasını DFU üzerinden yazar
+    4. Tam OS imajını eMMC'ye aktarır (`rawemmc` alt ayarı)
+
+  </Step>
+
+  <Step title="Tamamlanmasını bekleyiniz">
+    Yazma işlemi tamamlandığında Gem Imager başarı mesajı görüntüler.
+  </Step>
+
+  <Step title="Kartı kapatıp bootmode switch'i eMMC konumuna alınız">
+    Kartı tamamen kapatınız, ardından bootmode switch'i aşağıdaki görselde gösterildiği gibi
+    **eMMC** konumuna getiriniz.
+
+    <Frame caption="eMMC boot modu switch pozisyonu">
+      <img src="/images/bootmode/emmc-bootmode.svg" />
+    </Frame>
+
+    <Note>
+      Boot işlemini UART üzerinden seri port bağlantısıyla takip edebilirsiniz.
+      Varsayılan baudrate: **115200**
+    </Note>
+
+    Güç verdikten sonra kart eMMC üzerindeki imajdan açılacaktır.
+
+    <Frame caption="DFU transfer sırasında seri port çıktısı">
+      <img src="/images/gem-imager/dfu-serial.png" />
+    </Frame>
+  </Step>
+</Steps>
+
+### 1.3. SDK ile Manuel İmaj Yükleme (dfu-util)
+
+Bu yöntem, SDK derleme çıktılarıyla çalışan Linux kullanıcıları içindir.
+
+<Note>
+  Kaynak koddan imaj derleme hakkında daha fazla bilgi için [SDK belgelerine](/tr/sdk/introduction) bakınız.
+</Note>
+
+Kartı [1.1. USB DFU Moduna Geçiş](#1-1-usb-dfu-moduna-geçiş) adımlarında anlatıldığı şekilde
+bootmode switch üzerinden DFU moduna alınız, ardından aşağıdaki komutları sırasıyla çalıştırınız.
+
+Başarılı bir SDK derlemesinin ardından gereken dosyalar iki dizinde bulunur:
+
+| Dosya | Konum |
+|-------|-------|
+| `tiboot3.bin` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `tispl.bin` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `u-boot.img` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `gemstone-*.img` | `build/debos/` |
+
+<Steps>
+  <Step title="İlk aşama önyükleyiciyi (tiboot3.bin) yükleyiniz">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a bootloader -D tiboot3.bin -R
+    ```
+
+    Bu adımın ardından kart sıfırlanarak yeniden bağlanacaktır. Birkaç saniye bekleyip
+    `dfu-util -l` ile kartın hâlâ görünür olduğunu doğrulayınız.
+  </Step>
+
+  <Step title="TI SPL'i (tispl.bin) yükleyiniz">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a tispl.bin -D tispl.bin -R
+    ```
+  </Step>
+
+  <Step title="U-Boot'u (u-boot.img) yükleyiniz">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a u-boot.img -D u-boot.img -R
+    ```
+  </Step>
+
+  <Step title="OS imajını eMMC'ye aktarınız">
+    `<imaj-dosya-adı>` kısmını kendi imaj dosyanızın adıyla değiştiriniz:
+
+    ```bash
+    sudo dfu-util -d 0451:6165 -a rawemmc \
+        -D <imaj-dosya-adı>.img -R
+    ```
+
+    <Warning>
+      Bu adım tüm OS imajını USB üzerinden eMMC'ye aktarır. Aktarımı kesintiye uğratmayınız.
+      İmaj boyutuna ve USB hızına bağlı olarak bu işlem birkaç dakika sürebilir.
+    </Warning>
+  </Step>
+
+  <Step title="Kartı kapatıp bootmode switch'i eMMC konumuna alınız">
+    `dfu-util` başarı bildirdiğinde kartı tamamen kapatınız, ardından bootmode switch'i
+    **eMMC** konumuna getiriniz.
+
+    <Frame caption="eMMC boot modu switch pozisyonu">
+      <img src="/images/bootmode/emmc-bootmode.svg" />
+    </Frame>
+
+    <Note>
+      Boot işlemini UART üzerinden seri port bağlantısıyla takip edebilirsiniz.
+      Varsayılan baudrate: **115200**
+    </Note>
+
+    Güç verdikten sonra kart eMMC üzerindeki imajdan açılacaktır.
+  </Step>
+</Steps>
+
+---
+
+## Yöntem 2: Ethernet + UART ile eMMC'ye İmaj Yazma
+
+Bu yöntemde kart üzerinde halihazırda çalışan bir Linux sistemi (SD kart veya eMMC) olması gerekmektedir.
+Ethernet ve isteğe bağlı UART bağlantısıyla Gem Imager'ın dahili eMMC seçeneği kullanılır.
+
+### 2.1. Gemstone'u bilgisayara bağla
+
+Gemstone'a USB Type-C ve Ethernet bağlantılarını yaptıktan sonra UART0'a USB-TTL Uart dönüştürücü
+bağlantısını da yapınız.
+
+<Warning>
+  Eğer Linux işletim sistemini kullanıyorsanız yazma işlemini başlatmadan önce bilgisayarınızın
+  kablolu ağ bağlantısını kapatmanız gerekmektedir.
+</Warning>
+
+### 2.2. Yazma işleminin başlatılması
+
+[Hızlı Başlangıç](/tr/quickstart) sayfasındaki [İmaj yazma işlemi](/tr/quickstart#1-2-i̇maj-yazma-işlemi)
+kısmında depolama aygıtı seçimi kısmına kadar gelip seçiminizi `Internal eMMC` şeklinde yapınız.
+
+<Frame>
   <img src="/images/gem-imager/m-storage.png" />
 </Frame>
 
-Sonrasında `NEXT` butonuna yapıp gerekli ayarları yaptıktan sonra eMMC'ye imaj yazma işlemini başlatınız.
+Sonrasında **İleri** butonuna tıklayıp gerekli ayarları yaptıktan sonra eMMC'ye imaj yazma işlemini başlatınız.
 
-### 1.3. Gemstone işletim sistemine bağlan
+### 2.3. Gemstone işletim sistemine bağlan
 
 İmaj yazma işlemi bittikten sonra sistem eMMC üzerinden boot edilecektir. Seri port veya SSH aracılığıyla
 Gemstone işletim sistemine bağlanabilirsiniz.
