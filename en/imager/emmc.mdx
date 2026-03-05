@@ -11,25 +11,266 @@ The Gemstone operating system supports booting not only from an SD card but also
 eMMC is a high-performance and reliable storage solution. Compared to an SD card, it offers faster data
 access and a more robust physical structure, making it the preferred choice for many applications.
 
-To write core software (such as the operating system, firmware, and bootloader) to the eMMC, Gemstone Imager
-provides the `Internal eMMC` option as a storage device. This ensures a smooth installation on the eMMC,
-delivering a faster and more durable working environment without relying on an SD card.
+This section covers two methods for writing an image to the eMMC:
 
-This section provides detailed instructions on how to write an image to the eMMC.
+- **Method 1 — USB DFU:** The bootmode switch is set to USB DFU position and the image is flashed directly over USB.
+- **Method 2 — Ethernet + UART:** Gem Imager connects to the board over the network and writes the image to eMMC.
 
-### 1.1. Connect Gemstone to Your Computer
+---
 
-After connecting the Gemstone board via USB Type-C and Ethernet, also connect a USB-TTL UART converter to UART0.
+## Method 1: Flashing eMMC via USB DFU
+
+USB DFU (Device Firmware Upgrade) is a standard that allows the T3 Gemstone O1 to be programmed
+directly over USB. No SD card or running system is required.
+
+<Note>
+  Official TI AM67A DFU documentation:
+  [USB Device Firmware Upgrade (DFU) — Processor SDK Linux for AM67A](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67a/10_00_00/exports/docs/linux/Foundational_Components/U-Boot/UG-DFU.html)
+</Note>
+
+### 1.1. Entering USB DFU Mode
 
 <Warning>
-If you are using a Linux operating system, make sure to disable your computer's wired network connection before
-starting the writing process.
+  **Power off the board completely before proceeding.**
+  Attempting to enter DFU mode while the board is running may corrupt the eMMC.
 </Warning>
 
-### 1.2. Starting the Writing Process
+<Steps>
+  <Step title="Power off the board">
+    Shut down the operating system gracefully if it is running, then disconnect the power
+    supply from the T3 Gemstone O1.
+  </Step>
+
+  <Step title="Set the bootmode switch to USB DFU position">
+    Set the bootmode switch to the USB DFU position using the diagram below as your reference.
+
+    <Frame caption="Bootmode switch physical location (illustrative)">
+      <img src="/images/o1-board/06-bootmode-2.png" />
+    </Frame>
+
+    <Note>
+      The image above is provided to show the physical location of the bootmode switch on the board and is illustrative only. Refer to the diagram below for the correct switch position for DFU mode.
+    </Note>
+
+    <Frame caption="USB DFU boot mode switch position">
+      <img src="/images/bootmode/usb-dfu-bootmode.svg" />
+    </Frame>
+  </Step>
+
+  <Step title="Connect the USB-C cable and apply power">
+    Connect the USB-C cable between the board's DFU port and your host computer, then apply power.
+
+  </Step>
+
+  <Step title="Verify DFU device is detected">
+    Confirm the board is visible as a DFU device.
+
+    <Tabs>
+      <Tab title="Linux">
+        ```bash
+        sudo dfu-util -l
+        ```
+      </Tab>
+      <Tab title="Windows">
+        Download the dfu-util Windows binary from the [dfu-util homepage](http://dfu-util.sourceforge.net/)
+        Releases section, extract the zip, then run:
+
+        ```powershell
+        dfu-util.exe -l
+        ```
+
+        <Note>
+          If `dfu-util.exe -l` returns no output, you need to install the **WinUSB** driver
+          for the device using [Zadig](https://zadig.akeo.ie/):
+
+          1. Download Zadig from [zadig.akeo.ie](https://zadig.akeo.ie/) and run it
+             (no installation required; a UAC prompt will ask for administrator approval)
+          2. If the device is not visible, enable **Options → List All Devices**
+          3. Select the device with VID `0451` / PID `6165` from the dropdown
+          4. Select **WinUSB** as the driver and click **Install Driver**
+          5. Once complete, the driver name will be displayed in green
+        </Note>
+      </Tab>
+    </Tabs>
+
+    You should see an entry with **VID:PID 0451:6165** and alternate settings `bootloader`
+    and `SocId`.
+
+    ```
+    Found DFU: [0451:6165] ver=0200, devnum=9, cfg=1, intf=0, path="1-2.2", alt=1, name="SocId", serial="01.00.00.00"
+    Found DFU: [0451:6165] ver=0200, devnum=9, cfg=1, intf=0, path="1-2.2", alt=0, name="bootloader", serial="01.00.00.00"
+    ```
+
+    If the device is not listed, repeat from Step 1.
+  </Step>
+</Steps>
+
+### 1.2. Flashing with Gem Imager
+
+Gem Imager handles the entire DFU flashing process automatically — bootloader files are bundled
+with the OS image and sent in the correct order.
+
+<Steps>
+  <Step title="Open Gem Imager">
+    Launch **Gem Imager** on your host computer and select the board you want to use.
+
+    <Warning>
+      Gem Imager must be **run as administrator** to access USB devices.
+    </Warning>
+  </Step>
+
+  <Step title="Select an OS image">
+    Click **Choose OS** and select the image you want to flash.
+  </Step>
+
+  <Step title="Select the storage device">
+    Click **Choose Storage** and select **USB DFU**.
+
+    <Frame>
+      <img src="/images/gem-imager/select-dfu-en.png" />
+    </Frame>
+  </Step>
+
+  <Step title="Write the image">
+    Click **NEXT**, configure any OS customization options (see the [Customization](/en/imager/customization)
+    page), then click **Write**.
+
+    <Warning>
+      Do **not** disconnect the USB cable or cut power during the flashing process.
+    </Warning>
+
+    Gem Imager will:
+
+    1. Download or read the selected image
+    2. Extract the bootloader files (`tiboot3.bin`, `tispl.bin`, `u-boot.img`)
+    3. Flash each bootloader stage via DFU
+    4. Stream the full OS image to the eMMC (`rawemmc` alt setting)
+
+  </Step>
+
+  <Step title="Wait for completion">
+    When flashing is complete, Gem Imager will display a success message.
+  </Step>
+
+  <Step title="Power off and set the bootmode switch to eMMC">
+    Power off the board completely, then set the bootmode switch to the **eMMC** position
+    as shown below.
+
+    <Frame caption="eMMC boot mode switch position">
+      <img src="/images/bootmode/emmc-bootmode.svg" />
+    </Frame>
+
+    <Note>
+      You can monitor the boot process via UART serial connection.
+      Default baudrate: **115200**
+    </Note>
+
+    Apply power — the board will boot from the eMMC image.
+
+    <Frame caption="Serial output during DFU transfer">
+      <img src="/images/gem-imager/dfu-serial.png" />
+    </Frame>
+
+    For more information on UART connection, see the [Serial Port](/en/boards/o1/peripherals/serial) page.
+  </Step>
+</Steps>
+
+### 1.3. Flashing with dfu-util (CLI)
+
+This method is for Linux users working with SDK build outputs.
+
+<Note>
+  For more information about building images from source, refer to the
+  [SDK documentation](/en/sdk/introduction).
+</Note>
+
+First set the board to DFU mode via the bootmode switch as described in
+[Section 1.1](#1-1-entering-usb-dfu-mode), then run the following commands in order.
+
+After a successful SDK build, the required files are in two directories:
+
+| File | Location |
+|------|----------|
+| `tiboot3.bin` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `tispl.bin` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `u-boot.img` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `gemstone-*.img` | `build/debos/` |
+
+<Steps>
+  <Step title="Flash the first-stage bootloader (tiboot3.bin)">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a bootloader -D tiboot3.bin -R
+    ```
+
+    The board will reset and re-enumerate. Wait a few seconds, then confirm it is still
+    detected with `dfu-util -l` before continuing.
+  </Step>
+
+  <Step title="Flash the TI SPL (tispl.bin)">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a tispl.bin -D tispl.bin -R
+    ```
+  </Step>
+
+  <Step title="Flash U-Boot (u-boot.img)">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a u-boot.img -D u-boot.img -R
+    ```
+  </Step>
+
+  <Step title="Flash the OS image to eMMC">
+    Replace `<image-filename>` with your actual image file name:
+
+    ```bash
+    sudo dfu-util -d 0451:6165 -a rawemmc \
+        -D <image-filename>.img -R
+    ```
+
+    <Warning>
+      This step streams the entire OS image to the eMMC over USB. Do **not** interrupt the
+      transfer. This may take several minutes depending on image size and USB speed.
+    </Warning>
+  </Step>
+
+  <Step title="Power off and set the bootmode switch to eMMC">
+    Once `dfu-util` reports success, power off the board completely, then set the bootmode
+    switch to the **eMMC** position as shown below.
+
+    <Frame caption="eMMC boot mode switch position">
+      <img src="/images/bootmode/emmc-bootmode.svg" />
+    </Frame>
+
+    <Note>
+      You can monitor the boot process via UART serial connection.
+      Default baudrate: **115200**
+    </Note>
+
+    Apply power — the board will boot from the eMMC image.
+  </Step>
+</Steps>
+
+---
+
+## Method 2: Flashing eMMC via Ethernet + UART
+
+This method requires a working Linux system already running on the board (SD card or eMMC).
+Gem Imager's `Internal eMMC` storage option is used over a network connection.
+
+### 2.1. Connect Gemstone to Your Computer
+
+After connecting the Gemstone board via USB Type-C and Ethernet, also connect a USB-TTL UART
+converter to UART0.
+
+<Warning>
+  If you are using a Linux operating system, make sure to disable your computer's wired network
+  connection before starting the writing process.
+</Warning>
+
+### 2.2. Starting the Writing Process
 
 Follow the steps in the [Quick Start](/en/quickstart) guide up to the
-[Image Writing Process](/en/quickstart#1-2-image-writing-process) section, and select `Internal eMMC` as the storage device.
+[Image Writing Process](/en/quickstart#1-2-image-writing-process) section, and select
+`Internal eMMC` as the storage device.
 
 <Frame>
   <img src="/images/gem-imager/m-storage.png" />
@@ -37,7 +278,7 @@ Follow the steps in the [Quick Start](/en/quickstart) guide up to the
 
 Then, click `NEXT`, configure the necessary settings, and begin writing the image to the eMMC.
 
-### 1.3. Connect to the Gemstone Operating System
+### 2.3. Connect to the Gemstone Operating System
 
-After the image writing process is complete, the system will boot from the eMMC. You can connect to the
-Gemstone OS via serial port or SSH.
+After the image writing process is complete, the system will boot from the eMMC. You can connect
+to the Gemstone OS via serial port or SSH.
