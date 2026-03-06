@@ -24,7 +24,7 @@ export DEBIAN_FRONTEND=noninteractive
 DOC_ROOT="${DOC_ROOT:-/home/gemstone/Documents}"
 DOC_DIR="${DOC_ROOT}/iptablesgemstone"
 
-ZIP_URL="https://github.com/MehmetEmreee/iptablesgemstone/raw/main/ip6table-packages.zip"
+ZIP_URL="https://github.com/MehmetEmreee/gemstonedocs/raw/refs/heads/main/ip6table-packages.zip"
 ZIP_PATH="${DOC_DIR}/ip6table-packages.zip"
 
 OS_AGENT_VERSION="1.8.0"
