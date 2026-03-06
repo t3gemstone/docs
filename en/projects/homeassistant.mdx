@@ -2,8 +2,8 @@
 
 > T3-Gemstone-O1 Smart Home Central Management
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/1.png" alt="Home Assistant Supervisor" />
+<Frame caption="Image: Home Assistant Supervisor">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/homeassistant-supervisor.png" alt="Home Assistant Supervisor" />
 </Frame>
 
 <Tip>
@@ -38,8 +38,8 @@ BUG_REPORT_URL="[https://bugs.debian.org/](https://bugs.debian.org/)"
 
 If you see this output, your system is ready for installation.
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/2.png" alt="Preparation" />
+<Frame caption="Image: Preparation">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/on-hazirlik.png" alt="Preparation" />
 </Frame>
 
 ## 3. Automatic Installation with Installation Script
@@ -51,23 +51,29 @@ The installation script (`.sh`) we prepared for you will automatically perform a
 sudo apt update
 
 # Download the installation script
-wget [https://raw.githubusercontent.com/MehmetEmreee/gemstonehomeassistant/refs/heads/main/downloader.sh](https://raw.githubusercontent.com/MehmetEmreee/gemstonehomeassistant/refs/heads/main/downloader.sh)
+wget https://github.com/MehmetEmreee/gemstonedocs/raw/refs/heads/main/homeassistant.sh
 
 # Give the script execute permission
-chmod +x downloader.sh
+chmod +x homeassistant.sh
 
 # Start the installation
-sudo ./downloader.sh
+sudo ./homeassistant.sh
 ```
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.1.png" alt="Installation Step 1" />
+<Frame caption="Image: Installation Step 1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-1.png" alt="Installation Step 1" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.2.png" alt="Installation Step 2" />
+<Frame caption="Image: Installation Step 2">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-2.png" alt="Installation Step 2" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.3.png" alt="Installation Step 3" />
+<Frame caption="Image: Installation Step 3">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-3.png" alt="Installation Step 3" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/3.4.png" alt="Installation Step 4" />
+<Frame caption="Image: Installation Step 4">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-4.png" alt="Installation Step 4" />
 </Frame>
 
 After installation is complete, the Supervisor downloading and starting all services may take 5-10 minutes depending on your internet speed. You can monitor the status with the following command:
@@ -90,26 +96,38 @@ After the system services are active, when you first access the interface throug
   If you get an error when connecting to the interface, you can solve it by following the images below and changing the `https://` part in the address bar to `http://`.
 </Note>
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.png" alt="Interface Setup Introduction" />
+<Frame caption="Image: Interface Setup Introduction">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-giris.png" alt="Interface Setup Introduction" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.1.png" alt="Interface Setup 1" />
+<Frame caption="Image: Interface Setup 1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-1.png" alt="Interface Setup 1" />
 </Frame>
 
 If you're not getting an error, you can continue from here:
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.2.png" alt="Interface Setup 2" />
+<Frame caption="Image: Interface Setup 2">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-2.png" alt="Interface Setup 2" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.3.png" alt="Interface Setup 3" />
+<Frame caption="Image: Interface Setup 3">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-3.png" alt="Interface Setup 3" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.4.png" alt="Interface Setup 4" />
+<Frame caption="Image: Interface Setup 4">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-4.png" alt="Interface Setup 4" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.5.png" alt="Interface Setup 5" />
+<Frame caption="Image: Interface Setup 5">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-5.png" alt="Interface Setup 5" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.6.png" alt="Interface Setup 6" />
+<Frame caption="Image: Interface Setup 6">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-6.png" alt="Interface Setup 6" />
+</Frame>
 
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/4.7.png" alt="Interface Setup 7" />
+<Frame caption="Image: Interface Setup 7">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-7.png" alt="Interface Setup 7" />
 </Frame>
 
 Congratulations! You have successfully completed the installation steps and are now on the Home Assistant main screen. You can now freely configure your smart home center and manage your devices from your T3-Gemstone-O1.
@@ -120,92 +138,92 @@ In this section, you will learn how to connect a motion sensor to a Deneyap Card
 
 **a) Open the menu on the left side and click on Settings.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/a.png" alt="Step a" />
+<Frame caption="Image: Step a">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-a.png" alt="Step a" />
 </Frame>
 
 **b) From the opened menu, click on Applications.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/b.png" alt="Step b" />
+<Frame caption="Image: Step b">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-b.png" alt="Step b" />
 </Frame>
 
 **c) Click the "Install Application" button in the bottom right.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/c.png" alt="Step c" />
+<Frame caption="Image: Step c">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-c.png" alt="Step c" />
 </Frame>
 
 **d) In the opened menu, type "esphome" in the search field.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/d.png" alt="Step d" />
+<Frame caption="Image: Step d">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-d.png" alt="Step d" />
 </Frame>
 
 **e) Click on the resulting ESPHome result.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/e.png" alt="Step e" />
+<Frame caption="Image: Step e">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-e.png" alt="Step e" />
 </Frame>
 
 **f) In the opened menu, click Install and wait for the installation to complete.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/f.png" alt="Step f" />
+<Frame caption="Image: Step f">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-f.png" alt="Step f" />
 </Frame>
 
 **g) After waiting for a while, this menu appears. Make sure that "Show in sidebar" and "Start on boot" options are enabled, then click the Start button.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/g.png" alt="Step g" />
+<Frame caption="Image: Step g">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-g.png" alt="Step g" />
 </Frame>
 
 **h) Click the "Open Web Interface" button.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/h.png" alt="Step h" />
+<Frame caption="Image: Step h">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-h.png" alt="Step h" />
 </Frame>
 
 **i) In the opened menu, click on "New Device" option.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/i.png" alt="Step i" />
+<Frame caption="Image: Step i">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-i.png" alt="Step i" />
 </Frame>
 
 **j) Click "Continue" to proceed.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/j.png" alt="Step j" />
+<Frame caption="Image: Step j">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-j.png" alt="Step j" />
 </Frame>
 
 **k) Click on "New Device Setup" option.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/k.png" alt="Step k" />
+<Frame caption="Image: Step k">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-k.png" alt="Step k" />
 </Frame>
 
 **l) Here you can give any name you want to the card. In the "Network Name" and "Password" fields, enter your modem name (SSID) and password.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/l.png" alt="Step l" />
+<Frame caption="Image: Step l">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-l.png" alt="Step l" />
 </Frame>
 
 **m) Here we select the "ESP32-S3" option.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/m.png" alt="Step m" />
+<Frame caption="Image: Step m">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-m.png" alt="Step m" />
 </Frame>
 
 **n) For now, you can click "Skip". Then, click the "Edit" button in the Deneyap Card section that appears in the background.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/n.png" alt="Step n" />
+<Frame caption="Image: Step n">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-n.png" alt="Step n" />
 </Frame>
 
 **u) Here a YAML file appears. We modify the `board` section under `esp32` according to the deneyap card we are using. For Deneyap Card 1A V2, we delete the `board:` section and write `deneyapkart1Av2`. We also modify the `framework` section to be `type: arduino`.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/u.png" alt="Step u" />
+<Frame caption="Image: Step u">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-u.png" alt="Step u" />
 </Frame>
 
 **v) Then we copy the pin definitions given in this section to the bottom:**
@@ -229,8 +247,8 @@ substitutions:
   SCL_PIN: GPIO21
 ```
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/v.png" alt="Step v" />
+<Frame caption="Image: Step v">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-v.png" alt="Step v" />
 </Frame>
 
 **y) In this example, since we will connect a motion sensor, we paste the definitions we found from the ESPHome page to the bottom of the page:**
@@ -252,52 +270,52 @@ binary_sensor:
   We connected the motion sensor to pin D4 (GPIO42). If you connected it to a different pin, you need to make changes in the `number` section. You can access the required pin assignments from [https://docs.deneyapkart.org/Kartlar](https://docs.deneyapkart.org/Kartlar) page.
 </Note>
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/y.png" alt="Step y" />
+<Frame caption="Image: Step y">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-y.png" alt="Step y" />
 </Frame>
 
 **z) Click the "Install" button in the top right. Configuration is complete.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/z.png" alt="Step z" />
+<Frame caption="Image: Step z">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-z.png" alt="Step z" />
 </Frame>
 
 **Upload Process:**
 
 **a1) First, connect your Deneyap Card to any of the USB outputs of your T3-Gemstone-O1 card. You will see many upload options in the opened menu, but in the first upload, select "Plug into the computer running esphome device builder" option. After that, you can perform wireless uploads.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/a1.png" alt="Step a1" />
+<Frame caption="Image: Step a1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-a1.png" alt="Step a1" />
 </Frame>
 
 **b1) Click on the option that appears in the port selection section. You may see multiple ports. When you unplug your Deneyap Card and plug it back in, then reach this menu again, the port that is not visible will be the correct port.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/b1.png" alt="Step b1" />
+<Frame caption="Image: Step b1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-b1.png" alt="Step b1" />
 </Frame>
 
 **c1) The upload has started. The first upload will take some time, so it's worth waiting patiently.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/c1.png" alt="Step c1" />
+<Frame caption="Image: Step c1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-c1.png" alt="Step c1" />
 </Frame>
 
 **d1) After the upload is complete, go to the ESPHome main screen and click "Logs". In the opened menu, you can now select "Wirelessly". When the logs arrive, copy the IP address shown here.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/d1.png" alt="Step d1" />
+<Frame caption="Image: Step d1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-d1.png" alt="Step d1" />
 </Frame>
 
 **e1) Go to Home Assistant > Settings > Devices and Services > Add Integration > ESPHome and paste the IP address we copied. Then click "Skip" and "Finish".**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/e1.png" alt="Step e1" />
+<Frame caption="Image: Step e1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-e1.png" alt="Step e1" />
 </Frame>
 
 **f1) Click on "1 device" under ESPHome.**
 
-<Frame>
-  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/f1.png" alt="Step f1" />
+<Frame caption="Image: Step f1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-f1.png" alt="Step f1" />
 </Frame>
 
 **Congratulations! You have successfully integrated a motion sensor into Home Assistant. Here you can view the status of the sensor we added in real-time.**
