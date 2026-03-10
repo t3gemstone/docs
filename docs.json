@@ -167,6 +167,8 @@
               "tr/projects/ardupilot",
               "tr/projects/vtol",
               "tr/projects/swupdate",
+              "tr/projects/mediabox"
+              "tr/projects/homeassistant"
               "tr/projects/mediabox",
               {
                 "group": "Teknofest",
@@ -334,6 +336,8 @@
               "en/projects/ardupilot",
               "en/projects/vtol",
               "en/projects/swupdate",
+              "en/projects/mediabox"
+              "en/projects/homeassistant"
               "en/projects/mediabox",
               {
                 "group": "Teknofest",
