@@ -172,7 +172,9 @@
                 "group": "Teknofest",
                 "pages": [
                   "tr/projects/teknofest-suv",
-                  "tr/projects/teknofest-ika"
+                  "tr/projects/teknofest-ika",
+                  "tr/projects/teknofest-suru-iha",
+                  "tr/projects/teknofest-celikkubbe"
                 ]
               }
             ]
@@ -339,7 +341,9 @@
                 "group": "Teknofest",
                 "pages": [
                   "en/projects/teknofest-suv",
-                  "en/projects/teknofest-ika"
+                  "en/projects/teknofest-ika",
+                  "en/projects/teknofest-suru-iha",
+                  "en/projects/teknofest-celikkubbe"
                 ]
               }
             ]
