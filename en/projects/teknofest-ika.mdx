@@ -115,21 +115,21 @@ provided over MAVLink/UDP.
 ```mermaid
 flowchart TB
     subgraph EXTERNAL["External Hardware"]
-        GPS["GPS Module\n(UART-MAIN6)"]
-        RC["RC Receiver / SBUS\n(UART-MAIN1)"]
-        ESC1["PWM ESC\nDrive Motor"]
+        GPS["GPS Module (UART-MAIN6)"]
+        RC["RC Receiver / SBUS (UART-MAIN1)"]
+        ESC1["PWM ESC Drive Motor"]
         ESC2["DroneCAN ESC"]
-        SRV["Servo\nTurret / Firing"]
-        GCS["Ground Station\n(QGroundControl)"]
+        SRV["Servo Turret / Firing"]
+        GCS["Ground Station (QGroundControl)"]
     end
 
     subgraph O1["T3 Gemstone O1"]
         AR[ArduRover]
         AI["Edge AI / YOLOv8"]
-        CAM["Camera\nMIPI CSI"]
-        PWM["PWM\n7 Channels"]
-        CAN["CAN Bus\nTCAN1462"]
-        IMU["IMU\nICM-20948"]
+        CAM["Camera MIPI CSI"]
+        PWM["PWM 7 Channels"]
+        CAN["CAN Bus TCAN1462"]
+        IMU["IMU ICM-20948"]
     end
 
     GPS -->|UART| AR

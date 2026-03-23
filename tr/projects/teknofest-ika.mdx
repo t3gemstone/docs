@@ -115,21 +115,21 @@ tespit edilen hedef ve engeller ArduRover'a iletilir. ArduRover, IMU ve GPS veri
 ```mermaid
 flowchart TB
     subgraph EXTERNAL["Harici Donanım"]
-        GPS["GPS Modülü\n(UART-MAIN6)"]
-        RC["RC Alıcı / SBUS\n(UART-MAIN1)"]
-        ESC1["PWM ESC\nTahrik Motoru"]
+        GPS["GPS Modülü (UART-MAIN6)"]
+        RC["RC Alıcı / SBUS (UART-MAIN1)"]
+        ESC1["PWM ESC Tahrik Motoru"]
         ESC2["DroneCAN ESC"]
-        SRV["Servo\nTurret / Ateşleme"]
-        GCS["Yer İstasyonu\n(QGroundControl)"]
+        SRV["Servo Turret / Ateşleme"]
+        GCS["Yer İstasyonu (QGroundControl)"]
     end
 
     subgraph O1["T3 Gemstone O1"]
         AR[ArduRover]
         AI["Edge AI / YOLOv8"]
-        CAM["Kamera\nMIPI CSI"]
-        PWM["PWM\n7 Kanal"]
-        CAN["CAN Bus\nTCAN1462"]
-        IMU["IMU\nICM-20948"]
+        CAM["Kamera MIPI CSI"]
+        PWM["PWM 7 Kanal"]
+        CAN["CAN Bus TCAN1462"]
+        IMU["IMU ICM-20948"]
     end
 
     GPS -->|UART| AR
