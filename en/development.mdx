@@ -258,3 +258,69 @@ gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/c/magnetometer
 gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/cpp/magnetometer
 gemstone@t3-gem-o1:~$ sudo ./build/magnetometer/python/magnetometer
 ```
+
+# 3. VSCode Remote Development
+
+You can perform development by making a remote connection to Gemstone via VSCode installed on your operating system. 
+With this method, you perform code compilation processes on the board using your own computer's resources. 
+For your board to support this, the SSH option in the [Services](./quickstart#services) section explained in the 
+quickstart section must be checked during installation.
+
+### 3.1. Installing the Extension
+
+To establish a remote connection via VSCode, you need to install the "Remote - SSH" extension developed by Microsoft.
+
+1. Open VSCode.
+2. Click on the **Extensions** icon in the left menu or press `Ctrl+Shift+X`.
+3. Type `Remote - SSH` in the search bar.
+4. Find the extension published by Microsoft and click the **Install** button.
+
+<Frame caption="VSCode Remote-SSH extension installation">
+  <video controls className="w-full rounded-lg" src="/videos/vscode-remote-ssh-ext.mp4" />
+</Frame>
+
+### 3.2. SSH Configuration (Recommended)
+
+It is recommended to configure your SSH keys to connect quickly without entering a password every time.
+
+#### 3.2.1. Creating an SSH Key
+
+Create a key pair by running the following command in your computer's terminal (Linux/macOS terminal or Windows PowerShell):
+
+```bash
+ssh-keygen -t rsa -b 4096
+```
+
+You can skip the questions following this command with the default settings (by pressing the Enter key).
+
+#### 3.2.2. Copying the Key to the Board
+
+Use the following command to transfer the public key you created to the Gemstone board:
+
+```bash
+ssh-copy-id gemstone@192.168.7.2
+```
+
+<Note>
+  If you have changed Gemstone's IP address or assigned a [static IP](#2-2-1-establish-ethernet-connection-between-gemstone-board-and-your-computer), 
+  enter the relevant address.
+</Note>
+
+### 3.3. Connecting to the Target Device
+
+After installing the extension and completing the SSH settings, you can start the connection.
+
+1. Click on the blue **Open a Remote Window** icon in the lower-left corner of VSCode.
+2. Select **Connect to Host...** from the menu that opens.
+3. Type `gemstone@192.168.7.2` and press `Enter`.
+4. Once the connection is established, you will see the **SSH: 192.168.7.2** label in the lower-left corner.
+
+### 3.4. Opening the Project Folder and Working
+
+After the connection is successful, you can start working by selecting a folder on Gemstone via "File > Open Folder".
+
+<Tip>
+  When developing, you may need to reinstall extensions such as **C/C++**, **Python**, or **CMake Tools** while 
+  connected to the remote device. You can perform this process with the "Install on SSH: 192.168.7.2" button in the 
+  Extensions tab.
+</Tip>

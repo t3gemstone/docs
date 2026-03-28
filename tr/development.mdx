@@ -245,3 +245,74 @@ ubuntu@host:examples$ scp -r build/examples gemstone@10.0.0.1:build
 #### 2.2.6. Derlenmiş projeyi çalıştır
 
 <SnippetExamplesHostRun />
+
+# 3. VSCode Uzak Geliştirme (Remote Development)
+
+Kullanmakta olduğunuz İşletim Sisteminde kurulu olan VSCode aracılığıyla Gemstone'na uzak bağlantı yaparak
+geliştirme yapabilirsiniz. Bu yöntemle kendi bilgisayarınızın kaynaklarını kullanarak kod derleme
+işlemlerini kart üzerinde gerçekleştirirsiniz. Kartınızın bunu desteklemesi için hızlı başlangıç bölümünde
+anlatılan [Servisler](./quickstart#servisler) bölümündeki SSH seçeneğinin işaretlenerek kurulum yapılmış olması
+gerekmektedir.
+
+### 3.1. Eklentinin Kurulması
+
+VSCode üzerinden uzak bağlantı kurabilmek için Microsoft tarafından geliştirilen "Remote - SSH" eklentisini
+kurmanız gerekmektedir.
+
+1. VSCode'u açın.
+2. Sol menüdeki **Extensions** (Eklentiler) simgesine tıklayın veya `Ctrl+Shift+X` tuşlarına basın.
+3. Arama çubuğuna `Remote - SSH` yazın.
+4. Microsoft tarafından yayınlanan eklentiyi bulun ve **Install** (Kur) butonuna tıklayın.
+
+<Frame caption="VSCode Remote-SSH eklentisi kurulumu">
+  <video controls className="w-full rounded-lg" src="/videos/vscode-remote-ssh-ext.mp4"></video>
+</Frame>
+
+### 3.2. SSH Yapılandırması (Önerilen)
+
+Her defasında şifre girmeden hızlıca bağlanabilmek için SSH anahtarlarınızı (SSH Keys) yapılandırmanız
+tavsiye edilir.
+
+#### 3.2.1. SSH Anahtarı Oluşturma
+
+Bilgisayarınızın terminalinde (Linux/macOS terminali veya Windows PowerShell) aşağıdaki komutu çalıştırarak bir
+anahtar çifti oluşturun:
+
+```bash
+ssh-keygen -t rsa -b 4096
+```
+
+Bu komut sonrası çıkan soruları varsayılan ayarlarla (Enter tuşuna basarak) geçebilirsiniz.
+
+#### 3.2.2. Anahtarı Karta Kopyalama
+
+Oluşturduğunuz genel anahtarı (`public key`) Gemstone kartına transfer etmek için aşağıdaki komutu kullanın:
+
+```bash
+ssh-copy-id gemstone@192.168.7.2
+```
+
+<Note>
+  Gemstone'un IP adresini değiştirdiyseniz veya [statik IP](#2-2-1-gemstone-kartını-ve-bilgisayarınızı-ethernet-ile-birbirine-bağlayın) 
+  atadıysanız ilgili adresi giriniz.
+</Note>
+
+### 3.3. Hedef Cihaza Bağlanma
+
+Eklentiyi kurduktan ve SSH ayarlarını tamamladıktan sonra bağlantıyı başlatabilirsiniz.
+
+1. VSCode'un sol alt köşesinde bulunan mavi renkli **Open a Remote Window** (Uzak Pencere Aç) simgesine tıklayın.
+2. Açılan menüden **Connect to Host...** seçeneğini seçin.
+3. `gemstone@192.168.7.2` yazın ve `Enter` tuşuna basın.
+4. Bağlantı sağlandığında, sol alt köşede **SSH: 192.168.7.2** ibaresini göreceksiniz.
+
+### 3.4. Proje Klasörünü Açma ve Çalışma
+
+Bağlantı başarılı olduktan sonra "File > Open Folder" yoluyla Gemstone üzerindeki bir klasörü seçerek 
+çalışmaya başlayabilirsiniz.
+
+<Tip>
+  Geliştirme yaparken ihtiyacınız olan **C/C++**, **Python** veya **CMake Tools** gibi eklentileri uzak cihaza 
+  bağlıyken tekrar kurmanız gerekebilir. Eklentiler sekmesinde "Install on SSH: 192.168.7.2" butonu ile bu 
+  işlemi gerçekleştirebilirsiniz.
+</Tip>
