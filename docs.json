@@ -14,14 +14,10 @@
   },
   "fonts": {
     "body": {
-      "family": "InterVariable",
-      "format": "woff2",
-      "source": "https://rsms.me/inter/font-files/InterVariable.woff2?v=4.1"
+      "family": "Inter"
     },
     "heading": {
-      "family": "InterVariable",
-      "format": "woff2",
-      "source": "https://rsms.me/inter/font-files/InterVariable.woff2?v=4.1"
+      "family": "Google Sans"
     }
   },
   "background": {
