@@ -21,6 +21,9 @@ To contribute by taking part in the relevant projects, visit their Github pages 
 <Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
 `Not Started Yet` `0%`
 </Card>
+<Card horizontal title="Wayland Transition" icon="clock" href="./roadmap#wayland-transition">
+`Not Started Yet` `0%`
+</Card>
 
 ## Apache Nuttx
 
@@ -103,3 +106,23 @@ on Gemstone.
     <img src="/images/phoenix-rtos.png" noZoom />
   </a>
 </Frame>
+
+## Wayland Transition
+
+The GPU (IMG BXS4-64) driver provided by TI for the AM67A SoC cannot accelerate X11 desktop environments.
+Windows are currently rendered without hardware acceleration using the CPU (llvmpipe). This causes the desktop environment to run sluggishly.
+The same driver includes acceleration support for Wayland. The goal is to transition to a Wayland-supported
+desktop environment that is stable, low on resource usage, feature-rich, and suitable for the majority of users.
+
+<Columns cols={1}>
+  <Frame caption="Wayland">
+    <img src="/images/wayland-logo.svg" noZoom />
+  </Frame>
+</Columns>
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Compiling the [Mesa library](https://gitlab.freedesktop.org/StaticRocket/mesa) with Ubuntu 22.04 build tools and packaging it as a DEB package | Volunteer Developer Needed     |
+| Selecting a suitable Wayland desktop environment or window manager                                          | Volunteer Developer Needed     |
+| Finding programs such as settings, file manager, and network manager (if not bundled with the selected environment) | Volunteer Developer Needed     |
+| Creating a common theme for window borders, status bar, and similar elements for interface consistency      | Volunteer Developer Needed     |

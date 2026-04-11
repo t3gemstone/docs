@@ -22,6 +22,9 @@ ziyaret edininiz.
 <Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
 `Henüz Başlamadı` `0%`
 </Card>
+<Card horizontal title="Wayland Geçişi" icon="clock" href="./roadmap#wayland-gecisi">
+`Henüz Başlamadı` `0%`
+</Card>
 
 ## Apache Nuttx
 
@@ -105,3 +108,24 @@ Mikrokernel mimari açık kaynak kodlu Phoenix isimli gerçek zamanlı işletim 
     <img src="/images/phoenix-rtos.png" noZoom />
   </a>
 </Frame>
+
+## Wayland Geçişi
+
+AM67A SoC ile gelen GPU'nun (IMG BXS4-64) TI tarafından verilen sürücüsü, X11 masaüstü ortamlarını hızlandıramamaktadır.
+Halihazırda pencereler donanım hızlandırması olmaksızın CPU (llvmpipe) ile render edilmektedir. Bu durum masaüstü ortamının donarak
+çalışmasına sebep olmaktadır. Aynı sürücüde Wayland için hızlandırma desteği bulunmaktadır. Stabil,
+kaynak kullanımı düşük, özellik bakımından zengin ve kullanıcıların çoğunluğuna hitap eden Wayland
+destekli bir masaüstü ortamına geçilmesi hedeflenmektedir.
+
+<Columns cols={1}>
+  <Frame caption="Wayland">
+    <img src="/images/wayland-logo.svg" noZoom />
+  </Frame>
+</Columns>
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| [Mesa kütüphanesinin](https://gitlab.freedesktop.org/StaticRocket/mesa) Ubuntu 22.04 derleyici araçlarıyla derlenip DEB paketi haline getirilmesi | Gönüllü Geliştirici Bekleniyor |
+| Uygun bir Wayland masaüstü ortamı ya da pencere yöneticisi seçilmesi | Gönüllü Geliştirici Bekleniyor |
+| Ayarlar, dosya yöneticisi, ağ yöneticisi gibi programların bulunması (seçilen ortam ile birlikte gelmiyorsa) | Gönüllü Geliştirici Bekleniyor |
+| Arayüz bütünlüğü için pencere kenarları, durum çubuğu gibi kısımlar için ortak bir tema oluşturulması | Gönüllü Geliştirici Bekleniyor |
