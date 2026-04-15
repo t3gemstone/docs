@@ -188,20 +188,25 @@ Veri akışını tanımlar: input → model → output. Opsiyonel olarak ROI (x,
 </Warning>
 
 <CodeGroup>
+
   ```bash Python
-  /opt/edgeai-gst-apps/apps_python# ./app_edgeai.py ../configs/image_classification.yaml
+  cd /opt/edgeai-gst-apps/apps_python && ./app_edgeai.py ../configs/image_classification.yaml
   ```
+
   ```bash C++
-  # Projeyi derlemelisiniz
-  /opt/edgeai-gst-apps# ./scripts/compile_cpp_apps.sh
+  # Projeyi derleyiniz
+  cd /opt/edgeai-gst-apps && ./scripts/compile_cpp_apps.sh
+
   # Script ile uygulamayı derledikten sonra aşağıdaki komut ile örnek uygulamayı çalıştırabilirsiniz.
-  /opt/edgeai-gst-apps/apps_cpp# ./bin/Release/app_edgeai ../configs/image_classification.yaml
+  cd /opt/edgeai-gst-apps/apps_cpp && ./bin/Release/app_edgeai ../configs/image_classification.yaml
   ```
+
 </CodeGroup>
 
 Görüntü işlemeyi sonra erdirmek için bir defa `CTRL + C` kombinasyonuna basarak sonlandırabilirsiniz.
 
-YAML dosyasında çıkış dosyasında değişiklik yapmadıysanız `/opt/edgeai-test-data/output/output_video.mkv` üzerinden çıktıya erişebilirsiniz.
+YAML dosyasında çıkış dosyasında değişiklik yapmadıysanız `/opt/edgeai-test-data/output/output_video.mkv` üzerinden
+çıktıya erişebilirsiniz.
 
 ## Mevcut Python Kodunuza Entegre Etme
 
@@ -213,7 +218,8 @@ Geliştirme Kartı içerisinde yer alan görüntü işleme hızlandırıcıları
 kütüphane dosyasını (.so, .dll vb.) yüklemeniz gerekmektedir.
 
 <Warning>
-  Görüntü işleme adımlarına başlamadan önce `root` olarak oturum açtığınızdan ve ortam değişkenlerini yüklediğinizden emin olunuz !
+  Görüntü işleme adımlarına başlamadan önce `root` olarak oturum açtığınızdan ve ortam değişkenlerini
+  yüklediğinizden emin olunuz.
 </Warning>
 
 <SnippetAIUsageE1 />

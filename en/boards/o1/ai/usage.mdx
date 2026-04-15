@@ -190,15 +190,19 @@ Defines the data flow: input → model → output. Optionally, you can specify a
 </Warning>
 
 <CodeGroup>
+
   ```bash Python
-  /opt/edgeai-gst-apps/apps_python# ./app_edgeai.py ../configs/image_classification.yaml
+  cd /opt/edgeai-gst-apps/apps_python && ./app_edgeai.py ../configs/image_classification.yaml
   ```
+
   ```bash C++
-  # You must compile the project
-  /opt/edgeai-gst-apps# ./scripts/compile_cpp_apps.sh
+  # Compile the project
+  cd /opt/edgeai-gst-apps && ./scripts/compile_cpp_apps.sh
+
   # After compiling the application with the script, you can run the example application using the command below.
-  /opt/edgeai-gst-apps/apps_cpp# ./bin/Release/app_edgeai ../configs/image_classification.yaml
+  cd /opt/edgeai-gst-apps/apps_cpp && ./bin/Release/app_edgeai ../configs/image_classification.yaml
   ```
+
 </CodeGroup>
 
 To terminate the image processing, press `CTRL + C` once.
