@@ -3,6 +3,9 @@ title: 'Özelleştirme'
 description: 'Sistem özelleştirme'
 ---
 
+import SnippetHostShareInternet from '/snippets/main/host/share-internet.mdx';
+import SnippetTargetShareInternet from '/snippets/main/target/share-internet.mdx';
+
 <Tip>
 Bu bölümün sonunda Gemstone Imager uygulamasının özelleştirme menülerindeki alanların ne işe yaradığını öğreneceksiniz.
 </Tip>
@@ -103,3 +106,26 @@ olması gerekmektedir. Talimatlar için [tıklayınız](https://www.diodes-delig
 
 - `Ethernet` alanı eğer yazma işlemi kartın eMMCsine yapılıyorsa karta bağlı olan ethernet portu seçilmelidir.
   SD Karta yazma işleminde etkisizdir.
+
+## Host Bilgisayarın İnternetini Kart Üzerinden Kullanmak
+
+Gadgets (Araçlar) bölümünden `Enable Ethernet Gadget` seçeneği işaretlenmiş ise bu; kartınıza USB üzerinden
+ethernet bağlantısı yapabilmenizi sağlar. İmaj yükleme işlemleri sonrası Host bilgisayarın terminalinden
+`ssh gemstone@192.168.7.2` komutu ile ulaşabilmektesiniz. Fakat kartınızın içerisinde WIFI ayarları yapmadıysanız
+kartınızın internete erişimi olmayacaktır. Host bilgisayarınızın internetini kartınız üzerinden kullanmak için
+aşağıdaki adımları takip edebilirsiniz:
+
+1. Kartızın açık ve gadget ayarları ile imaj yazılmış olduğundan emin olunuz.
+2. Host bilgisayarınızın internete bağlı olduğuna emin olunuz.
+3. Terminali açarak aşağıdaki komutu çalıştırarak `ip a` komutu ile ağ arayüzünüzü ve Gemstone kartınızın oluşturduğu
+   ethernet arayüzünün isimlerini öğreniniz. Genellikle host bilgisayar arayüzünün ismi `wlp2s0` Gemstone kartınızın
+   oluşturduğu Gadget arayüzünün ismi ise `enx02123456789a` gibi olur.
+
+Aşağıdaki komutu kendi bilgisayarınızdaki Terminal'den çalıştırınız.
+
+<SnippetHostShareInternet desc="Host Bilgisayar Ayarları"/>
+
+Son olarak aşağıdaki komutu ise karta `ssh gemstone@192.168.7.2` komutu ile bağlandıktan sonra kartın
+terminalinden çalıştırınız.
+
+<SnippetTargetShareInternet desc="Kart Ayarları"/>
