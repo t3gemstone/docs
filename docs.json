@@ -165,6 +165,7 @@
               "tr/projects/vtol",
               "tr/projects/swupdate",
               "tr/projects/mediabox",
+              "tr/projects/firewall",
               {
                 "group": "Teknofest",
                 "pages": [
@@ -333,6 +334,7 @@
               "en/projects/vtol",
               "en/projects/swupdate",
               "en/projects/mediabox",
+              "en/projects/firewall",
               {
                 "group": "Teknofest",
                 "pages": [
