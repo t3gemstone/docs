@@ -12,7 +12,8 @@ kullanacağınız hakkında bilgi verilecektir.
 sudo su
 source /opt/t3-edgeai-env
 ```
-Bu komutlar, ``root`` kullanıcısına geçmenizi ve Edge AI için gerekli olan ortam değişkenlerini yükleminizi sağlar.
+
+Bu komutlar, `root` kullanıcısına geçmenizi ve Edge AI için gerekli olan ortam değişkenlerini yükleminizi sağlar.
 
 <Tip>Ortam değişkeni dosyası yoksa [Edge AI Kurulumu](/tr/boards/o1/ai/installation) bölümünden ilgili paketi kurabilirsiniz.</Tip>
 
@@ -24,12 +25,12 @@ GStreamer tabanlı bir mimariyle çalışmakta olup Texas Instruments işlemcile
 işleme, nesne algılama, akış (streaming) ve diğer yapay zeka iş akışlarını gerçekleştirmek için hazır
 çözümler sunmaktadır.
 
-Kurulum bölümündeki Edge AI kurulumunu yaptığınız zaman ```/opt/edgeai-gst-apps``` klasöründen bu projeye erişebilirsiniz.
+Kurulum bölümündeki Edge AI kurulumunu yaptığınız zaman `/opt/edgeai-gst-apps` klasöründen bu projeye erişebilirsiniz.
 
 Configs klasörü içinde birden fazla uygulama için örnekler mevcuttur. Python ve C++ dillerinde projeyi
 çalıştırmanıza olanak sağlamaktadır.
 
-Örneğin ``configs/image_classification.yaml`` içerisinde yer alan config aşağıdaki gibidir.
+Örneğin `configs/image_classification.yaml` içerisinde yer alan config aşağıdaki gibidir.
 
 ```yaml
 title: "Image Classification"
@@ -182,7 +183,9 @@ Veri akışını tanımlar.
 Veri akışını tanımlar: input → model → output. Opsiyonel olarak ROI (x,y,width,height) belirtebilirsiniz.
 </ParamField>
 
-<Warning>Görüntü işleme adımlarına başlamadan önce ```root``` olarak oturum açtığınızdan ve ortam değişkenlerini yüklediğinizden emin olunuz !</Warning>
+<Warning>
+  Görüntü işleme adımlarına başlamadan önce `root` olarak oturum açtığınızdan ve ortam değişkenlerini yüklediğinizden emin olunuz.
+</Warning>
 
 <CodeGroup>
   ```bash Python
@@ -196,9 +199,9 @@ Veri akışını tanımlar: input → model → output. Opsiyonel olarak ROI (x,
   ```
 </CodeGroup>
 
-Görüntü işlemeyi sonra erdirmek için bir defa ```CTRL + C``` kombinasyonuna basarak sonlandırabilirsiniz.
+Görüntü işlemeyi sonra erdirmek için bir defa `CTRL + C` kombinasyonuna basarak sonlandırabilirsiniz.
 
-YAML dosyasında çıkış dosyasında değişiklik yapmadıysanız ```/opt/edgeai-test-data/output/output_video.mkv``` üzerinden çıktıya erişebilirsiniz.
+YAML dosyasında çıkış dosyasında değişiklik yapmadıysanız `/opt/edgeai-test-data/output/output_video.mkv` üzerinden çıktıya erişebilirsiniz.
 
 ## Mevcut Python Kodunuza Entegre Etme
 
@@ -209,7 +212,9 @@ TensorFlow Lite, modelleri varsayılan olarak cihazın CPU'sunda (Merkezi İşle
 Geliştirme Kartı içerisinde yer alan görüntü işleme hızlandırıcıları) kullanabilmek için gereken paylaşımlı
 kütüphane dosyasını (.so, .dll vb.) yüklemeniz gerekmektedir.
 
-<Warning>Görüntü işleme adımlarına başlamadan önce ```root``` olarak oturum açtığınızdan ve ortam değişkenlerini yüklediğinizden emin olunuz !</Warning>
+<Warning>
+  Görüntü işleme adımlarına başlamadan önce `root` olarak oturum açtığınızdan ve ortam değişkenlerini yüklediğinizden emin olunuz !
+</Warning>
 
 <SnippetAIUsageE1 />
 

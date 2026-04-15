@@ -5,25 +5,34 @@ description: 'Preparing Image Processing Applications'
 
 import SnippetAIUsageE1 from '/snippets/ai/usage-e1.mdx';
 
-This section will provide information on how to use image processing models that you have prepared with your own dataset or acquired as pre-trained models.
+This section will provide information on how to use image processing models that you have prepared with
+your own dataset or acquired as pre-trained models.
 
 ```bash
 sudo su
 source /opt/t3-edgeai-env
 ```
-These commands allow you to switch to the ``root`` user and load the environment variables required for Edge AI.
 
-<Tip>If the environment variables file does not exist, you can install the relevant package from the [Edge AI Installation](/en/boards/o1/ai/installation) section.</Tip>
+These commands allow you to switch to the `root` user and load the environment variables required for Edge AI.
+
+<Tip>
+  If the environment variables file does not exist, you can install the relevant package from the
+  [Edge AI Installation](/en/boards/o1/ai/installation) section.
+</Tip>
 
 ## Edge AI GStreamer Apps
 
-This project is a collection of open-source reference applications provided by Texas Instruments that can be used to rapidly develop AI applications on devices like the T3 Gemstone O1. It primarily operates on a GStreamer-based architecture and offers ready-made solutions for performing image processing, object detection, streaming, and other AI workflows on Texas Instruments processors and SoC hardware.
+This project is a collection of open-source reference applications provided by Texas Instruments that can be used to
+rapidly develop AI applications on devices like the T3 Gemstone O1. It primarily operates on a GStreamer-based
+architecture and offers ready-made solutions for performing image processing, object detection, streaming, and other
+AI workflows on Texas Instruments processors and SoC hardware.
 
-Once you have completed the Edge AI installation in the [Installation](/en/boards/o1/ai/installation) section, you can access this project from the ```/opt/edgeai-gst-apps``` directory.
+Once you have completed the Edge AI installation in the [Installation](/en/boards/o1/ai/installation) section,
+you can access this project from the `/opt/edgeai-gst-apps` directory.
 
 The configs folder contains examples for multiple applications. It allows you to run the project in both Python and C++ languages.
 
-For example, the configuration found in ``configs/image_classification.yaml`` is as follows:
+For example, the configuration found in `configs/image_classification.yaml` is as follows:
 
 ```yaml
 title: "Image Classification"
@@ -176,9 +185,9 @@ Defines the data flow.
 Defines the data flow: input → model → output. Optionally, you can specify an ROI (x, y, width, height).
 </ParamField>
 
-<Warning>Before starting image processing steps, ensure that you are logged in as ```root``` and have loaded the environment variables!</Warning>
-
-Here is the English translation of the code execution and integration documentation, maintaining the original Mintlify structure and corporate documentation standards.
+<Warning>
+  Before starting image processing steps, ensure that you are logged in as `root` and have loaded the environment variables!
+</Warning>
 
 <CodeGroup>
   ```bash Python
@@ -192,18 +201,20 @@ Here is the English translation of the code execution and integration documentat
   ```
 </CodeGroup>
 
-To terminate the image processing, press ```CTRL + C``` once.
+To terminate the image processing, press `CTRL + C` once.
 
-If you have not modified the output file in the YAML file, you can access the output at ```/opt/edgeai-test-data/output/output_video.mkv```.
+If you have not modified the output file in the YAML file, you can access the output at `/opt/edgeai-test-data/output/output_video.mkv`.
 
 ## Integrating into Your Existing Python Code
 
 By default, TensorFlow Lite runs models on the device's CPU (Central Processing Unit).
 
-A "Delegate" is a mechanism that "delegates" some or all of the computations in your TFLite model from the CPU to more specialized hardware.
-To use these specialized hardware accelerators (such as the image processing accelerators on the T3 Gemstone O1 Development Board), 
-you need to load the required shared library file (.so, .dll, etc.).
+A "Delegate" is a mechanism that "delegates" some or all of the computations in your TFLite model from the CPU to
+more specialized hardware. To use these specialized hardware accelerators (such as the image processing accelerators
+on the T3 Gemstone O1 Development Board), you need to load the required shared library file (.so, .dll, etc.).
 
-<Warning>Before starting image processing steps, ensure that you are logged in as ```root``` and have loaded the environment variables!</Warning>
+<Warning>
+Before starting image processing steps, ensure that you are logged in as `root` and have loaded the environment variables!
+</Warning>
 
 <SnippetAIUsageE1 />
