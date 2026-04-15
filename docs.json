@@ -112,6 +112,7 @@
                     "pages": [
                       "tr/boards/o1/ai/introduction",
                       "tr/boards/o1/ai/ecosystem",
+                      "tr/boards/o1/ai/installation",
                       "tr/boards/o1/ai/edgeai",
                       "tr/boards/o1/ai/edgeai-tensorlab",
                       "tr/boards/o1/ai/data-labeling",
@@ -279,6 +280,7 @@
                     "pages": [
                       "en/boards/o1/ai/introduction",
                       "en/boards/o1/ai/ecosystem",
+                      "en/boards/o1/ai/installation",
                       "en/boards/o1/ai/edgeai",
                       "en/boards/o1/ai/edgeai-tensorlab",
                       "en/boards/o1/ai/data-labeling",
