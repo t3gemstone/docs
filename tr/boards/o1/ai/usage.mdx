@@ -8,16 +8,13 @@ import SnippetAIUsageE1 from '/snippets/ai/usage-e1.mdx';
 Bu bölümde, kendi veri setinizle veya hazır olarak edindiğiniz görüntü işleme modellerini nasıl
 kullanacağınız hakkında bilgi verilecektir.
 
-## Mevcut Python Kodunuza Entegre Etme
+```bash
+sudo su
+source /opt/t3-gem-o1-edgeai-env
+```
+Bu komutlar, ``root`` kullanıcısına geçmenizi ve Edge AI için gerekli olan ortam değişkenlerini yükleminizi sağlar.
 
-TensorFlow Lite, modelleri varsayılan olarak cihazın CPU'sunda (Merkezi İşlem Birimi) çalıştırır.
-
-"Delegate" (Temsilci/Vekil), TFLite modelinizdeki hesaplamaların bir kısmını veya tamamını CPU yerine daha
-özelleşmiş bir donanıma "devretme" (delegate etme) mekanizmasıdır. Bu özel donanımları (örneğin T3 Gemstone O1
-Geliştirme Kartı içerisinde yer alan görüntü işleme hızlandırıcıları) kullanabilmek için gereken paylaşımlı
-kütüphane dosyasını (.so, .dll vb.) yüklemeniz gerekmektedir.
-
-<SnippetAIUsageE1 />
+<Tip>Ortam değişkeni dosyası yoksa [Edge AI Kurulumu](/tr/boards/o1/ai/installation) bölümünden ilgili paketi kurabilirsiniz.</Tip>
 
 ## Edge AI GStreamer Apps
 
@@ -27,20 +24,192 @@ GStreamer tabanlı bir mimariyle çalışmakta olup Texas Instruments işlemcile
 işleme, nesne algılama, akış (streaming) ve diğer yapay zeka iş akışlarını gerçekleştirmek için hazır
 çözümler sunmaktadır.
 
+Kurulum bölümündeki Edge AI kurulumunu yaptığınız zaman ```/opt/edgeai-gst-apps``` klasöründen bu projeye erişebilirsiniz.
+
 Configs klasörü içinde birden fazla uygulama için örnekler mevcuttur. Python ve C++ dillerinde projeyi
 çalıştırmanıza olanak sağlamaktadır.
+
+Örneğin ``configs/image_classification.yaml`` içerisinde yer alan config aşağıdaki gibidir.
+
+```yaml
+title: "Image Classification"
+log_level: 2
+inputs:
+    input0:
+        source: /dev/video-usb-cam0
+        format: jpeg
+        width: 1280
+        height: 720
+        framerate: 30
+    input1:
+        source: /opt/edgeai-test-data/videos/video0_1280_768.h264
+        format: h264
+        width: 1280
+        height: 768
+        framerate: 30
+        loop: True
+    input2:
+        source: /opt/edgeai-test-data/images/%04d.jpg
+        width: 1280
+        height: 720
+        index: 0
+        framerate: 1
+        loop: True
+models:
+    model0:
+        model_path: /opt/model_zoo/TVM-CL-3090-mobileNetV2-tv
+        topN: 5
+    model1:
+        model_path: /opt/model_zoo/TFL-CL-0000-mobileNetV1-mlperf
+        topN: 5
+    model2:
+        model_path: /opt/model_zoo/ONR-CL-6360-regNetx-200mf
+        topN: 5
+outputs:
+    output0:
+        sink: kmssink
+        width: 1920
+        height: 1080
+        overlay-perf-type: graph
+    output1:
+        sink: /opt/edgeai-test-data/output/output_video.mkv
+        width: 1920
+        height: 1080
+    output2:
+        sink: /opt/edgeai-test-data/output/output_image_%04d.jpg
+        width: 1920
+        height: 1080
+    output3:
+        sink: remote
+        width: 1920
+        height: 1080
+        port: 8081
+        host: 127.0.0.1
+        encoding: jpeg
+        overlay-perf-type: graph
+
+flows:
+    flow0: [input2,model1,output0,[320,150,1280,720]]
+```
+
+Yukarıdaki YAML dosyasını kendi ihtiyaçlarına göre düzenleyebilirisiniz.
+
+<ParamField body="TITLE" default="Image Classification" required>
+Uygulamanın başlığı. Log çıktılarında ve arayüzde referans olarak kullanılır.
+</ParamField>
+
+<ParamField body="LOG_LEVEL" default="2" required>
+Log detay seviyesini belirler. 0: minimal, 5: debug
+</ParamField>
+
+<ParamField body="INPUTS" required>
+İşlenecek giriş veri kaynakları.
+</ParamField>
+
+<ParamField body="INPUT_SOURCE" default="<cihaz-yolu>,<dosya-yolu>" required>
+Giriş kaynağının yolu.
+</ParamField>
+
+<ParamField body="INPUT_FORMAT" default="jpeg,h264" required>
+Giriş veri formatı. Örneğin: jpeg, h264
+</ParamField>
+
+<ParamField body="INPUT_WIDTH" default="1280" required>
+Giriş görüntü genişliği (piksel)
+</ParamField>
+
+<ParamField body="INPUT_HEIGHT" default="720" required>
+Giriş görüntü yüksekliği (piksel)
+</ParamField>
+
+<ParamField body="INPUT_FRAMERATE" default="30" required>
+Giriş kare hızı (FPS)
+</ParamField>
+
+<ParamField body="INPUT_LOOP" default="True,False">
+Döngü ile tekrar edecek mi?
+</ParamField>
+
+<ParamField body="MODELS" required>
+Kullanılacak modeller
+</ParamField>
+
+<ParamField body="MODEL_PATH" default="<dosya-yolu>" required>
+ Modelin dosya yolu. 
+</ParamField> 
+
+<ParamField body="MODEL_TOPN" default="5" required>
+ Modelden alınacak top-N tahmin sayısı. 
+</ParamField> 
+
+<ParamField body="OUTPUTS" required>
+Çıkış hedefleri
+</ParamField>
+
+<ParamField body="OUTPUT_SINK" default="remote,kmssink,<dosya-yolu>" required>
+Çıkış yolu
+</ParamField>
+
+<ParamField body="OUTPUT_WIDTH" default="1920" required>
+Streaming çözünürlüğü genişliği (piksel)
+</ParamField>
+
+<ParamField body="OUTPUT_HEIGHT" default="1080" required>
+Streaming çözünürlüğü yüksekliği (piksel)
+</ParamField>
+
+<ParamField body="OUTPUT_HOST" default="127.0.0.1">
+Streaming yapılacak host IP
+</ParamField>
+
+<ParamField body="OUTPUT_PORT" default="8081">
+Streaming port numarası
+</ParamField>
+
+<ParamField body="OUTPUT_ENCODING" default="jpeg,h264" required>
+Streaming görüntü formatı
+</ParamField>
+
+<ParamField body="OUTPUT_OVERLAY_PERF_TYPE" default="graph">
+Performans grafiği overlay türü
+</ParamField>
+
+<ParamField body="FLOWS" required>
+Veri akışını tanımlar.
+</ParamField>
+
+<ParamField body="FLOW" default="[input2, model1, output0, [320,150,1280,720]]" required>
+Veri akışını tanımlar: input → model → output. Opsiyonel olarak ROI (x,y,width,height) belirtebilirsiniz.
+</ParamField>
+
+<Warning>Görüntü işleme adımlarına başlamadan önce ```root``` olarak oturum açtığınızdan ve ortam değişkenlerini yüklediğinizden emin olunuz !</Warning>
 
 <CodeGroup>
   ```bash Python
   /opt/edgeai-gst-apps/apps_python# ./app_edgeai.py ../configs/image_classification.yaml
   ```
   ```bash C++
-  # Todo: Nasıl derleniyor?
-  # CMake ile uygulamayı derledikten sonra aşağıdaki komut ile örnek uygulamayı çalıştırabilirsiniz.
+  # Projeyi derlemelisiniz
+  /opt/edgeai-gst-apps# ./scripts/compile_cpp_apps.sh
+  # Script ile uygulamayı derledikten sonra aşağıdaki komut ile örnek uygulamayı çalıştırabilirsiniz.
   /opt/edgeai-gst-apps/apps_cpp# ./bin/Release/app_edgeai ../configs/image_classification.yaml
   ```
 </CodeGroup>
 
-Kaynak kodları Texas Instruments'ın GitHub üzerindeki 
-[edgeai-gst-apps](https://github.com/TexasInstruments/edgeai-gst-apps) deposunda mevcuttur.
+Görüntü işlemeyi sonra erdirmek için bir defa ```CTRL + C``` kombinasyonuna basarak sonlandırabilirsiniz.
+
+YAML dosyasında çıkış dosyasında değişiklik yapmadıysanız ```/opt/edgeai-test-data/output/output_video.mkv``` üzerinden çıktıya erişebilirsiniz.
+
+## Mevcut Python Kodunuza Entegre Etme
+
+TensorFlow Lite, modelleri varsayılan olarak cihazın CPU'sunda (Merkezi İşlem Birimi) çalıştırır.
+
+"Delegate" (Temsilci/Vekil), TFLite modelinizdeki hesaplamaların bir kısmını veya tamamını CPU yerine daha
+özelleşmiş bir donanıma "devretme" (delegate etme) mekanizmasıdır. Bu özel donanımları (örneğin T3 Gemstone O1
+Geliştirme Kartı içerisinde yer alan görüntü işleme hızlandırıcıları) kullanabilmek için gereken paylaşımlı
+kütüphane dosyasını (.so, .dll vb.) yüklemeniz gerekmektedir.
+
+<Warning>Görüntü işleme adımlarına başlamadan önce ```root``` olarak oturum açtığınızdan ve ortam değişkenlerini yüklediğinizden emin olunuz !</Warning>
+
+<SnippetAIUsageE1 />
 

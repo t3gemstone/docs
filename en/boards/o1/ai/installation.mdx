@@ -1,0 +1,63 @@
+---
+title: 'Installation'
+description: 'T3 Edge AI Package Installation'
+---
+
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-en.mdx';
+
+This section provides instructions on how to install the Edge AI package on the T3 Gemstone O1 development board.
+With these packages, you will be able to perform image processing operations using AI accelerators.
+
+<Steps>
+  <Step title="Update the Package Repository">
+    ```bash
+    sudo apt update
+    ```
+    Keeping the system package list up to date prevents dependency errors that may occur during installation.
+  </Step>
+  <Step title="Install T3 Edge AI Packages">
+    ```bash
+    sudo apt install t3-gem-o1-edgeai
+    ```
+    This command installs the Edge AI development tools and libraries in a single step.
+  </Step>
+  <Step title="Activate Edge AI Overlay">
+
+    Open the `uEnv.txt` file located in the boot directory using the `nano` text editor from the terminal interface.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    <Tip>
+    Since we are using the command with sudo, it will prompt for a password. If you have not changed it, you must use the password you set while writing the image with Gem-Imager.
+    </Tip>
+
+    The `uEnv.txt` file will contain definitions such as the following:
+
+    <SnippetUEnv />
+
+    Add the ```k3-am67a-t3-gem-o1-edgeai-apps.dtbo``` filename to the end of the `overlays=` line, leaving a space.
+
+    The final state of the `uEnv.txt` file will look like this. You must place the appropriate filename in the `<file-name>` section.
+
+    <SnippetUEnvEdit />
+
+    After defining the overlay file, the board must be rebooted for the changes to be applied by the system.
+
+    ```bash
+      sudo reboot
+    ```
+
+  </Step>
+  <Step title="Load Environment Variables">
+    ```bash
+    sudo su
+    source /opt/t3-gem-o1-edgeai-env
+    ```
+    These commands allow you to switch to the ``root`` user and load the environment variables required for Edge AI.
+
+    <Warning>Note: Due to the use of AI accelerators, operations are performed at the hardware level. Therefore, the relevant steps must be executed under the root user.</Warning>
+  </Step>
+</Steps>
