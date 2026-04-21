@@ -166,6 +166,7 @@
               "tr/projects/swupdate",
               "tr/projects/mediabox",
               "tr/projects/firewall",
+              "tr/projects/hotspot",
               {
                 "group": "Teknofest",
                 "pages": [
@@ -335,6 +336,7 @@
               "en/projects/swupdate",
               "en/projects/mediabox",
               "en/projects/firewall",
+              "en/projects/hotspot",
               {
                 "group": "Teknofest",
                 "pages": [

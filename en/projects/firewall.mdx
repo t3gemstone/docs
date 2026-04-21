@@ -29,4 +29,134 @@ At the end of this section, you will have knowledge on the following topics:
 
 </AccordionGroup>
 
-Under construction..
+## Installation
+
+To install the recompiled version of AdGuard Home specifically built for Gemstone, paste and run the following
+command in your device's terminal:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/t3gemstone/AdGuardHome/master/scripts/install.sh | bash
+```
+
+Once the installation is complete, AdGuard Home will start running in the background as a service.
+
+## First Start and Configuration
+
+After AdGuard Home is installed, you need to connect to its web interface via a browser to perform the initial setup.
+
+1. **Accessing the Interface:** Open a browser on a computer or phone connected to the same network and enter
+   your Gemstone device's IP address along with the `:3000` port (e.g., `http://192.168.1.100:3000` or
+   `http://127.0.0.1:3000` from localhost) to access the setup wizard.
+2. **Setup Wizard:** Click the "Get Started" button on the screen to begin configuration.
+3. **Network Interfaces:**
+   - **Admin Web Interface:** Specify which interface and port (default: 80) the admin panel will be accessible through.
+   - **DNS Server:** Choose which interface and port (default: 53) the DNS server will listen on.
+4. **Admin Account:** Set a username and a strong password for panel access. Make sure to write these down, as you
+   will need them to log in.
+5. **Configuring Devices:** In this step of the wizard, you will see DNS routing instructions for different devices.
+   You can skip this step for now; it is explained in detail below.
+6. **Go to Dashboard:** After finishing the setup, log in with the username and password you created by clicking the
+   "Open Dashboard" button or by navigating to the port you specified (e.g., `http://192.168.1.100` or simply
+   `http://127.0.0.1` on the device).
+
+## Configuring Devices (DNS Forwarding)
+
+In order for the devices on your network to benefit from ad blocking and firewall features, you must change their DNS
+server addresses to the IP address of your Gemstone device (the AdGuard Home server).
+
+You can do this in two ways:
+
+### Method 1: Via Router / Modem (Recommended)
+
+This method automatically applies firewall protection to all devices connected to your modem. Configuration steps
+for common modem interfaces provided by popular Internet Service Providers are as follows:
+
+<AccordionGroup>
+  <Accordion title="Türk Telekom (ZTE / TP-Link Modems)">
+    To configure DNS on **ZTE (e.g., ZXHN H298A)** or **TP-Link (e.g., TD-W9970)** modems provided by Türk Telekom:
+    1. Go to `http://192.168.1.1` in your browser and log into the modem interface.
+    2. Click on the **Local Area Network (LAN)** or **Network** menu.
+    3. Find the **DHCP Server** or **LAN Settings** submenu.
+    4. Enter **your Gemstone device's IP address** into the **Primary DNS Server** and **Secondary DNS Server** boxes.
+    5. Save the settings and reboot the modem.
+    > **Note:** Türk Telekom might hide the DNS editing menu on the interface with some software updates.
+      If you cannot make changes in the menu, you should use the device-based configuration in Method 2 to use the protection.
+  </Accordion>
+
+  <Accordion title="Turkcell Superonline (Huawei / ZTE Modems)">
+    To configure DNS on **Huawei (e.g., HG255s)** or **ZTE (e.g., ZXHN H267A)** fiber modems provided by Superonline:
+    1. Go to `http://192.168.1.1` in your browser and log into the interface (The password for Superonline modems is usually `superonline`).
+    2. Click on the **Local Area Network (LAN)** tab from the top menu.
+    3. Go to the **DHCP Server** settings from the menu on the left.
+    4. If assigning static DNS is allowed, enter **your Gemstone device's IP address** in the **Primary DNS** and **Secondary DNS** fields.
+    5. Click Apply to save.
+    > **Note:** On many Superonline modems (especially Huawei fiber modems), the DNS setting is locked by the service
+      provider. If you are not allowed to make changes on the interface, you will need to change the DNS on a
+      per-device basis using Method 2.
+  </Accordion>
+
+  <Accordion title="TurkNet (Zyxel Modems)">
+    To configure DNS on the **Zyxel (e.g., VMG3625-T50B or VMG8623-T50B)** series modems frequently used by TurkNet users:
+    1. Log into the interface from `http://192.168.1.1` in your browser (Username is usually `admin`, and the
+       password is on the back label of the modem or is `turknet`).
+    2. From the menu icon (top right or left), navigate to **Network Setting** > **Home Networking**.
+    3. Switch to the **LAN Setup** tab on the page that opens.
+    4. Scroll down, locate the **DNS Values** setting, and change its type to **Static**.
+    5. Enter **your Gemstone device's IP address** in the DNS Server fields and click the "Apply" button to save the settings.
+  </Accordion>
+
+  <Accordion title="Other Modems">
+    General steps:
+    1. Open your browser and log into the modem interface via `http://192.168.1.1` or `http://192.168.0.1`.
+    2. Find and open the **DHCP / DNS Settings** or **LAN Settings** section.
+    3. Enter **your Gemstone device's IP address** in the Primary and Secondary DNS server (DNS 1 and DNS 2) fields.
+    4. Save the settings and reboot your modem.
+  </Accordion>
+</AccordionGroup>
+
+### Method 2: Device-Based Configuration
+
+If you only want certain devices to benefit from the protection or if you cannot modify your modem settings,
+you can change the DNS address on a per-device basis.
+
+<AccordionGroup>
+  <Accordion title="Windows">
+    1. Go to **Control Panel** > **Network and Internet** > **Network and Sharing Center**.
+    2. Click on **Change adapter settings** on the left.
+    3. Right-click your active network connection and select **Properties**.
+    4. Select **Internet Protocol Version 4 (TCP/IPv4)** and click **Properties**.
+    5. Check the "Use the following DNS server addresses" option.
+    6. Enter **your Gemstone device's IP address** and save the settings.
+  </Accordion>
+
+  <Accordion title="macOS">
+    1. From the Apple () icon at the top left of the screen, go to **System Settings** (or System Preferences) > **Network**.
+    2. Select your active connection (Wi-Fi or Ethernet) and click the **Details** (or Advanced) button.
+    3. Switch to the **DNS** tab.
+    4. Click the `+` button at the bottom left, add **your Gemstone device's IP address**, and click OK.
+  </Accordion>
+
+  <Accordion title="Android">
+    1. Go to **Settings** > **Network & Internet** > **Wi-Fi**.
+    2. Long press on the network you are connected to and tap **Modify network** or the gear (settings) icon.
+    3. Under **Advanced** settings, change the IP settings to **Static**.
+    4. Enter **your Gemstone device's IP address** in the **DNS 1** (and DNS 2 if needed) fields and save.
+  </Accordion>
+
+  <Accordion title="iOS (iPhone/iPad)">
+    1. Go to **Settings** > **Wi-Fi**.
+    2. Tap the blue information `(i)` icon next to the network you are connected to.
+    3. Scroll down and tap on **Configure DNS**.
+    4. Mark the option as **Manual**.
+    5. Delete the default servers, tap the **Add Server** button to add **your Gemstone device's IP address**,
+       then exit the settings to save.
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+If your modem settings do not allow you to change the DNS, you can use the method described in the [Hotspot](/en/projects/hotspot)
+section to turn your Gemstone development board into a Wi-Fi access point and control the devices in your home by
+connecting them to this Wi-Fi network.
+</Warning>
+
+<Card horizontal title="AdGuard Home Documentation" icon="books" href="https://adguard-dns.io/kb/en/adguard-home/getting-started/">https://adguard-dns.io/kb/en/adguard-home/getting-started/</Card>

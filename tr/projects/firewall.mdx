@@ -30,4 +30,131 @@ engelleyebilirsiniz.
 
 </AccordionGroup>
 
-Yapım aşamasında..
+## Kurulum
+
+Gemstone için yeniden derlenen AdGuard Home versiyonunu kurmak için cihazınızın terminaline aşağıdaki komutu 
+yapıştırın ve çalıştırın:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/t3gemstone/AdGuardHome/master/scripts/install.sh | bash
+```
+
+Kurulum tamamlandıktan sonra, AdGuard Home arka planda bir servis olarak çalışmaya başlayacaktır.
+
+## İlk Başlangıç ve Yapılandırma
+
+AdGuard Home kurulduktan sonra, ilk ayarları yapmak için bir web tarayıcısı üzerinden arayüze bağlanmanız gerekir.
+
+1. **Arayüze Erişim:** Aynı ağdaki bir bilgisayar veya telefonun tarayıcısından Gemstone cihazınızın IP adresini 
+   ve `:3000` portunu yazarak (örneğin `http://192.168.1.100:3000` veya localhost'tan `http://127.0.0.1:3000`) yönetim 
+   paneli kurulum sihirbazına erişin.
+2. **Kurulum Sihirbazı:** Karşınıza çıkan ekranda "Başlayın" veya "Get Started" butonuna tıklayarak yapılandırmayı başlatın.
+3. **Ağ Arayüzleri:** 
+   - **Yönetim Arayüzü:** Yönetim paneline hangi arayüz ve port (varsayılan: 80) üzerinden erişileceğini belirleyin.
+   - **DNS Sunucusu:** DNS sunucusunun hangi arayüz ve port (varsayılan: 53) üzerinden hizmet vereceğini seçin.
+4. **Yönetici Hesabı:** Panel erişimi için bir kullanıcı adı ve güçlü bir parola belirleyin. Panele girişte bunlara 
+   ihtiyacınız olacağı için bilgileri bir kenara not edin.
+5. **Cihazları Yapılandırma:** Sihirbazın bu adımında farklı cihazlar için DNS yönlendirme talimatlarını göreceksiniz. 
+   Bu adımı şimdilik geçebilirsiniz, aşağıda da detaylıca açıklanmıştır.
+6. **Panoya Geçiş:** Kurulumu tamamladıktan sonra "Panoyu Aç" butonuyla veya belirlediğiniz port üzerinden 
+   (örneğin `http://192.168.1.100` veya doğrudan cihazda `http://127.0.0.1`) oluşturduğunuz kullanıcı adı ve şifreyle giriş yapın.
+
+## Cihazları Yapılandırma (DNS Yönlendirmesi)
+
+Ağınızdaki cihazların reklam engelleme ve güvenlik duvarı özelliklerinden faydalanabilmesi için DNS sunucu adreslerini
+Gemstone cihazınızın IP adresi (AdGuard Home sunucusu) olarak değiştirmeniz gerekmektedir. 
+
+Bunu iki şekilde yapabilirsiniz:
+
+### Yöntem 1: Yönlendirici (Modem) Üzerinden (Önerilen)
+
+Bu yöntem ile modeminize bağlı tüm cihazlar otomatik olarak Firewall korumasına alınır. İnternet Servis
+Sağlayıcılarına göre sık kullanılan modem arayüzlerindeki yapılandırma adımları şu şekildedir:
+
+<AccordionGroup>
+  <Accordion title="Türk Telekom (ZTE / TP-Link Modemler)">
+    Türk Telekom tarafından verilen **ZTE (örn. ZXHN H298A)** veya **TP-Link (örn. TD-W9970)** modemlerde DNS ayarı için:
+    1. Tarayıcıdan `http://192.168.1.1` adresine giderek modem arayüzüne giriş yapın.
+    2. **Yerel Ağ (LAN)** veya **Ağ (Network)** menüsüne tıklayın.
+    3. **DHCP Sunucusu** veya **LAN Ayarları** alt menüsünü bulun.
+    4. **Birincil DNS Sunucusu** ve **İkincil DNS Sunucusu** kutucuklarına **Gemstone cihazınızın IP adresini** yazın.
+    5. Ayarları kaydedip modemi yeniden başlatın.
+    > **Not:** Türk Telekom bazı yazılım güncellemeleriyle arayüzdeki DNS değiştirme menüsünü gizlemiş olabilir. 
+    Eğer menüde değişiklik yapamıyorsanız korumayı kullanmak için Yöntem 2'deki cihaz bazlı yapılandırmaya geçebilirsiniz.
+  </Accordion>
+
+  <Accordion title="Turkcell Superonline (Huawei / ZTE Modemler)">
+    Superonline'ın sağladığı **Huawei (örn. HG255s)** veya **ZTE (örn. ZXHN H267A)** fiber modemlerde DNS ayarı için:
+    1. Tarayıcıdan `http://192.168.1.1` adresine gidip arayüze giriş yapın (Superonline modemlerde şifre genellikle `superonline` olarak gelir).
+    2. Üst menüden **Yerel Ağ (LAN)** sekmesine tıklayın.
+    3. Sol taraftaki menüden **DHCP Sunucusu** ayarlarına girin.
+    4. Burada statik DNS atamaya izin veriliyorsa, **Birincil DNS** ve **İkincil DNS** alanlarına **Gemstone cihazınızın IP adresini** girin.
+    5. Uygula diyerek kaydedin.
+    > **Not:** Superonline modemlerin birçoğunda (özellikle Huawei fiber modemlerde) DNS ayarı servis sağlayıcı
+    tarafından kilitlenmiştir. Arayüzde değişiklik yapmanıza izin verilmiyorsa Yöntem 2 ile cihaz bazında DNS değişikliği yapmalısınız.
+  </Accordion>
+
+  <Accordion title="TurkNet (Zyxel Modemler)">
+    TurkNet kullanıcılarının sıkça kullandığı **Zyxel (örn. VMG3625-T50B veya VMG8623-T50B)** serisi modemlerde DNS ayarı için:
+    1. Tarayıcıdan `http://192.168.1.1` adresinden arayüze giriş yapın (Kullanıcı adı genelde `admin`, şifre ise modem
+       arka etiketinde veya `turknet`'tir).
+    2. Menü ikonundan (sağ üstte veya solda) **Ağ Ayarı (Network Setting)** > **Ev Ağı (Home Networking)** yolunu izleyin.
+    3. Açılan sayfada **LAN Kurulumu (LAN Setup)** sekmesine geçin.
+    4. Sayfayı aşağı kaydırarak **DNS Değerleri (DNS Values)** ayarını bulun ve yapıyı **Statik (Static)** olarak değiştirin.
+    5. DNS Sunucusu alanlarına **Gemstone cihazınızın IP adresini** girin ve ayarları "Uygula" butonuna basarak kaydedin.
+  </Accordion>
+
+  <Accordion title="Diğer Modemler">
+    Genel geçer adımlar:
+    1. Tarayıcıda `http://192.168.1.1` veya `http://192.168.0.1` adresleri üzerinden modem arayüzüne giriş yapın.
+    2. **DHCP / DNS Ayarları** veya **LAN Ayarları** bölümünü bulup açın.
+    3. Birincil ve İkincil DNS sunucusu (DNS 1 ve DNS 2) alanlarına **Gemstone cihazınızın ağdaki IP adresini** yazın.
+    4. Ayarları kaydedin ve modeminizi yeniden başlatın.
+  </Accordion>
+</AccordionGroup>
+
+### Yöntem 2: Cihaz Bazlı Yapılandırma
+
+Sadece belirli cihazların korumadan faydalanamasını istiyorsanız veya modeme müdahale edemiyorsanız, DNS adresini
+teker teker cihazlardan değiştirebilirsiniz.
+
+<AccordionGroup>
+  <Accordion title="Windows">
+    1. **Denetim Masası** > **Ağ ve İnternet** > **Ağ ve Paylaşım Merkezi** menüsüne gidin.
+    2. Sol taraftan **Bağdaştırıcı ayarlarını değiştir** seçeneğine tıklayın.
+    3. Etkin ağ bağlantınıza sağ tıklayıp **Özellikler**'e girin.
+    4. **İnternet Protokolü Sürüm 4 (TCP/IPv4)** seçip **Özellikler**'e tıklayın.
+    5. "Aşağıdaki DNS sunucu adreslerini kullan" seçeneğini işaretleyin.
+    6. **Gemstone cihazınızın IP adresini** girin ve ayarları kaydedin.
+  </Accordion>
+
+  <Accordion title="macOS">
+    1. Ekranın sol üstündeki Apple () simgesinden **Sistem Ayarları** (veya Sistem Tercihleri) > **Ağ** menüsüne gidin.
+    2. Aktif bağlantınızı (Wi-Fi veya Ethernet) seçin ve **Ayrıntılar** (veya İleri Düzey) butonuna tıklayın.
+    3. **DNS** sekmesine geçin.
+    4. Sol alttaki `+` butonuna tıklayarak **Gemstone cihazınızın IP adresini** ekleyin ve tamam deyin.
+  </Accordion>
+
+  <Accordion title="Android">
+    1. **Ayarlar** > **Ağ ve İnternet** > **Wi-Fi** menüsüne gidin.
+    2. Bağlı olduğunuz ağın üzerine uzun basın ve **Ağı Değiştir** veya çark (ayarlar) simgesine dokunun.
+    3. **Gelişmiş** ayarlar altında IP ayarlarını **Statik** olarak değiştirin.
+    4. **DNS 1** (ve gerekirse DNS 2) alanlarına **Gemstone cihazınızın IP adresini** yazın ve kaydedin.
+  </Accordion>
+
+  <Accordion title="iOS (iPhone/iPad)">
+    1. **Ayarlar** > **Wi-Fi** menüsüne gidin.
+    2. Bağlı olduğunuz ağın yanındaki mavi bilgi `(i)` simgesine dokunun.
+    3. Aşağıya doğru kaydırıp **DNS'i Ayarla** seçeneğine dokunun.
+    4. Seçeneği **Elle** olarak işaretleyin.
+    5. Varsayılan sunucuları silip **Sunucu Ekle** butonuna basarak **Gemstone cihazınızın IP adresini** ekleyin ve ayarlardan çıkıp kaydedin.
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+Modem ayarlarınız DNS değişikliği yapmanıza izin vermiyorsa, [Hotspot](/tr/projects/hotspot) isimli bölümde anlatılan yöntemle
+Gemstone geliştirme kartını bir Wifi bağlantı noktasına dönüştürerek evinizde bulunan cihazları bu wifi ağına bağlayıp
+kontrol altına alabilirsiniz.
+</Warning>
+
+<Card horizontal title="AdGuard Home Dokümantasyonu" icon="books" href="https://adguard-dns.io/kb/tr/adguard-home/getting-started/">https://adguard-dns.io/kb/tr/adguard-home/getting-started/</Card>

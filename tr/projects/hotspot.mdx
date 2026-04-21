@@ -1,0 +1,68 @@
+---
+title: 'Wi-Fi Hotspot'
+description: 'Gemstone kartınızı güvenli bir Wi-Fi erişim noktasından dönüştürme'
+---
+
+Eğer Gemstone kartınızı evinize internet sağlayan modeminize Ethernet kablosu ile bağladıysanız, kartınızın üzerindeki
+Wi-Fi çipini kullanarak onu bir kablosuz erişim noktasına (Hotspot) dönüştürebilirsiniz. 
+
+Bu sayede, evinizdeki cihazların hiçbir modem veya özel DNS ayarlarına dokunmadan doğrudan Gemstone donanımının yaydığı
+kablosuz ağa (Wi-Fi) bağlanmasını sağlayabilir ve internet bağlantılarını Ethernet arayüzünden vererek otomatik olarak
+AdGuard Home tabanlı güvenlik duvarı (Firewall) korumasından yararlandırabilirsiniz.
+
+## Wi-Fi Hotspot Oluşturma
+
+Cihaz terminalinden bir kablosuz ağ oluşturmak için:
+
+1. Kablosuz Ağ arayüzünüzün adını kontrol edin (Genellikle `wlan0`'dır). Öğrenmek için `ip a` veya `ifconfig`
+   komutunu kullanabilirsiniz.
+2. Ağınızı oluşturmak için aşağıdaki komutu kendinize göre düzenleyerek çalıştırın:
+
+```bash
+# Şifre (password) bölümünün en az 8 karakter olduğundan emin olun
+sudo nmcli device wifi hotspot ifname wlan0 ssid "Gemstone_Guvenli_Ag" password "GucluSifrem123"
+```
+
+* `ssid`: Etraftaki cihazlarda görünecek ağ adınızı temsil eder.
+* `password`: Ağınıza bağlanmak için gerekecek olan şifredir.
+
+Network Manager (`nmcli`) kullanılarak oluşturulan Hotspot bağlantıları varsayılan olarak cihazdaki interneti
+(örneğin Ethernet'i) Wi-Fi üzerinden paylaşacak şekilde ayarlanır.
+
+## İnternet Paylaşımını (NAT) Aktifleştirme
+
+Cihazlar oluşturduğunuz ağa bağlanabildiği halde internete çıkış yapamıyorsa, Gemstone üzerindeki Ethernet (kablolu
+internet) bağlantısını Wi-Fi ağına yönlendirmeniz (paylaştırmanız) gerekebilir. 
+
+Hotspot bağlantınıza internet paylaştırma özelliğini atamak için aşağıdaki komutları kullanın. (Bağlantı adını
+Hotspot'u oluştururken verdiğiniz `ssid` adı ile güncelleyin):
+
+```bash
+# Bağlantının IPv4 modunu "shared" (paylaşımlı) olarak ayarlayın
+sudo nmcli connection modify "Gemstone_Guvenli_Ag" ipv4.method shared
+
+# Değişikliklerin etkin olması için hotspot ağını yeniden başlatın
+sudo nmcli connection up "Gemstone_Guvenli_Ag"
+```
+
+### Ek Adım: IP Yönlendirmesini (IP Forwarding) Etkinleştirmek
+
+Nadir durumlarda Linux çekirdeği (Kernel) seviyesinde IP yönlendirme kapalı olabilir. İnternet halen dağıtılamıyorsa
+IP yönlendirmeyi aktif hale getirin:
+
+1. Geçici olarak aktifleştirmek için:
+
+   ```bash
+   sudo sysctl -w net.ipv4.ip_forward=1
+   ```
+
+2. Bu ayarı kalıcı hale getirmek için `/etc/sysctl.conf` dosyasını yetkili olarak bir metin editörüyle (ör. `nano`)
+   açın, içerisinde bulunan `#net.ipv4.ip_forward=1` satırının başındaki `#` işaretini silin ve dosyayı kaydedin.
+   Değişikliklerin onaylanması için şu komutu çalıştırın:
+
+   ```bash
+   sudo sysctl -p
+   ```
+
+Kurulumdan sonra telefonunuzdan veya bilgisayarınızdan ağa bağlandığınızda trafiğiniz doğrudan Gemstone üzerinden geçecek,
+reklamlar engellenecek ve internetiniz Ethernet hattından kesintisiz olarak sağlanacaktır.
