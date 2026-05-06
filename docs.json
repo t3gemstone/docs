@@ -393,8 +393,6 @@
   },
   "seo": {
     "metatags": {
-      "charset": "UTF-8",
-      "viewport": "width=device-width, initial-scale=1.0",
       "description": "T3 Gemstone Development Boards",
       "keywords": "t3, t3vakfi, t3gemstone, gemstone, gemstoneboard, obsidian, obsidyen, kuvars, quartz, t3foundation, embedded, realtime, iot, robotics, uav, drone, teknofest, github",
       "author": "T3 Foundation",
@@ -403,7 +401,6 @@
       "indexing": "all",
       "google": "notranslate",
       "generator": "Mintlify",
-      "format-detection": "telephone=no",
       "referrer": "origin",
       "refresh": "30",
       "rating": "general",
@@ -416,9 +413,6 @@
       "category": "Technology",
       "target": "all",
       "HandheldFriendly": "True",
-      "apple-mobile-web-app-capable": "yes",
-      "apple-mobile-web-app-status-bar-style": "black",
-      "apple-mobile-web-app-title": "T3 Gemstone",
       "application-name": "T3 Gemstone"
     }
   },
