@@ -1,0 +1,329 @@
+# Home Assistant 
+
+> T3 Gemstone O1 Akıllı Ev Merkezi Yönetimi
+
+<Frame caption="Resim: Home Assistant Supervisor">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/homeassistant-supervisor.png" alt="Home Assistant Supervisor" />
+</Frame>
+
+<Tip>
+  Bu bölümün sonunda T3 Gemstone O1 geliştirme kartınıza başarıyla <strong>Home Assistant</strong> kurmuş olacaksınız.
+</Tip>
+
+## 1. Giriş
+
+Günümüzde ev otomasyonu verilerinin kontrolü ve akıllı cihazların güvenliği her zamankinden daha önemli. Aydınlatmalarınızı, güvenlik kameralarınızı, akıllı prizlerinizi ve sensörlerinizi Amazon, Google, Xiaomi veya Tuya gibi büyük bulut sağlayıcılarına bağımlı olmadan merkezi bir sistemde yönetmek isteyebilirsiniz. Bunun için kendi akıllı ev sunucunuzu kendi cihazınızda barındırmanız ve cihazlarınızı yerel ağ üzerinden kontrol etmeniz gerekir. Ancak evinizde böyle bir merkez çalıştırmak; farklı markalara ait cihazların birbiriyle haberleştirilmesi, dış dünyadan güvenli erişim sağlayamama ve sistemi sürekli ayakta tutma gibi teknik problemleri beraberinde getirir. Bu problemler çoğu zaman karmaşık konfigürasyonlar ve yüksek maliyetli donanımlar ile çözülür. T3 Gemstone O1 projesi, Home Assistant entegrasyonu ile bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
+
+## 2. Ön Hazırlık
+
+Kuruluma başlamadan önce T3 Gemstone O1 cihazınızda Gemstone Imager üzerinden kurulmuş **Debian** işletim sisteminin kurulu olduğundan emin olmalısınız. Cihazınıza terminal bağlantısı yaptıktan sonra işletim sisteminizi doğrulamak için aşağıdaki komutu çalıştırabilirsiniz:
+
+```bash  theme={"system"}
+cat /etc/os-release
+```
+
+Ekranda aşağıdaki gibi bir çıktı görmelisiniz:
+
+```text  theme={"system"}
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="[https://www.debian.org/](https://www.debian.org/)"
+SUPPORT_URL="[https://www.debian.org/support](https://www.debian.org/support)"
+BUG_REPORT_URL="[https://bugs.debian.org/](https://bugs.debian.org/)"
+```
+
+Eğer bu çıktıyı görüyorsanız sisteminiz kuruluma hazırdır.
+
+<Frame caption="Resim: Ön Hazırlık">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/on-hazirlik.png" alt="Ön Hazırlık" />
+</Frame>
+
+## 3. Kurulum Betiği İle Otomatik Kurulum
+
+Sizin için hazırladığımız kurulum betiği (`.sh`), gerekli tüm yapılandırmaları otomatik olarak gerçekleştirecektir. T3 Gemstone O1 terminaline aşağıdaki komutları sırasıyla girerek betiği sisteme çekin ve çalıştırın:
+
+```bash  theme={"system"}
+# Sistemi güncelleyelim
+sudo apt update
+
+# Kurulum betiğini indirin
+wget https://github.com/MehmetEmreee/gemstonedocs/raw/refs/heads/main/homeassistant.sh
+
+# Betiğe çalışma izni verin
+chmod +x homeassistant.sh
+
+# Kurulumu başlatın
+sudo ./homeassistant.sh
+```
+
+<Frame caption="Resim: Kurulum Adımı 1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-1.png" alt="Kurulum Adımı 1" />
+</Frame>
+
+<Frame caption="Resim: Kurulum Adımı 2">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-2.png" alt="Kurulum Adımı 2" />
+</Frame>
+
+<Frame caption="Resim: Kurulum Adımı 3">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-3.png" alt="Kurulum Adımı 3" />
+</Frame>
+
+<Frame caption="Resim: Kurulum Adımı 4">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/kurulum-adimi-4.png" alt="Kurulum Adımı 4" />
+</Frame>
+
+Kurulum bittikten sonra Supervisor'ın tüm hizmetleri indirip ayağa kaldırması internet hızınıza bağlı olarak 5-10 dakika sürebilir. Durumu aşağıdaki komutla takip edebilirsiniz:
+
+```bash  theme={"system"}
+sudo docker logs -f hassio_supervisor
+```
+
+Ekranda `hassio_supervisor` ve `homeassistant` hizmetlerinin `Up` (Çalışıyor) durumunda olduğunu gördüğünüzde, tarayıcınızdan arayüze erişebilirsiniz:
+
+`http://gemstone.local:8123` veya `http://<gemstone-ip-adresiniz>:8123`
+
+Ev dışından erişim sağlamak için kurulum rehberi bulunan **Tailscale** ağını kullanabilir, Tailscale IP adresiniz üzerinden (`http://<tailscale-ip>:8123`) sisteminize güvenle bağlanabilirsiniz.
+
+## 4. Home Assistant Arayüzüne Erişim ve İlk Kurulum
+
+Sistem hizmetleri aktif olduktan sonra tarayıcınız üzerinden arayüze ilk girişinizi yaptığınızda, Home Assistant sizi bir kurulum sihirbazı ile karşılayacaktır. Bu aşamada yönetici hesabınızı oluşturarak akıllı evinizin temel yapılandırmasını tamamlayabilirsiniz. Aşağıdaki görselleri takip ederek arayüz kurulumunu kolayca bitirebilirsiniz:
+
+<Note>
+  Eğer arayüze bağlanırken bir hata alıyorsanız, aşağıdaki görselleri takip ederek adres çubuğundaki `https://` kısmını `http://` yaparak çözebilirsiniz.
+</Note>
+
+<Frame caption="Resim: Arayüz Kurulumu Giriş">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-giris.png" alt="Arayüz Kurulumu Giriş" />
+</Frame>
+
+<Frame caption="Resim: Arayüz Kurulumu 1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-1.png" alt="Arayüz Kurulumu 1" />
+</Frame>
+
+Eğer hata almıyorsanız, buradan devam edebilirsiniz:
+
+<Frame caption="Resim: Arayüz Kurulumu 2">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-2.png" alt="Arayüz Kurulumu 2" />
+</Frame>
+
+<Frame caption="Resim: Arayüz Kurulumu 3">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-3.png" alt="Arayüz Kurulumu 3" />
+</Frame>
+
+<Frame caption="Resim: Arayüz Kurulumu 4">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-4.png" alt="Arayüz Kurulumu 4" />
+</Frame>
+
+<Frame caption="Resim: Arayüz Kurulumu 5">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-5.png" alt="Arayüz Kurulumu 5" />
+</Frame>
+
+<Frame caption="Resim: Arayüz Kurulumu 6">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-6.png" alt="Arayüz Kurulumu 6" />
+</Frame>
+
+<Frame caption="Resim: Arayüz Kurulumu 7">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/arayuz-kurulumu-7.png" alt="Arayüz Kurulumu 7" />
+</Frame>
+
+Tebrikler! Kurulum adımlarını başarıyla tamamladınız ve artık Home Assistant ana ekranındasınız. T3 Gemstone O1 üzerinden akıllı evinizin merkezini özgürce yapılandırmaya ve cihazlarınızı yönetmeye başlayabilirsiniz.
+
+## 5. Örnek: Deneyap Kart ile Sensör Entegrasyonu
+
+Bu bölümde, Deneyap Kart 1A V2 geliştirme kartına hareket sensörü bağlayarak Home Assistant'a entegre etmeyi öğreneceksiniz.
+
+**a) Sol taraftaki menüyü açıp Ayarlar seçeneğine tıklıyoruz.**
+
+<Frame caption="Resim: Adım a">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-a.png" alt="Adım a" />
+</Frame>
+
+**b) Açılan menüden Uygulamalar seçeneğine tıklıyoruz.**
+
+<Frame caption="Resim: Adım b">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-b.png" alt="Adım b" />
+</Frame>
+
+**c) Sağ alttaki "Uygulamayı Yükle" butonuna tıklıyoruz.**
+
+<Frame caption="Resim: Adım c">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-c.png" alt="Adım c" />
+</Frame>
+
+**d) Açılan menüde arama kısmına "esphome" yazıyoruz.**
+
+<Frame caption="Resim: Adım d">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-d.png" alt="Adım d" />
+</Frame>
+
+**e) Çıkan ESPHome sonucuna tıklıyoruz.**
+
+<Frame caption="Resim: Adım e">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-e.png" alt="Adım e" />
+</Frame>
+
+**f) Açılan menüde Kuruluma tıklayıp kurulmasını bekliyoruz.**
+
+<Frame caption="Resim: Adım f">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-f.png" alt="Adım f" />
+</Frame>
+
+**g) Yeterince bekledikten sonra bu menü geliyor. Burada "Show in sidebar" seçeneğinin ve "Start on boot" seçeneğinin aktif olduğundan emin oluyoruz ve Başlat butonuna tıklıyoruz.**
+
+<Frame caption="Resim: Adım g">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-g.png" alt="Adım g" />
+</Frame>
+
+**h) "Web Arayüzünü Aç" butonuna tıklıyoruz.**
+
+<Frame caption="Resim: Adım h">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-h.png" alt="Adım h" />
+</Frame>
+
+**i) Açılan menüde "New Device" seçeneğine tıklıyoruz.**
+
+<Frame caption="Resim: Adım i">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-i.png" alt="Adım i" />
+</Frame>
+
+**j) "Continue" diyerek devam ediyoruz.**
+
+<Frame caption="Resim: Adım j">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-j.png" alt="Adım j" />
+</Frame>
+
+**k) "New Device Setup" seçeneğine tıklıyoruz.**
+
+<Frame caption="Resim: Adım k">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-k.png" alt="Adım k" />
+</Frame>
+
+**l) Burada karta istediğiniz ismi verebilirsiniz. "Network Name" ve "Password" kısımlarına modem adınızı (SSID) ve şifrenizi yazıyoruz.**
+
+<Frame caption="Resim: Adım l">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-l.png" alt="Adım l" />
+</Frame>
+
+**m) Burada "ESP32-S3" seçeneğini seçiyoruz.**
+
+<Frame caption="Resim: Adım m">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-m.png" alt="Adım m" />
+</Frame>
+
+**n) Şimdilik "Skip" diyebiliriz. Ardından arkada beliren Deneyap Kart kısmından "Edit" butonuna giriyoruz.**
+
+<Frame caption="Resim: Adım n">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-n.png" alt="Adım n" />
+</Frame>
+
+**u) Burada bir YAML dosyası karşımıza geliyor. `esp32` altında bulunan `board` kısmını kullandığımız deneyap karta göre değiştiriyoruz. Deneyap Kart 1A V2 için `board:` kısmını silip `deneyapkart1Av2` yazıyoruz. Ayrıca `framework` kısmını `type: arduino` olacak şekilde değiştiriyoruz.**
+
+<Frame caption="Resim: Adım u">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-u.png" alt="Adım u" />
+</Frame>
+
+**v) Ardından bu kısımda verdiğimiz pin tanımlamalarını en alta kopyalıyoruz:**
+
+```yaml
+substitutions:
+  LED_PIN: GPIO48      # Kart üzerindeki RGB LED
+  BUTTON_PIN: GPIO0    # Boot Butonu
+  
+  # Pin Eşleştirmeleri (Resme Göre)
+  D0: GPIO1
+  D1: GPIO2
+  D4: GPIO42
+  D8: GPIO38
+  D9: GPIO48
+  D12: GPIO10
+  D13: GPIO3
+  D14: GPIO8
+  # I2C
+  SDA_PIN: GPIO47
+  SCL_PIN: GPIO21
+```
+
+<Frame caption="Resim: Adım v">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-v.png" alt="Adım v" />
+</Frame>
+
+**y) Bu örneğimizde bir hareket sensörü bağlayacağımız için, ESPHome sayfasından bulduğumuz tanımlamaları yine sayfanın en altına yapıştırıyoruz:**
+
+```yaml
+binary_sensor:
+  - platform: gpio
+    pin: 
+      number: GPIO42
+      mode: INPUT
+      inverted: false
+    name: "PIR Sensor"
+    device_class: motion
+    filters:
+      - delayed_on: 1s
+```
+
+<Note>
+  Hareket sensörünü D4 pinine bağladık (GPIO42). Eğer siz farklı bir pine bağladıysanız, `number` kısmında değişiklik yapmanız gerekecektir. Gerekli pin atamalarına (https://docs.deneyapkart.org/Kartlar) sayfasından erişebilirsiniz.
+</Note>
+
+<Frame caption="Resim: Adım y">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-y.png" alt="Adım y" />
+</Frame>
+
+**z) Sağ üstteki "Install" butonuna tıklıyoruz. Yapılandırma tamamlanmıştır.**
+
+<Frame caption="Resim: Adım z">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/sensor-adim-z.png" alt="Adım z" />
+</Frame>
+
+**Yükleme Süreci:**
+
+**a1) Öncelikle Deneyap Kartınızı T3 Gemstone O1 kartınızın USB çıkışlarından herhangi birine bağlıyoruz. Açılan menüde birçok yükleme opsiyonu görüyoruz, ancak ilk yüklemede "Plug into the computer running esphome device builder" seçeneğini seçiyoruz. Sonrasında kablosuz yükleme yapabilirsiniz.**
+
+<Frame caption="Resim: Adım a1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-a1.png" alt="Adım a1" />
+</Frame>
+
+**b1) Port seçme kısmında çıkan seçeneğe tıklıyoruz. Sizde birden fazla port gözükebilir. Deneyap Kartınızı çıkarıp geri geldiğinizde ardından yeniden bu menüye ulaştığınızda, görünmeyen port doğru port olacaktır.**
+
+<Frame caption="Resim: Adım b1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-b1.png" alt="Adım b1" />
+</Frame>
+
+**c1) Yükleme başladı. İlk yükleme biraz vakit alacaktır, bu sebeple sabırla beklemekte fayda vardır.**
+
+<Frame caption="Resim: Adım c1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-c1.png" alt="Adım c1" />
+</Frame>
+
+**d1) Yükleme bittikten sonra, ESPHome ana ekranına gelip "Logs" kısmına tıklıyoruz. Açılan menüde artık "Wirelessly" seçebiliriz. Loglar geldiğinde, buradaki IP adresini kopyalıyoruz.**
+
+<Frame caption="Resim: Adım d1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-d1.png" alt="Adım d1" />
+</Frame>
+
+**e1) Home Assistant > Ayarlar > Cihazlar ve Hizmetler > Entegrasyon Ekle > ESPHome kısmına geliyoruz ve kopyaladığımız IP adresi yapıştırıyoruz. Sonrasında "Atla" ve "Bitir" diyoruz.**
+
+<Frame caption="Resim: Adım e1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-e1.png" alt="Adım e1" />
+</Frame>
+
+**f1) ESPHome altındaki "1 cihaz" yazısına tıklıyoruz.**
+
+<Frame caption="Resim: Adım f1">
+  <img noZoom src="https://github.com/MehmetEmreee/gemstonedocs/raw/main/images/homeassistant/yukleme-sureci-adim-f1.png" alt="Adım f1" />
+</Frame>
+
+**Tebrik ederim! Başarıyla bir hareket sensörünü Home Assistant'a entegre ettiniz. Burada eklediğimiz sensörün durumunu anlık olarak görüntüleyebilirsiniz.**
+
+## 5. Sıkça Sorulan Sorular
+
+**❓ Kurulum sonrası "Unsupported System" uyarısı alıyorum, neden?**
+> Home Assistant OS dışında bir işletim sistemi kullanıldığında veya sistemde manuel çalışan başka hizmetler (Nextcloud veya Tailscale gibi) olduğunda bu uyarı çıkabilir. Akıllı ev sisteminin kararlı çalışmasına engel bir durum değildir, sadece bilgilendirme amaçlıdır.
+
+**❓ Eklenti (Add-on) mağazası ne zaman görünecek?**
+> Kurulum tamamlandıktan hemen sonra arayüze girerseniz Eklentiler menüsü görünmeyebilir. Sistem arka planda gerekli yapılandırmaları bitirdiğinde (genellikle 5-10 dakika içinde) "Ayarlar -> Eklentiler" sekmesi otomatik olarak aktif olacaktır.
