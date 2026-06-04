@@ -49,11 +49,11 @@ projesi klonlandıktan sonra içerisinde bulunan `setup.sh` isimli script bu kur
 <Frame>
 ```mermaid
 flowchart
-    n1@{ label: "**Projeyi indir**" } --- n2["**Gereksinimleri Kur**"]
-    n2 --- n3["**Devbox Shell Aktifleştir**"]
-    n3 --- n4["Distrobox ile Veri Etiketleme ve Model Derleme Ortamını Hazırla."]
-    n5["Distrobox ile EdgeAI Label Studio Paket Kurulumlarını Tamamla"] --- n6["Label Studio ile Veri Etiketle"]
-    n6 --- n7["Edge AI Model Maker ile Model Derle"]
+    n1@{ label: "**Projeyi indir**" } --- n2@{ label: "**Gereksinimleri Kur**" }
+    n2 --- n3@{ label: "**Devbox Shell Aktifleştir**" }
+    n3 --- n4@{ label: "Distrobox ile Veri Etiketleme ve Model Derleme Ortamını Hazırla." }
+    n5@{ label: "Distrobox ile EdgeAI Label Studio Paket Kurulumlarını Tamamla" } --- n6@{ label: "Label Studio ile Veri Etiketle" }
+    n6 --- n7@{ label: "Edge AI Model Maker ile Model Derle" }
     n4 --> n5
     n1@{ shape: rounded}
     n3@{ shape: hex}

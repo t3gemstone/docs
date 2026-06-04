@@ -155,10 +155,10 @@ The diagrams below summarize all Task functions used by the SDK.
 flowchart
 	n1["/Taskfile.yml"]
 	style n1 fill:#D2F5DF
-	n1 --- n5["**[task fetch]**<br><br>Downloads Yocto studies and Texas Instruments Firmware source codes used by the SDK via vcstool."]
-	n1 --- n6["**[task box]**<br><br>Creates a distrobox image from the Ubuntu 22.04 Docker image used by Yocto and Debos and enters it."]
-	n1 --- n7["**[task permissions]**<br><br>Sets necessary permissions for using Yocto."]
-	n1 --- n11["**[task destroy]**<br><br>Cleans all compiled outputs and docker images."]
+	n1 --- n5@{ label: "**[task fetch]**<br><br>Downloads Yocto studies and Texas Instruments Firmware source codes used by the SDK via vcstool." }
+	n1 --- n6@{ label: "**[task box]**<br><br>Creates a distrobox image from the Ubuntu 22.04 Docker image used by Yocto and Debos and enters it." }
+	n1 --- n7@{ label: "**[task permissions]**<br><br>Sets necessary permissions for using Yocto." }
+	n1 --- n11@{ label: "**[task destroy]**<br><br>Cleans all compiled outputs and docker images." }
   n1@{ shape: "rounded", label: "/Taskfile.yml" }
 ```
 </Card>
@@ -170,9 +170,9 @@ flowchart
 flowchart
 	n1["/yocto/Taskfile.yml"]
 	style n1 fill:#D2F5DF
-	n1 --- n5["**[task yocto:build]**<br><br>Performs all Yocto building processes according to the defined machine type and creates kernel, bootloader, firmware."]
-	n1 --- n6["**[task yocto:local-apt-server]**<br><br>Starts a local-apt server to use Yocto packages that need to be installed on the image when the task distro:build command is run after Yocto builds are complete."]
-	n1 --- n7["**[task yocto:runqemu]**<br><br>Runs the operating system with QEMU after Yocto and Debos processes are completed."]
+	n1 --- n5@{ label: "**[task yocto:build]**<br><br>Performs all Yocto building processes according to the defined machine type and creates kernel, bootloader, firmware." }
+	n1 --- n6@{ label: "**[task yocto:local-apt-server]**<br><br>Starts a local-apt server to use Yocto packages that need to be installed on the image when the task distro:build command is run after Yocto builds are complete." }
+	n1 --- n7@{ label: "**[task yocto:runqemu]**<br><br>Runs the operating system with QEMU after Yocto and Debos processes are completed." }
 	n1@{ shape: "rounded", label: "/yocto/Taskfile.yml" }
 ```
 </Card>
@@ -184,8 +184,8 @@ flowchart
 flowchart
 	n1["/distro/Taskfile.yml"]
   style n1 fill:#D2F5DF
-	n1 --- n5["**[task distro:build]**<br><br>Performs operations to create .img extension images according to the machine and distribution scheme defined in the **distro.yaml** file via the Debos project."]
-	n1 --- n6["**[task distro:build:all]**<br><br>While the task distro:build command creates only one image according to the machine and image type given as a parameter, the **build:all** command compiles for all machine and distro types."]
+	n1 --- n5@{ label: "**[task distro:build]**<br><br>Performs operations to create .img extension images according to the machine and distribution scheme defined in the **distro.yaml** file via the Debos project." }
+	n1 --- n6@{ label: "**[task distro:build:all]**<br><br>While the task distro:build command creates only one image according to the machine and image type given as a parameter, the **build:all** command compiles for all machine and distro types." }
 	n1
 	n1@{ shape: "rounded", label: "/distro/Taskfile.yml" }
 ```
