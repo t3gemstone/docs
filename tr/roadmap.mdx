@@ -18,6 +18,10 @@ ziyaret edininiz.
   `Devam Ediyor` `%45`
 </Card>
 
+<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
+  `Henüz Başlamadı` `0%`
+</Card>
+
 <Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
   `Henüz Başlamadı` `0%`
 </Card>
@@ -77,6 +81,48 @@ hedeflenmektedir. Aşağıdaki tabloda güncel durum ve yapılacaklar bulunmakta
 | CAN Bus sürücü desteği                                                                                      | Gönüllü Geliştirici Bekleniyor |
 | USB sürücü desteği                                                                                          | Gönüllü Geliştirici Bekleniyor |
 | SD kart ve eMMC sürücü desteği                                                                              | Gönüllü Geliştirici Bekleniyor |
+
+## ChibiOS + Ardupilot
+
+Ardupilot otopilotu, T3 Gemstone O1 geliştirme kartında halihazırda Linux üzerinde, yani Cortex-A53
+çekirdeklerde çalışmaktadır. Ancak gerçek zamanlı (real-time) ve düşük gecikmeli (low-latency) bir uçuş
+kontrolü için otopilotun, işletim sistemi yükü olmadan ayrılmış çekirdeklerde çalışması tercih edilir.
+Ardupilot'un birincil olarak desteklediği gerçek zamanlı işletim sistemi olan
+[ChibiOS](https://www.chibios.org/), uçuş kontrolcü kartlarında yaygın olarak kullanılmaktadır.
+
+Bu projede; ChibiOS işletim sisteminin AM67a SoC üzerindeki Cortex-R5 çekirdeklerine taşınması (port
+edilmesi) ve Ardupilot'un bu çekirdeklerde, ChibiOS üzerinde otopilot olarak çalıştırılması hedeflenmektedir.
+Böylece Cortex-A53 çekirdeklerde çalışan Linux genel amaçlı işlerle ilgilenirken, gerçek zamanlı uçuş kontrol
+döngüsü Cortex-R5 çekirdeklerinde kesintisiz olarak yürütülebilecektir.
+
+<Columns cols={2}>
+  <Frame caption="ChibiOS RTOS">
+  <a href="https://www.chibios.org/" target="_blank">
+    <img src="/images/chibios.png" noZoom />
+  </a>
+  </Frame>
+  <Frame caption="Ardupilot">
+  <a href="https://ardupilot.org/" target="_blank">
+    <img src="/images/ardupilot.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+Aşağıdaki tabloda yapılması planlanan çalışmalar bulunmaktadır.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| ChibiOS HAL'ının AM67a Cortex-R5 çekirdekleri için port edilmesi                                            | Gönüllü Geliştirici Bekleniyor |
+| ChibiOS'un remoteproc mekanizması ile U-Boot ya da Linux tarafından R5 çekirdeğine yüklenmesi               | Gönüllü Geliştirici Bekleniyor |
+| Seri port (UART) sürücü desteği ve konsol erişimi                                                           | Gönüllü Geliştirici Bekleniyor |
+| GPIO sürücü desteği                                                                                         | Gönüllü Geliştirici Bekleniyor |
+| Ardupilot'un AP_HAL_ChibiOS katmanı kullanılarak R5 çekirdekleri için derlenmesi                            | Gönüllü Geliştirici Bekleniyor |
+| Ardupilot'un ChibiOS üzerinde otopilot olarak çalıştırılması                                                | Gönüllü Geliştirici Bekleniyor |
+| SPI ve I2C sürücü desteği (IMU, barometre vb. sensörler için)                                               | Gönüllü Geliştirici Bekleniyor |
+| PWM sürücü desteği (motor ve servo çıkışları için)                                                          | Gönüllü Geliştirici Bekleniyor |
+| CAN Bus (DroneCAN) sürücü desteği                                                                           | Gönüllü Geliştirici Bekleniyor |
+| R5 çekirdeğinde çalışan ChibiOS ile A53 çekirdeğinde çalışan Linux arası Texas IPC ile haberleşme           | Gönüllü Geliştirici Bekleniyor |
+| MAVLink telemetri ve yer kontrol istasyonu (GCS) bağlantısının sağlanması                                   | Gönüllü Geliştirici Bekleniyor |
 
 ## PX4 Autopilot
 

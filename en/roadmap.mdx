@@ -17,6 +17,10 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `In Progress` `45%`
 </Card>
 
+<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
+  `Not Started Yet` `0%`
+</Card>
+
 <Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
   `Not Started Yet` `0%`
 </Card>
@@ -75,6 +79,48 @@ status and pending tasks are in the table below.
 | CAN Bus driver support                                                                                      | Volunteer Developer Needed     |
 | USB driver support                                                                                          | Volunteer Developer Needed     |
 | SD card and eMMC driver support                                                                             | Volunteer Developer Needed     |
+
+## ChibiOS + Ardupilot
+
+The Ardupilot autopilot currently runs on Linux on the T3 Gemstone O1 development board, that is, on the
+Cortex-A53 cores. However, for real-time and low-latency flight control, it is preferable to run the autopilot
+on dedicated cores without the overhead of a general-purpose operating system.
+[ChibiOS](https://www.chibios.org/), the primary real-time operating system supported by Ardupilot, is widely
+used on flight controller boards.
+
+This project aims to port the ChibiOS operating system to the Cortex-R5 cores on the AM67a SoC and to run
+Ardupilot as an autopilot on top of ChibiOS on these cores. This way, while the Linux running on the Cortex-A53
+cores handles general-purpose tasks, the real-time flight control loop can run uninterrupted on the Cortex-R5
+cores.
+
+<Columns cols={2}>
+  <Frame caption="ChibiOS RTOS">
+  <a href="https://www.chibios.org/" target="_blank">
+    <img src="/images/chibios.png" noZoom />
+  </a>
+  </Frame>
+  <Frame caption="Ardupilot">
+  <a href="https://ardupilot.org/" target="_blank">
+    <img src="/images/ardupilot.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+The planned tasks are listed in the table below.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Porting the ChibiOS HAL for the AM67a Cortex-R5 cores                                                       | Volunteer Developer Needed     |
+| Loading ChibiOS onto the R5 core via the remoteproc mechanism by U-Boot or Linux                            | Volunteer Developer Needed     |
+| Serial port (UART) driver support and console access                                                        | Volunteer Developer Needed     |
+| GPIO driver support                                                                                         | Volunteer Developer Needed     |
+| Building Ardupilot for the R5 cores using the AP_HAL_ChibiOS layer                                          | Volunteer Developer Needed     |
+| Running Ardupilot as an autopilot on top of ChibiOS                                                         | Volunteer Developer Needed     |
+| SPI and I2C driver support (for sensors such as IMU, barometer, etc.)                                       | Volunteer Developer Needed     |
+| PWM driver support (for motor and servo outputs)                                                            | Volunteer Developer Needed     |
+| CAN Bus (DroneCAN) driver support                                                                           | Volunteer Developer Needed     |
+| Communication between ChibiOS running on the R5 core and Linux running on the A53 core via Texas IPC        | Volunteer Developer Needed     |
+| Providing MAVLink telemetry and ground control station (GCS) connectivity                                   | Volunteer Developer Needed     |
 
 ## PX4 Autopilot
 
