@@ -125,6 +125,11 @@ process again.
 While the NuttX operating system runs on the R5F cores, the Linux operating system also runs on the A53 cores. Code can
 be loaded onto the R5F cores using the `remoteproc` mechanism present in the Linux operating system and U-Boot.
 
+<Tip>
+   To use the `remoteproc` mechanism in U-Boot, you can refer to the [2.8. Running the Compiled Project in U-Boot](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage)
+   section.
+</Tip>
+
 Program files to be loaded onto the cores via remoteproc must be copied to the `/lib/firmware` directory with predefined
 names. At system startup, the remoteproc mechanism will automatically load the programs onto the relevant cores. Follow
 the steps below to run NuttX using remoteproc.

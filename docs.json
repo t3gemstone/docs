@@ -14,14 +14,10 @@
   },
   "fonts": {
     "body": {
-      "family": "InterVariable",
-      "format": "woff2",
-      "source": "https://rsms.me/inter/font-files/InterVariable.woff2?v=4.1"
+      "family": "Inter"
     },
     "heading": {
-      "family": "InterVariable",
-      "format": "woff2",
-      "source": "https://rsms.me/inter/font-files/InterVariable.woff2?v=4.1"
+      "family": "Google Sans"
     }
   },
   "background": {
@@ -116,6 +112,7 @@
                     "pages": [
                       "tr/boards/o1/ai/introduction",
                       "tr/boards/o1/ai/ecosystem",
+                      "tr/boards/o1/ai/installation",
                       "tr/boards/o1/ai/edgeai",
                       "tr/boards/o1/ai/edgeai-tensorlab",
                       "tr/boards/o1/ai/data-labeling",
@@ -167,9 +164,10 @@
               "tr/projects/ardupilot",
               "tr/projects/vtol",
               "tr/projects/swupdate",
-              "tr/projects/mediabox"
-              "tr/projects/homeassistant"
               "tr/projects/mediabox",
+              "tr/projects/firewall",
+              "tr/projects/hotspot",
+              "tr/projects/homeassistant",
               {
                 "group": "Teknofest",
                 "pages": [
@@ -285,6 +283,7 @@
                     "pages": [
                       "en/boards/o1/ai/introduction",
                       "en/boards/o1/ai/ecosystem",
+                      "en/boards/o1/ai/installation",
                       "en/boards/o1/ai/edgeai",
                       "en/boards/o1/ai/edgeai-tensorlab",
                       "en/boards/o1/ai/data-labeling",
@@ -336,9 +335,10 @@
               "en/projects/ardupilot",
               "en/projects/vtol",
               "en/projects/swupdate",
-              "en/projects/mediabox"
-              "en/projects/homeassistant"
               "en/projects/mediabox",
+              "en/projects/firewall",
+              "en/projects/hotspot",
+              "en/projects/homeassistant",
               {
                 "group": "Teknofest",
                 "pages": [
@@ -395,8 +395,6 @@
   },
   "seo": {
     "metatags": {
-      "charset": "UTF-8",
-      "viewport": "width=device-width, initial-scale=1.0",
       "description": "T3 Gemstone Development Boards",
       "keywords": "t3, t3vakfi, t3gemstone, gemstone, gemstoneboard, obsidian, obsidyen, kuvars, quartz, t3foundation, embedded, realtime, iot, robotics, uav, drone, teknofest, github",
       "author": "T3 Foundation",
@@ -405,7 +403,6 @@
       "indexing": "all",
       "google": "notranslate",
       "generator": "Mintlify",
-      "format-detection": "telephone=no",
       "referrer": "origin",
       "refresh": "30",
       "rating": "general",
@@ -418,9 +415,6 @@
       "category": "Technology",
       "target": "all",
       "HandheldFriendly": "True",
-      "apple-mobile-web-app-capable": "yes",
-      "apple-mobile-web-app-status-bar-style": "black",
-      "apple-mobile-web-app-title": "T3 Gemstone",
       "application-name": "T3 Gemstone"
     }
   },

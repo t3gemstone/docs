@@ -10,16 +10,31 @@ To contribute by taking part in the relevant projects, visit their Github pages 
 </Tip>
 
 <Card horizontal title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
-`In Progress` `40%`
+  `In Progress` `45%`
 </Card>
+
+<Card horizontal title="Wayland Transition" icon="spinner" href="./roadmap#wayland-transition">
+  `In Progress` `30%`
+</Card>
+
+<Card horizontal title="Buildroot" icon="spinner" href="./roadmap#buildroot">
+  `In Progress` `10%`
+</Card>
+
+<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
+  `Not Started Yet` `0%`
+</Card>
+
 <Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
-`Not Started Yet` `0%`
+  `Not Started Yet` `0%`
 </Card>
-<Card horizontal title="Buildroot" icon="clock" href="./roadmap#buildroot">
-`Not Started Yet` `0%`
-</Card>
+
 <Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
-`Not Started Yet` `0%`
+  `Not Started Yet` `0%`
+</Card>
+
+<Card horizontal title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
+  `Not Started Yet` `0%`
 </Card>
 
 ## Apache Nuttx
@@ -61,6 +76,48 @@ status and pending tasks are in the table below.
 | USB driver support                                                                                          | Volunteer Developer Needed     |
 | SD card and eMMC driver support                                                                             | Volunteer Developer Needed     |
 
+## ChibiOS + Ardupilot
+
+The Ardupilot autopilot currently runs on Linux on the T3 Gemstone O1 development board, that is, on the
+Cortex-A53 cores. However, for real-time and low-latency flight control, it is preferable to run the autopilot
+on dedicated cores without the overhead of a general-purpose operating system.
+[ChibiOS](https://www.chibios.org/), the primary real-time operating system supported by Ardupilot, is widely
+used on flight controller boards.
+
+This project aims to port the ChibiOS operating system to the Cortex-R5 cores on the AM67a SoC and to run
+Ardupilot as an autopilot on top of ChibiOS on these cores. This way, while the Linux running on the Cortex-A53
+cores handles general-purpose tasks, the real-time flight control loop can run uninterrupted on the Cortex-R5
+cores.
+
+<Columns cols={2}>
+  <Frame caption="ChibiOS RTOS">
+  <a href="https://www.chibios.org/" target="_blank">
+    <img src="/images/chibios.png" noZoom />
+  </a>
+  </Frame>
+  <Frame caption="Ardupilot">
+  <a href="https://ardupilot.org/" target="_blank">
+    <img src="/images/ardupilot.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+The planned tasks are listed in the table below.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Porting the ChibiOS HAL for the AM67a Cortex-R5 cores                                                       | Volunteer Developer Needed     |
+| Loading ChibiOS onto the R5 core via the remoteproc mechanism by U-Boot or Linux                            | Volunteer Developer Needed     |
+| Serial port (UART) driver support and console access                                                        | Volunteer Developer Needed     |
+| GPIO driver support                                                                                         | Volunteer Developer Needed     |
+| Building Ardupilot for the R5 cores using the AP_HAL_ChibiOS layer                                          | Volunteer Developer Needed     |
+| Running Ardupilot as an autopilot on top of ChibiOS                                                         | Volunteer Developer Needed     |
+| SPI and I2C driver support (for sensors such as IMU, barometer, etc.)                                       | Volunteer Developer Needed     |
+| PWM driver support (for motor and servo outputs)                                                            | Volunteer Developer Needed     |
+| CAN Bus (DroneCAN) driver support                                                                           | Volunteer Developer Needed     |
+| Communication between ChibiOS running on the R5 core and Linux running on the A53 core via Texas IPC        | Volunteer Developer Needed     |
+| Providing MAVLink telemetry and ground control station (GCS) connectivity                                   | Volunteer Developer Needed     |
+
 ## PX4 Autopilot
 
 The goal is to run the PX4 autopilot on Gemstone Linux (without NuttX).
@@ -90,7 +147,7 @@ development board.
 
 |                                                                                                             |                                |
 |:------------------------------------------------------------------------------------------------------------|-------------------------------:|
-| Adding T3-GEM-O1 configuration to Buildroot and creating a pull request to its [address](https://github.com/buildroot/buildroot) | Volunteer Developer Needed     |
+| Adding T3-GEM-O1 configuration to Buildroot and creating a pull request to its [address](https://github.com/t3gemstone/buildroot) | Volunteer Developer Needed     |
 | Creating two image types named Minimal and Kiosk and similarly creating a merge request                     | Volunteer Developer Needed     |
 
 ## Phoenix RTOS
@@ -103,3 +160,36 @@ on Gemstone.
     <img src="/images/phoenix-rtos.png" noZoom />
   </a>
 </Frame>
+
+## Wayland Transition
+
+The GPU (IMG BXS4-64) driver provided by TI for the AM67A SoC cannot accelerate X11 desktop environments.
+Windows are currently rendered without hardware acceleration using the CPU (llvmpipe). This causes the desktop environment to run sluggishly.
+The same driver includes acceleration support for Wayland. The goal is to transition to a Wayland-supported
+desktop environment that is stable, low on resource usage, feature-rich, and suitable for the majority of users.
+
+<Columns cols={1}>
+  <Frame caption="Wayland">
+    <img src="/images/wayland-logo.svg" noZoom />
+  </Frame>
+</Columns>
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Compiling the [Mesa library](https://gitlab.freedesktop.org/StaticRocket/mesa) with Ubuntu 22.04 build tools and packaging it as a DEB package | `Completed`     |
+| Selecting a suitable Wayland desktop environment or window manager                                          | Volunteer Developer Needed     |
+| Finding programs such as settings, file manager, and network manager (if not bundled with the selected environment) | Volunteer Developer Needed     |
+| Creating a common theme for window borders, status bar, and similar elements for interface consistency      | Volunteer Developer Needed     |
+
+## Linux Kernel Version 7
+
+The goal is to run Linux kernel version 7 on the T3-GEM-O1 development board, instead of the currently used 6.12 version.
+This will allow taking advantage of new hardware drivers, improvements, and bug fixes.
+
+<Columns cols={1}>
+  <Frame caption="Linux Kernel Version 7">
+  <a href="https://github.com/RobertCNelson/arm64-multiplatform/commits/v7.0.x-arm64-k3/" target="_blank">
+    <img src="/images/linux-kernel-7.png" noZoom />
+  </a>
+  </Frame>
+</Columns>

@@ -105,6 +105,12 @@ connection, time synchronization, package update, and bluetooth) and starts the 
 
 ## 2. MCU Software Development
 
+<Tip>
+  This section describes the bare-metal software development process for Cortex-R5 and C7x cores. 
+  Software running on the relevant architectures is compiled using Texas SDK and tools and loaded
+  onto the development board.
+</Tip>
+
 The tools required to compile MCU projects are listed below.
 
 1. Texas Instruments Processor SDK RTOS J722S
@@ -307,7 +313,7 @@ such as `Must be disabled via Device-tree. (mcu_spi0)`. To disable these;
 
 As a result of the above operations, `mcu_spi0` will now be available for use by the mcu cores. However, 
 the `Usage Purpose in Linux` section in the table indicates that it is 
-`- Used for BMP390 pressure and ICM20948 imu spi`. Therefore, access to these peripherals from Linux will be 
+`- Used for LPS22DFTR pressure and ICM20948 imu spi`. Therefore, access to these peripherals from Linux will be 
 closed and they will need to be driven by the MCU.
 
 ### 3.2. Example Scenario: Driving a Servo Motor from the MCU with PWM

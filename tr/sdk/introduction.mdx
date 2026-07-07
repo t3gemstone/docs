@@ -73,11 +73,11 @@ flowchart
 	n3 --- n4["**2.2.** Harici Kodları İndir"]
 	n3 --- n5@{ label: "**2.3.** Yetkilendirme Yap" }
 	n3@{ shape: "hex", label: "**2.1. Devbox Shell Aktifleştir**" } --- n6@{ shape: "hex", label: "**2.4.** Distrobox ile Yocto&Debos Ortamını Hazırla" }
-	n6@{ shape: "hex", label: "**2.4. Distrobox ile Yocto&Debos Ortamını Hazırla**" } --- n7["**2.5.** Yocto ile Çekirdek (Linux Kernel, U-Boot, Firmware, Driver) Derle"]
+	n6@{ shape: "hex", label: "**2.4. Distrobox ile Yocto&Debos Ortamını Hazırla**" } --- n7@{ label: "**2.5.** Yocto ile Çekirdek (Linux Kernel, U-Boot, Firmware, Driver) Derle" }
 	n1@{ shape: "rounded", label: "**1.2. SDK'yı indir**" }
-	n7["**2.5.** Yocto ile Kernel, U-Boot, Firmware, Drive Derle"]
-	n7 --- n10["**2.6.** Debos ile İmaj Oluştur"]
-	n10 --- n11["**2.7.** Qemu ile İşletim Sistemini Aç"]
+	n7@{ label: "**2.5.** Yocto ile Kernel, U-Boot, Firmware, Driver Derle" }
+	n7 --- n10@{ label: "**2.6.** Debos ile İmaj Oluştur" }
+	n10 --- n11@{ label: "**2.7.** Qemu ile İşletim Sistemini Aç" }
 	style n1 fill:#FFDE59
 	style n3 stroke-width:0.5px,stroke:#000000
 	style n6 fill:#FFDE59

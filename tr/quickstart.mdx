@@ -109,7 +109,7 @@ indirerek inceleyebilirsiniz.</Note>
 Gemstone üzerinde İşletim Sistemi, [Bootloader](https://kureansiklopedi.com/tr/detay/bootloader-13b85),
 [Firmware](https://kureansiklopedi.com/tr/detay/aygit-yazilimi-95889) vb. bütün çekirdek yazılımlar
 Gemstone Image Writer (GemImager veya Gemstone Imager) uygulaması ile  yüklenmektedir.
-http://www.t3gemstone.org/software adresinden bilgisayarınıza uygun (Linux, Windows veya macOS) olan
+https://www.t3gemstone.org/software adresinden bilgisayarınıza uygun (Linux, Windows veya macOS) olan
 uygulamayı indiriniz.
 
 ![Browser](/images/browser.png)
@@ -119,7 +119,18 @@ Doküman boyunca imaj/işletim sistemi yazma uygulaması için Gemstone Imager v
 ifadeleri kullanılacaktır.
 </Note>
 
+<Tip>
+Yukarıdaki web sitesine ulaşılamayan durumlarda Gemstone Imager uygulamasını indirmek için
+https://packages.t3gemstone.org/imager/ adresini kullanabilirsiniz.
+</Tip>
+
 ### 1.2. İmaj yazma işlemi
+
+<Tip>
+Sdcard kullanmak istemiyorsanız ve kartın üzerinde bulunan eMMC'ye USB ile imaj yazmak istiyorsanız
+temel bilgi edinmiş olmak için bu bölümü okuyup daha sonra [eMMC'ye yazma bölümüne](/tr/imager/emmc)
+geçebilirsiniz.
+</Tip>
 
 #### 1.2.1. Sdcard ve okuyucuyu bilgisayara bağla
 
@@ -133,15 +144,33 @@ okuyucu aracılığıyla bilgisayarınıza bağladıktan sonra Gemstone Imager u
 #### 1.2.2. Gemstone Imager uygulamasını başlat
 
 <Tabs>
+
+  <Tab title="Linux">
+    Linux işletim sistemi için **.AppImage** uzantılı dosyayı indirdikten sonra, uygulamanın çalıştırılabilir 
+    hale getirilmesi için sağ tıklayarak Properties/Özellikler ekranını açarak "Permissions" kısmından 
+    "Allow executing file as program" seçeneğini işaretleyiniz.
+
+    <Frame>
+      <img height="400" width="400" src="/images/gem-imager/linux-chmod-a.png" />
+    </Frame>
+
+    Veya dosyayı indirdiğiniz yerde terminal açarak `chmod +x GemImager-1.1.1.AppImage` komutunu
+    da kullanabilirsiniz.
+
+    <Frame>
+      <img height="600" width="600" src="/images/gem-imager/linux-chmod-b.png" />
+    </Frame>
+
+  </Tab>
+
   <Tab title="Windows">
     Windows işletim sistemi kullanıyorsanız indirdiğiniz **.exe** uzantılı dosyaya çift tıklayarak kurulum yaparak Masaüstünden uygulamayı başlatınız.
   </Tab>
-  <Tab title="Linux">
-    Linux işletim sistemi için **.AppImage** uzantılı dosyayı indirdikten sonra sağ tıklayarak Properties/Özellikler ekranını açarak "Permissions" kısmından "Allow executing file as program" seçeneğini işaretleyiniz.
-  </Tab>
+
   <Tab title="macOS">
     macOS işletim sistemi için **.dmg** uzantılı dosyayı indirdikten sonra çift tıklayarak kurulum yapınız.
   </Tab>
+
 </Tabs>
 
 <Check>Uygulamayı indirdiğiniz dosya yolundan başlattığınızda aşağıdaki ekranı göreceksiniz.</Check>
@@ -190,10 +219,10 @@ Ortamı (Vscode), Video Oynatıcı (VLC) gibi yazılımları barındıran, bilgi
 Aşağıdaki iki imaj türüne göre daha yüksek boyutludur. Çoğunlukla prototip, test vb. geliştirme faaliyetlerinde
 kullanılmaktadır. (Robotik çalışmalar için Minimal isimli imaj daha uygundur.)
 
-* **Kiosk:** İçerisinde Metin Editörü veya Desktop imajında bulunan uygulamaların, masaüstü ortamının **olmadığı**
-çoğunlukla dokunmatik panel gibi amaçlarla kullanılan grafik arayüzünü destekleyen imajdır. (Örneğin Tesla
-otomobillerinde Medya kontrolü için kullanılan dokunmatik panel veya Teknofest yarışmalarında binek araçların
-içerisinde bulunan kontrol ekranı gibi.)
+* **Kiosk:** İçerisinde Desktop imajında bulunan uygulamaların (Örneğin Metin Editörü, Dosya Gezgini),
+masaüstü ortamının **olmadığı** çoğunlukla dokunmatik panel gibi amaçlarla kullanılan grafik arayüzünü destekleyen
+imajdır. (Örnek: Tesla otomobillerinde kullanılan dokunmatik panel veya Teknofest
+yarışmalarında binek araçların içerisinde bulunan kontrol ekranı gibi.)
 
 * **Minimal:** Bu imaj ise gerçek zamanlı linux çekirdeği barındıran ve IoT, Robotik, Otopilot uygulamaları için
 özelleştirilmiş çok düşük boyutlu optimize edilmiş imajdır. Gömülü Yazılım Sistem geliştirme projelerinde tercih

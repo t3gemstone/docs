@@ -123,6 +123,11 @@ tamamen ilk haline döndürür, bu durumda konfigürasyon işlemini tekrar yapma
 NuttX işletim sistemi R5F çekirdeklerinde çalışırken A53 çekirdeklerinde de Linux işletim sistemi çalışmaktadır.
 Linux işletim sisteminde ve U-Boot'ta yer alan `remoteproc` mekanizması ile R5F çekirdeklerine kod yüklenebilmektedir.
 
+<Tip>
+   U-Boot'ta `remoteproc` mekanizması ile kullanabilmek için [2.8. Derlenmiş projenin U-Boot aşamasında çalıştırılması](/tr/boards/o1/peripherals/mcu#2-8-derlenmiş-projenin-u-boot-aşamasında-çalıştırılması)
+   bölümünü inceleyebilirsiniz.
+</Tip>
+
 Remoteproc ile çekirdeklere yüklenecek program dosyaları `/lib/firmware` dizini altına önceden tanımlı isimlerde
 kopyalanmalıdır. Sistem başlangıcında, remoteproc mekanizması programları ilgili çekirdeklere otomatik olarak 
 yükleyecektir. NuttX'i remoteproc ile çalıştırmak için aşağıdaki adımları takip edin.

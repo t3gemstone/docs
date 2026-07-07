@@ -3,6 +3,9 @@ title: 'Customization'
 description: 'System customization'
 ---
 
+import SnippetHostShareInternet from '/snippets/main/host/share-internet.mdx';
+import SnippetTargetShareInternet from '/snippets/main/target/share-internet.mdx';
+
 <Tip>
 By the end of this section, you will understand the purpose of the fields in the customization menus of the
 Gemstone Imager application.
@@ -103,3 +106,25 @@ instructions, [click here](https://www.diodes-delight.com/docs/piunora/usb-gadge
 
 - `Ethernet`: If writing to the board's eMMC, select the Ethernet port connected to the board. This has no effect when
   writing to an SD card.
+
+## Using the Host Computer's Internet via the Board
+
+If the `Enable Ethernet Gadget` option is checked in the Gadgets section, this allows you to make an Ethernet
+connection to your board via USB. After flashing the image, you can access the board from the host computer's
+terminal using the command `ssh gemstone@192.168.7.2`. However, if you haven't configured the Wi-Fi settings on
+your board, your board will not have internet access. To use your host computer's internet through the board,
+you can follow the steps below:
+
+1. Make sure your board is powered on and has been flashed with the image using the gadget settings.
+2. Ensure that your host computer is connected to the internet.
+3. Open the terminal and run the following command: use `ip a` to find out the names of your network interface
+   and the Ethernet interface created by your Gemstone board. Typically, the host computer's interface name
+   is `wlp2s0`, and the gadget interface name created by your Gemstone board is something like `enx02123456789a`.
+
+Run the following command in the terminal on your own computer:
+
+<SnippetHostShareInternet desc="Host Computer Settings"/>
+
+Finally, run the following command on the board's terminal after connecting to the board with `ssh gemstone@192.168.7.2`:
+
+<SnippetTargetShareInternet desc="Board Settings"/>

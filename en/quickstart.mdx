@@ -107,7 +107,7 @@ All core software on Gemstone, such as the
 Operating System, [Bootloader](https://kureansiklopedi.com/tr/detay/bootloader-388bd), and
 [Firmware](https://kureansiklopedi.com/tr/detay/firmware-7fdcf), is installed using the Gemstone
 Image Writer (GemImager or Gemstone Imager) application. Download the appropriate application
-(Linux, Windows, or macOS) for your computer from http://www.t3gemstone.org/software.
+(Linux, Windows, or macOS) for your computer from https://www.t3gemstone.org/software.
 
 ![Browser](/images/browser-en.png)
 
@@ -116,7 +116,17 @@ Throughout the documentation, the terms Gemstone Imager and Gemstone Image Write
 image/operating system writing application.
 </Note>
 
+<Tip>
+If the above website is inaccessible, you can use the following address to download the Gemstone
+Imager application: https://packages.t3gemstone.org/imager/
+</Tip>
+
 ### 1.2. Image writing process
+
+<Tip>
+If you do not want to use an SD card and prefer to write the image to the eMMC on the board via USB,
+you can read this section to gain basic knowledge and then proceed to the [eMMC writing section](/en/imager/emmc).
+</Tip>
 
 #### 1.2.1. Connect the SD card and reader to the computer
 
@@ -130,17 +140,33 @@ to your computer using a suitable card reader, then launch the Gemstone Imager a
 #### 1.2.2. Launch the Gemstone Imager application
 
 <Tabs>
+  <Tab title="Linux">
+    After downloading the **.AppImage** file for the Linux operating system, right-click to open the Properties
+    screen and check the "Allow executing file as program" option under the Permissions section to make
+    the application executable.
+  
+    <Frame>
+      <img height="400" width="400" src="/images/gem-imager/linux-chmod-a.png" />
+    </Frame>
+  
+    Alternatively, you can open a terminal in the directory where you downloaded the file and use
+    the command `chmod +x GemImager-1.1.1.AppImage` to make it executable.
+  
+    <Frame>
+      <img height="600" width="600" src="/images/gem-imager/linux-chmod-b.png" />
+    </Frame>
+  
+  </Tab>
+  
   <Tab title="Windows">
     If you are using Windows, double-click the downloaded **.exe** file to install and launch the
     application from the Desktop.
   </Tab>
-  <Tab title="Linux">
-    For Linux, download the **.AppImage** file, right-click it, open the Properties screen, and check the
-    "Allow executing file as program" option under "Permissions."
-  </Tab>
+  
   <Tab title="macOS">
     For macOS, download the **.dmg** file and double-click it to install.
   </Tab>
+
 </Tabs>
 
 <Check>When you launch the application from the downloaded file path, you will see the following screen.</Check>
@@ -189,9 +215,10 @@ but a summary is provided below:
   larger than the other two types and is mostly used for prototyping, testing, and development activities.
   (For robotics work, the Minimal image is more suitable.)
 
-* **Kiosk:** An image that supports a graphical interface, often used for touch panels, **without** the text
-  editor or applications found in the Desktop image. (For example, the touch panel used for media control in Tesla
-  vehicles or the control screen inside passenger vehicles in Teknofest competitions.)
+* **Kiosk:** An image that supports a graphical interface, often used for touch panels, **without** 
+  applications (Example: The Text Editor or File Manager) found in the Desktop image. (For example,
+  the touch panel used for media control in Tesla vehicles or the control screen inside passenger
+  vehicles in Teknofest competitions.)
 
 * **Minimal:** This image contains a real-time Linux kernel and is optimized for IoT, robotics, and autopilot
   applications. It is a powerful and deterministic structure suitable for embedded software system development projects.

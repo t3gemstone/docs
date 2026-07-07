@@ -1,0 +1,55 @@
+---
+title: 'Wi-Fi Hotspot'
+description: 'Transforming your Gemstone board into a secure Wi-Fi access point'
+---
+
+If you have connected your Gemstone board to your home router using an Ethernet cable, you can use the built-in Wi-Fi chip on your board to transform it into a wireless access point (Hotspot). 
+
+This allows the devices in your home to connect directly to the wireless network (Wi-Fi) broadcasted by the Gemstone hardware without changing any router or custom DNS settings. It provides internet access through the Ethernet interface and automatically secures them using the AdGuard Home-based firewall setup.
+
+## Creating a Wi-Fi Hotspot
+
+To create a wireless network from the device terminal:
+
+1. Check the name of your wireless network interface (Usually it is `wlan0`). You can use the `ip a` or `ifconfig` command to find out.
+2. Run the following command by customizing it for your needs to create your network:
+
+```bash
+# Make sure the password section is at least 8 characters long
+sudo nmcli device wifi hotspot ifname wlan0 ssid "Gemstone_Secure_Network" password "StrongPassword123"
+```
+
+* `ssid`: Represents your network name that will be visible to nearby devices.
+* `password`: The password required to connect to your network.
+
+Hotspot connections created using Network Manager (`nmcli`) are configured by default to share the device's internet (e.g., Ethernet) over Wi-Fi.
+
+## Activating Internet Sharing (NAT)
+
+If devices can connect to the network you created but cannot access the internet, you might need to explicitly forward (share) the Ethernet (wired internet) connection on the Gemstone to the Wi-Fi network.
+
+To assign the Internet sharing feature to your Hotspot connection, use the following commands. (Replace the connection name with the `ssid` you provided when creating the Hotspot):
+
+```bash
+# Set the connection's IPv4 method to "shared"
+sudo nmcli connection modify "Gemstone_Secure_Network" ipv4.method shared
+
+# Restart the hotspot network for the changes to take effect
+sudo nmcli connection up "Gemstone_Secure_Network"
+```
+
+### Additional Step: Enabling IP Forwarding
+
+In rare cases, IP forwarding might be disabled at the Linux Kernel level. If the internet is still not being shared, enable IP forwarding:
+
+1. To enable it temporarily:
+   ```bash
+   sudo sysctl -w net.ipv4.ip_forward=1
+   ```
+
+2. To make this setting permanent, open the `/etc/sysctl.conf` file with a text editor (e.g., `nano`) as a privileged user, remove the `#` sign at the beginning of the line `#net.ipv4.ip_forward=1`, and save the file. Run the following command to apply the changes:
+   ```bash
+   sudo sysctl -p
+   ```
+
+After setup, when you connect to the network from your phone or computer, your traffic will pass directly through Gemstone, ads will be blocked, and your internet will be provided seamlessly over the Ethernet line.

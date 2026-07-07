@@ -107,6 +107,11 @@ başlatır (gnome, kde, xfce).
 
 ## 2. MCU Yazılım Geliştirme
 
+<Tip>
+  Bu bölümde Cortex-R5 ve C7x çekirdekleri için Bare-metal yazılım geliştirme süreci anlatılmaktadır. 
+  İlgili mimarilerde çalışacak yazılımlar Texas SDK ve araçları ile derlenerek geliştirme kartına yüklenmektedir.
+</Tip>
+
 MCU projelerini derleyebilmek için gerekli araçlar aşağıda listelenmiştir.
 
 1. Texas Instruments Processor SDK RTOS J722S
@@ -314,7 +319,7 @@ Yukarıdaki işlemler sonucu istenmeyen bir durum oluşursa
 </Note>
 
 Yukarıdaki işlemler sonucunda artık `mcu_spi0` mcu çekirdeklerden kullanılabilir durumda olacaktır. Ancak tabloda
-bulunan `Linux'ta Kullanım Amacı` bölümünde `- BMP390 basınç ve ICM20948 imu spi` için kullanıldığı belirtilmiştir.
+bulunan `Linux'ta Kullanım Amacı` bölümünde `- LPS22DFTR basınç ve ICM20948 imu spi` için kullanıldığı belirtilmiştir.
 Dolayısıyla bu çevresel birimlere Linux'ta erişim kapatılmış olacak ve MCU tarafından sürülmesi gerekecektir. 
 
 ### 3.2. Örnek Senaryo: PWM ile MCU'dan Servo Motorun Sürülmesi
