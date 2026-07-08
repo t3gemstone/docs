@@ -171,7 +171,9 @@
                 "group": "Teknofest",
                 "pages": [
                   "tr/projects/teknofest-suv",
-                  "tr/projects/teknofest-ika"
+                  "tr/projects/teknofest-ika",
+                  "tr/projects/teknofest-celikkubbe",
+                  "tr/projects/teknofest-robotaksi"
                 ]
               }
             ]
@@ -341,7 +343,9 @@
                 "group": "Teknofest",
                 "pages": [
                   "en/projects/teknofest-suv",
-                  "en/projects/teknofest-ika"
+                  "en/projects/teknofest-ika",
+                  "en/projects/teknofest-celikkubbe",
+                  "en/projects/teknofest-robotaksi"
                 ]
               }
             ]
