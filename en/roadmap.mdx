@@ -104,19 +104,20 @@ cores.
 
 The planned tasks are listed in the table below.
 
-|                                                                                                             |                                |
-|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
-| Porting the ChibiOS HAL for the AM67a Cortex-R5 cores                                                       | Volunteer Developer Needed     |
-| Loading ChibiOS onto the R5 core via the remoteproc mechanism by U-Boot or Linux                            | Volunteer Developer Needed     |
-| Serial port (UART) driver support and console access                                                        | Volunteer Developer Needed     |
-| GPIO driver support                                                                                         | Volunteer Developer Needed     |
-| Building Ardupilot for the R5 cores using the AP_HAL_ChibiOS layer                                          | Volunteer Developer Needed     |
-| Running Ardupilot as an autopilot on top of ChibiOS                                                         | Volunteer Developer Needed     |
-| SPI and I2C driver support (for sensors such as IMU, barometer, etc.)                                       | Volunteer Developer Needed     |
-| PWM driver support (for motor and servo outputs)                                                            | Volunteer Developer Needed     |
-| CAN Bus (DroneCAN) driver support                                                                           | Volunteer Developer Needed     |
-| Communication between ChibiOS running on the R5 core and Linux running on the A53 core via Texas IPC        | Volunteer Developer Needed     |
-| Providing MAVLink telemetry and ground control station (GCS) connectivity                                   | Volunteer Developer Needed     |
+|                                                                                                              |                                |
+|:-------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Running NuttX on R5 cores                                                                                    | `Completed`                    |
+| GPIO driver support                                                                                          | `Completed`                    |
+| Serial port driver support                                                                                   | `Completed`                    |
+| Access to NuttShell (nsh) console                                                                            | `Completed`                    |
+| Loading NuttX onto the R5 core via U-Boot or Linux using NuttX's remoteproc mechanism                        | `Completed`                    |
+| I2C driver support                                                                                           | Awaiting Volunteer Developer   |
+| SPI driver support                                                                                           | Awaiting Volunteer Developer   |
+| PWM driver support                                                                                           | Awaiting Volunteer Developer   |
+| Pinmux configurations for all pins on the 40-pin HAT                                                         | Awaiting Volunteer Developer   |
+| Running PX4 autopilot as an application on the NuttX operating system on Gemstone                            | Awaiting Volunteer Developer   |
+| Communication between NuttX running on the R5 core and Linux running on the A53 core via Texas IPC mechanism | Awaiting Volunteer Developer   |
+| CAN Bus driver support                                                                                       | Awaiting Volunteer Developer   |
 
 ## PX4 Autopilot
 
