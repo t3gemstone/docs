@@ -99,7 +99,7 @@ Cihazınınız bulunduğu lokasyonu yani **Ev Konumu**nu seçebilirsiniz.
   <img src="/images/homeassistant/tr/data-sharing.png" alt="Veri Paylaşımı" />
 </Frame>
 
-Home Assistant'ın verilerinizi kullanması için onay vermeniz gerekmektedir. Bu ayarları kapatarak devam edebilirsiniz.
+Home Assistant'ın verilerinizi kullanması için onay vermeniz gerekmektedir. Bu ayarları kapatarak veya açarak devam edebilirsiniz.
 
 <Frame caption="Home Assistant Ana Ekran">
   <img src="/images/homeassistant/tr/main.png" alt="Ana Ekran" />
@@ -154,8 +154,7 @@ Açılan menüde Kurulum seçeneğine tıklanır ve yüklemenin tamamlanması be
   <img src="/images/homeassistant/tr/esphome-installed.png" alt="Adım g" />
 </Frame>
 
-Yükleme tamamlandıktan sonra görüntülenen menüde, "Show in sidebar" ve "Start on boot" seçeneklerinin 
-etkin olduğundan emin olunur ve ardından Başlat butonuna tıklanır.
+Yükleme tamamlandıktan sonra görüntülenen menüde başlat butonuna tıklanır.
 
 <Frame caption="Home Assistant ESPHome Yüklendikten Sonra">
   <img src="/images/homeassistant/tr/esphome-installed-2.png" alt="Adım h" />
@@ -169,49 +168,40 @@ etkin olduğundan emin olunur ve ardından Başlat butonuna tıklanır.
 
 ###  4.2 ESPHome'un Deneyap Kart için Konfigüre Edilmesi
 
-Açılan menüde "New Device" seçeneğine tıklanır.
+Açılan menüde "Create Device" seçeneğine tıklanır.
 
 <Frame caption="ESPHome Yeni Cihaz Ekleme Ekranı">
   <img src="/images/homeassistant/tr/esphome-add-device.png" alt="Adım j" />
 </Frame>
 
-"Continue" butonuna tıklanarak işlem devam ettirilir.
+"Create new project" butonuna tıklanarak işlem devam ettirilir.
 
 <Frame caption="ESPHome Cihaz Konfigürasyon Ekranı">
   <img src="/images/homeassistant/tr/esphome-device-config.png" alt="Adım k" />
 </Frame>
 
-"New Device Setup" seçeneğine tıklanır.
+Açılan sayfada kullanacağınız MCU modeline göre arama yapılır.
 
 <Frame caption="ESPHome Cihaz Konfigürasyon Ekranı">
   <img src="/images/homeassistant/tr/esphome-device-config-2.png" alt="Adım l" />
 </Frame>
 
-Bu adımda, karta bir **isim** konulması gerekmektedir. Ayrıca, **"Network Name"** ve **"Password"** alanlarına modeminizin **SSID** ve şifresi girilir.
+Bu adımda, uygun model seçilir.
 
 <Frame caption="ESPHome Cihaz Tip Seçim Ekranı">
-  <img src="/images/homeassistant/tr/esphome-device-type.png" alt="Adım m" />
+  <img src="/images/homeassistant/tr/esphome-device-name.png" alt="Adım m" />
 </Frame>
 
-Bu adımda, "ESP32-S3" seçeneği seçilir.
+Bu adımda, karta bir isim konulması gerekmektedir..
 
 <Frame caption="ESPHome Cihaz Konfigürasyonun Tamamlanması">
-  <img src="/images/homeassistant/tr/esphome-config-complete.png" alt="Adım n" />
+  <img src="/images/homeassistant/tr/esphome-device-wifi.png" alt="Adım n" />
 </Frame>
 
-Bu aşamada, **"Skip"** seçeneğine tıklanır. Ardından, arka planda görüntülenen **Deneyap Kart** bölümünden **"Edit"** butonuna girilir.
+Bu adımda ise "Network Name" ve "Password" alanlarına modeminizin SSID ve şifresi girilir.
 
 <Frame caption="ESPHome YAML Dosyasının Düzenlenme Ekranı">
   <img src="/images/homeassistant/tr/esphome-yaml-edit.png" alt="Adım u" />
-</Frame>
-
-Bu adımda, karşınıza bir **YAML** dosyası gelir.
-
-* `esp32` altında yer alan **`board`** alanı, kullanılan Deneyap karta göre güncellenir. **Deneyap Kart 1A V2** için mevcut `board:` satırı silinir ve yerine **`deneyapkart1Av2`** yazılır.
-* Ayrıca, **`framework`** alanı **`type: arduino`** olacak şekilde değiştirilir.
-
-<Frame caption="ESPHome YAML Dosyasına GPIO Tanımlama">
-  <img src="/images/homeassistant/tr/esphome-gpio-setup.png" alt="Adım v" />
 </Frame>
 
 ```yaml
@@ -259,7 +249,7 @@ binary_sensor:
  Gerekli pin atamaları için [Deneyap Kart Pin Rehberi](https://docs.deneyapkart.org/tr/Development_Boards) sayfasından bilgi alabilirsiniz.
 </Note>
 
-Sağ üst köşede bulunan "Install" butonuna tıklanır. Bu adım ile yapılandırma tamamlanmış olur.
+Sağ alt köşede bulunan "Install" butonuna tıklanır. Bu adım ile yapılandırma tamamlanmış olur.
 
 ###  4.3 ESPHome için Deneyap Kart'a Yazılım Yüklenmesi
 
@@ -289,14 +279,24 @@ Yükleme işlemi başlatılır. İlk yükleme, biraz zaman alabileceği için sa
 
 Yükleme tamamlandıktan sonra, ESPHome ana ekranına gidilir ve "Logs" bölümüne tıklanır. 
 Açılan menüde artık "Wirelessly" seçeneği kullanılabilir. 
-Loglar görüntülendiğinde, burada yer alan IP adresi kopyalanır.
 
-<Frame caption="ESPHome IP Adresi Ekleme">
-  <img src="/images/homeassistant/tr/esphome-add-ip.png" alt="Adım d1" />
+<Frame caption="ESPHome cihazı Ekleme">
+  <img src="/images/homeassistant/tr/esphome-find.png" alt="Adım d1" />
 </Frame>
 
-**Home Assistant** üzerinde, **Ayarlar > Cihazlar ve Hizmetler > Entegrasyon Ekle > ESPHome** bölümüne gidilir ve kopyalanan **IP adresi** yapıştırılır. 
-Ardından **"Atla"** ve **"Bitir"** seçeneklerine tıklanır.
+**Home Assistant** üzerinde, **Ayarlar > Cihazlar ve Hizmetler > Entegrasyon Ekle** bölümüne gidilir ve burada bulunan esphome cihazının üzerindeki ekle butonuna tıklanır.
+
+<Frame caption="ESPHome cihazı Ekleme">
+  <img src="/images/homeassistant/tr/esphome-add-device-homeassistant.png" alt="Adım d1" />
+</Frame>
+
+Bu aşamada karşımıza çıkan **Gönder** butonuna tıklanır.
+
+<Frame caption="ESPHome cihazı Ekleme">
+  <img src="/images/homeassistant/tr/esphome-homeassistant-name.png" alt="Adım d1" />
+</Frame>
+
+Bu adımda ise karta Home Assistant için bir isim verilir. Sonrasında **Atla ve Bitir** butonuna tıklanarak devam edilebilir.
 
 <Frame caption="ESP Home Cihazlar">
   <img src="/images/homeassistant/tr/esphome-devices.png" alt="Adım e1" />
