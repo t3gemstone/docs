@@ -1,6 +1,6 @@
 ---
 title: 'Home Assistant'
-description: 'T3 Gemstone O1 Smart Home Center Management System'
+description: 'T3 Gemstone O1 Smart Home Hub Management System'
 ---
 
 <Frame>
@@ -8,198 +8,201 @@ description: 'T3 Gemstone O1 Smart Home Center Management System'
 </Frame>
 
 <Tip>
-At the end of this section, you will have knowledge about the following topics:
+By the end of this section, you will have learned about the following topics:
 
-* Installation of the Home Assistant smart home system on the T3 Gemstone O1 development board
-* Development of smart home applications by connecting sensors and providing home automation using the Deneyap Kart with this project
+* Installing the **Home Assistant** smart home system on the T3 Gemstone O1 development board
+* Connecting sensors using a Deneyap Kart with this project, enabling home automation, and developing smart home applications
 </Tip>
 
 ## 1. Introduction
 
-Today, the control of home automation data and the security of smart devices are more important than ever. You may want to manage your lighting, security cameras, smart plugs, and sensors in a centralized system without relying on major cloud providers such as Amazon, Google, Xiaomi, or Tuya. To achieve this, you need to host your own smart home server on your own device and control your devices over the local network.
+Today, controlling your home automation data and securing your smart devices is more important than ever.
+You may want to manage your lights, security cameras, smart plugs, and sensors from a central system
+without depending on large cloud providers such as Amazon, Google, Xiaomi, or Tuya.
+To do this, you need to host your own smart home server on your own device and control your devices over the local network.
+However, running such a hub at home brings technical challenges such as making devices from different brands communicate
+with each other, the difficulty of providing secure access from the outside world, and keeping the system up and running at all times.
+These problems are usually solved with complex configurations and expensive hardware.
+The T3 Gemstone O1 project, with its Home Assistant integration, solves these problems in an easy, low-cost, and secure way.
 
-However, running such a hub in your home brings technical challenges, including enabling devices from different brands to communicate with each other, the inability to provide secure remote access, and keeping the system continuously operational. These problems are often solved with complex configurations and high-cost hardware. The T3 Gemstone O1 project, with its Home Assistant integration, offers an easy, low-cost, and secure solution to these problems.
 
-## 2. Home Assistant Installation
+## 2. Installing Home Assistant
 
-Home Assistant is an open-source smart home and automation platform. It offers features such as monitoring sensor data, controlling lights, plugs, and other devices, creating automated scenarios, and providing mobile access — all within a single system.
+Home Assistant is an open-source smart home and automation platform. It offers features such as monitoring sensor data,
+controlling lights, plugs, and other devices, creating automated scenarios, and access from mobile devices, all in a single system.
 
-After establishing a [terminal connection](/en/quickstart/#2-explore-gemstone) to the Gemstone development board, start the Docker installation with the following command:
+After establishing a [terminal connection](/en/quickstart/#2-explore-gemstone) to the Gemstone development board,
+first start the Docker installation with the following command:
 
 ```bash
 sudo curl -fsSL https://get.docker.com | sudo sh
 ```
 
-Docker installation complete. You can now install **Home Assistant**.
+Once the Docker installation is complete, you can install **Home Assistant**.
 
 ```bash
 sudo apt install t3-gem-homeassistant
 ```
 
-After the installation is complete, it may take 5–10 minutes depending on your internet speed for Supervisor to download and start all services. You can monitor the status with the following command:
+After the installation finishes, it may take 5-10 minutes for the Supervisor to download and start all services, depending on your internet speed.
+You can monitor the status with the following command:
 
 ```bash
 sudo docker logs -f hassio_supervisor
 ```
 
-Once you see the `hassio_supervisor` and `homeassistant` services in the `Up` state on the screen, you can access the interface from your browser:
+When you see that the `hassio_supervisor` and `homeassistant` services are in the `Up` (Running) state, you can access the interface from your browser:
 
-`http://gemstone.local:8123` veya `http://<your-gemstone-ip-address>:8123`
+`http://gemstone.local:8123` or `http://<your-gemstone-ip-address>:8123`
 
-To access your system from outside your home network, you can use [Tailscale](/en/projects/cloud#3-access-from-the-public-internet), which includes a setup guide. You can securely connect to your system using your Tailscale IP address (`http://<tailscale-ip>:8123`).
+To access your system from outside your home, you can use the [Tailscale](/en/projects/cloud#3-accessing-from-the-outside-world) network, for which an installation guide is available, and connect securely to your system via your Tailscale IP address (`http://<tailscale-ip>:8123`).
+
 
 ## 3. Accessing the Home Assistant Interface and Initial Setup
 
-Once the system services are active, when you first access the interface at `http://gemstone.local:8123` or `http://<your-gemstone-ip-address>:8123` via your browser, Home Assistant will greet you with a setup wizard. At this stage, you can create an administrator account and complete the basic configuration of your smart home. You can easily finish the interface setup by following the images below:
+Once the system services are active, when you first access the interface from your browser at `http://gemstone.local:8123` or
+`http://<your-gemstone-ip-address>:8123`,
+Home Assistant will greet you with a setup wizard.
+At this stage, you can create your administrator account and complete the basic configuration of your smart home.
+You can easily finish the interface setup by following the images below:
 
 <Note>
-  If you encounter an error while connecting to the interface, you can resolve it by changing `https://` to `http://` in the address bar.
+  If you get an error while connecting to the interface, you can fix it by changing `https://` in the address bar to `http://`.
 </Note>
 
-<Frame caption="Home Assistant Preparing Screen">
-  <img src="/images/homeassistant/preparation.png" alt="Preparing Screen" />
+<Frame caption="Home Assistant Preparation Screen">
+  <img src="/images/homeassistant/en/preparation.png" alt="Preparation Screen" />
 </Frame>
 
-When you enter the address, you will see the Home Assistant preparing screen. An estimated time is displayed on the screen.
+When you open the address, you will see the Home Assistant preparation screen. An estimated time is shown on the screen.
 
 <Frame caption="Home Assistant Welcome Screen">
-  <img src="/images/homeassistant/welcome.png" alt="Welcome Screen" />
+  <img src="/images/homeassistant/en/welcome.png" alt="Welcome Screen" />
 </Frame>
 
-If you are installing for the first time, you can proceed with the setup from the **Create My Smart Home** section. If you have installed before and have backups available, you can continue using the options provided below.
+If you are setting up for the first time, you can proceed from the **Create my smart home** section.
+If you have set up before and have backups, you can continue with the options at the bottom.
 
 <Frame caption="Home Assistant User Creation Screen">
-  <img src="/images/homeassistant/user-creation.png" alt="User Creation" />
+  <img src="/images/homeassistant/en/user-creation.png" alt="User Creation" />
 </Frame>
 
 After entering your name, username, and password, you can create your account by clicking the **Create Account** button.
 
 <Frame caption="Home Assistant Home Location Selection Screen">
-  <img src="/images/homeassistant/home-location.png" alt="Home Location" />
+  <img src="/images/homeassistant/en/home-location.png" alt="Home Location" />
 </Frame>
 
-You can select your device's location, i.e., the **Home Location**.
+You can select the location of your device, i.e. your **Home Location**.
 
 <Frame caption="Home Assistant Data Sharing Selection Screen">
-  <img src="/images/homeassistant/data-sharing.png" alt="Data Sharing" />
+  <img src="/images/homeassistant/en/data-sharing.png" alt="Data Sharing" />
 </Frame>
 
-You need to give your consent for Home Assistant to use your data. You may proceed with these settings turned off.
+You need to give consent for Home Assistant to use your data. You can continue with these settings turned on or off.
 
 <Frame caption="Home Assistant Main Screen">
-  <img src="/images/homeassistant/main.png" alt="Main Screen" />
+  <img src="/images/homeassistant/en/main.png" alt="Main Screen" />
 </Frame>
 
-Congratulations! You have successfully completed the installation steps and are now on the Home Assistant main screen. You can now freely configure your smart home hub and start managing your devices using the T3 Gemstone O1.
+Congratulations! You have successfully completed the setup steps and you are now on the Home Assistant main screen. You can start freely configuring the hub of your smart home and managing your devices on the T3 Gemstone O1.
+
 
 ## 4. Sensor Integration with Deneyap Kart
 
-This section covers the steps for connecting a motion sensor to the Deneyap Kart 1A V2 development board and integrating this sensor into the Home Assistant platform.
+This section covers the steps of connecting a motion sensor to the Deneyap Kart 1A V2 development board and integrating this sensor into the Home Assistant platform.
 
-### 4.1 Installing ESPHome in Home Assistant
+###  4.1 Installing ESPHome on Home Assistant
 
 <Frame caption="Home Assistant Main Screen">
-  <img src="/images/homeassistant/main.png" alt="Home Assistant Main Screen" />
+  <img src="/images/homeassistant/en/main.png" alt="Home Assistant Main Screen" />
 </Frame>
 
-After opening the left sidebar menu, click on the **Settings** option.
+After opening the menu on the left, click the Settings option.
 
 <Frame caption="Home Assistant Settings Section">
-  <img src="/images/homeassistant/settings.png" alt="Home Assistant Settings Section" />
+  <img src="/images/homeassistant/en/settings.png" alt="Home Assistant Settings Section" />
 </Frame>
 
-From the menu that appears, select the **Add-ons** option.
+From the menu that opens, select the Apps option.
 
 <Frame caption="Home Assistant Settings Section">
-  <img src="/images/homeassistant/settings-2.png" alt="Home Assistant Add-ons Section" />
+  <img src="/images/homeassistant/en/settings-2.png" alt="Home Assistant Apps Section" />
 </Frame>
 
-Click the **Add-on Store** button located at the bottom right corner.
+Click the "Install app" button in the bottom right corner.
 
-<Frame caption="Home Assistant Add-on Store">
-  <img src="/images/homeassistant/app-store.png" alt="Home Assistant Add-on Store" />
+<Frame caption="Home Assistant App Store">
+  <img src="/images/homeassistant/en/app-store.png" alt="Home Assistant App Store" />
 </Frame>
 
-Type `esphome` into the search field in the opened window.
+Type "esphome" in the search field of the menu that opens.
 
-<Frame caption="Home Assistant Add-on Store Search Result">
-  <img src="/images/homeassistant/app-store-search.png" alt="Home Assistant Add-on Store Search Result" />
+<Frame caption="Home Assistant App store Search Result">
+  <img src="/images/homeassistant/en/app-store-search.png" alt="Home Assistant Apps Search Result" />
 </Frame>
 
-Click on the **ESPHome** option displayed in the search results.
+Click the ESPHome option shown in the search results.
 
 <Frame caption="Home Assistant ESPHome">
-  <img src="/images/homeassistant/esphome.png" alt="ESPHome Add-on" />
+  <img src="/images/homeassistant/en/esphome.png" alt="Step f" />
 </Frame>
 
-In the window that opens, click the **INSTALL** button and wait for the installation to complete.
+In the menu that opens, click the Install option and wait for the installation to complete.
 
-<Frame caption="Home Assistant ESPHome After Installation">
-  <img src="/images/homeassistant/esphome-installed.png" alt="ESPHome Installed" />
+<Frame caption="Home Assistant After ESPHome Is Installed">
+  <img src="/images/homeassistant/en/esphome-installed.png" alt="Step g" />
 </Frame>
 
-After the installation is complete, ensure that the **Show in sidebar** and **Start on boot** options are enabled in the displayed menu, then click the **START** button.
+Once the installation is complete, click the Start button in the menu that appears.
 
-<Frame caption="Home Assistant ESPHome After Installation">
-  <img src="/images/homeassistant/esphome-installed-2.png" alt="ESPHome Started" />
+<Frame caption="Home Assistant After ESPHome Is Installed">
+  <img src="/images/homeassistant/en/esphome-installed-2.png" alt="Step h" />
 </Frame>
 
-Click the **OPEN WEB UI** button.
+Click the "Open Web UI" button.
 
 <Frame caption="ESPHome Welcome Screen">
-  <img src="/images/homeassistant/esphome-welcome.png" alt="ESPHome Welcome Screen" />
+  <img src="/images/homeassistant/en/esphome-welcome.png" alt="Step i" />
 </Frame>
 
-### 4.2 Configuring ESPHome for Deneyap Kart
+###  4.2 Configuring ESPHome for the Deneyap Kart
 
-In the opened menu, click the "New Device" option.
+In the menu that opens, click the "Create Device" option.
 
 <Frame caption="ESPHome Add New Device Screen">
-  <img src="/images/homeassistant/esphome-add-device.png" alt="Add New Device" />
+  <img src="/images/homeassistant/en/esphome-add-device.png" alt="Step j" />
 </Frame>
 
-Click the **Continue** button to proceed.
+Continue by clicking the "Create new project" button.
 
 <Frame caption="ESPHome Device Configuration Screen">
-  <img src="/images/homeassistant/esphome-device-config.png" alt="Device Configuration" />
+  <img src="/images/homeassistant/en/esphome-device-config.png" alt="Step k" />
 </Frame>
 
-Click the **New Device Setup** option.
+On the page that opens, search according to the MCU model you will be using.
 
 <Frame caption="ESPHome Device Configuration Screen">
-  <img src="/images/homeassistant/esphome-device-config-2.png" alt="Device Configuration Step 2" />
+  <img src="/images/homeassistant/en/esphome-device-config-2.png" alt="Step l" />
 </Frame>
 
-In this step, you must assign a **name** to the board. Additionally, enter your modem's **SSID** and password in the **"Network Name"** and **"Password"** fields.
+In this step, select the appropriate model.
 
 <Frame caption="ESPHome Device Type Selection Screen">
-  <img src="/images/homeassistant/esphome-device-type.png" alt="Device Type Selection" />
+  <img src="/images/homeassistant/en/esphome-device-name.png" alt="Step m" />
 </Frame>
 
-In this step, select the **ESP32-S3** option.
+In this step, you need to give the board a name.
 
-<Frame caption="ESPHome Device Configuration Complete">
-  <img src="/images/homeassistant/esphome-config-complete.png" alt="Configuration Complete" />
+<Frame caption="Completing the ESPHome Device Configuration">
+  <img src="/images/homeassistant/en/esphome-device-wifi.png" alt="Step n" />
 </Frame>
 
-At this stage, click the **Skip** option. Then, from the **Deneyap Kart** section displayed in the background, click the **Edit** button.
-
-<Frame caption="ESPHome YAML File Edit Screen">
-  <img src="/images/homeassistant/esphome-yaml-edit.png" alt="YAML File Edit" />
-</Frame>
-
-In this step, you will see a **YAML** file.
-
-- Under `esp32`, update the **`board`** field according to the Deneyap board being used. For **Deneyap Kart 1A V2**, delete the existing `board:` line and replace it with **`deneyapkart1Av2`**.
-- Additionally, change the **`framework`** field so that it reads **`type: arduino`**.
-
-<Frame caption="ESPHome YAML File GPIO Configuration">
-  <img src="/images/homeassistant/esphome-gpio-setup.png" alt="GPIO Configuration" />
-</Frame>
+In this step, enter your router's SSID and password in the "Network Name" and "Password" fields.
 
 ```yaml
 substitutions:
-  LED_PIN: GPIO48      # Onboard RGB LED
+  LED_PIN: GPIO48      # RGB LED on the board
   BUTTON_PIN: GPIO0    # Boot Button
   
   # Pin Mappings
@@ -215,13 +218,13 @@ substitutions:
   SDA_PIN: GPIO47
   SCL_PIN: GPIO21
 ```
-Then, the **pin mappings** created in this section are copied to the bottom of the YAML file.
+Then, copy the **pin definitions** made in this section to the bottom of the YAML file.
 
-<Frame caption="ESPHome Add Sensor to YAML File">
-  <img src="/images/homeassistant/esphome-add-sensor.png" alt="Add Sensor" />
+<Frame caption="Adding a Sensor to the ESPHome YAML File">
+  <img src="/images/homeassistant/en/esphome-add-sensor.png" alt="Step y" />
 </Frame>
 
-In this example, a motion sensor is being connected, so the following definitions are pasted at the bottom of the YAML file as shown in the figure above.
+Since a motion sensor will be connected in this example, paste the following definitions at the bottom of the YAML file as shown above.
 
 ```yaml
 binary_sensor:
@@ -238,59 +241,75 @@ binary_sensor:
 
 
 <Note>
-The motion sensor is connected to pin **D4 (GPIO42)**. If you connected it to a different pin, you need to update the **`number`** field accordingly. For required pin assignments, refer to the [Deneyap Kart Pin Guide](https://docs.deneyapkart.org/en/Development_Boards).
+ The motion sensor is connected to the **D4 pin (GPIO42)**. If you connected it to a different pin, you need to update the **`number`** field according to the relevant pin.
+ For the required pin assignments, you can refer to the [Deneyap Kart Pin Guide](https://docs.deneyapkart.org/en/Development_Boards) page.
 </Note>
 
-Click the **Install** button located in the top right corner. This step completes the configuration.
+Click the "Install" button in the bottom right corner. This step completes the configuration.
 
-### 4.3 Flashing the Software to Deneyap Kart for ESPHome
+###  4.3 Flashing the Deneyap Kart for ESPHome
 
-<Frame caption="ESPHome Software Installation Options">
-  <img src="/images/homeassistant/esphome-flash-options.png" alt="Flash Options" />
+<Frame caption="ESPHome Flashing Options">
+  <img src="/images/homeassistant/en/esphome-flash-options.png" alt="Step z" />
 </Frame>
 
-First, connect the **Deneyap Kart** to any USB port of your **T3 Gemstone O1** development board. Several installation options are displayed in the menu, but for the initial installation you must select **"Plug into the computer running ESPHome Device Builder"**. For subsequent installations, you can perform wireless (Over-The-Air) updates.
+First, connect the **Deneyap Kart** to any USB port on your **T3 Gemstone O1** development board.
+Various flashing options are shown in the menu that opens, but for the first flash you must choose the **"Plug into the computer running ESPHome Device Builder"** option.
+For subsequent flashes, wireless installation can be used.
 
-<Frame caption="ESPHome Software Flashing">
-  <img src="/images/homeassistant/esphome-flashing.png" alt="Flashing" />
+<Frame caption="ESPHome Flashing">
+  <img src="/images/homeassistant/en/esphome-flashing.png" alt="Step a1" />
 </Frame>
 
-Select the appropriate option listed in the **Port selection** section. If multiple ports appear, remove and reconnect the Deneyap Kart, then open the menu again; the port that disappears and reappears is the correct one.
+In the **port selection** section, choose the appropriate option from the list. If more than one port is shown, unplug and replug the Deneyap Kart, reopen the menu, and the port that is no longer listed is identified as the correct one.
 
-<Frame caption="ESPHome Flash Log Screen">
-  <img src="/images/homeassistant/esphome-flash-log.png" alt="Flash Log" />
+<Frame caption="ESPHome Flashing Log Screen">
+  <img src="/images/homeassistant/en/esphome-flash-log.png" alt="Step b1" />
 </Frame>
 
-The flashing process begins. The initial installation may take some time, so patience is recommended.
+The flashing process is started. Since the first flash may take some time, patience is recommended.
 
-<Frame caption="ESPHome Flash Log Screen">
-  <img src="/images/homeassistant/esphome-flash-log-2.png" alt="Flash Log Continued" />
+<Frame caption="ESPHome Flashing Log Screen">
+  <img src="/images/homeassistant/en/esphome-flash-log-2.png" alt="Step c1" />
 </Frame>
 
-After the flash is complete, go back to the ESPHome main screen and click on the **Logs** section. In the opened menu, the **"Wirelessly"** option is now available. When the logs are displayed, copy the IP address shown there.
+Once the flash is complete, go to the ESPHome main screen and click the "Logs" section.
+In the menu that opens, the "Wirelessly" option is now available.
 
-<Frame caption="ESPHome Add IP Address">
-  <img src="/images/homeassistant/esphome-add-ip.png" alt="Add IP Address" />
+<Frame caption="Adding the ESPHome Device">
+  <img src="/images/homeassistant/en/esphome-find.png" alt="Step d1" />
 </Frame>
 
-In **Home Assistant**, navigate to **Settings > Devices & Services > Add Integration > ESPHome** and paste the copied **IP address**. Then click the **"Skip"** and **"Finish"** options.
+In **Home Assistant**, go to **Settings > Devices & Services > Add Integration** and click the add button on the esphome device listed there.
+
+<Frame caption="Adding the ESPHome Device">
+  <img src="/images/homeassistant/en/esphome-add-device-homeassistant.png" alt="Step d1" />
+</Frame>
+
+At this stage, click the **Submit** button that appears.
+
+<Frame caption="Adding the ESPHome Device">
+  <img src="/images/homeassistant/en/esphome-homeassistant-name.png" alt="Step d1" />
+</Frame>
+
+In this step, give the board a name for Home Assistant. You can then continue by clicking the **Skip and finish** button.
 
 <Frame caption="ESPHome Devices">
-  <img src="/images/homeassistant/esphome-devices.png" alt="ESPHome Devices" />
+  <img src="/images/homeassistant/en/esphome-devices.png" alt="Step e1" />
 </Frame>
 
-Click on the **"1 device"** option under **ESPHome**.
+Click the **"1 device"** option under **ESPHome**.
 
 <Frame caption="ESPHome Device Details">
-  <img src="/images/homeassistant/esphome-device-details.png" alt="Device Details" />
+  <img src="/images/homeassistant/en/esphome-device-details.png" alt="Step f1" />
 </Frame>
 
-Congratulations! A motion sensor has been successfully integrated into the **Home Assistant** platform. The status of the added sensor can now be viewed in real time.
+Congratulations! A motion sensor has been successfully integrated into the **Home Assistant** platform. The status of the added sensor can be viewed in real time.
 
 ## 5. Frequently Asked Questions
 
-**I receive a "Unsupported System" warning after installation. Why?**
-> This warning may appear when using an operating system other than Home Assistant OS or when there are other manually running services (such as Nextcloud or Tailscale) on the system. It does not prevent the smart home system from operating stably and is provided for informational purposes only.
+**I am getting an "Unsupported System" warning after installation. Why?**
+> This warning may appear when an operating system other than Home Assistant OS is used, or when other manually running services (such as Nextcloud or Tailscale) exist on the system. It does not prevent the smart home system from running stably; it is for informational purposes only.
 
 **When will the Add-on store appear?**
-> If you access the interface immediately after installation, the Add-ons menu may not be visible. Once the system completes the necessary background configurations (typically within 5–10 minutes), the **Settings -> Add-ons** tab will become available automatically.
+> If you open the interface right after the installation completes, the Add-ons menu may not be visible. Once the system finishes the necessary configuration in the background (usually within 5-10 minutes), the "Settings -> Add-ons" tab will become active automatically.
