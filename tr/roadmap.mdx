@@ -38,6 +38,10 @@ ziyaret edininiz.
   `Henüz Başlamadı` `0%`
 </Card>
 
+<Card horizontal title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
+  `Henüz Başlamadı` `0%`
+</Card>
+
 ## Apache Nuttx
 
 Pixhawk
@@ -194,3 +198,15 @@ Bu sayede yeni donanım sürücülerinden, geliştirmelerden ve hata düzeltmele
   </a>
   </Frame>
 </Columns>
+
+## Gemstone Distro
+
+Şu anda ekosistemde kullanılan kernel, bootloader ve firmware'ler Eğitim amacıyla Yocto aracılığıyla oluşturulmaktadır.
+Akabinde Pardus, Ubuntu, Debian dağıtımlarının muhtelif sürümleri ile birleştirilerek imajlar üretilmektedir.
+Bu yöntem değiştirilerek Kernel, Sürücüler, U-Boot, Firmware gibi çekirdek yazılımlarının tamamı Yocto olmadan
+derlenerek, güncel Ubuntu versiyonun port edilerek Gemstone Distro isminde bağımsız bir dağıtım üretilmesi
+hedeflenmektedir. Gemstone Image Writer uygulamasına Ubuntu, Pardus, Debian gibi dağıtımlar kendi arayüzlerini, masaüstü 
+ortamlarını içererek bulunmakla birlikte Gemstone Distro tamamen kendi arayüzlerini içerecektir. 
+
+Devbox, Taskfile, Distrobox gibi sistemler yerine Web tabanlı CI/CD araçları ile derleme yaparak imaj üreten sistemlere 
+geçiş mümkündür.

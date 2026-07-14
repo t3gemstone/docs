@@ -37,6 +37,10 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `Not Started Yet` `0%`
 </Card>
 
+<Card horizontal title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
+  `Not Started Yet` `0%`
+</Card>
+
 ## Apache Nuttx
 
 Pixhawk [Flight Controller](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
@@ -194,3 +198,15 @@ This will allow taking advantage of new hardware drivers, improvements, and bug 
   </a>
   </Frame>
 </Columns>
+
+## Gemstone Distro
+
+Currently, the kernel, bootloader, and firmware used in the ecosystem are built through Yocto for educational purposes.
+Subsequently, images are produced by combining them with various versions of Pardus, Ubuntu, and Debian distributions.
+The goal is to change this approach and produce an independent distribution called Gemstone Distro by compiling all
+core software—such as the Kernel, Drivers, U-Boot, and Firmware without Yocto, and porting the latest Ubuntu version.
+While the Gemstone Image Writer application includes distributions like Ubuntu, Pardus, and Debian with their own
+interfaces and desktop environments, Gemstone Distro will feature entirely its own interfaces.
+
+It is also possible to transition to image-building systems that compile using web-based CI/CD tools instead of
+systems like Devbox, Taskfile, and Distrobox.
