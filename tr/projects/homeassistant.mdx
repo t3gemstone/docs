@@ -1,0 +1,315 @@
+---
+title: 'Home Assistant'
+description: 'T3 Gemstone O1 Akıllı Ev Merkezi Yönetim Sistemi'
+---
+
+<Frame>
+    <img noZoom src="/images/homeassistant/homeassistant.png" alt="Home Assistant" />
+</Frame>
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
+
+* T3 Gemstone O1 geliştirme kartına **Home Assistant** akıllı ev sistemi kurulumu
+* Bu projeyle Deneyap Kart kullanılarak sensörlerin bağlanması ve ev otomasyonunun sağlanması ile akıllı ev uygulamalarının geliştirilmesi
+</Tip>
+
+## 1. Giriş
+
+Günümüzde ev otomasyonu verilerinin kontrolü ve akıllı cihazların güvenliği her zamankinden daha önemli.
+Aydınlatmalarınızı, güvenlik kameralarınızı, akıllı prizlerinizi ve sensörlerinizi Amazon, Google, Xiaomi veya Tuya gibi 
+büyük bulut sağlayıcılarına bağımlı olmadan merkezi bir sistemde yönetmek isteyebilirsiniz. 
+Bunun için kendi akıllı ev sunucunuzu kendi cihazınızda barındırmanız ve cihazlarınızı yerel ağ üzerinden kontrol etmeniz gerekir. 
+Ancak evinizde böyle bir merkez çalıştırmak için farklı markalara ait cihazların birbiriyle haberleştirilmesi, dış dünyadan 
+güvenli erişim sağlayamama ve sistemi sürekli ayakta tutma gibi teknik problemleri beraberinde getirir. 
+Bu problemler çoğu zaman karmaşık konfigürasyonlar ve yüksek maliyetli donanımlar ile çözülür. 
+T3 Gemstone O1 geliştirme kartı, Home Assistant entegrasyonu ile bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
+
+
+## 2. Home Assistant Kurulum
+
+Home Assistant, açık kaynak kodlu bir akıllı ev ve otomasyon platformudur. Sensör verilerini izleme, ışık, priz ve diğer cihazları kontrol etme, 
+otomatik senaryolar oluşturma ve mobil cihazlardan erişim gibi özellikleri tek bir sistemde sunar.
+
+T3 Gemstone O1 geliştirme kartına [terminal bağlantısı](/tr/quickstart/#2-gemstone’u-keşfet) yaptıktan sonra aşağıdaki
+komut ile öncelikle Docker kurulumunu başlatınız.
+
+```bash
+sudo curl -fsSL https://get.docker.com | sudo sh
+```
+
+Docker kurulumu tamamlandıktan sonra **Home Assistant'ı** kurabilirsiniz.
+
+```bash
+sudo apt install t3-gem-homeassistant
+```
+
+Kurulum bittikten sonra Supervisor’ın tüm hizmetleri indirip ayağa kaldırması internet hızınıza bağlı olarak 5-10 dakika sürebilir. 
+Durumu aşağıdaki komutla takip edebilirsiniz:
+
+```bash
+sudo docker logs -f hassio_supervisor
+```
+
+Ekranda `hassio_supervisor` ve `homeassistant` hizmetlerinin `Up` (Çalışıyor) durumunda olduğunu gördüğünüzde, tarayıcınızdan arayüze erişebilirsiniz:
+
+`http://gemstone.local:8123` veya `http://<gemstone-ip-adresiniz>:8123`
+
+Ev dışından erişim sağlamak için kurulum rehberi bulunan [Tailscale](/tr/projects/cloud#3-dış-dünyadan-erişim) ağını kullanabilir, Tailscale IP adresiniz üzerinden (`http://<tailscale-ip>:8123`) sisteminize güvenle bağlanabilirsiniz.
+
+
+## 3. Home Assistant Arayüzüne Erişim ve İlk Kurulum
+
+Sistem hizmetleri aktif olduktan sonra tarayıcınız üzerinden `http://gemstone.local:8123` veya 
+`http://<gemstone-ip-adresiniz>:8123` adresindeki arayüze ilk girişinizi yaptığınızda, 
+Home Assistant sizi bir kurulum sihirbazı ile karşılayacaktır. 
+Bu aşamada yönetici hesabınızı oluşturarak akıllı evinizin temel yapılandırmasını tamamlayabilirsiniz. 
+Aşağıdaki görselleri takip ederek arayüz kurulumunu kolayca bitirebilirsiniz:
+
+<Note>
+  Eğer arayüze bağlanırken bir hata alıyorsanız, adres çubuğundaki `https://` kısmını `http://` yaparak çözebilirsiniz.
+</Note>
+
+<Frame caption="Home Assistant Hazırlanma Ekranı">
+  <img src="/images/homeassistant/tr/preparation.png" alt="Hazırlanma Ekranı" />
+</Frame>
+
+Adrese girdiğinizde Home Assistantın hazırlanma ekranını görüyor olacaksınız. Ekran üzerinde tahmini süre bilgisi verilmektedir.
+
+<Frame caption="Home Assistant Hoş Geldiniz Ekranı">
+  <img src="/images/homeassistant/tr/welcome.png" alt="Hoş Geldiniz Ekranı" />
+</Frame>
+
+İlk defa kurulum yapıyorsanız **Akıllı Evimi Yarat** bölümünden kurulum yapabilirsiniz. 
+Daha öncesinde kurulum yaptıysanız ve yedekleriniz mevcutsa alt kısımda yer alan seçeneklerden ilerleyebilirsiniz.
+
+<Frame caption="Home Assistant Kullanıcı Oluşturma Ekranı">
+  <img src="/images/homeassistant/tr/user-creation.png" alt="Kullanıcı Oluşturma" />
+</Frame>
+
+Ad, kullanıcı adı ve parola bilgilerinizi girdikten sonra **Hesap Oluştur** butonuna tıklayarak hesabınızı oluşturabilirsiniz.
+
+<Frame caption="Home Assistant Ev Konumu Seçim Ekranı">
+  <img src="/images/homeassistant/tr/home-location.png" alt="Ev Konumu" />
+</Frame>
+
+Cihazınınız bulunduğu lokasyonu yani **Ev Konumu**nu seçebilirsiniz.
+
+<Frame caption="Home Assistan Veri Paylaşımı Seçim Ekranı">
+  <img src="/images/homeassistant/tr/data-sharing.png" alt="Veri Paylaşımı" />
+</Frame>
+
+Home Assistant'ın verilerinizi kullanması için onay vermeniz gerekmektedir. Bu ayarları kapatarak veya açarak devam edebilirsiniz.
+
+<Frame caption="Home Assistant Ana Ekran">
+  <img src="/images/homeassistant/tr/main.png" alt="Ana Ekran" />
+</Frame>
+
+Tebrikler! Kurulum adımlarını başarıyla tamamladınız ve artık Home Assistant'ın ana ekranındasınız. T3 Gemstone O1 üzerinden akıllı evinizin merkezini özgürce yapılandırmaya ve cihazlarınızı yönetmeye başlayabilirsiniz.
+
+
+## 4. Deneyap Kart ile Sensör Entegrasyonu
+
+Bu bölümde, Deneyap Kart 1A V2 geliştirme kartına hareket sensörü bağlama ve bu sensörü Home Assistant platformuna entegre etme adımları ele alınacaktır.
+
+###  4.1 Home Assistant'a ESPHome'un Kurulması
+
+<Frame caption="Home Assistant Ana Ekran">
+  <img src="/images/homeassistant/tr/main.png" alt="Home Assistant Ana Ekran" />
+</Frame>
+
+Sol taraftaki menü açıldıktan sonra, Ayarlar seçeneğine tıklanır.
+
+<Frame caption="Home Assistant Ayarlar Bölümü">
+  <img src="/images/homeassistant/tr/settings.png" alt="Home Assistant Ayarlar Bölümü" />
+</Frame>
+
+Açılan menüden Eklentiler seçeneği seçilir.
+
+<Frame caption="Home Assistant Ayarlar Bölümü">
+  <img src="/images/homeassistant/tr/settings-2.png" alt="Home Assistant Uygulamalar Bölümü" />
+</Frame>
+
+Sağ alt köşede bulunan "Uygulamayı Yükle" butonuna tıklanır.
+
+<Frame caption="Home Assistant Uygulama Mağazası">
+  <img src="/images/homeassistant/tr/app-store.png" alt="Home Assistant Uygulama Mağazası" />
+</Frame>
+
+Açılan menüdeki arama alanına "esphome" yazılır.
+
+<Frame caption="Home Assistant Uygulama Mağazası Arama Sonucu">
+  <img src="/images/homeassistant/tr/app-store-search.png" alt="Home Assistant Uygulama Mağazası Arama Sonucu" />
+</Frame>
+
+Arama sonuçlarında görüntülenen ESPHome seçeneğine tıklanır.
+
+<Frame caption="Home Assistant ESPHome">
+  <img src="/images/homeassistant/tr/esphome.png" alt="Home Assistant ESPHome" />
+</Frame>
+
+Açılan menüde Kurulum seçeneğine tıklanır ve yüklemenin tamamlanması beklenir.
+
+<Frame caption="Home Assistant ESPHome Yüklendikten Sonra">
+  <img src="/images/homeassistant/tr/esphome-installed.png" alt="Home Assistant ESPHome Yüklendikten Sonra" />
+</Frame>
+
+Yükleme tamamlandıktan sonra görüntülenen menüde başlat butonuna tıklanır.
+
+<Frame caption="Home Assistant ESPHome Yüklendikten Sonra">
+  <img src="/images/homeassistant/tr/esphome-installed-2.png" alt="Home Assistant ESPHome Yüklendikten Sonra" />
+</Frame>
+
+"Web Arayüzünü Aç" butonuna tıklanır.
+
+<Frame caption="ESPHome Hoşgeldin Ekranı">
+  <img src="/images/homeassistant/tr/esphome-welcome.png" alt="ESPHome Hoşgeldin Ekranı" />
+</Frame>
+
+###  4.2 ESPHome'un Deneyap Kart için Konfigüre Edilmesi
+
+Açılan menüde "Create Device" seçeneğine tıklanır.
+
+<Frame caption="ESPHome Yeni Cihaz Ekleme Ekranı">
+  <img src="/images/homeassistant/tr/esphome-add-device.png" alt="ESPHome Yeni Cihaz Ekleme Ekranı" />
+</Frame>
+
+"Create new project" butonuna tıklanarak işlem devam ettirilir.
+
+<Frame caption="ESPHome Cihaz Konfigürasyon Ekranı">
+  <img src="/images/homeassistant/tr/esphome-device-config.png" alt="ESPHome Cihaz Konfigürasyon Ekranı" />
+</Frame>
+
+Açılan sayfada kullanacağınız MCU modeline göre arama yapılır.
+
+<Frame caption="ESPHome Cihaz Konfigürasyon Ekranı">
+  <img src="/images/homeassistant/tr/esphome-device-config-2.png" alt="ESPHome Cihaz Konfigürasyon Ekranı" />
+</Frame>
+
+Bu adımda, uygun model seçilir.
+
+<Frame caption="ESPHome Cihaz Tip Seçim Ekranı">
+  <img src="/images/homeassistant/tr/esphome-device-name.png" alt="ESPHome Cihaz Tip Seçim Ekranı" />
+</Frame>
+
+Bu adımda, karta bir isim konulması gerekmektedir..
+
+<Frame caption="ESPHome Cihaz Konfigürasyonun Tamamlanması">
+  <img src="/images/homeassistant/tr/esphome-device-wifi.png" alt="ESPHome Cihaz Konfigürasyonun Tamamlanması" />
+</Frame>
+
+Bu adımda ise "Network Name" ve "Password" alanlarına modeminizin SSID ve şifresi girilir.
+
+```yaml
+substitutions:
+  LED_PIN: GPIO48      # Kart üzerindeki RGB LED
+  BUTTON_PIN: GPIO0    # Boot Butonu
+  
+  # Pin Eşleştirmeleri
+  D0: GPIO1
+  D1: GPIO2
+  D4: GPIO42
+  D8: GPIO38
+  D9: GPIO48
+  D12: GPIO10
+  D13: GPIO3
+  D14: GPIO8
+  # I2C
+  SDA_PIN: GPIO47
+  SCL_PIN: GPIO21
+```
+Ardından, bu bölümde yapılan **pin tanımlamaları** YAML dosyasının en alt kısmına kopyalanır.
+
+<Frame caption="ESPHome YAML Dosyasına Sensör Ekleme">
+  <img src="/images/homeassistant/tr/esphome-add-sensor.png" alt="ESPHome YAML Dosyasına Sensör Ekleme" />
+</Frame>
+
+Bu örnekte bir hareket sensörü bağlanacağı için, aşağıdaki tanımlamalar yukarıdaki şekilde YAML dosyasının en altına yapıştırılır.
+
+```yaml
+binary_sensor:
+  - platform: gpio
+    pin: 
+      number: GPIO42
+      mode: INPUT
+      inverted: false
+    name: "PIR Sensor"
+    device_class: motion
+    filters:
+      - delayed_on: 1s
+```
+
+
+<Note>
+ Hareket sensörü **D4 pinine (GPIO42)** bağlanmıştır. Farklı bir pine bağladıysanız, **`number`** alanını ilgili pine göre güncellemeniz gerekir. 
+ Gerekli pin atamaları için [Deneyap Kart Pin Rehberi](https://docs.deneyapkart.org/tr/Development_Boards) sayfasından bilgi alabilirsiniz.
+</Note>
+
+Sağ alt köşede bulunan "Install" butonuna tıklanır. Bu adım ile yapılandırma tamamlanmış olur.
+
+###  4.3 ESPHome için Deneyap Kart'a Yazılım Yüklenmesi
+
+<Frame caption="ESPHome Yazılım Yükleme Seçenekleri">
+  <img src="/images/homeassistant/tr/esphome-flash-options.png" alt="ESPHome Yazılım Yükleme Seçenekleri" />
+</Frame>
+
+Öncelikle, **Deneyap Kart**, **T3 Gemstone O1** geliştirme kartınızın herhangi bir USB çıkışına bağlanır. 
+Açılan menüde çeşitli yükleme seçenekleri görüntülenir ancak ilk yükleme için **"Plug into the computer running ESPHome Device Builder"** seçeneğini seçmelisiniz. 
+Daha sonraki yüklemelerde kablosuz yükleme yapılabilir.
+
+<Frame caption="ESPHome Yazılım Yükleme">
+  <img src="/images/homeassistant/tr/esphome-flashing.png" alt="ESPHome Yazılım Yükleme" />
+</Frame>
+
+**Port seçimi** bölümünde listelenen uygun seçenek seçilir. Eğer birden fazla port görünüyorsa, Deneyap Kart çıkarılıp yeniden takıldığında ve menü tekrar açıldığında görünmeyen port, doğru port olarak belirlenir.
+
+<Frame caption="ESPHome Yazılım Yükleme Log Ekranı">
+  <img src="/images/homeassistant/tr/esphome-flash-log.png" alt="ESPHome Yazılım Yükleme Log Ekranı" />
+</Frame>
+
+Yükleme işlemi başlatılır. İlk yükleme, biraz zaman alabileceği için sabırlı olunması önerilir.
+
+<Frame caption="ESPHome Yazılım Yükleme Log Ekranı">
+  <img src="/images/homeassistant/tr/esphome-flash-log-2.png" alt="ESPHome Yazılım Yükleme Log Ekranı" />
+</Frame>
+
+Yükleme tamamlandıktan sonra, ESPHome ana ekranına gidilir ve "Logs" bölümüne tıklanır. 
+Açılan menüde artık "Wirelessly" seçeneği kullanılabilir. 
+
+<Frame caption="ESPHome cihazı Ekleme">
+  <img src="/images/homeassistant/tr/esphome-find.png" alt="ESPHome cihazı Ekleme" />
+</Frame>
+
+**Home Assistant** üzerinde, **Ayarlar > Cihazlar ve Hizmetler > Entegrasyon Ekle** bölümüne gidilir ve burada bulunan esphome cihazının üzerindeki ekle butonuna tıklanır.
+
+<Frame caption="ESPHome cihazı Ekleme">
+  <img src="/images/homeassistant/tr/esphome-add-device-homeassistant.png" alt="ESPHome cihazı Ekleme" />
+</Frame>
+
+Bu aşamada karşımıza çıkan **Gönder** butonuna tıklanır.
+
+<Frame caption="ESPHome cihazı Ekleme">
+  <img src="/images/homeassistant/tr/esphome-homeassistant-name.png" alt="ESPHome cihazı Ekleme" />
+</Frame>
+
+Bu adımda ise karta Home Assistant için bir isim verilir. Sonrasında **Atla ve Bitir** butonuna tıklanarak devam edilebilir.
+
+<Frame caption="ESPHome Cihazlar">
+  <img src="/images/homeassistant/tr/esphome-devices.png" alt="ESPHome Cihazlar" />
+</Frame>
+
+**ESPHome** altında yer alan **"1 cihaz"** seçeneğine tıklanır.
+
+<Frame caption="ESPHome Cihaz Detayları">
+  <img src="/images/homeassistant/tr/esphome-device-details.png" alt="ESPHome Cihaz Detayları" />
+</Frame>
+
+Tebrikler! Bir hareket sensörü başarıyla **Home Assistant** platformuna entegre edilmiştir. Eklenen sensörün durumu, anlık olarak görüntülenebilir.
+
+## 5. Sıkça Sorulan Sorular
+
+**Kurulum sonrası "Unsupported System" uyarısı alıyorum, neden?**
+> Home Assistant OS dışında bir işletim sistemi kullanıldığında veya sistemde manuel çalışan başka hizmetler (Nextcloud veya Tailscale gibi) olduğunda bu uyarı çıkabilir. Akıllı ev sisteminin kararlı çalışmasına engel bir durum değildir, sadece bilgilendirme amaçlıdır.
+
+**Eklenti (Add-on) mağazası ne zaman görünecek?**
+> Kurulum tamamlandıktan hemen sonra arayüze girerseniz Eklentiler menüsü görünmeyebilir. Sistem arka planda gerekli yapılandırmaları bitirdiğinde (genellikle 5-10 dakika içinde) "Ayarlar -> Eklentiler" sekmesi otomatik olarak aktif olacaktır.
