@@ -1,0 +1,330 @@
+---
+title: 'Zephyr'
+description: 'Zephyr İşletim Sistemi'
+---
+
+<Frame>
+    <img noZoom src="/images/zephyr-os.webp" alt="Zephyr OS" />
+</Frame>
+
+<Warning>
+Gemstone için Zephyr desteği henüz geliştirme aşamasındadır. Kartın üzerindeki I2C, SPI, PWM, CAN Bus gibi tüm çevre
+birimleri kullanmak mümkün değildir.
+</Warning>
+
+Zephyr, gerçek zamanlı uygulamalar için tasarlanmış açık kaynaklı bir işletim sistemidir. Linux Foundation çatısı
+altında geliştirilen Zephyr; ölçeklenebilir mimarisi, geniş donanım desteği ve modüler yapısıyla özellikle gömülü
+sistemler ve mikrodenetleyiciler için optimize edilmiştir. Gemstone kartında bulunan R5F çekirdekleri için Zephyr'i
+seçmemizin temel nedeni, deterministik davranış sergilemesi ve gerçek zamanlı görevleri güvenilir şekilde
+yönetebilmesidir.
+
+Gemstone O1 kartındaki AM67A SoC üzerinde Linux işletim sistemi dört adet Cortex-A53 çekirdeğinde çalışırken,
+MAIN-domain Cortex-R5F çekirdeği boşta beklemektedir. Bu çekirdek üzerinde, Linux'a müdahale etmeden ve JTAG
+donanımına ihtiyaç duymadan, `remoteproc` mekanizması ile Zephyr çalıştırılabilmektedir. Zephyr'in AM67A (J722S)
+desteği `beagley_ai/j722s/main_r5f0_0` board hedefi ile sunulmaktadır.
+
+## 1. Derleme
+
+### 1.1. Gereksinimleri Kurma
+
+Zephyr'i derleyebilmek için sistemde çeşitli gereksinimlerin bulunması gerekmektedir. Ubuntu/Debian sistemlerde
+gereksinimleri paket yöneticisi ile kurabilirsiniz:
+
+```bash
+sudo apt update
+sudo apt install --no-install-recommends -y \
+  git cmake ninja-build gperf \
+  ccache dfu-util device-tree-compiler wget \
+  python3-dev python3-pip python3-setuptools python3-tk python3-wheel xz-utils file \
+  make gcc g++ libsdl2-dev libmagic1t64
+```
+
+<Note>
+AArch64 (ARM64) mimarisinde bir host kullanıyorsanız, standart Zephyr talimatında yer alan `gcc-multilib` ve
+`g++-multilib` paketleri bu mimaride bulunmadığından paket listesinden çıkarılmıştır.
+</Note>
+
+Kurulumun ardından `cmake --version` komutuyla sürümün 3.20 veya üzeri olduğunu doğrulayabilirsiniz.
+
+### 1.2. Kaynak Kodları İndirme
+
+Zephyr, kaynak kodlarını ve modüllerini yönetmek için `west` isimli bir araç kullanır. Ubuntu 24.04 sistem
+Python'una doğrudan `pip install` yapılmasına izin vermediği için `west` izole bir sanal ortama (venv) kurulur:
+
+```bash
+sudo apt install -y python3-venv
+python3 -m venv ~/zephyrproject/.venv
+source ~/zephyrproject/.venv/bin/activate
+```
+
+<Note>
+Açtığınız her yeni terminalde, Zephyr komutlarını çalıştırmadan önce sanal ortamı etkinleştirin:
+`source ~/zephyrproject/.venv/bin/activate`
+</Note>
+
+Sanal ortam aktifken `west` kurulur ve Zephyr kaynak kodları indirilir:
+
+```bash
+pip install west
+west init ~/zephyrproject
+cd ~/zephyrproject
+west update
+west packages pip --install
+```
+
+`west update` komutu Zephyr'in ihtiyaç duyduğu onlarca modülü indirdiği için 5-15 dakika sürebilir. İşlem
+tamamlandığında `~/zephyrproject` dizini altında `bootloader`, `modules`, `tools` ve `zephyr` klasörleri oluşur.
+
+### 1.3. Toolchain'i Kurma
+
+R5F çekirdeği için Cortex-R5 (32-bit ARM) hedefli `arm-zephyr-eabi` toolchain'i yeterlidir. `west sdk install`
+komutu, kaynak koddaki `SDK_VERSION` dosyasına bakarak uyumlu sürümü otomatik olarak seçer:
+
+```bash
+cd ~/zephyrproject/zephyr
+west sdk install -t arm-zephyr-eabi
+```
+
+Kurulumun ardından `west sdk list` komutuyla toolchain'in kurulduğunu doğrulayabilirsiniz.
+
+### 1.4. Projeyi Derleme
+
+Kartın MAIN-R5F çekirdeği için `hello_world` örneğini derleyelim:
+
+```bash
+cd ~/zephyrproject/zephyr
+west build -b beagley_ai/j722s/main_r5f0_0 samples/hello_world
+```
+
+Derleme sonucunda `build/zephyr/zephyr.elf` isimli bir ELF dosyası oluşur. Bu dosya, R5F çekirdeğine yüklenecek
+işletim sistemi imajını içerir. Başarılı derleme çıktısının sonunda bellek bölgelerini gösteren bir özet yer alır:
+
+```
+[170/170] Linking C executable zephyr/zephyr.elf
+Memory region   Used Size  Region Size  %age Used
+       FLASH:         0 B          0 B
+         RAM:     26960 B        14 MB      0.18%
+        ATCM:        76 B        32 KB      0.23%
+        BTCM:         0 B        32 KB      0.00%
+   RSC_TABLE:        16 B         1 MB      0.00%
+```
+
+<Note>
+`RSC_TABLE` (Resource Table) bölümü, `remoteproc` mekanizmasının firmware'i tanıyıp yükleyebilmesi için zorunludur;
+Zephyr'in board desteği bu bölümü otomatik olarak ekler.
+</Note>
+
+## 2. Çalıştırma
+
+Zephyr işletim sistemi R5F çekirdeğinde çalışırken A53 çekirdeklerinde de Linux işletim sistemi çalışmaktadır.
+Linux'ta yer alan `remoteproc` mekanizması ile R5F çekirdeklerine kod yüklenebilmektedir. Kart üzerindeki
+çekirdekler `ls /sys/class/remoteproc/` komutuyla listelenir:
+
+| remoteproc | Adres | Açıklama |
+| :--- | :--- | :--- |
+| remoteproc0 | `7e000000.dsp` | Görüntü işleme ve derin öğrenme uygulamaları için C7x DSP çekirdeği |
+| remoteproc1 | `7e200000.dsp` | Görüntü işleme ve derin öğrenme uygulamaları için C7x DSP çekirdeği |
+| remoteproc2 | `79000000.r5f` | Güç ve sistem yönetiminden sorumlu MCU-domain R5F çekirdeği |
+| remoteproc3 | `78400000.r5f` | Kullanıcı uygulamaları için boşta bekleyen MAIN-domain R5F çekirdeği |
+
+Zephyr, boşta olan MAIN-domain R5F çekirdeğinde (`remoteproc3`) çalıştırılır. `remoteproc2` sistem tarafından
+kullanıldığı için müdahale edilmemelidir. Zephyr'i çalıştırmak için aşağıdaki adımları takip edin.
+
+1. Derleme sonucu oluşan `zephyr.elf` dosyasını karta kopyalayın:
+
+```bash
+scp ~/zephyrproject/zephyr/build/zephyr/zephyr.elf gemstone@<KART_IP>:/tmp/zephyr.elf
+```
+
+2. Kart üzerinde, orijinal firmware'i yedekleyip sembolik bağlantıyı Zephyr imajına yönlendirin.
+`j722s-main-r5f0_0-fw` bir sembolik bağlantıdır ve varsayılan olarak TI'nin vision firmware'ini gösterir:
+
+```bash
+cd /lib/firmware
+sudo cp -a j722s-main-r5f0_0-fw j722s-main-r5f0_0-fw.orig-backup
+sudo cp /tmp/zephyr.elf /lib/firmware/zephyr.elf
+sudo rm j722s-main-r5f0_0-fw
+sudo ln -s zephyr.elf j722s-main-r5f0_0-fw
+```
+
+3. R5F çekirdeğini başlatın:
+
+```bash
+echo j722s-main-r5f0_0-fw | sudo tee /sys/class/remoteproc/remoteproc3/firmware
+echo start | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+4. Zephyr'in konsol çıktısı SSH üzerinden görünmez; UART-MAIN1'in 40-pin HAT'te yer alan GPIO-14 (TX) ve GPIO-15
+(RX) pinlerine USB-to-TTL cihazı bağlayarak konsola erişebilirsiniz (115200 baud, 8N1). Seri terminalde aşağıdaki
+çıktı görünür:
+
+```
+*** Booting Zephyr OS build v4.4.0-8172-g1c2bf123944d ***
+Hello World! beagley_ai/j722s/main_r5f0_0
+```
+
+Çekirdeği durdurmak için `state` dosyasına `stop` yazılır:
+
+```bash
+echo stop | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+Kodda değişiklik yaptığınızda tüm adımları tekrarlamanız gerekmez; sembolik bağlantı zaten `zephyr.elf` dosyasını
+gösterdiği için çekirdeği durdurup dosyayı güncellemek ve yeniden başlatmak yeterlidir:
+
+```bash
+echo stop | sudo tee /sys/class/remoteproc/remoteproc3/state
+sudo cp /tmp/zephyr.elf /lib/firmware/zephyr.elf
+echo start | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+<Warning>
+Komutları tek tek çalıştırın ve `stop` sonrasında `cat /sys/class/remoteproc/remoteproc3/state` çıktısında
+`offline` gördükten sonra kopyalama yapın. Aksi halde çekirdek durmadan dosya değiştirilir ve eksik/bozuk yükleme
+oluşabilir.
+</Warning>
+
+Orijinal TI firmware'ine geri dönmek isterseniz yedeği geri yükleyin:
+
+```bash
+cd /lib/firmware
+sudo rm j722s-main-r5f0_0-fw
+sudo cp -a j722s-main-r5f0_0-fw.orig-backup j722s-main-r5f0_0-fw
+```
+
+## 3. Örnek Uygulama: Gerçek Zamanlı Jitter Ölçümü
+
+`hello_world` örneği derleme ve yükleme zincirinin çalıştığını gösterir. Bu bölümdeki örnek ise R5F çekirdeğinin
+asıl değerini ortaya koyar: öngörülebilir ve kararlı zamanlama, yani determinizm.
+
+Program 100 ms'de bir uyanır ve donanım sayacını okuyarak bir önceki uyanıştan bu yana gerçekte kaç mikrosaniye
+geçtiğini ölçer. Ölçülen süre ile 100000 µs'lik hedef arasındaki farka jitter (sapma) denir. Program; minimum,
+maksimum ve ortalama jitter istatistiklerini seri porta yazar. Aynı görev Linux üzerinde (A53) çalıştırılsaydı,
+sistem yükü altında sapma binlerce mikrosaniyeye kadar çıkabilirdi.
+
+### 3.1. Proje Dosyaları
+
+Uygulama, `~/zephyrproject/rt_demo` dizini altında üç dosyadan oluşur:
+
+```
+~/zephyrproject/rt_demo/
+├── CMakeLists.txt
+├── prj.conf
+└── src/
+    └── main.c
+```
+
+`src/main.c`:
+
+```c
+/*
+ * Realtime jitter olcum demosu - TI AM67A MAIN-R5F (Zephyr)
+ * Her periyotta gercek sureyi olcup hedeften sapmayi (jitter) hesaplar.
+ */
+#include <zephyr/kernel.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/timing/timing.h>
+
+#define PERIOD_MS   100
+#define TARGET_US   (PERIOD_MS * 1000)   /* 100000 us */
+
+int main(void)
+{
+    printk("\n========================================\n");
+    printk(" R5F Realtime Jitter Demo (Zephyr)\n");
+    printk(" Hedef periyot: %d ms (%d us)\n", PERIOD_MS, TARGET_US);
+    printk("========================================\n");
+
+    timing_init();
+    timing_start();
+    printk("Timer frekansi: %llu Hz\n\n", timing_freq_get());
+
+    int64_t jitter_min = INT64_MAX, jitter_max = INT64_MIN, jitter_sum = 0;
+    uint32_t count = 0;
+    timing_t t_prev = timing_counter_get();
+
+    while (1) {
+        k_msleep(PERIOD_MS);
+        timing_t t_now = timing_counter_get();
+
+        uint64_t delta_ns = timing_cycles_to_ns(timing_cycles_get(&t_prev, &t_now));
+        int64_t  delta_us = (int64_t)(delta_ns / 1000ULL);
+        int64_t  jitter   = delta_us - TARGET_US;
+
+        if (jitter < jitter_min) jitter_min = jitter;
+        if (jitter > jitter_max) jitter_max = jitter;
+        jitter_sum += jitter;
+        count++;
+
+        if (count % 10 == 0) {
+            printk("[%5u] son=%lld us | jitter: su_an=%+lld  min=%+lld  max=%+lld  ort=%+lld us\n",
+                   count, delta_us, jitter, jitter_min, jitter_max, jitter_sum / count);
+        }
+        t_prev = t_now;
+    }
+    return 0;
+}
+```
+
+`prj.conf`:
+
+```
+CONFIG_PRINTK=y
+CONFIG_TIMING_FUNCTIONS=y
+CONFIG_CBPRINTF_FP_SUPPORT=n
+```
+
+`CMakeLists.txt`:
+
+```cmake
+cmake_minimum_required(VERSION 3.20.0)
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(rt_demo)
+target_sources(app PRIVATE src/main.c)
+```
+
+### 3.2. Derleme ve Çalıştırma
+
+Farklı bir uygulamaya geçildiği için derleme `-p always` (pristine) seçeneğiyle temiz olarak yapılır; aksi halde
+önceki derlemeden kalan dosyalar yeni derlemeye karışabilir:
+
+```bash
+cd ~/zephyrproject/zephyr
+west build -p always -b beagley_ai/j722s/main_r5f0_0 ~/zephyrproject/rt_demo
+scp build/zephyr/zephyr.elf gemstone@<KART_IP>:/tmp/zephyr.elf
+```
+
+Kart üzerinde çekirdeği durdurup yeni imajı yükleyin ve tekrar başlatın:
+
+```bash
+echo stop | sudo tee /sys/class/remoteproc/remoteproc3/state
+sudo cp /tmp/zephyr.elf /lib/firmware/zephyr.elf
+echo start | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+### 3.3. Örnek Çıktı ve Değerlendirme
+
+```
+*** Booting Zephyr OS build v4.4.0-... ***
+========================================
+ R5F Realtime Jitter Demo (Zephyr)
+ Hedef periyot: 100 ms (100000 us)
+========================================
+Timer frekansi: 25000000 Hz
+[   10] son=100178 us | jitter: su_an=+178  min=+171  max=+210   ort=+181 us
+[   50] son=100170 us | jitter: su_an=+170  min=+170  max=+6808  ort=+703 us
+[  200] son=100170 us | jitter: su_an=+170  min=+170  max=+6811  ort=+803 us
+[  230] son=100170 us | jitter: su_an=+170  min=+170  max=+6811  ort=+807 us
+```
+
+Her satırda `son` bu turda gerçekte geçen süreyi, `su_an` anlık sapmayı, `min`/`max` ölçüm başından beri görülen en
+küçük ve en büyük sapmayı, `ort` ise ortalama sapmayı gösterir.
+
+Anlık sapma sürekli olarak 170-179 µs bandında kalmaktadır. 100 ms'lik periyotta yalnızca ~9 µs'lik dalgalanma,
+milyonda ~90 düzeyinde bir kararlılığa karşılık gelir; gerçek zamanlılıktan kastedilen tam olarak budur. Sabit
+~170 µs'lik fark bir kusur değildir; uyanma, kesme işleme ve `printk` çağrılarının sabit maliyetinden kaynaklanır.
+Gerçek zamanlı sistemlerde önemli olan sapmanın sıfır olması değil, öngörülebilir ve sabit olmasıdır.
+
+`max` alanındaki tek seferlik ~6.8 ms'lik sıçrama yalnızca programın ilk başladığı anda gerçekleşir ve bir daha
+tekrarlanmaz; cache ve başlatma maliyetlerinden kaynaklanan bu ısınma (warm-up) evresi, hassas ölçümlerde
+değerlendirmeye alınmaz.

@@ -1,0 +1,331 @@
+---
+title: 'Zephyr'
+description: 'Zephyr Operating System'
+---
+
+<Frame>
+    <img noZoom src="/images/zephyr-os.webp" alt="Zephyr OS" />
+</Frame>
+
+<Warning>
+Zephyr support for Gemstone is still under development. It is not yet possible to use all of the peripherals on the
+board, such as I2C, SPI, PWM, and CAN Bus.
+</Warning>
+
+Zephyr is an open-source operating system designed for real-time applications. Developed under the Linux Foundation,
+Zephyr is optimized for embedded systems and microcontrollers thanks to its scalable architecture, broad hardware
+support, and modular structure. The main reason we chose Zephyr for the R5F cores on the Gemstone board is that it
+exhibits deterministic behavior and can reliably manage real-time tasks.
+
+On the AM67A SoC of the Gemstone O1 board, the Linux operating system runs on four Cortex-A53 cores while the
+MAIN-domain Cortex-R5F core sits idle. Zephyr can be run on this core through the `remoteproc` mechanism, without
+touching Linux and without any JTAG hardware. Zephyr's AM67A (J722S) support is provided by the
+`beagley_ai/j722s/main_r5f0_0` board target.
+
+## 1. Building
+
+### 1.1. Installing Requirements
+
+Several requirements must be present on your system to build Zephyr. On Ubuntu/Debian systems, you can install them
+using the package manager:
+
+```bash
+sudo apt update
+sudo apt install --no-install-recommends -y \
+  git cmake ninja-build gperf \
+  ccache dfu-util device-tree-compiler wget \
+  python3-dev python3-pip python3-setuptools python3-tk python3-wheel xz-utils file \
+  make gcc g++ libsdl2-dev libmagic1t64
+```
+
+<Note>
+If you are using an AArch64 (ARM64) host, the `gcc-multilib` and `g++-multilib` packages listed in the standard
+Zephyr instructions are not available on this architecture, so they have been removed from the package list.
+</Note>
+
+After installation, you can verify that the version is 3.20 or later with the `cmake --version` command.
+
+### 1.2. Downloading the Source Code
+
+Zephyr uses a tool named `west` to manage its source code and modules. Since Ubuntu 24.04 does not allow `pip install`
+directly into the system Python, `west` is installed inside an isolated virtual environment (venv):
+
+```bash
+sudo apt install -y python3-venv
+python3 -m venv ~/zephyrproject/.venv
+source ~/zephyrproject/.venv/bin/activate
+```
+
+<Note>
+In every new terminal you open, activate the virtual environment before running any Zephyr command:
+`source ~/zephyrproject/.venv/bin/activate`
+</Note>
+
+With the virtual environment active, install `west` and download the Zephyr source code:
+
+```bash
+pip install west
+west init ~/zephyrproject
+cd ~/zephyrproject
+west update
+west packages pip --install
+```
+
+The `west update` command may take 5-15 minutes since it downloads the dozens of modules Zephyr needs. When the
+process completes, the `bootloader`, `modules`, `tools`, and `zephyr` directories are created under
+`~/zephyrproject`.
+
+### 1.3. Installing the Toolchain
+
+For the R5F core, the `arm-zephyr-eabi` toolchain targeting Cortex-R5 (32-bit ARM) is sufficient. The
+`west sdk install` command automatically selects the compatible version by reading the `SDK_VERSION` file in the
+source tree:
+
+```bash
+cd ~/zephyrproject/zephyr
+west sdk install -t arm-zephyr-eabi
+```
+
+After installation, you can verify that the toolchain is installed with the `west sdk list` command.
+
+### 1.4. Building the Project
+
+Let's build the `hello_world` sample for the board's MAIN-R5F core:
+
+```bash
+cd ~/zephyrproject/zephyr
+west build -b beagley_ai/j722s/main_r5f0_0 samples/hello_world
+```
+
+The build produces an ELF file named `build/zephyr/zephyr.elf`. This file contains the operating system image to be
+loaded onto the R5F core. A successful build ends with a summary of the memory regions:
+
+```
+[170/170] Linking C executable zephyr/zephyr.elf
+Memory region   Used Size  Region Size  %age Used
+       FLASH:         0 B          0 B
+         RAM:     26960 B        14 MB      0.18%
+        ATCM:        76 B        32 KB      0.23%
+        BTCM:         0 B        32 KB      0.00%
+   RSC_TABLE:        16 B         1 MB      0.00%
+```
+
+<Note>
+The `RSC_TABLE` (Resource Table) section is mandatory for the `remoteproc` mechanism to recognize and load the
+firmware; Zephyr's board support adds this section automatically.
+</Note>
+
+## 2. Running
+
+While the Zephyr operating system runs on the R5F core, the Linux operating system runs on the A53 cores. Code can
+be loaded onto the R5F cores using the `remoteproc` mechanism present in Linux. The cores on the board are listed
+with the `ls /sys/class/remoteproc/` command:
+
+| remoteproc | Address | Description |
+| :--- | :--- | :--- |
+| remoteproc0 | `7e000000.dsp` | C7x DSP core for image processing and deep learning applications |
+| remoteproc1 | `7e200000.dsp` | C7x DSP core for image processing and deep learning applications |
+| remoteproc2 | `79000000.r5f` | MCU-domain R5F core responsible for power and system management |
+| remoteproc3 | `78400000.r5f` | Idle MAIN-domain R5F core available for user applications |
+
+Zephyr runs on the idle MAIN-domain R5F core (`remoteproc3`). Since `remoteproc2` is used by the system, it must
+not be touched. Follow the steps below to run Zephyr.
+
+1. Copy the `zephyr.elf` file produced by the build onto the board:
+
+```bash
+scp ~/zephyrproject/zephyr/build/zephyr/zephyr.elf gemstone@<BOARD_IP>:/tmp/zephyr.elf
+```
+
+2. On the board, back up the original firmware and point the symbolic link to the Zephyr image.
+`j722s-main-r5f0_0-fw` is a symbolic link that points to TI's vision firmware by default:
+
+```bash
+cd /lib/firmware
+sudo cp -a j722s-main-r5f0_0-fw j722s-main-r5f0_0-fw.orig-backup
+sudo cp /tmp/zephyr.elf /lib/firmware/zephyr.elf
+sudo rm j722s-main-r5f0_0-fw
+sudo ln -s zephyr.elf j722s-main-r5f0_0-fw
+```
+
+3. Start the R5F core:
+
+```bash
+echo j722s-main-r5f0_0-fw | sudo tee /sys/class/remoteproc/remoteproc3/firmware
+echo start | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+4. Zephyr's console output is not visible over SSH; you can access the console by connecting a USB-to-TTL device to
+the GPIO-14 (TX) and GPIO-15 (RX) pins of UART-MAIN1 located on the 40-pin HAT (115200 baud, 8N1). The following
+output appears on the serial terminal:
+
+```
+*** Booting Zephyr OS build v4.4.0-8172-g1c2bf123944d ***
+Hello World! beagley_ai/j722s/main_r5f0_0
+```
+
+To stop the core, write `stop` to the `state` file:
+
+```bash
+echo stop | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+When you change the code, you do not need to repeat all the steps; since the symbolic link already points to
+`zephyr.elf`, it is enough to stop the core, update the file, and start it again:
+
+```bash
+echo stop | sudo tee /sys/class/remoteproc/remoteproc3/state
+sudo cp /tmp/zephyr.elf /lib/firmware/zephyr.elf
+echo start | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+<Warning>
+Run the commands one at a time, and only copy the file after `cat /sys/class/remoteproc/remoteproc3/state` shows
+`offline` following the `stop` command. Otherwise the file is replaced before the core has stopped, which can
+result in an incomplete or corrupted load.
+</Warning>
+
+If you want to return to the original TI firmware, restore the backup:
+
+```bash
+cd /lib/firmware
+sudo rm j722s-main-r5f0_0-fw
+sudo cp -a j722s-main-r5f0_0-fw.orig-backup j722s-main-r5f0_0-fw
+```
+
+## 3. Sample Application: Real-Time Jitter Measurement
+
+The `hello_world` sample shows that the build and load chain works. The sample in this section demonstrates the real
+value of the R5F core: predictable and stable timing, i.e. determinism.
+
+The program wakes up every 100 ms and, by reading the hardware counter, measures how many microseconds have actually
+elapsed since the previous wake-up. The difference between the measured time and the 100000 µs target is called
+jitter. The program prints the minimum, maximum, and average jitter statistics to the serial port. If the same task
+were run on Linux (A53), the deviation could reach thousands of microseconds under system load.
+
+### 3.1. Project Files
+
+The application consists of three files under the `~/zephyrproject/rt_demo` directory:
+
+```
+~/zephyrproject/rt_demo/
+├── CMakeLists.txt
+├── prj.conf
+└── src/
+    └── main.c
+```
+
+`src/main.c`:
+
+```c
+/*
+ * Realtime jitter measurement demo - TI AM67A MAIN-R5F (Zephyr)
+ * Measures the actual duration of each period and computes the deviation (jitter) from the target.
+ */
+#include <zephyr/kernel.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/timing/timing.h>
+
+#define PERIOD_MS   100
+#define TARGET_US   (PERIOD_MS * 1000)   /* 100000 us */
+
+int main(void)
+{
+    printk("\n========================================\n");
+    printk(" R5F Realtime Jitter Demo (Zephyr)\n");
+    printk(" Target period: %d ms (%d us)\n", PERIOD_MS, TARGET_US);
+    printk("========================================\n");
+
+    timing_init();
+    timing_start();
+    printk("Timer frequency: %llu Hz\n\n", timing_freq_get());
+
+    int64_t jitter_min = INT64_MAX, jitter_max = INT64_MIN, jitter_sum = 0;
+    uint32_t count = 0;
+    timing_t t_prev = timing_counter_get();
+
+    while (1) {
+        k_msleep(PERIOD_MS);
+        timing_t t_now = timing_counter_get();
+
+        uint64_t delta_ns = timing_cycles_to_ns(timing_cycles_get(&t_prev, &t_now));
+        int64_t  delta_us = (int64_t)(delta_ns / 1000ULL);
+        int64_t  jitter   = delta_us - TARGET_US;
+
+        if (jitter < jitter_min) jitter_min = jitter;
+        if (jitter > jitter_max) jitter_max = jitter;
+        jitter_sum += jitter;
+        count++;
+
+        if (count % 10 == 0) {
+            printk("[%5u] last=%lld us | jitter: now=%+lld  min=%+lld  max=%+lld  avg=%+lld us\n",
+                   count, delta_us, jitter, jitter_min, jitter_max, jitter_sum / count);
+        }
+        t_prev = t_now;
+    }
+    return 0;
+}
+```
+
+`prj.conf`:
+
+```
+CONFIG_PRINTK=y
+CONFIG_TIMING_FUNCTIONS=y
+CONFIG_CBPRINTF_FP_SUPPORT=n
+```
+
+`CMakeLists.txt`:
+
+```cmake
+cmake_minimum_required(VERSION 3.20.0)
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(rt_demo)
+target_sources(app PRIVATE src/main.c)
+```
+
+### 3.2. Building and Running
+
+Since we are switching to a different application, the build must be performed cleanly with the `-p always`
+(pristine) option; otherwise leftovers from the previous build may interfere with the new one:
+
+```bash
+cd ~/zephyrproject/zephyr
+west build -p always -b beagley_ai/j722s/main_r5f0_0 ~/zephyrproject/rt_demo
+scp build/zephyr/zephyr.elf gemstone@<BOARD_IP>:/tmp/zephyr.elf
+```
+
+On the board, stop the core, load the new image, and start it again:
+
+```bash
+echo stop | sudo tee /sys/class/remoteproc/remoteproc3/state
+sudo cp /tmp/zephyr.elf /lib/firmware/zephyr.elf
+echo start | sudo tee /sys/class/remoteproc/remoteproc3/state
+```
+
+### 3.3. Sample Output and Evaluation
+
+```
+*** Booting Zephyr OS build v4.4.0-... ***
+========================================
+ R5F Realtime Jitter Demo (Zephyr)
+ Target period: 100 ms (100000 us)
+========================================
+Timer frequency: 25000000 Hz
+[   10] last=100178 us | jitter: now=+178  min=+171  max=+210   avg=+181 us
+[   50] last=100170 us | jitter: now=+170  min=+170  max=+6808  avg=+703 us
+[  200] last=100170 us | jitter: now=+170  min=+170  max=+6811  avg=+803 us
+[  230] last=100170 us | jitter: now=+170  min=+170  max=+6811  avg=+807 us
+```
+
+In each line, `last` shows the time actually elapsed in this cycle, `now` the instantaneous deviation, `min`/`max`
+the smallest and largest deviations seen since the start of the measurement, and `avg` the average deviation.
+
+The instantaneous deviation consistently stays within the 170-179 µs band. A fluctuation of only ~9 µs over a 100 ms
+period corresponds to a stability of roughly 90 parts per million; this is exactly what real-time behavior means.
+The constant ~170 µs offset is not a flaw; it comes from the fixed cost of wake-up, interrupt handling, and the
+`printk` calls. In real-time systems, what matters is not that the deviation is zero, but that it is predictable and
+constant.
+
+The one-time ~6.8 ms spike in the `max` field occurs only when the program first starts and never repeats; this
+warm-up phase, caused by cache and initialization costs, is excluded from serious measurements.
