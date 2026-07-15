@@ -419,6 +419,25 @@ kadar konsolda çıktılar gözükmezken, TTL ile başlangıç aşamasından iti
 Varsayılan seri terminal baudrate değeri **115200**'dür.
 </Note>
 
+<Tip>
+Farklı işletim sistemlerine göre, bağlantı yapılacak seriport hedefleri aşağıdaki gibidir.
+
+- Linux: `/dev/ttyUSB*`
+- macOS: `/dev/cu.usbserial*` veya `/dev/cu.usbmodem*`
+- Windows: `COM*`
+
+Terminal ile aşağıdaki komut aracılığıyla hangi port olduğunu tespit edebilirsiniz.
+
+```bash
+# Linux
+ls /dev/ttyUSB*
+
+# macOS
+ls /dev/cu.usbserial*
+ls /dev/cu.usbmodem*
+```
+</Tip>
+
 #### 2.1.1. Terminal/Konsol Uygulaması
 
 Terminal/Konsol işlemleri için Windows işletim sisteminde [Putty](https://www.putty.org/), Linux'ta Gnome Terminal

@@ -407,6 +407,26 @@ visible from the start.
 The default serial terminal baud rate value is **115200**.
 </Note>
 
+
+<Tip>
+Depending on the operating system, the serial port targets to connect to are as follows.
+
+- Linux: `/dev/ttyUSB*`
+- macOS: `/dev/cu.usbserial*` or `/dev/cu.usbmodem*`
+- Windows: `COM*`
+
+You can identify which port it is via the terminal using the following commands.
+
+```bash
+# Linux
+ls /dev/ttyUSB*
+
+# macOS
+ls /dev/cu.usbserial*
+ls /dev/cu.usbmodem*
+```
+</Tip>
+
 #### 2.1.1. Terminal/Console Application
 
 For Terminal/Console operations, you can use [Putty](https://www.putty.org/) on Windows, Gnome Terminal on Linux,
