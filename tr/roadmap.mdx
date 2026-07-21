@@ -22,7 +22,7 @@ ziyaret edininiz.
   `Devam Ediyor` `10%`
 </Card>
 
-<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
+<Card horizontal title="Zenoh" icon="clock" href="./roadmap#zenoh">
   `Henüz Başlamadı` `0%`
 </Card>
 
@@ -30,7 +30,7 @@ ziyaret edininiz.
   `Henüz Başlamadı` `0%`
 </Card>
 
-<Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
+<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
   `Henüz Başlamadı` `0%`
 </Card>
 
@@ -154,17 +154,6 @@ yükleyebilmesidir.
 | Buildroot içerisinde T3-GEM-O1 konfigürasyonu eklenerek [adresine](https://github.com/t3gemstone/buildroot) pull request oluşturulması                 | `Tamamlandı` |
 | Minimal ve Kiosk isminde iki imaj türü oluşturularak aynı şekilde merge request oluşturulması | Gönüllü Geliştirici Bekleniyor |
 
-## Phoenix RTOS
-
-Mikrokernel mimari açık kaynak kodlu Phoenix isimli gerçek zamanlı işletim sisteminin Gemstone üzerinde
-çalıştırılması hedeflenmektedir.
-
-<Frame caption="Phoenix RTOS">
-  <a href="https://github.com/t3gemstone/phoenix-rtos-project" target="_blank">
-    <img src="/images/phoenix-rtos.png" noZoom />
-  </a>
-</Frame>
-
 ## Wayland Geçişi
 
 AM67A SoC ile gelen GPU'nun (IMG BXS4-64) TI tarafından verilen sürücüsü, X11 masaüstü ortamlarını hızlandıramamaktadır.
@@ -210,3 +199,30 @@ ortamlarını içererek bulunmakla birlikte Gemstone Distro tamamen kendi arayü
 
 Devbox, Taskfile, Distrobox gibi sistemler yerine Web tabanlı CI/CD araçları ile derleme yaparak imaj üreten sistemlere 
 geçiş mümkündür.
+
+## Zenoh
+
+Eclipse [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) projesi, düşük kaynak tüketimi gereken çeşitli
+MCU'larda çalışmaktadır. Resmi kod deposunda belirtildiği üzere Arduino, STM32, ESP gibi kartlara uyarlanmıştır.
+T3 Gemstone O1 üzerinde bulunan AM67A Cortex R5 mimariler için ise bilinen bir uyarlama çalışması mevcut değildir.
+
+Bu çalışmada amaç zenoh-pico projesinin AM67A Cortex-R5 üzerinde lwIp ile birlikte çalışabilmesi, dynamic memory 
+kullanımının kaldırılarak static memory uyarlamasının yapılması ve bunun bir kütüphane olarak kullanılabilmesini
+sağlayarak resmi kod depolarına T3 Gemstone O1 uyumluluğunun belirtilerek pull request oluşturmaktır.
+
+<Columns cols={1}>
+  <Frame caption="Zenoh">
+    <img src="/images/zenoh.png" noZoom />
+  </Frame>
+</Columns>
+
+Dokümantasyonun [MCU](./tr/boards/o1/peripherals/mcu) bölümü ve [Examples](https://github.com/t3gemstone/examples)
+reposu incelenerek aşağıdaki adımlar gerçekleştirilecektir.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico)'nun mevcut haliyle Gemstone R5 MCU uygulaması olarak derlenmesi | Gönüllü Geliştirici Bekleniyor |
+| Projedeki dinamik bellek kullanımı yapılan yerlerin temizlenerek statik bellek yapılması | Gönüllü Geliştirici Bekleniyor |
+| FreeRTOS ve lwIp ile çalışan örneklerinin yazılması | Gönüllü Geliştirici Bekleniyor |
+| Projenin library olarak derlenebilir ve diğer MCU yazılımlarında kullanılabilir hale getirilmesi | Gönüllü Geliştirici Bekleniyor |
+| Projeye QUIC protokolü desteğinin getirilmesi | Gönüllü Geliştirici Bekleniyor |

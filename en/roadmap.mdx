@@ -21,7 +21,7 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `In Progress` `10%`
 </Card>
 
-<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
+<Card horizontal title="Zenoh" icon="clock" href="./roadmap#zenoh">
   `Not Started Yet` `0%`
 </Card>
 
@@ -29,7 +29,7 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `Not Started Yet` `0%`
 </Card>
 
-<Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
+<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
   `Not Started Yet` `0%`
 </Card>
 
@@ -155,17 +155,6 @@ development board.
 | Adding T3-GEM-O1 configuration to Buildroot and creating a pull request to its [address](https://github.com/t3gemstone/buildroot) | `Completed`     |
 | Creating two image types named Minimal and Kiosk and similarly creating a merge request                     | Volunteer Developer Needed     |
 
-## Phoenix RTOS
-
-The goal is to run the open-source real-time operating system Phoenix, which has a microkernel architecture 
-on Gemstone.
-
-<Frame caption="Phoenix RTOS">
-  <a href="https://github.com/t3gemstone/phoenix-rtos-project" target="_blank">
-    <img src="/images/phoenix-rtos.png" noZoom />
-  </a>
-</Frame>
-
 ## Wayland Transition
 
 The GPU (IMG BXS4-64) driver provided by TI for the AM67A SoC cannot accelerate X11 desktop environments.
@@ -210,3 +199,30 @@ interfaces and desktop environments, Gemstone Distro will feature entirely its o
 
 It is also possible to transition to image-building systems that compile using web-based CI/CD tools instead of
 systems like Devbox, Taskfile, and Distrobox.
+
+## Zenoh
+
+The Eclipse [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) project runs on various MCUs with low
+resource consumption requirements. As stated in the official code repository, it has been adapted for boards
+such as Arduino, STM32, and ESP. However, there is no known adaptation work available for the AM67A Cortex R5
+architectures found on the T3 Gemstone O1.
+
+The aim of this work is to enable the zenoh-pico project to work together with lwIp on the AM67A Cortex-R5,
+to remove dynamic memory usage and implement static memory adaptation, and to make it usable as a library,
+thereby creating a pull request to the official code repositories by specifying T3 Gemstone O1 compatibility.
+
+<Columns cols={1}>
+  <Frame caption="Zenoh">
+    <img src="/images/zenoh.png" noZoom />
+  </Frame>
+</Columns>
+
+The following steps will be carried out by examining the [MCU](./tr/boards/o1/peripherals/mcu) section of the documentation and the [Examples](https://github.com/t3gemstone/examples) repository.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Compiling [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) as a Gemstone R5 MCU application in its current state | Volunteer Developer Wanted |
+| Cleaning up the places in the project where dynamic memory is used and implementing static memory | Volunteer Developer Wanted |
+| Writing examples that work with FreeRTOS and lwIp | Volunteer Developer Wanted |
+| Making the project compilable as a library and usable in other MCU software | Volunteer Developer Wanted |
+| Adding QUIC protocol support to the project | Volunteer Developer Wanted |
