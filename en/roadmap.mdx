@@ -18,7 +18,7 @@ To contribute by taking part in the relevant projects, visit their Github pages 
 </Card>
 
 <Card horizontal title="Buildroot" icon="spinner" href="./roadmap#buildroot">
-  `In Progress` `10%`
+  `In Progress` `80%`
 </Card>
 
 <Card horizontal title="Zenoh" icon="clock" href="./roadmap#zenoh">
@@ -139,8 +139,7 @@ The goal is to run the PX4 autopilot on Gemstone Linux (without NuttX).
 
 Support for Gemstone will be added to Buildroot, a Linux build system with a somewhat lighter structure compared 
 to the Yocto Project. The goal is for a person downloading buildroot to see `T3-GEM-O1` as a board in the
-official buildroot system, and to be able to compile and load two image types named `Minimal` and `Kiosk` onto the
-development board.
+official buildroot system, and to be able to compile the appropriate image type and flash it onto their development board.
 
 <Columns cols={1}>
   <Frame caption="Buildroot">
@@ -153,7 +152,6 @@ development board.
 |                                                                                                             |                                |
 |:------------------------------------------------------------------------------------------------------------|-------------------------------:|
 | Adding T3-GEM-O1 configuration to Buildroot and creating a pull request to its [address](https://github.com/t3gemstone/buildroot) | `Completed`     |
-| Creating two image types named Minimal and Kiosk and similarly creating a merge request                     | Volunteer Developer Needed     |
 
 ## Wayland Transition
 
