@@ -4,42 +4,52 @@ description: 'Planlanan Projeler ve Aşamaları'
 icon: "location-crosshairs"
 ---
 
+export const Progress = ({ percent }) => (
+  <div className="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3.5 overflow-hidden my-2">
+    <div className="bg-green-600 h-full rounded-full transition-all duration-300" style={{ width: `${percent}%` }}></div>
+    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-gray-900 dark:text-white leading-none">
+      %{percent}
+    </span>
+  </div>
+);
+
 <Tip>
 Bu bölümde Gemstone ile yapılması planlanan yeni projeler ve tamamlanma aşamaları bulunmaktadır.
 İlgili projelerde görev alarak katkıda bulunmak için Github sayfalarını veya topluluk forumlarını
 ziyaret edininiz.
 </Tip>
 
-<Card horizontal title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
-  `Devam Ediyor` `%50`
+
+<Card horizontal arrow="true" type="note" title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
+  <Progress percent={50} />
 </Card>
 
-<Card horizontal title="Wayland Geçişi" icon="spinner" href="./roadmap#wayland-geçişi">
-  `Devam Ediyor` `30%`
+<Card horizontal arrow="true" type="note" title="Wayland Geçişi" icon="spinner" href="./roadmap#wayland-geçişi">
+  <Progress percent={30} />
 </Card>
 
-<Card horizontal title="Buildroot" icon="spinner" href="./roadmap#buildroot">
-  `Devam Ediyor` `80%`
+<Card horizontal arrow="true" type="note" title="Buildroot" icon="spinner" href="./roadmap#buildroot">
+  <Progress percent={80} />
 </Card>
 
-<Card horizontal title="Zenoh" icon="spinner" href="./roadmap#zenoh">
-  `Devam Ediyor` `60%`
+<Card horizontal arrow="true" type="note" title="Zenoh" icon="spinner" href="./roadmap#zenoh">
+  <Progress percent={60} />
 </Card>
 
-<Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
-  `Henüz Başlamadı` `0%`
+<Card horizontal arrow="true" title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
+  `Henüz Başlamadı`
 </Card>
 
-<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
-  `Henüz Başlamadı` `0%`
+<Card horizontal arrow="true" title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
+  `Henüz Başlamadı`
 </Card>
 
-<Card horizontal title="Linux Kernel Versiyon 7" icon="clock" href="./roadmap#linux-kernel-versiyon-7">
-  `Henüz Başlamadı` `0%`
+<Card horizontal arrow="true" title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
+  `Henüz Başlamadı`
 </Card>
 
-<Card horizontal title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
-  `Henüz Başlamadı` `0%`
+<Card horizontal arrow="true" title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
+  `Henüz Başlamadı`
 </Card>
 
 ## Apache Nuttx
@@ -173,7 +183,7 @@ destekli bir masaüstü ortamına geçilmesi hedeflenmektedir.
 | Ayarlar, dosya yöneticisi, ağ yöneticisi gibi programların bulunması (seçilen ortam ile birlikte gelmiyorsa) | Gönüllü Geliştirici Bekleniyor |
 | Arayüz bütünlüğü için pencere kenarları, durum çubuğu gibi kısımlar için ortak bir tema oluşturulması | Gönüllü Geliştirici Bekleniyor |
 
-## Linux Kernel Versiyon 7
+## Linux Kernel Version 7
 
 Kullanılmakta olan 6.12 sürümü yerine, Linux kernel 7'nin T3-GEM-O1 geliştirme kartında çalıştırılması hedeflenmektedir.
 Bu sayede yeni donanım sürücülerinden, geliştirmelerden ve hata düzeltmelerinden faydalanılması mümkün olacaktır.
