@@ -21,8 +21,8 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `In Progress` `80%`
 </Card>
 
-<Card horizontal title="Zenoh" icon="clock" href="./roadmap#zenoh">
-  `Not Started Yet` `0%`
+<Card horizontal title="Zenoh" icon="spinner" href="./roadmap#zenoh">
+  `In Progress` `60%`
 </Card>
 
 <Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
@@ -219,9 +219,10 @@ The following steps will be carried out by examining the [MCU](./tr/boards/o1/pe
 
 |                                                                                                             |                                |
 |:------------------------------------------------------------------------------------------------------------|-------------------------------:|
-| Adapting Texas [PROCESSOR-SDK-RTOS-J722S](https://www.ti.com/tool/PROCESSOR-SDK-J722S#downloads) for using Ethernet in MCU projects  | Volunteer Developer Wanted |
-| Compiling [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) as a Gemstone R5 MCU application in its current state | Volunteer Developer Wanted |
-| Cleaning up the places in the project where dynamic memory is used and implementing static memory | Volunteer Developer Wanted |
-| Writing examples that work with FreeRTOS and lwIp | Volunteer Developer Wanted |
-| Making the project compilable as a library and usable in other MCU software | Volunteer Developer Wanted |
-| Adding QUIC protocol support to the project | Volunteer Developer Wanted |
+| [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) compiled as a Gemstone R5 MCU application in its current state | `Completed` |
+| Elimination of dynamic memory usage in the project and conversion to static memory allocation | `Completed` |
+| Writing examples that work with FreeRTOS and lwIP | `Completed` |
+| Making the project compilable as a library and usable in other MCU firmware | `Completed` |
+| Having the Cortex R5 Zenoh MCU project route via IPC instead of real Ethernet, using the virtual [RPMSG Net](https://github.com/t3gemstone/rpmsg-net) device on Linux | `Completed` |
+| Setting up a 2 Gemstone (IPC) + 1 Linux Desktop PC (WiFi) setup and enabling communication between devices via Zenoh | **Awaiting Volunteer Developer** |
+| Adding QUIC protocol support to the project | **Awaiting Volunteer Developer** |
