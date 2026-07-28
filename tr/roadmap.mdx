@@ -4,35 +4,25 @@ description: 'Planlanan Projeler ve Aşamaları'
 icon: "location-crosshairs"
 ---
 
-export const Progress = ({ percent }) => (
-  <div className="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3.5 overflow-hidden my-2">
-    <div className="bg-green-600 h-full rounded-full transition-all duration-300" style={{ width: `${percent}%` }}></div>
-    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-gray-900 dark:text-white leading-none">
-      %{percent}
-    </span>
-  </div>
-);
+import { Progress } from '/snippets/progress.mdx';
 
-<Tip>
 Bu bölümde Gemstone ile yapılması planlanan yeni projeler ve tamamlanma aşamaları bulunmaktadır.
 İlgili projelerde görev alarak katkıda bulunmak için Github sayfalarını veya topluluk forumlarını
 ziyaret edininiz.
-</Tip>
 
-
-<Card horizontal arrow="true" type="note" title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
+<Card horizontal arrow="true" title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
   <Progress percent={50} />
 </Card>
 
-<Card horizontal arrow="true" type="note" title="Wayland Geçişi" icon="spinner" href="./roadmap#wayland-geçişi">
+<Card horizontal arrow="true" title="Wayland Geçişi" icon="spinner" href="./roadmap#wayland-geçişi">
   <Progress percent={30} />
 </Card>
 
-<Card horizontal arrow="true" type="note" title="Buildroot" icon="spinner" href="./roadmap#buildroot">
+<Card horizontal arrow="true" title="Buildroot" icon="spinner" href="./roadmap#buildroot">
   <Progress percent={80} />
 </Card>
 
-<Card horizontal arrow="true" type="note" title="Zenoh" icon="spinner" href="./roadmap#zenoh">
+<Card horizontal arrow="true" title="Zenoh" icon="spinner" href="./roadmap#zenoh">
   <Progress percent={60} />
 </Card>
 

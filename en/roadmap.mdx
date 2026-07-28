@@ -4,33 +4,24 @@ description: 'Planned Projects and Stages'
 icon: "location-crosshairs"
 ---
 
-export const Progress = ({ percent }) => (
-  <div className="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3.5 overflow-hidden my-2">
-    <div className="bg-green-600 h-full rounded-full transition-all duration-300" style={{ width: `${percent}%` }}></div>
-    <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-gray-900 dark:text-white leading-none">
-      %{percent}
-    </span>
-  </div>
-);
+import { Progress } from '/snippets/progress.mdx';
 
-<Tip>
 This section contains new projects planned with Gemstone and their completion stages.
 To contribute by taking part in the relevant projects, visit their Github pages or community forums.
-</Tip>
 
-<Card horizontal arrow="true" type="note" title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
+<Card horizontal arrow="true" title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
   <Progress percent={50} />
 </Card>
 
-<Card horizontal arrow="true" type="note" title="Wayland Transition" icon="spinner" href="./roadmap#wayland-transition">
+<Card horizontal arrow="true" title="Wayland Transition" icon="spinner" href="./roadmap#wayland-transition">
   <Progress percent={30} />
 </Card>
 
-<Card horizontal arrow="true" type="note" title="Buildroot" icon="spinner" href="./roadmap#buildroot">
+<Card horizontal arrow="true" title="Buildroot" icon="spinner" href="./roadmap#buildroot">
   <Progress percent={80} />
 </Card>
 
-<Card horizontal arrow="true" type="note" title="Zenoh" icon="spinner" href="./roadmap#zenoh">
+<Card horizontal arrow="true" title="Zenoh" icon="spinner" href="./roadmap#zenoh">
   <Progress percent={60} />
 </Card>
 
