@@ -29,8 +29,8 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `Not Started Yet`
 </Card>
 
-<Card horizontal arrow="true" title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
-  `Not Started Yet`
+<Card horizontal arrow="true" title="ChibiOS + Ardupilot" icon="spinner" href="./roadmap#chibios-+-ardupilot">
+  <Progress percent={60} />
 </Card>
 
 <Card horizontal arrow="true" title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
@@ -107,22 +107,21 @@ cores.
   </Frame>
 </Columns>
 
-The planned tasks are listed in the table below.
+The current status and pending tasks are in the table below.
 
-|                                                                                                              |                                |
-|:-------------------------------------------------------------------------------------------------------------|-------------------------------:|
-| Running NuttX on R5 cores                                                                                    | `Completed`                    |
-| GPIO driver support                                                                                          | `Completed`                    |
-| Serial port driver support                                                                                   | `Completed`                    |
-| Access to NuttShell (nsh) console                                                                            | `Completed`                    |
-| Loading NuttX onto the R5 core via U-Boot or Linux using NuttX's remoteproc mechanism                        | `Completed`                    |
-| I2C driver support                                                                                           | Awaiting Volunteer Developer   |
-| SPI driver support                                                                                           | Awaiting Volunteer Developer   |
-| PWM driver support                                                                                           | Awaiting Volunteer Developer   |
-| Pinmux configurations for all pins on the 40-pin HAT                                                         | Awaiting Volunteer Developer   |
-| Running PX4 autopilot as an application on the NuttX operating system on Gemstone                            | Awaiting Volunteer Developer   |
-| Communication between NuttX running on the R5 core and Linux running on the A53 core via Texas IPC mechanism | Awaiting Volunteer Developer   |
-| CAN Bus driver support                                                                                       | Awaiting Volunteer Developer   |
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Porting the ChibiOS HAL to the AM67A Cortex-R5 cores                                                        | **In Progress**                |
+| Loading ChibiOS onto an R5 core from U-Boot or Linux using remoteproc                                       | `Completed`                    |
+| Serial port (UART) driver support and console access                                                        | `Completed`                    |
+| GPIO driver support                                                                                         | `Completed`                    |
+| Building ArduPilot for the R5 cores using the AP_HAL_ChibiOS layer                                          | `Completed`                    |
+| Running ArduPilot as a functional autopilot on ChibiOS                                                      | **In Progress**                |
+| SPI and I2C driver support for sensors such as IMUs and barometers                                          | `Completed`                    |
+| PWM driver support for motor and servo outputs                                                              | `Completed`                    |
+| CAN Bus (DroneCAN) driver support                                                                           | Volunteer Developer Needed     |
+| Communication via Texas IPC between ChibiOS on the R5 core and Linux on the A53 cores                       | Volunteer Developer Needed     |
+| Establishing MAVLink telemetry and ground control station (GCS) connectivity                                | Volunteer Developer Needed     |
 
 ## PX4 Autopilot
 
