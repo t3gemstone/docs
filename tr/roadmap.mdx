@@ -26,12 +26,12 @@ ziyaret edininiz.
   <Progress percent={60} />
 </Card>
 
-<Card horizontal arrow="true" title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
-  `Henüz Başlamadı`
-</Card>
-
 <Card horizontal arrow="true" title="ChibiOS + Ardupilot" icon="spinner" href="./roadmap#chibios-+-ardupilot">
   <Progress percent={60} />
+</Card>
+
+<Card horizontal arrow="true" title="PX4 Autopilot" icon="spinner" href="./roadmap#px4-autopilot">
+  <Progress percent={10} />
 </Card>
 
 <Card horizontal arrow="true" title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
@@ -114,11 +114,11 @@ Aşağıdaki tabloda güncel durum ve yapılacak çalışmalar bulunmaktadır.
 |                                                                                                             |                                |
 |:------------------------------------------------------------------------------------------------------------|-------------------------------:|
 | ChibiOS HAL'ının AM67a Cortex-R5 çekirdekleri için port edilmesi                                            | **Devam Ediyor**               |
+| Ardupilot'un ChibiOS üzerinde otopilot olarak çalıştırılması                                                | **Devam Ediyor**               |
 | ChibiOS'un remoteproc mekanizması ile U-Boot ya da Linux tarafından R5 çekirdeğine yüklenmesi               | `Tamamlandı`                   |
 | Seri port (UART) sürücü desteği ve konsol erişimi                                                           | `Tamamlandı`                   |
 | GPIO sürücü desteği                                                                                         | `Tamamlandı`                   |
 | Ardupilot'un AP_HAL_ChibiOS katmanı kullanılarak R5 çekirdekleri için derlenmesi                            | `Tamamlandı`                   |
-| Ardupilot'un ChibiOS üzerinde otopilot olarak çalıştırılması                                                | **Devam Ediyor**               |
 | SPI ve I2C sürücü desteği (IMU, barometre vb. sensörler için)                                               | `Tamamlandı`                   |
 | PWM sürücü desteği (motor ve servo çıkışları için)                                                          | `Tamamlandı`                   |
 | CAN Bus (DroneCAN) sürücü desteği                                                                           | Gönüllü Geliştirici Bekleniyor |

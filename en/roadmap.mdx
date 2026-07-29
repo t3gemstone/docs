@@ -25,12 +25,12 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   <Progress percent={60} />
 </Card>
 
-<Card horizontal arrow="true" title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
-  `Not Started Yet`
-</Card>
-
 <Card horizontal arrow="true" title="ChibiOS + Ardupilot" icon="spinner" href="./roadmap#chibios-+-ardupilot">
   <Progress percent={60} />
+</Card>
+
+<Card horizontal arrow="true" title="PX4 Autopilot" icon="spinner" href="./roadmap#px4-autopilot">
+  <Progress percent={10} />
 </Card>
 
 <Card horizontal arrow="true" title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
@@ -112,11 +112,11 @@ The current status and pending tasks are in the table below.
 |                                                                                                             |                                |
 |:------------------------------------------------------------------------------------------------------------|-------------------------------:|
 | Porting the ChibiOS HAL to the AM67A Cortex-R5 cores                                                        | **In Progress**                |
+| Running ArduPilot as a functional autopilot on ChibiOS                                                      | **In Progress**                |
 | Loading ChibiOS onto an R5 core from U-Boot or Linux using remoteproc                                       | `Completed`                    |
 | Serial port (UART) driver support and console access                                                        | `Completed`                    |
 | GPIO driver support                                                                                         | `Completed`                    |
 | Building ArduPilot for the R5 cores using the AP_HAL_ChibiOS layer                                          | `Completed`                    |
-| Running ArduPilot as a functional autopilot on ChibiOS                                                      | **In Progress**                |
 | SPI and I2C driver support for sensors such as IMUs and barometers                                          | `Completed`                    |
 | PWM driver support for motor and servo outputs                                                              | `Completed`                    |
 | CAN Bus (DroneCAN) driver support                                                                           | Volunteer Developer Needed     |
