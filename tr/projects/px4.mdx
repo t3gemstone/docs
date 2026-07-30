@@ -1,0 +1,131 @@
+---
+title: 'PX4'
+description: 'PX4 Otopilot'
+---
+
+<Warning>
+Gemstone için PX4 desteği henüz geliştirme aşamasındadır. Ana domain R5F
+çekirdeğinde çalışır ve kartın üzerindeki CAN Bus gibi bazı çevre birimleri henüz
+kullanılamamaktadır.
+</Warning>
+
+PX4, dronlar ve diğer insansız araçlar için açık kaynaklı bir otopilot
+platformudur. Düşük seviyeli sensör sürücülerinden araç kontrolüne ve görev
+yürütmeye kadar uzanan eksiksiz bir uçuş kontrol yığını sunar. Gemstone kartında
+PX4, R5F çekirdeklerinde NuttX üzerinde, bare NuttX derlemesi için oluşturulan
+aynı özel `t3-gem-o1` konfigürasyonu kullanılarak çalışır.
+
+Bağımsız bir NuttX derlemesinin aksine PX4, hem NuttX'i hem de uygulama
+framework'ünü git submodule olarak barındırır. Bu nedenle recursive bir klonlama,
+Gemstone'a uyarlanmış doğru NuttX'i otomatik olarak çeker; NuttX'i ayrıca
+indirmenize veya derlemenize gerek yoktur.
+
+## 1. Derleme
+
+### 1.1. Gereksinimleri ve Toolchain'i Kurma
+
+PX4, ARM Cortex‑R5F çekirdekleri için `gcc-arm-none-eabi` çapraz derleyicisi ile
+derlenir ve build sistemi ayrıca `kconfiglib`, `empy` ve `jinja2` gibi bir dizi
+Python aracına dayanır.
+
+Ubuntu/Debian sistemlerde toolchain'i ve genel gereksinimleri paket yöneticisi
+ile kurabilirsiniz:
+
+```bash
+sudo apt update
+sudo apt install git make cmake ninja-build gcc-arm-none-eabi python3-venv
+```
+
+Güncel Debian/Ubuntu sürümleri sistem genelinde `pip` kurulumunu
+kısıtladığından, Python araçlarını bir sanal ortama kurun:
+
+```bash
+python3 -m venv ~/px4-venv
+source ~/px4-venv/bin/activate
+pip install -r Tools/setup/requirements.txt
+```
+
+`requirements.txt` dosyası PX4 kaynak ağacının içinde yer aldığından, `pip
+install` adımını kaynak kodları indirdikten (bölüm 1.2) sonra çalıştırın. Derleme
+öncesinde her yeni terminalde ortamı `source ~/px4-venv/bin/activate` ile
+aktifleştirin.
+
+### 1.2. Kaynak Kodları İndirme
+
+PX4, Gemstone NuttX'ini ve NuttX‑apps'i git submodule olarak referans alır; bu
+nedenle kaynak kodlar tek bir recursive klonlama ile indirilir:
+
+```bash
+# PX4'ü submodule'leriyle birlikte klonlayın
+git clone --recursive https://github.com/t3gemstone/PX4-Autopilot.git
+
+# Ana çalışma dizininize geçin
+cd PX4-Autopilot
+```
+
+`--recursive` bayrağı, doğru NuttX'i (Gemstone `px4` dalı) ve NuttX‑apps'i
+`platforms/nuttx/NuttX` dizinine yerleştirir; böylece ayrı bir NuttX indirmesi
+gerekmez. `--recursive` olmadan klonladıysanız, submodule'leri sonradan
+`git submodule update --init --recursive` ile çekebilirsiniz.
+
+### 1.3. Projeyi Derleme
+
+PX4, belirli bir kart hedefini doğrudan derler; bu nedenle ayrı bir konfigürasyon
+adımı gerekmez. Bölüm 1.1'deki Python ortamı aktifken Gemstone kart imajını
+derleyin:
+
+```bash
+make t3gemstone_o1_default
+```
+
+Bu komut paralel bir derleme yapar ve R5F çekirdeğine yüklenecek imaj olan
+`build/t3gemstone_o1_default/t3gemstone_o1_default.elf` dosyasını `.bin` ve
+`.px4` dosyalarıyla birlikte üretir.
+
+## 2. Çalıştırma
+
+Bare NuttX imajında olduğu gibi PX4 de ana domain R5F çekirdeğinde çalışır ve
+Linux ya da U-Boot'tan `remoteproc` mekanizması ile yüklenir. PX4 R5F
+çekirdeğinde çalışırken A53 çekirdeklerinde Linux çalışmaya devam eder.
+
+<Tip>
+   U-Boot'ta `remoteproc` mekanizması ile kullanabilmek için [2.8. Derlenmiş projenin U-Boot aşamasında çalıştırılması](/tr/boards/o1/peripherals/mcu#2-8-derlenmiş-projenin-u-boot-aşamasında-çalıştırılması)
+   bölümünü inceleyebilirsiniz.
+</Tip>
+
+Remoteproc ile çekirdeklere yüklenecek program dosyaları `/lib/firmware` dizini
+altına önceden tanımlı isimlerde kopyalanmalıdır. Sistem başlangıcında, remoteproc
+mekanizması programları ilgili çekirdeklere otomatik olarak yükleyecektir. PX4'ü
+remoteproc ile çalıştırmak için aşağıdaki adımları takip edin.
+
+1. Derleme sonucu oluşan `build/t3gemstone_o1_default/t3gemstone_o1_default.elf`
+   dosyasını `/lib/firmware` dizinine `j722s-main-r5f0_0-fw` isminde kopyalayın.
+2. Kartı yeniden başlatın.
+3. UART-MAIN1'in 40-pin HAT'te yer alan GPIO-14 (TX) ve GPIO-15 (RX) pinlerine
+   USB-to-TTL cihazı bağlayarak NuttShell'e erişebilirsiniz.
+4. Açılan `nsh` konsolundan `ver all`, `top` ve `uorb status` gibi komutlarla
+   çalışan sistemi inceleyebilirsiniz.
+
+## 3. Sensörlerin Kullanımı
+
+Kart üzerindeki InvenSense ICM‑20948 bir ivmeölçer, jiroskop ve entegre
+AK09916 manyetometre içeren 9 eksenli bir IMU R5F'ye SPI üzerinden bağlıdır.
+Sürücüsünü `nsh` konsolundan başlatın:
+
+```bash
+nsh> icm20948 -s -b 1 -c 3 -M start
+```
+
+Burada `-s` SPI arayüzünü, `-b 1` SPI hattını, `-c 3` chip-select'i seçer ve `-M`
+ek olarak manyetometreyi etkinleştirir. Sürücü çalışmaya başladıktan sonra, canlı
+sensör verilerini PX4'ün uORB ara katmanı üzerinden `listener` komutuyla
+izleyebilirsiniz:
+
+```bash
+nsh> listener sensor_accel
+nsh> listener sensor_gyro
+nsh> listener sensor_mag
+```
+
+Genel sistemi gözlemlemek için `uorb top` tüm aktif topic'lerin yayın oranlarını,
+`work_queue status` ise sürücünün iş kuyruğunun zamanlamasını gösterir.
