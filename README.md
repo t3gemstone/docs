@@ -17,20 +17,20 @@ This project includes all the documentation and tutorials for T3 Gemstone Boards
 #### 1. Install jetify-devbox on the host computer.
 
 ```bash
-user@host:$ curl -fsSL https://get.jetify.com/devbox | bash
+ curl -fsSL https://get.jetify.com/devbox | bash
 ```
 
 #### 2. After the installation is successful, activate the jetify-devbox shell.
 
 ```bash
-user@host:$ devbox shell
+ devbox shell
 ```
 
 #### 3. Install mintlify and start the documentation
 
 ```bash
-📦 devbox:sdk> devbox run install
-📦 devbox:sdk> devbox run docs 
+ devbox run install
+ devbox run docs 
 ```
 
 ### Screencast
