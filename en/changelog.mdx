@@ -6,6 +6,13 @@ icon: "clock-rotate-left"
 
 All software and hardware changes for the Gemstone project are summarized below.
 
+<Update label="July 2026">
+  * Zenoh Pico support was added. An official [PR was opened in the repository.](https://github.com/eclipse-zenoh/zenoh-pico/pull/1271)
+  * SPI, I2C, and PWM support was brought to NuttX RTOS [brought.](/en/projects/nuttx)
+  * Work has begun on [adapting](/en/projects/px4) the PX4 autopilot running on Cortex [R5](https://github.com/t3gemstone/nuttx/tree/px4) cores (T3 Gemstone O1 support).
+  * RPMSG Virtual Ethernet implementation was performed, [enabling communication](https://github.com/t3gemstone/rpmsg-net) between the MCU software running on the Cortex R5 and Cortex A57 Linux.
+</Update>
+
 <Update label="June 2026">
   * T3 Gemstone O1 has been merged into the [Apache NuttX](/en/projects/nuttx) project and [published](https://nuttx.apache.org/docs/latest/platforms/arm/am67/boards/t3-gem-o1/index.html) on the official website.
 </Update>
