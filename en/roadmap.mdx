@@ -9,7 +9,7 @@ import { Progress } from '/snippets/progress.mdx';
 This section contains new projects planned with Gemstone and their completion stages.
 To contribute by taking part in the relevant projects, visit their Github pages or community forums.
 
-<Card horizontal arrow="true" title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
+<Card horizontal arrow="true" title="Apache Nuttx&PX4" icon="spinner" href="./roadmap#apache-nuttx&px4">
   <Progress percent={90} />
 </Card>
 
@@ -41,7 +41,7 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `Not Started Yet`
 </Card>
 
-## Apache Nuttx
+## Apache Nuttx&PX4
 
 Pixhawk [Flight Controller](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
 hardware mostly contains STM32 with Cortex-M architecture. The autopilot named PX4 runs on the real-time operating
@@ -120,18 +120,6 @@ The current status and pending tasks are in the table below.
 | CAN Bus (DroneCAN) driver support                                                                           | Volunteer Developer Needed     |
 | Communication via Texas IPC between ChibiOS on the R5 core and Linux on the A53 cores                       | Volunteer Developer Needed     |
 | Establishing MAVLink telemetry and ground control station (GCS) connectivity                                | Volunteer Developer Needed     |
-
-## PX4 Autopilot
-
-The goal is to run the PX4 autopilot on Gemstone Linux (without NuttX).
-
-<Columns cols={1}>
-  <Frame caption="PX4 Autopilot">
-  <a href="https://github.com/t3gemstone/PX4-Autopilot" target="_blank">
-    <img src="/images/px4-autopilot-b.png" noZoom />
-  </a>
-  </Frame>
-</Columns>
 
 ## Buildroot
 
