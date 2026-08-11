@@ -168,6 +168,7 @@
               "tr/projects/mediabox",
               "tr/projects/firewall",
               "tr/projects/hotspot",
+              "tr/projects/zephyr-os",
               {
                 "group": "Teknofest",
                 "pages": [
@@ -341,6 +342,7 @@
               "en/projects/mediabox",
               "en/projects/firewall",
               "en/projects/hotspot",
+              "en/projects/zephyr-os",
               {
                 "group": "Teknofest",
                 "pages": [
