@@ -127,6 +127,21 @@
                           "tr/boards/o1/ai/libraries/vxlib",
                           "tr/boards/o1/ai/libraries/dsplib"
                         ]
+                      },
+                      {
+                        "group": "AI Hızlandırıcılar",
+                        "pages": [
+                          {
+                            "group": "DeepX",
+                            "pages": [
+                              "tr/boards/o1/ai/deepx/introduction",
+                              "tr/boards/o1/ai/deepx/installation",
+                              "tr/boards/o1/ai/deepx/usage",
+                              "tr/boards/o1/ai/deepx/examples",
+                              "tr/boards/o1/ai/deepx/troubleshooting"
+                            ]
+                          }
+                        ]
                       }
                     ]
                   },
@@ -299,6 +314,21 @@
                           "en/boards/o1/ai/libraries/mathlib",
                           "en/boards/o1/ai/libraries/vxlib",
                           "en/boards/o1/ai/libraries/dsplib"
+                        ]
+                      },
+                      {
+                        "group": "AI Accelerators",
+                        "pages": [
+                          {
+                            "group": "DeepX",
+                            "pages": [
+                              "en/boards/o1/ai/deepx/introduction",
+                              "en/boards/o1/ai/deepx/installation",
+                              "en/boards/o1/ai/deepx/usage",
+                              "en/boards/o1/ai/deepx/examples",
+                              "en/boards/o1/ai/deepx/troubleshooting"
+                            ]
+                          }
                         ]
                       }
                     ]

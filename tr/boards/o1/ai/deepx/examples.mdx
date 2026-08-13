@@ -1,0 +1,282 @@
+---
+title: 'Örnek Uygulamalar'
+description: 'DX-APP Şablonları ve DX-STREAM ile Video İşleme'
+---
+
+DEEPX, hızlandırıcı modülünü kullanan uygulamaların hızlıca geliştirilebilmesi için iki ayrı referans proje
+sunmaktadır. **DX-APP**, tek başına çalışabilen örnek uygulama şablonları içermektedir. **DX-STREAM** ise
+GStreamer tabanlı gerçek zamanlı video işleme hatları kurmaya olanak tanımaktadır.
+
+<Note>
+Bu bölümdeki komutların çalıştırılabilmesi için sürücü ve çalışma zamanı kurulumunun tamamlanmış olması
+gerekmektedir. Kurulumu `dxrt-cli -s` komutu ile doğrulayabilirsiniz.
+</Note>
+
+## DX-APP Örnek Uygulamaları
+
+DX-APP; nesne tespiti, sınıflandırma, poz tahmini, segmentasyon, derinlik tahmini ve yüz tanıma gibi görevler
+için hazır C++ ve Python şablonları içermektedir.
+
+<Steps>
+
+  <Step title="Projenin İndirilmesi">
+    ```bash
+    git clone https://github.com/DEEPX-AI/dx_app.git
+    cd dx_app
+    ```
+  </Step>
+
+  <Step title="Bağımlılıkların Kurulumu">
+
+    Derleme araçları ve OpenCV kütüphanesini kuran betiği çalıştırınız.
+
+    ```bash
+    ./install.sh --all
+    ```
+  </Step>
+
+  <Step title="Model ve Örnek Videoların İndirilmesi">
+
+    Örnek uygulamalarda kullanılan modeller ve videolar `setup.sh` betiği ile indirilmektedir.
+
+    ```bash
+    # Menü üzerinden kategori ve model seçimi yapılır
+    ./setup.sh
+
+    # Yalnızca belirli modeller indirilir
+    ./setup.sh --models YoloV7 ResNet50
+
+    # İndirilebilecek tüm modeller listelenir
+    ./setup.sh --list
+    ```
+
+    Modeller `assets/models`, videolar ise `assets/videos` klasörüne indirilmektedir.
+  </Step>
+
+  <Step title="Projenin Derlenmesi">
+    ```bash
+    ./build.sh
+    ```
+
+    Derleme sonucunda çalıştırılabilir dosyalar `bin` klasöründe oluşturulmaktadır.
+
+    <Tip>
+      Yalnızca ihtiyaç duyduğunuz uygulamayı derlemek isterseniz `./build.sh --target yolov9s_sync`
+      biçiminde hedef belirtebilirsiniz. Kullanılabilir hedefleri `./build.sh --target list` komutu ile
+      listeleyebilirsiniz.
+    </Tip>
+  </Step>
+
+  <Step title="Örneklerin Çalıştırılması">
+
+    Tüm örnekleri menü üzerinden denemek için demo betiğini kullanabilirsiniz.
+
+    ```bash
+    ./run_demo.sh
+    ```
+
+    Belirli bir örneği doğrudan çalıştırmak da mümkündür.
+
+    <CodeGroup>
+
+    ```bash Python
+    python3 src/python_example/object_detection/yolov7/yolov7_sync.py \
+      --model assets/models/yolov7_640x640.dxnn \
+      --image sample/img/sample_street.jpg
+    ```
+
+    ```bash C++
+    ./bin/yolov7_sync \
+      -m assets/models/yolov7_640x640.dxnn \
+      -i sample/img/sample_street.jpg
+    ```
+
+    </CodeGroup>
+  </Step>
+
+</Steps>
+
+### Ortak Komut Satırı Seçenekleri
+
+DX-APP içerisindeki tüm örnekler aynı komut satırı seçeneklerini kullanmaktadır.
+
+| Seçenek              | Açıklama                                                             |
+| -------------------- | -------------------------------------------------------------------- |
+| `-m`, `--model`      | Çalıştırılacak `.dxnn` model dosyasının yolu                          |
+| `-i`, `--image`      | Girdi olarak kullanılacak görüntü dosyası veya klasörü                |
+| `-v`, `--video`      | Girdi olarak kullanılacak video dosyası                               |
+| `-c`, `--camera`     | Girdi olarak kullanılacak kamera cihaz numarası                       |
+| `-r`, `--rtsp`       | Girdi olarak kullanılacak RTSP akış adresi                            |
+| `-l`, `--loop`       | Çıkarım tekrar sayısı                                                 |
+| `--no-display`       | Görselleştirme penceresini devre dışı bırakır                         |
+| `--save`             | Oluşan çıktıyı dosyaya kaydeder                                       |
+| `--show-log`         | Ayrıntılı günlük çıktısı üretir                                       |
+
+<Note>
+`--image`, `--video`, `--camera` ve `--rtsp` seçenekleri birbirinin alternatifidir ve yalnızca biri
+kullanılabilir. Hiçbiri belirtilmediğinde göreve uygun örnek bir görüntü otomatik olarak seçilmektedir.
+</Note>
+
+<Tip>
+Geliştirme kartına ekran bağlı değilse veya SSH üzerinden çalışıyorsanız `--no-display` seçeneğini
+kullanmanız gerekmektedir. Sonucu görüntülemek için `--save` seçeneği ile çıktıyı dosyaya kaydedebilirsiniz.
+</Tip>
+
+### Senkron ve Asenkron Şablonlar
+
+Örnek uygulamalar `_sync` ve `_async` olmak üzere iki biçimde sunulmaktadır.
+
+- **Senkron (`_sync`)** şablonlar; ön işleme, çıkarım ve son işleme adımlarını sırayla yürütmektedir. Tek
+  görüntü üzerinde çalışmak ve hata ayıklamak için uygundur.
+- **Asenkron (`_async`)** şablonlar; NPU `N` numaralı kareyi işlerken CPU'nun `N+1` numaralı kareyi
+  hazırlamasına olanak tanımaktadır. Video akışlarında kare hızını en üst düzeye çıkarmak için tercih
+  edilmelidir.
+
+## DX-STREAM ile Video İşleme
+
+DX-STREAM, GStreamer altyapısına DEEPX NPU desteği ekleyen eklenti kümesidir. Bu sayede kamera, video
+dosyası veya RTSP akışından gelen görüntüler bir hat (pipeline) içerisinde işlenebilmektedir.
+
+### Eklenti Elemanları
+
+| Eleman           | Açıklama                                                                    |
+| ---------------- | --------------------------------------------------------------------------- |
+| `dxpreprocess`   | Görüntüyü modelin beklediği boyuta ve biçime dönüştürür                      |
+| `dxinfer`        | NPU üzerinde çıkarım işlemini gerçekleştirir                                 |
+| `dxpostprocess`  | Model çıktısını anlamlı üst veriye (sınırlayıcı kutu, sınıf vb.) dönüştürür       |
+| `dxtracker`      | Tespit edilen nesneleri kareler arasında takip eder                          |
+| `dxosd`          | Sonuçları görüntü üzerine çizer                                              |
+| `dxgather`       | Çoklu akışlarda dalları tek çıkışta birleştirir                              |
+| `dxrate`         | Çıkarım yapılacak kare hızını sınırlandırır                                  |
+| `dxmsgconv`      | Üst veriyi mesaj biçimine dönüştürür                                         |
+| `dxmsgbroker`    | Mesajları harici bir sunucuya (örneğin MQTT) iletir                          |
+
+Kurulu eklentileri ve özelliklerini `gst-inspect-1.0` aracı ile inceleyebilirsiniz.
+
+```bash
+gst-inspect-1.0 dxinfer
+```
+
+### Örnek Hat
+
+Aşağıdaki hat bir video dosyasını okumakta, YOLO modeli ile nesne tespiti yapmakta ve sonuçları görüntü
+üzerine çizerek bir video dosyasına kaydetmektedir.
+
+```bash
+gst-launch-1.0 urisourcebin uri=file:///home/gemstone/dx_app/assets/videos/snowboard.mp4 ! decodebin ! \
+  dxpreprocess \
+    preprocess-id=1 \
+    resize-width=640 \
+    resize-height=640 ! \
+  queue max-size-buffers=1 ! \
+  dxinfer \
+    preprocess-id=1 \
+    inference-id=1 \
+    model-path=/home/gemstone/dx_app/assets/models/yolov7_640x640.dxnn ! \
+  queue max-size-buffers=1 ! \
+  dxpostprocess \
+    inference-id=1 \
+    library-file-path=/usr/share/gstdxstream/lib/libpostprocess_yolov7.so \
+    function-name=PostProcess ! \
+  queue max-size-buffers=1 ! \
+  dxosd ! \
+  videoconvert ! jpegenc quality=85 ! avimux ! \
+  filesink location=/home/gemstone/output.avi
+```
+Oluşturulan çıktı `/home/gemstone/output.avi` konumuna kaydedilmiştir. Bu dosya üzerinden erişebilirsiniz.
+
+<Frame caption="Örnek hattın çıktısı: YOLOv7 ile tespit edilen nesneler kareler üzerine çizilmektedir.">
+  <img className="rounded-lg" src="/images/o1-board/ai/deepx-dxstream-output.gif" />
+</Frame>
+
+<Note>
+Yukarıdaki görsel, dokümantasyonda GIF olarak paylaşılabilmesi için çözünürlüğü ve süresi düşürülerek
+oluşturulmuştur. Hattın ürettiği gerçek çıktı, kaynak videonun çözünürlüğünde ve tam uzunluktadır.
+</Note>
+
+Hattın çalışma mantığı aşağıdaki gibidir.
+
+<ParamField body="urisourcebin ! decodebin">
+Video kaynağını okur ve çözer. `uri` özelliğine işlenecek dosyanın yolu verilmektedir.
+</ParamField>
+
+<ParamField body="dxpreprocess">
+Kareleri `resize-width` ve `resize-height` değerlerine göre yeniden boyutlandırır. `preprocess-id` değeri,
+sonraki `dxinfer` elemanı ile eşleştirme yapmak için kullanılmaktadır.
+</ParamField>
+
+<ParamField body="dxinfer">
+`model-path` ile belirtilen `.dxnn` modelini NPU üzerinde çalıştırır.
+</ParamField>
+
+<ParamField body="dxpostprocess">
+`library-file-path` ile belirtilen paylaşımlı kütüphaneyi kullanarak model çıktısını çözümler. Kullanılacak
+kütüphane, model ailesine göre değişmektedir.
+</ParamField>
+
+<ParamField body="dxosd">
+Tespit sonuçlarını kare üzerine çizer.
+</ParamField>
+
+<ParamField body="videoconvert ! jpegenc ! avimux">
+Kareleri kodlayıcının beklediği renk biçimine dönüştürür, `quality=85` değeri ile JPEG olarak sıkıştırır ve
+elde edilen kareleri AVI kapsayıcısında birleştirir.
+</ParamField>
+
+<ParamField body="filesink">
+Oluşturulan videoyu `location` ile belirtilen dosyaya yazar.
+</ParamField>
+
+<Tip>
+Ekran bağlı sistemlerde çıktıyı dosyaya kaydetmek yerine `videoconvert ! fpsdisplaysink sync=false` ile
+kare hızı bilgisi eşliğinde doğrudan ekranda görüntüleyebilirsiniz. X11 ortamı bulunmayan kurulumlarda
+`ximagesink` yerine `kmssink` tercih edilmelidir.
+</Tip>
+
+<Note>
+`queue` elemanları hattın asenkron çalışmasını sağlamaktadır. Bu elemanlar kaldırıldığında her aşama bir
+öncekinin bitmesini beklediği için kare hızı düşmektedir.
+</Note>
+
+### Nesne Takibi Eklenmesi
+
+Nesne tespitinin ardından `dxtracker` elemanı eklendiğinde, tespit edilen nesnelere kareler arasında
+kimlik (track ID) atanmaktadır.
+
+```bash
+... ! dxpostprocess ... ! queue max-size-buffers=1 ! dxtracker ! queue ! dxosd ! ...
+```
+
+<Warning>
+`dxtracker` elemanı sınırlayıcı kutu (bounding box) bilgisine ihtiyaç duymaktadır. Bu nedenle hat
+içerisinde nesne tespiti adımından sonra yer almalıdır.
+</Warning>
+
+## Kaynaklar
+
+<CardGroup cols={2}>
+  <Card title="DX-APP" icon="github" href="https://github.com/DEEPX-AI/dx_app">
+    Örnek uygulama şablonları
+  </Card>
+
+  <Card title="DX-STREAM" icon="github" href="https://github.com/DEEPX-AI/dx_stream">
+    GStreamer eklentileri ve hazır hatlar
+  </Card>
+
+  <Card title="DX-RT" icon="github" href="https://github.com/DEEPX-AI/dx_rt">
+    Çalışma zamanı kaynak kodu ve API örnekleri
+  </Card>
+
+  <Card title="DX Model Zoo" icon="github" href="https://github.com/DEEPX-AI/dx-modelzoo">
+    Hazır model deposu
+  </Card>
+
+  <Card title="deepx-npu-sdk" icon="github" href="https://github.com/t3gemstone/deepx-npu-sdk">
+    T3 Gemstone için çekirdek modülü, DX-RT çalışma zamanı ve GStreamer eklentisi Debian paketlerini üreten
+    derleme tarifleri
+  </Card>
+
+  <Card title="DEEPX Model Zoo" icon="globe" href="https://developer.deepx.ai/modelzoo/">
+    Önceden derlenmiş `.dxnn` modellerinin listelendiği ve indirilebildiği resmi model deposu
+  </Card>
+</CardGroup>

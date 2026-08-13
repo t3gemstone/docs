@@ -1,0 +1,175 @@
+---
+title: 'Kurulum'
+description: 'DX-M1 Modülünün Kart Üzerine Kurulumu'
+---
+
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-tr.mdx';
+import SnippetDeepxLspci from '/snippets/boards/o1/deepx/lspci.mdx';
+import SnippetDeepxLsmod from '/snippets/boards/o1/deepx/lsmod.mdx';
+import SnippetDeepxStatus from '/snippets/boards/o1/deepx/dxrt-status.mdx';
+
+Bu bölümde, DeepX DX-M1 hızlandırıcı modülünün T3 Gemstone O1 geliştirme kartına takılması, sürücü ve
+çalışma zamanı paketlerinin kurulması ile kurulumun doğrulanması adımları anlatılmaktadır.
+
+<Steps>
+
+  <Step title="Donanım Montajı">
+
+    <Warning>
+      Montaj işlemine başlamadan önce kartın güç bağlantısını kesiniz. Kart enerjili durumdayken M.2
+      modülünün takılması veya çıkarılması, hem modüle hem de karta kalıcı zarar verebilir.
+    </Warning>
+
+    DX-M1 modülünü kart üzerindeki M.2 2280 yuvasına yaklaşık 30 derecelik bir açı ile yerleştiriniz ve
+    modülü yatay konuma getirerek sabitleme vidasını sıkınız.
+
+    <Note>
+      Modül tam yük altında 5W'a kadar güç çekmekte ve ısınmaktadır. Sürekli çalışan uygulamalarda
+      modülün soğutucu (heatsink) ile birlikte kullanılması önerilmektedir.
+    </Note>
+  </Step>
+  
+  <Step title="Overlay Ekleme">
+
+    DX-M1 modülünün PCIe veri yolu üzerinden sorunsuz şekilde tanınabilmesi için bağlantı hızını
+    ayarlayan `k3-am67a-t3-gem-o1-pcie-link-speed-2.dtbo` overlay dosyasının aktif edilmesi
+    gerekmektedir.
+
+    Terminal arayüzünden `nano` isimli metin editörünü kullanarak boot klasöründe yer alan `uEnv.txt`
+    dosyasını açınız.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    <Tip>
+      Komutu sudo ile kullandığımız için şifre soracaktır. Değiştirmediyseniz Gem-Imager ile imajı
+      yazarken belirlemiş olduğunuz şifreyi kullanmalısınız.
+    </Tip>
+
+    `uEnv.txt` dosyasının içinde bu tarz tanımlamalar bulunacaktır.
+
+    <SnippetUEnv />
+
+    `k3-am67a-t3-gem-o1-pcie-link-speed-2.dtbo` dosya adını `overlays=` satırının sonuna boşluk
+    bırakarak ekleyin.
+
+    `uEnv.txt` dosyasının son hali böyle olacaktır. Uygun dosya adını `<dosya-adi>` kısmına
+    yerleştirmeniz gerekmektedir.
+
+    <SnippetUEnvEdit />
+
+    Overlay dosyasını tanımladıktan sonra, yapılan değişikliklerin sistem tarafından uygulanabilmesi
+    için kartın yeniden başlatılması gerekmektedir.
+
+    ```bash
+    sudo reboot
+    ```
+
+    <Note>
+      `overlays=` satırında yer alan diğer overlay dosyalarını silmeyiniz. Aksi halde daha önce aktif
+      edilmiş overlayler kullanılamaz duruma gelecektir.
+    </Note>
+  </Step>
+
+  <Step title="PCIe Bağlantısının Doğrulanması">
+
+    Kartı yeniden başlattıktan sonra modülün PCIe veri yolunda algılandığını kontrol ediniz.
+
+    ```bash
+    sudo apt install pciutils
+    ```
+
+    <SnippetDeepxLspci />
+
+    Çıktıda `Processing accelerators` satırının görünmesi, modülün donanım seviyesinde tanındığını
+    göstermektedir.
+
+    <Tip>
+      Modül listelenmiyorsa [Sorun Giderme](/tr/boards/o1/ai/deepx/troubleshooting) bölümündeki
+      **Modül lspci çıktısında görünmüyor** başlığını inceleyebilirsiniz.
+    </Tip>
+  </Step>
+
+  <Step title="Sürücü ve Çalışma Zamanı Kurulumu">
+
+    Paket listesini güncelledikten sonra DeepX sürücü ve çalışma zamanı paketini kurunuz.
+
+    ```bash
+    sudo apt update
+    sudo apt install dxrt dx-stream
+    ```
+
+    Bu paket; PCIe çekirdek sürücüsünü (`dxrt_driver`, `dx_dma`), DX-RT çalışma zamanını ve `dxrt-cli`
+    gibi yardımcı araçları kurmaktadır.
+
+    Sürücünün çekirdeğe yüklenebilmesi için kartı yeniden başlatınız.
+
+    ```bash
+    sudo reboot
+    ```
+
+    <Tip>
+      SDK'yı kaynak kodundan derlemek isterseniz bizim tarafımızdan yayınlanan
+      [deepx-npu-deepx](https://github.com/t3gemstone/deepx-npu-sdk) deposunu kullanabilirsiniz.
+    </Tip>
+  </Step>
+
+  <Step title="Sürücünün Yüklendiğinin Kontrolü">
+
+    Çekirdek modüllerini yükleyin ve ardından servisi yeniden başlatın.
+
+    ```bash
+    sudo modprobe dxrt_driver
+    sudo systemctl restart dxrt.service
+    ```
+
+    Yukarıdaki `modprobe` komutu modülü yalnızca o an için yüklemektedir. Sürücünün her açılışta
+    otomatik olarak yüklenmesi için modülü `systemd-modules-load` yapılandırmasına ekleyiniz.
+
+    ```bash
+    echo dxrt_driver | sudo tee /etc/modules-load.d/dxrt.conf
+    ```
+
+    Aşağıdaki komut ile çekirdek modülünün başarıyla yüklenip yüklenmediğini kontrol edebilirsiniz.
+
+    <SnippetDeepxLsmod />
+
+    Sürücü tarafından oluşturulan cihaz dosyalarını da kontrol edebilirsiniz.
+
+    ```bash
+    ls /dev/dxrt*
+    ```
+  </Step>
+
+  <Step title="Cihaz Durumunun Doğrulanması">
+
+    `dxrt-cli` aracı ile modülün çalışma zamanı tarafından erişilebilir olduğunu doğrulayınız.
+    Aşağıdakine benzer bir çıktı elde edilmesi beklenmektedir. Sürüm ve sıcaklık değerleri kullandığınız
+    donanıma göre farklılık gösterecektir.
+
+    <SnippetDeepxStatus />
+  </Step>
+
+  <Step title="Python Paketinin Kurulumu">
+
+    Python tarafındaki çıkarım arayüzü `dx_engine` paketi ile sağlanmaktadır. Paketi `pip3` ile kurunuz.
+
+    ```bash
+    pip3 install dx_engine
+    ```
+  </Step>
+
+  <Step title="Python Paketinin Doğrulanması">
+
+    Python ile çıkarım yapabilmek için `dx_engine` paketinin kullanılabilir olması gerekmektedir.
+
+    ```bash
+    python3 -c "from dx_engine import InferenceEngine; print('dx_engine hazir')"
+    ```
+
+    Komut hata vermeden çalıştıysa geliştirme ortamı kullanıma hazırdır.
+  </Step>
+
+</Steps>
