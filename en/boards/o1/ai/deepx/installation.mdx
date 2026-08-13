@@ -1,0 +1,176 @@
+---
+title: 'Installation'
+description: 'Installing the DX-M1 Module on the Board'
+---
+
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-en.mdx';
+import SnippetDeepxLspci from '/snippets/boards/o1/deepx/lspci.mdx';
+import SnippetDeepxLsmod from '/snippets/boards/o1/deepx/lsmod.mdx';
+import SnippetDeepxStatus from '/snippets/boards/o1/deepx/dxrt-status.mdx';
+
+This section explains the steps of installing the DeepX DX-M1 accelerator module on the T3 Gemstone O1
+development board, installing the driver and runtime packages, and verifying the installation.
+
+<Steps>
+
+  <Step title="Hardware Assembly">
+
+    <Warning>
+      Disconnect the power of the board before starting the assembly. Inserting or removing the M.2 module
+      while the board is powered on may cause permanent damage to both the module and the board.
+    </Warning>
+
+    Insert the DX-M1 module into the M.2 2280 slot on the board at an angle of approximately 30 degrees,
+    then bring the module into a horizontal position and tighten the retaining screw.
+
+    <Note>
+      The module draws up to 5W under full load and heats up. Using the module together with a heatsink is
+      recommended for continuously running applications.
+    </Note>
+  </Step>
+
+  <Step title="Adding the Overlay">
+
+    In order for the DX-M1 module to be recognized properly over the PCIe bus, the
+    `k3-am67a-t3-gem-o1-pcie-link-speed-2.dtbo` overlay file, which sets the link speed, must be
+    activated.
+
+    Open the `uEnv.txt` file located in the boot directory using the text editor named `nano` from the
+    terminal interface.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    <Tip>
+      Since we are using the command with sudo, it will ask for a password. If you have not changed it, you
+      must use the password you set while writing the image with Gem-Imager.
+    </Tip>
+
+    The `uEnv.txt` file will contain definitions such as these.
+
+    <SnippetUEnv />
+
+    Add the `k3-am67a-t3-gem-o1-pcie-link-speed-2.dtbo` file name to the end of the `overlays=` line,
+    leaving a space.
+
+    The final state of the `uEnv.txt` file will be like this. You need to place the appropriate file name in
+    the `<file-name>` section.
+
+    <SnippetUEnvEdit />
+
+    After defining the overlay file, the board must be restarted so that the changes can be applied by the
+    system.
+
+    ```bash
+    sudo reboot
+    ```
+
+    <Note>
+      Do not delete the other overlay files on the `overlays=` line. Otherwise the interfaces that were
+      activated earlier will become unusable.
+    </Note>
+  </Step>
+
+  <Step title="Verifying the PCIe Connection">
+
+    After restarting the board, check that the module is detected on the PCIe bus.
+
+    ```bash
+    sudo apt install pciutils
+    ```
+
+    <SnippetDeepxLspci />
+
+    The `Processing accelerators` line appearing in the output indicates that the module is recognized at
+    the hardware level.
+
+    <Tip>
+      If the module is not listed, you can review the **Module is not listed in the lspci output** heading
+      in the [Troubleshooting](/en/boards/o1/ai/deepx/troubleshooting) section.
+    </Tip>
+  </Step>
+
+  <Step title="Installing the Driver and Runtime">
+
+    After updating the package list, install the DeepX driver and runtime package.
+
+    ```bash
+    sudo apt update
+    sudo apt install dxrt dx-stream
+    ```
+
+    This package installs the PCIe kernel driver (`dxrt_driver`, `dx_dma`), the DX-RT runtime and helper
+    tools such as `dxrt-cli`.
+
+    Restart the board so that the driver can be loaded into the kernel.
+
+    ```bash
+    sudo reboot
+    ```
+
+    <Tip>
+      If you would like to build the SDK from source, you can use the
+      [deepx-npu-deepx](https://github.com/t3gemstone/deepx-npu-sdk) repository published by us.
+    </Tip>
+  </Step>
+
+  <Step title="Checking That the Driver Is Loaded">
+
+    Load the kernel modules and then restart the service.
+
+    ```bash
+    sudo modprobe dxrt_driver
+    sudo systemctl restart dxrt.service
+    ```
+
+    The `modprobe` command above loads the module only for the current session. In order for the driver to
+    be loaded automatically on every boot, add the module to the `systemd-modules-load` configuration.
+
+    ```bash
+    echo dxrt_driver | sudo tee /etc/modules-load.d/dxrt.conf
+    ```
+
+    You can check whether the kernel module was loaded successfully with the command below.
+
+    <SnippetDeepxLsmod />
+
+    You can also check the device files created by the driver.
+
+    ```bash
+    ls /dev/dxrt*
+    ```
+  </Step>
+
+  <Step title="Verifying the Device Status">
+
+    Verify with the `dxrt-cli` tool that the module is accessible by the runtime. An output similar to the
+    following is expected. The version and temperature values will differ depending on the hardware you are
+    using.
+
+    <SnippetDeepxStatus />
+  </Step>
+
+  <Step title="Installing the Python Package">
+
+    The inference interface on the Python side is provided by the `dx_engine` package. Install the package
+    with `pip3`.
+
+    ```bash
+    pip3 install dx_engine
+    ```
+  </Step>
+
+  <Step title="Verifying the Python Package">
+
+    In order to run inference with Python, the `dx_engine` package must be available.
+
+    ```bash
+    python3 -c "from dx_engine import InferenceEngine; print('dx_engine is ready')"
+    ```
+
+    If the command ran without an error, the development environment is ready to use.
+  </Step>
+
+</Steps>

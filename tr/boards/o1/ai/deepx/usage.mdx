@@ -1,0 +1,351 @@
+---
+title: 'Kullanım'
+description: 'DX-M1 Modülünün Yönetimi ve Python ile Çıkarım Yapılması'
+---
+
+import SnippetDeepxStatus from '/snippets/boards/o1/deepx/dxrt-status.mdx';
+
+Bu bölümde, DX-M1 hızlandırıcı modülünün komut satırı araçları ile yönetilmesi, performansının ölçülmesi ve
+Python arayüzü kullanılarak çıkarım yapılması anlatılmaktadır.
+
+<Note>
+Bu bölümdeki komutların çalıştırılabilmesi için sürücü ve çalışma zamanı kurulumunun tamamlanmış olması
+gerekmektedir. Kurulum adımları için [Kurulum](/tr/boards/o1/ai/deepx/installation) bölümünü inceleyebilirsiniz.
+</Note>
+
+## Komut Satırı Araçları
+
+DX-RT çalışma zamanı ile birlikte aşağıdaki yardımcı araçlar kurulmaktadır.
+
+| Araç          | Açıklama                                                                 |
+| ------------- | ------------------------------------------------------------------------ |
+| `dxrt-cli`    | Cihaz durumu sorgulama, izleme, sıfırlama ve yazılım güncelleme aracı     |
+| `dxtop`       | NPU çekirdek kullanımını gerçek zamanlı gösteren izleme aracı             |
+| `run_model`   | Derlenmiş bir modelin performansını ölçen kıyaslama (benchmark) aracı     |
+| `parse_model` | `.dxnn` model dosyasının yapısını ve bellek kullanımını inceleme aracı    |
+
+### Cihaz Durumunun Sorgulanması
+
+Modülün anlık sıcaklık, gerilim ve saat frekansı değerlerini görüntülemek için `--status` seçeneği
+kullanılmaktadır.
+
+<SnippetDeepxStatus />
+
+Modüle ait donanım ve sürüm bilgilerini görüntülemek için `--info` seçeneği kullanılmaktadır.
+
+```bash
+dxrt-cli --info
+```
+
+`dxrt-cli` aracının sık kullanılan seçenekleri aşağıdaki tabloda listelenmiştir.
+
+| Seçenek              | Açıklama                                                              |
+| -------------------- | --------------------------------------------------------------------- |
+| `-s`, `--status`     | Cihaz durumunu görüntüler                                             |
+| `-i`, `--info`       | Cihaz bilgilerini görüntüler                                          |
+| `-m`, `--monitor <n>`| Cihaz durumunu `n` saniyelik aralıklarla sürekli olarak görüntüler     |
+| `-d`, `--device <id>`| Komutun uygulanacağı cihazı belirtir                                  |
+| `-r`, `--reset`      | NPU çekirdeklerini sıfırlar                                           |
+| `-u`, `--fwupdate`   | Belirtilen dosya ile cihaz yazılımını (firmware) güncelleştirir        |
+| `-v`, `--version`    | Sürüm bilgilerini görüntüler                                          |
+| `-h`, `--help`       | Kullanım bilgilerini görüntüler                                       |
+
+Örneğin cihaz durumunu 1 saniyelik aralıklarla izlemek için aşağıdaki komutu kullanabilirsiniz.
+
+```bash
+dxrt-cli --monitor 1
+```
+
+<Warning>
+Modülün sıcaklığının uzun süre yüksek seviyelerde kalması, donanımın kendini korumak amacıyla saat
+frekansını düşürmesine ve performansın azalmasına neden olmaktadır. Yoğun iş yükü
+altında çalıştırdığınız uygulamalarda sıcaklık değerlerini `dxrt-cli --monitor` ile takip etmeniz
+önerilmektedir.
+</Warning>
+
+### NPU Kullanımının İzlenmesi
+
+Uygulamanız çalışırken NPU çekirdeklerinin ne kadar meşgul olduğunu gözlemlemek için `dxtop` aracını
+kullanabilirsiniz.
+
+```bash
+dxtop
+```
+
+Araç, her bir NPU çekirdeği için kullanım oranını, sıcaklığı ve bellek tüketimini gerçek zamanlı olarak
+göstermektedir. Uygulamadan çıkmak için `q` tuşuna basmanız yeterlidir.
+
+## Hazır Modellerin İndirilmesi
+
+NPU yalnızca `.dxnn` biçimine derlenmiş modelleri çalıştırabilmektedir. Bu bölümdeki örnekleri denemek için
+kendi modelinizi derlemenize gerek bulunmamaktadır; DEEPX model deposunda (Model Zoo) önceden derlenmiş
+üç yüzden fazla model hazır olarak sunulmaktadır.
+
+### Modellerin İndirilmesi
+
+Model deposunun tamamına erişmek ve modelleri kategori bazında indirmek için DX-APP deposundaki `setup.sh`
+betiği kullanılmaktadır. Betik, indirilen dosyaları `assets/models` klasörüne yerleştirmektedir.
+
+Sık kullanılan bazı modellerin dosya adları aşağıdaki tabloda listelenmiştir.
+
+| Model                      | Görev               | Dosya adı                                 |
+| -------------------------- | ------------------- | ----------------------------------------- |
+| `YoloV5S`                  | Nesne tespiti       | `yolov5-s_640x640.dxnn`                   |
+| `YoloV7`                   | Nesne tespiti       | `yolov7_640x640.dxnn`                     |
+| `ResNet50`                 | Sınıflandırma       | `resnet50_224x224.dxnn`                   |
+| `MobileNetV2`              | Sınıflandırma       | `mobilenetv2_224x224.dxnn`                |
+| `YOLOv5s_Face`             | Yüz tespiti         | `yolov5-s-face_640x640.dxnn`              |
+| `yolov5s_seg`              | Örnek segmantasyon     | `yolov5-s-seg_640x640.dxnn`               |
+| `DeepLabV3PlusMobileNetV2` | Anlamsal segmantasyon  | `deeplabv3plus_mobilenetv2_512x512.dxnn`  |
+| `FastDepth_1`              | Derinlik tahmini    | `fastdepth_224x224.dxnn`                  |
+
+```bash
+git clone https://github.com/DEEPX-AI/dx_app.git
+cd dx_app
+
+# İndirilebilecek modeller listelenir
+./setup.sh --list
+
+# Yalnızca belirtilen modeller indirilir
+./setup.sh --models YoloV5S YoloV7 ResNet50
+
+# Belirtilen görev kategorisindeki modeller indirilir
+./setup.sh --category "Object Detection"
+```
+
+<Tip>
+İndirdiğiniz modelin geçerli olduğunu ve kart üzerinde çalıştığını `run_model -m ./assets/models/yolov5-s_640x640.dxnn -b`
+komutu ile doğrulayabilirsiniz.
+</Tip>
+
+Betiğin model indirme ile ilgili seçenekleri aşağıdaki tabloda listelenmiştir.
+
+| Seçenek              | Açıklama                                                                  |
+| -------------------- | ------------------------------------------------------------------------- |
+| `--list`             | İndirilebilecek modelleri listeler                                        |
+| `--models <m1> <m2>` | Yalnızca adı belirtilen modelleri indirir                                 |
+| `--category <ad>`    | Belirtilen görev kategorisindeki modellerin tamamını indirir               |
+| `--demo-models`      | Yalnızca demo betiklerinin kullandığı modelleri indirir                    |
+| `--all`              | Depodaki tüm modelleri etkileşim gerektirmeden indirir                     |
+| `--dry-run`          | İndirme yapmadan hangi dosyaların indirileceğini gösterir                  |
+| `--workers <n>`      | Eş zamanlı indirme sayısını belirler (varsayılan `4`)                      |
+| `--no-force`         | Daha önce indirilmiş dosyaları yeniden indirmez                            |
+
+<Note>
+Betik hiçbir seçenek verilmeden çalıştırıldığında kategori ve model seçimi menü üzerinden yapılmaktadır.
+Kullanılabilir modellerin listesi `scripts/modelzoo_manifest.json` dosyasında tutulmaktadır.
+</Note>
+
+<Warning>
+`--all` seçeneği depodaki tüm modelleri indirdiğinden onlarca gigabaytlık disk alanı gerektirmektedir.
+Yalnızca ihtiyaç duyduğunuz modelleri `--models` veya `--category` seçenekleri ile indirmeniz önerilmektedir.
+</Warning>
+
+## Model Performansının Ölçülmesi
+
+Derlenmiş bir modelin kart üzerindeki gerçek performansını ölçmek için `run_model` aracı kullanılmaktadır.
+
+```bash
+run_model -m yolov5-s_640x640.dxnn -b -l 100 -v
+```
+
+<ParamField body="-m, --model" required>
+Ölçüm yapılacak `.dxnn` model dosyasının yolu.
+</ParamField>
+
+<ParamField body="-b, --benchmark">
+Maksimum verim modunda ölçüm yapar. Varsayılan çalışma modudur.
+</ParamField>
+
+<ParamField body="-s, --single">
+Tek çekirdek üzerinde, sıralı olarak tek girdi ile ölçüm yapar.
+</ParamField>
+
+<ParamField body="-l, --loops" default="30">
+Gerçekleştirilecek çıkarım döngüsü sayısı.
+</ParamField>
+
+<ParamField body="-t, --time">
+Ölçümün saniye cinsinden süresi. Belirtildiğinde `--loops` değerini geçersiz kılar.
+</ParamField>
+
+<ParamField body="-w, --warmup-runs" default="0">
+Ölçüme başlamadan önce yapılacak ısınma turu sayısı.
+</ParamField>
+
+<ParamField body="-v, --verbose">
+NPU işlem süresi ve gecikme (latency) değerlerini ayrıntılı olarak gösterir.
+</ParamField>
+
+Komut sonucunda NPU işlem süresi, gecikme ve saniyedeki kare sayısı (FPS) değerleri raporlanmaktadır.
+
+<Tip>
+Bir modelin katman yapısını, bellek kullanımını ve NPU üzerindeki görev dağılımını incelemek için
+`parse_model -m yolov5-s_640x640.dxnn -v` komutunu kullanabilirsiniz.
+</Tip>
+
+## Python ile Çıkarım Yapılması
+
+Python uygulamalarında NPU'yu kullanmak için `dx_engine` paketi içerisindeki `InferenceEngine` sınıfı
+kullanılmaktadır. Temel akış; modelin yüklenmesi, girdi bufferının hazırlanması, çıkarımın çalıştırılması ve
+sonuçların işlenmesi adımlarından oluşmaktadır.
+
+```python
+import numpy as np
+from dx_engine import InferenceEngine
+
+# Derlenmiş model dosyası yüklenir
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+
+    # Modelin beklediği boyutta girdi bufferı hazırlanır
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    # Çıkarım işlemi çalıştırılır
+    outputs = ie.run([buffer])
+
+    for index, output in enumerate(outputs):
+        print(f"çıktı[{index}]: biçim={output.shape}, tip={output.dtype}")
+```
+
+<Warning>
+Girdi bufferını oluştururken `np.zeros()` kullanılması önerilmemektedir. `np.zeros()` ile ayrılan sanal
+bellek adreslerinin tümü aynı fiziksel adresi işaret ettiğinden, PCIe DMA sürücüsü aynı fiziksel adresi
+birden fazla kez gördüğünde `EFAULT` hatası vermektedir. Bu nedenle yukarıdaki örnekte olduğu gibi
+`np.empty()` ile tampon ayrılıp `fill()` ile doldurulmalıdır.
+</Warning>
+
+### Model Bilgilerinin Alınması
+
+Girdi ve çıktı katmanlarına ait bilgiler, ön işleme ve son işleme adımlarının doğru yazılabilmesi için
+çalışma zamanından sorgulanabilmektedir.
+
+```python
+from dx_engine import InferenceEngine
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    print("Girdi tampon boyutu :", ie.get_input_size())
+    print("Çıktı tampon boyutu :", ie.get_output_size())
+    print("Girdi tensörleri    :", ie.get_input_tensors_info())
+    print("Çıktı tensörleri    :", ie.get_output_tensors_info())
+```
+
+### Asenkron Çıkarım
+
+Video akışı gibi sürekli veri işlenen uygulamalarda, çıkarım işleminin sonucunu beklemeden yeni kare
+göndermek performansı artırmaktadır. Bu amaçla `run_async` metodu kullanılmaktadır. Metot, çıkarım
+tamamlanmasını beklemeden bir iş numarası döndürmektedir.
+
+Sonuçların toplanması için iki yöntem bulunmaktadır. Geri çağırma (callback) fonksiyonu kaydedilerek
+sonuçların otomatik olarak iletilmesi sağlanabilir veya iş numarası ile `wait` metodu kullanılarak sonuç
+talep edilebilir.
+
+<CodeGroup>
+
+```python Geri Çağırma
+import numpy as np
+from dx_engine import InferenceEngine
+
+
+def on_inference_done(outputs, user_arg):
+    # Son işleme adımları bu fonksiyon içerisinde gerçekleştirilir
+    print("Çıkarım tamamlandı:", user_arg)
+    return 0
+
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    # Geri çağırma fonksiyonu kaydedilir
+    ie.register_callback(on_inference_done)
+
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    for index in range(10):
+        # Sonuç beklenmeden çıkarım isteği sıraya alınır
+        ie.run_async([buffer], user_arg=index)
+```
+
+```python Bekleme
+import numpy as np
+from dx_engine import InferenceEngine
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    # Çıkarım istekleri sıraya alınır ve iş numaraları saklanır
+    job_ids = [ie.run_async([buffer], user_arg=index) for index in range(10)]
+
+    # Sonuçlar iş numaraları ile sırayla toplanır
+    for job_id in job_ids:
+        outputs = ie.wait(job_id)
+```
+
+</CodeGroup>
+
+<Warning>
+Bu iki yöntem birlikte kullanılmamalıdır. `wait` metodu ile sonuç toplanacaksa `register_callback` ile
+geri çağırma fonksiyonu kaydedilmemelidir.
+</Warning>
+
+<Note>
+Geri çağırma fonksiyonu ayrı bir iş parçacığında (thread) çalıştırıldığından, paylaşılan veri yapılarına
+erişimde kilit kullanılması gerekmektedir.
+</Note>
+
+### Performans Ölçümü ve Cihaz İzleme
+
+Çıkarım performansı `run_benchmark` metodu ile ölçülebilmekte, cihaz durumu ise `DeviceStatus` sınıfı ile
+uygulama içerisinden okunabilmektedir.
+
+```python
+import numpy as np
+from dx_engine import InferenceEngine
+from dx_engine.device_status import DeviceStatus
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    fps = ie.run_benchmark(100, [buffer])
+    print(f"Ortalama FPS: {fps}")
+
+status = DeviceStatus.get_current_status(0)
+print("Sıcaklık          :", status.get_temperature(0), "C")
+print("Çekirdek kullanımı:", status.get_core_utilization(0), "%")
+print("Kullanılan bellek :", status.get_memory_used())
+print("Boş bellek        :", status.get_memory_free())
+```
+
+<Tip>
+Gecikme ve NPU işlem süresi istatistiklerine `ie.get_latency_mean()` ve `ie.get_npu_inference_time_mean()`
+metotları ile erişebilirsiniz.
+</Tip>
+
+## C/C++ Arayüzü
+
+DX-RT, Python arayüzünün yanı sıra C ve C++ arayüzü de sunmaktadır. C++ tarafında aynı iş akışı
+`dxrt::InferenceEngine` sınıfı ile gerçekleştirilmektedir.
+
+```cpp
+#include "dxrt/dxrt_cxx_api.h"
+#include <vector>
+
+int main()
+{
+    // Derlenmiş model dosyası yüklenir
+    dxrt::InferenceEngine ie("yolov5-s_640x640.dxnn");
+
+    // Modelin beklediği boyutta girdi bufferı hazırlanır
+    std::vector<uint8_t> input(ie.GetInputSize(), 0);
+
+    // Çıkarım işlemi çalıştırılır
+    auto outputs = ie.Run(input.data());
+
+    return 0;
+}
+```
+
+<Tip>
+C++ ve Python arayüzlerine ait tüm örnekler, SDK içerisindeki `dx_rt/examples` klasöründe yer almaktadır.
+</Tip>

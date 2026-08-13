@@ -1,0 +1,177 @@
+---
+title: 'Sorun Giderme'
+description: 'DX-M1 Kullanımında Sık Karşılaşılan Sorunlar'
+---
+
+Bu bölümde, DX-M1 hızlandırıcı modülünün kurulumu ve kullanımı sırasında sık karşılaşılan sorunlar ile
+çözüm önerileri yer almaktadır.
+
+<AccordionGroup>
+
+  <Accordion title="Modül lspci çıktısında görünmüyor">
+
+    Modülün PCIe veri yolunda hiç listelenmemesi, sorunun donanım seviyesinde olduğunu göstermektedir.
+
+    Sırasıyla aşağıdaki adımları uygulayınız.
+
+    1. Kartın enerjisini kesiniz ve modülü yuvasından çıkarıp yeniden takınız. Modülün yuvaya tam
+       oturduğundan ve sabitleme vidasının sıkıldığından emin olunuz.
+    2. Kullandığınız güç adaptörünün, kart ve modülün toplam tüketimini karşılayabildiğini kontrol ediniz.
+       Yetersiz besleme, modülün PCIe bağlantısını kuramamasına neden olmaktadır.
+    3. Çekirdek günlüklerinde PCIe bağlantısına ait hata olup olmadığını inceleyiniz.
+
+    ```bash
+    sudo dmesg | grep -i pcie
+    ```
+  </Accordion>
+
+  <Accordion title="Sürücü modülleri yüklenmiyor">
+
+    `lsmod | grep dx` komutu boş çıktı veriyorsa sürücü çekirdeğe yüklenmemiştir.
+
+    Öncelikle sürücünün yüklenmeye çalışılırken hata verip vermediğini kontrol ediniz.
+
+    ```bash
+    sudo dmesg | grep -i dxrt
+    ```
+
+    Sürücüyü elle yüklemeyi deneyebilirsiniz.
+
+    ```bash
+    sudo modprobe dxrt_driver
+    ```
+  </Accordion>
+
+  <Accordion title="Cihaz dosyasına erişim izni hatası alınıyor">
+
+    `Permission denied` hatası, kullanıcının sürücü tarafından oluşturulan cihaz dosyasına erişim yetkisi
+    olmadığını göstermektedir.
+
+    Uygulamayı geçici olarak yetkili kullanıcı ile çalıştırabilirsiniz.
+
+    ```bash
+    sudo dxrt-cli -s
+    ```
+
+    Kalıcı çözüm için cihaz dosyasının sahibi ve izinlerini inceleyerek kullanıcınızı ilgili gruba
+    ekleyebilirsiniz.
+
+    ```bash
+    ls -l /dev/dxrt*
+    ```
+  </Accordion>
+
+  <Accordion title="Çıkarım sırasında EFAULT hatası alınıyor">
+
+    Python uygulamalarında girdi bufferı `np.zeros()` ile oluşturulduğunda bu hata ile
+    karşılaşılabilmektedir. `np.zeros()` ile ayrılan sanal bellek sayfalarının tümü aynı fiziksel sayfayı
+    işaret etmekte, PCIe DMA sürücüsü ise aynı fiziksel sayfayı birden fazla kez gördüğünde hata
+    üretmektedir.
+
+    Girdi bufferını aşağıdaki biçimde oluşturunuz.
+
+    ```python
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+    ```
+  </Accordion>
+
+  <Accordion title="Model yüklenirken sürüm uyumsuzluğu bildiriliyor">
+
+    DX-RT çalışma zamanı, yüklenen modelin derleme sürümünü doğrulamaktadır. Modelin, kart üzerindeki
+    çalışma zamanından daha eski bir DX-COM sürümü ile derlenmiş olması bu hataya neden olmaktadır.
+
+    Kurulu sürümleri kontrol ediniz.
+
+    ```bash
+    dxrt-cli -v
+    ```
+
+  </Accordion>
+
+  <Accordion title="Beklenenden düşük kare hızı alınıyor">
+
+    Kare hızının beklenenin altında kalması genellikle NPU dışındaki adımlardan kaynaklanmaktadır.
+
+    Öncelikle darboğazın nerede olduğunu belirleyiniz. Modelin NPU üzerindeki saf performansını ölçmek için
+    kıyaslama aracını kullanabilirsiniz.
+
+    ```bash
+    run_model -m model.dxnn -b -l 100 -v
+    ```
+
+    Bu ölçüm beklenen değerleri veriyor ancak uygulamanız yavaş çalışıyorsa darboğaz ön işleme, son işleme
+    veya görüntüleme adımlarındadır. Bu durumda aşağıdakileri değerlendirebilirsiniz.
+
+    - Senkron şablon yerine asenkron şablonu kullanınız. Böylece NPU çıkarım yaparken CPU bir sonraki kareyi
+      hazırlayabilir.
+    - Görselleştirmeyi devre dışı bırakınız.
+    - Python ile yazılmış son işleme adımları yerine C++ karşılıklarını kullanınız.
+
+    Ölçüm de düşük çıkıyorsa modülün sıcaklığını kontrol ediniz.
+
+    ```bash
+    dxrt-cli --monitor 1
+    ```
+
+    <Warning>
+      Sıcaklığın yüksek seyretmesi durumunda donanım kendini korumak amacıyla saat frekansını düşürmektedir.
+      Bu durumda modülün havalandırmasını iyileştirmeniz veya soğutucu kullanmanız gerekmektedir.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Model doğru çalışıyor ancak sonuçlar hatalı">
+
+    Derleme işleminin başarılı olması, modelin doğru sonuç üreteceğini garanti etmemektedir. Bu durumun en
+    yaygın iki nedeni bulunmaktadır.
+
+    - **Ön işleme uyumsuzluğu:** Derleme sırasında yapılandırma dosyasında tanımlanan ön işleme adımları,
+      eğitim sırasında uygulanan adımlarla birebir aynı olmalıdır. Renk uzayı dönüşümü, normalizasyon
+      değerleri ve boyutlandırma yöntemindeki farklılıklar hatalı sonuçlara yol açmaktadır.
+    - **Kalibrasyon veri setinin yetersizliği:** Niceleme sırasında kullanılan görüntülerin, modelin
+      çalışacağı ortamı temsil etmemesi doğruluğun belirgin biçimde düşmesine neden olmaktadır.
+
+    Model çıktısını doğrulamak için aynı girdi ile ONNX modelinin bilgisayar üzerindeki sonucu ile NPU
+    sonucunu karşılaştırabilirsiniz.
+  </Accordion>
+
+  <Accordion title="Birden fazla uygulama aynı anda NPU kullanamıyor">
+
+    Birden fazla süreç (process) NPU'yu aynı anda kullanacaksa, kaynak paylaşımını yöneten `dxrt` hizmetinin
+    çalışıyor olması gerekmektedir.
+
+    ```bash
+    systemctl status dxrt
+    ```
+
+    Hizmet çalışmıyorsa başlatınız ve açılışta otomatik başlaması için etkinleştiriniz.
+
+    ```bash
+    sudo systemctl enable --now dxrt
+    ```
+  </Accordion>
+
+  <Accordion title="M.2 yuvasına hem SSD hem hızlandırıcı takılmak isteniyor">
+
+    T3 Gemstone O1 geliştirme kartı üzerinde tek bir M.2 2280 yuvası bulunmaktadır. Bu nedenle NVMe SSD ile
+    DX-M1 hızlandırıcı modülü aynı anda kullanılamamaktadır.
+
+    Ek depolama alanına ihtiyaç duyuyorsanız microSD kart yuvasını veya USB üzerinden bağlanan bir depolama
+    birimini kullanabilirsiniz.
+  </Accordion>
+
+</AccordionGroup>
+
+## Destek
+
+Sorununuz bu bölümde yer almıyorsa [T3 Gemstone Topluluk Forumu](https://community.t3gemstone.org)
+üzerinden destek talebinde bulunabilirsiniz. Paylaşım yaparken aşağıdaki bilgileri eklemeniz sorunun daha
+hızlı çözülmesini sağlamaktadır.
+
+```bash
+uname -a
+lspci
+lsmod | grep dx
+dxrt-cli -s
+dxrt-cli -v
+```
