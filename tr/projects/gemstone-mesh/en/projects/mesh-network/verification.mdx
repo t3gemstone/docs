@@ -1,0 +1,138 @@
+---
+title: "Mesh Networking with IBSS and BATMAN-adv: What We Did"
+description: "Verification results for direct IBSS reachability and bidirectional BATMAN-adv multi-hop communication across three T3 Gemstone O1 nodes"
+---
+
+## Verify the direct IBSS topology
+
+Before starting BATMAN-adv, use the `192.168.100.x` addresses to verify which nodes are directly reachable.
+
+On Node 1:
+
+```bash
+ping -c 5 192.168.100.2
+ping -c 5 192.168.100.3
+```
+
+In the verified test, Node 2 was reachable while Node 3 was not directly reachable. Condensed terminal result:
+
+```text
+$ ping -c 5 192.168.100.2
+...
+5 packets transmitted, 5 received, 0% packet loss
+
+$ ping -c 5 192.168.100.3
+...
+Destination Host Unreachable
+...
+5 packets transmitted, 0 received, 100% packet loss
+```
+
+The reverse direction was also checked from Node 3:
+
+```bash
+ping -c 5 192.168.100.2
+ping -c 5 192.168.100.1
+```
+
+Node 3 could reach Node 2 directly but could not reach Node 1 over the IBSS subnet. This verifies that the edge nodes were not communicating through a hidden direct IBSS path.
+
+## Verify the mesh topology
+
+### Direct BATMAN-adv neighbors
+
+Display the neighbor table on each node:
+
+```bash
+sudo batctl n
+```
+
+In the test, Node 1 had only Node 2 as a direct neighbor:
+
+```text
+Neighbor              last-seen
+b0:8c:b3:c3:83:ea     ...
+```
+
+Node 2 had two direct neighbors:
+
+```text
+Neighbor              last-seen
+b0:8c:b3:c3:77:f8     ...
+b0:8c:b3:c3:75:b6     ...
+```
+
+The tested `wlan0` MAC mapping was:
+
+| Node | `wlan0` MAC |
+| --- | --- |
+| Node 1 | `b0:8c:b3:c3:75:b6` |
+| Node 2 | `b0:8c:b3:c3:83:ea` |
+| Node 3 | `b0:8c:b3:c3:77:f8` |
+
+Node 3 also had only Node 2 as its direct neighbor. The neighbor tables therefore verify the following logical topology:
+
+```text
+Node 1  <------>  Node 2  <------>  Node 3
+Node 1  <---------- X ----------->  Node 3
+```
+
+### Inspect originator and next-hop information
+
+Use the originator table to inspect the selected forwarding path:
+
+```bash
+sudo batctl o
+```
+
+In the test, Node 1 selected Node 2 as the next hop toward Node 3. Node 3 likewise selected Node 2 as the next hop toward Node 1.
+
+This is stronger evidence than a successful ping alone because it shows that the mesh layer actually selected the intermediate node as the forwarding path toward the remote endpoint.
+
+## Test end-to-end multi-hop communication
+
+From Node 1, ping the `bat0` address of Node 3:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+Condensed successful result:
+
+```text
+5 packets transmitted, 5 received, 0% packet loss
+```
+
+In the reverse direction, from Node 3 to Node 1:
+
+```bash
+ping -c 5 192.168.200.1
+```
+
+Condensed successful result:
+
+```text
+4 packets transmitted, 4 received, 0% packet loss
+```
+
+When these results are evaluated together with the failed direct `192.168.100.x` tests and the `batctl n` / `batctl o` tables, they verify that traffic between the edge nodes is forwarded through Node 2.
+
+> **Convergence note:** During the test, some initial `bat0` ping attempts failed before neighbor/originator information had stabilized. If an endpoint is not immediately reachable, inspect `sudo batctl n` and `sudo batctl o`, allow the mesh state to settle, and repeat the test.
+
+## Result
+
+A two-hop mesh path was successfully verified across three T3 Gemstone O1 boards using IBSS and BATMAN-adv. IBSS provided the direct wireless adjacencies, while BATMAN-adv provided Layer 2 multi-hop forwarding over those adjacencies.
+
+The verification chain was:
+
+1. Node 1 and Node 3 could not directly reach each other using their `192.168.100.x` IBSS addresses.
+2. Node 2 saw both edge nodes as direct BATMAN-adv neighbors.
+3. The originator tables on the edge nodes selected Node 2 as the next hop toward the remote edge node.
+4. Bidirectional communication between `192.168.200.1` and `192.168.200.3` succeeded.
+
+The following forwarding paths were therefore functionally verified:
+
+```text
+Node 1  -->  Node 2  -->  Node 3
+Node 3  -->  Node 2  -->  Node 1
+```

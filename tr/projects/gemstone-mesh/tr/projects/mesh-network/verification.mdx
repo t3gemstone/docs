@@ -1,0 +1,138 @@
+---
+title: "IBSS ve BATMAN-adv ile Mesh Ağ: Özetle Ne Yaptık?"
+description: "Üç T3 Gemstone O1 düğümünde doğrudan IBSS erişimi ve BATMAN-adv multi-hop haberleşmesinin doğrulama sonuçları"
+---
+
+## Doğrudan IBSS topolojisini doğrulama
+
+BATMAN-adv başlatılmadan önce `192.168.100.x` adresleri ile doğrudan erişimi kontrol edin.
+
+Düğüm 1 üzerinde:
+
+```bash
+ping -c 5 192.168.100.2
+ping -c 5 192.168.100.3
+```
+
+Testte Düğüm 2 erişilebilirken Düğüm 3 doğrudan erişilebilir değildi. Özetlenmiş terminal sonucu:
+
+```text
+$ ping -c 5 192.168.100.2
+...
+5 packets transmitted, 5 received, 0% packet loss
+
+$ ping -c 5 192.168.100.3
+...
+Destination Host Unreachable
+...
+5 packets transmitted, 0 received, 100% packet loss
+```
+
+Düğüm 3 üzerinde ters yön de kontrol edildi:
+
+```bash
+ping -c 5 192.168.100.2
+ping -c 5 192.168.100.1
+```
+
+Testte Düğüm 3, Düğüm 2'ye erişebilirken Düğüm 1'e doğrudan erişemedi. Böylece uç düğümlerin birbirine gizli bir doğrudan IBSS yolu üzerinden ulaşmadığı doğrulandı.
+
+## Mesh topolojisini doğrulama
+
+### Doğrudan BATMAN-adv komşuları
+
+Her düğümde komşu tablosunu görüntüleyin:
+
+```bash
+sudo batctl n
+```
+
+Testte Düğüm 1 yalnızca Düğüm 2'yi doğrudan komşu olarak gördü:
+
+```text
+Neighbor              last-seen
+b0:8c:b3:c3:83:ea     ...
+```
+
+Düğüm 2 ise iki doğrudan komşu gördü:
+
+```text
+Neighbor              last-seen
+b0:8c:b3:c3:77:f8     ...
+b0:8c:b3:c3:75:b6     ...
+```
+
+Bu testte kullanılan `wlan0` MAC eşleşmeleri şöyledir:
+
+| Düğüm | `wlan0` MAC |
+| --- | --- |
+| Düğüm 1 | `b0:8c:b3:c3:75:b6` |
+| Düğüm 2 | `b0:8c:b3:c3:83:ea` |
+| Düğüm 3 | `b0:8c:b3:c3:77:f8` |
+
+Düğüm 3 tarafında da tek doğrudan komşu Düğüm 2'dir. Böylece komşu tabloları mantıksal olarak aşağıdaki yapıyı doğrular:
+
+```text
+Düğüm 1  <------>  Düğüm 2  <------>  Düğüm 3
+Düğüm 1  <---------- X ----------->  Düğüm 3
+```
+
+### Originator ve next-hop bilgisini kontrol etme
+
+Uzak düğümlere hangi komşu üzerinden erişildiğini görmek için:
+
+```bash
+sudo batctl o
+```
+
+Testte Düğüm 1'in originator tablosunda Düğüm 3'e giden next-hop Düğüm 2, Düğüm 3'ün originator tablosunda ise Düğüm 1'e giden next-hop yine Düğüm 2 olarak gözlendi.
+
+Bu kontrol, yalnızca bir ping başarısı görmekten daha güçlü bir doğrulama sağlar; mesh katmanının uzak düğüm için ara düğümü gerçekten iletim yolu olarak seçtiğini gösterir.
+
+## Uçtan uca multi-hop iletişimi test etme
+
+Düğüm 1'den Düğüm 3'ün `bat0` adresine ping gönderin:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+Başarılı testin özetlenmiş sonucu:
+
+```text
+5 packets transmitted, 5 received, 0% packet loss
+```
+
+Ters yönde, Düğüm 3'ten Düğüm 1'e:
+
+```bash
+ping -c 5 192.168.200.1
+```
+
+Başarılı testin özetlenmiş sonucu:
+
+```text
+4 packets transmitted, 4 received, 0% packet loss
+```
+
+Doğrudan `192.168.100.x` erişiminin uç düğümler arasında başarısız olmasına rağmen `192.168.200.x` adresleri üzerinden iki yönlü iletişim kurulması, `batctl n` ve `batctl o` tablolarıyla birlikte değerlendirildiğinde trafiğin Düğüm 2 üzerinden multi-hop taşındığını doğrular.
+
+> **Yakınsama notu:** Test sırasında ilk `bat0` ping denemelerinin bazıları başarısız olmuş, komşu/originator tabloları kararlı hale geldikten sonra iletişim başarıyla kurulmuştur. Bir uç henüz erişilemiyorsa önce `sudo batctl n` ve `sudo batctl o` çıktılarını kontrol edip testi tekrar edin.
+
+## Sonuç
+
+Üç T3 Gemstone O1 kartı üzerinde IBSS ve BATMAN-adv birlikte kullanılarak iki atlamalı mesh iletişimi doğrulanmıştır. IBSS, doğrudan kablosuz komşulukları oluştururken BATMAN-adv bu komşulukların üzerinde Layer 2 çok atlamalı iletim sağlamıştır.
+
+Doğrulamanın temel zinciri şöyledir:
+
+1. Düğüm 1 ile Düğüm 3, `192.168.100.x` IBSS adresleri üzerinden doğrudan birbirine erişemedi.
+2. Düğüm 2, iki uç düğümü de doğrudan BATMAN-adv komşusu olarak gördü.
+3. Uç düğümlerin originator tablolarında uzak uç için next-hop olarak Düğüm 2 seçildi.
+4. `192.168.200.1` ile `192.168.200.3` arasında iki yönlü ping başarıyla tamamlandı.
+
+Sonuç olarak aşağıdaki iletişim yolu işlevsel olarak doğrulanmıştır:
+
+```text
+Düğüm 1  -->  Düğüm 2  -->  Düğüm 3
+Düğüm 3  -->  Düğüm 2  -->  Düğüm 1
+```

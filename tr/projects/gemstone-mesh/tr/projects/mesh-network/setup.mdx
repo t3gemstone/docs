@@ -1,0 +1,173 @@
+---
+title: "IBSS ve BATMAN-adv ile Mesh Ağ: Nasıl Kurulur?"
+description: "T3 Gemstone O1 kartlarında IBSS ve BATMAN-adv mesh ağının gerekli araçlar ve yardımcı script dosyalarıyla kurulumu"
+---
+
+Bu sayfada üç T3 Gemstone O1 kartı üzerinde IBSS tabanlı kablosuz bağlantının ve bunun üzerinde çalışan BATMAN-adv mesh katmanının nasıl başlatılacağı açıklanmaktadır.
+
+Kurulumda kullanılan `.sh` dosyalarının içerikleri bu dokümantasyonda yayımlanmamaktadır. İlgili dosyaların her Gemstone kartına aktarılmış ve çalıştırılabilir durumda olması gerekir.
+
+## Gerekli araçların kurulması
+
+Kullanılan Gemstone imajında `batman-adv` kernel modülü hazırdır. Kullanıcı alanında `iw` ve `batctl` paketlerini kurun:
+
+```bash
+sudo apt install iw
+sudo apt install batctl
+```
+
+- `iw`, kablosuz arayüzün durumunu ve IBSS bağlantısını kontrol etmek için kullanılır.
+- `batctl`, BATMAN-adv mesh arayüzünü, doğrudan komşuları ve originator tablosunu incelemek için kullanılır.
+
+## Kurulum dosyalarını karta aktarma
+
+Her T3 Gemstone O1 kartında aşağıdaki dört dosyanın bulunması gerekir:
+
+```text
+ibss-up.sh
+ibss-down.sh
+bat-up.sh
+bat-down.sh
+```
+
+Dosyaları bilgisayarınızdan Gemstone karta aktarın ve aynı çalışma dizinine yerleştirin. Ardından çalıştırma izni verin:
+
+```bash
+chmod +x ibss-up.sh ibss-down.sh bat-up.sh bat-down.sh
+```
+
+Aşağıdaki işlemler üç kartta da aynı dosyalar kullanılarak yapılır. Kartları birbirinden ayıran değer, çalıştırma sırasında verilen düğüm numarasıdır.
+
+## 1. IBSS ağını başlatma
+
+Önce her kartta `ibss-up.sh` dosyasını çalıştırın. Her karta farklı bir düğüm numarası verilmelidir.
+
+### Düğüm 1
+
+```bash
+./ibss-up.sh 1
+```
+
+### Düğüm 2
+
+```bash
+./ibss-up.sh 2
+```
+
+### Düğüm 3
+
+```bash
+./ibss-up.sh 3
+```
+
+Bu aşamadan sonra düğümlerin IBSS tarafındaki adresleri aşağıdaki gibi olur:
+
+| Düğüm | IBSS adresi |
+| --- | --- |
+| Düğüm 1 | `192.168.100.1/24` |
+| Düğüm 2 | `192.168.100.2/24` |
+| Düğüm 3 | `192.168.100.3/24` |
+
+IBSS bağlantısının oluştuğunu kontrol etmek için her kartta şu komutları kullanabilirsiniz:
+
+```bash
+iw dev wlan0 info
+iw dev wlan0 link
+iw dev wlan0 station dump
+```
+
+Başarılı durumda `wlan0` arayüzü IBSS modunda görünmeli ve kart ortak `gemstone-mesh` hücresine katılmış olmalıdır.
+
+## 2. BATMAN-adv mesh katmanını başlatma
+
+IBSS bağlantısı üç kartta da hazır olduktan sonra `bat-up.sh` dosyasını çalıştırın. Burada da IBSS kurulumu sırasında kullanılan aynı düğüm numarası verilmelidir.
+
+### Düğüm 1
+
+```bash
+./bat-up.sh 1
+```
+
+### Düğüm 2
+
+```bash
+./bat-up.sh 2
+```
+
+### Düğüm 3
+
+```bash
+./bat-up.sh 3
+```
+
+Bu aşamadan sonra BATMAN-adv tarafından kullanılan `bat0` arayüzleri aşağıdaki adreslere sahip olur:
+
+| Düğüm | Mesh adresi |
+| --- | --- |
+| Düğüm 1 | `192.168.200.1/24` |
+| Düğüm 2 | `192.168.200.2/24` |
+| Düğüm 3 | `192.168.200.3/24` |
+
+Mesh arayüzünün oluştuğunu kontrol edin:
+
+```bash
+ip -br addr show bat0
+```
+
+Ardından BATMAN-adv komşuluk ve yönlendirme bilgilerini inceleyebilirsiniz:
+
+```bash
+sudo batctl n
+sudo batctl o
+```
+
+`batctl n` doğrudan BATMAN-adv komşularını, `batctl o` ise mesh içinde bilinen düğümleri ve kullanılacak next-hop bilgisini gösterir.
+
+## 3. Mesh bağlantısını kontrol etme
+
+Kurulum tamamlandıktan sonra `bat0` adresleri üzerinden düğümler arasında ping testi yapılabilir.
+
+Örneğin Düğüm 1'den Düğüm 3'e:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+Düğüm 3'ten Düğüm 1'e:
+
+```bash
+ping -c 5 192.168.200.1
+```
+
+BATMAN-adv etkinleştirildikten hemen sonra komşuluk ve yönlendirme bilgilerinin oluşması kısa bir süre alabilir. İlk denemede yanıt alınamazsa birkaç saniye bekleyip `batctl n`, `batctl o` ve ping komutlarını tekrar çalıştırın.
+
+Üç düğümlü testte elde edilen gerçek terminal sonuçları ve multi-hop doğrulama zinciri için **Özetle Ne Yaptık?** sayfasına bakabilirsiniz.
+
+## Ağı kapatma
+
+Ağı kapatırken önce BATMAN-adv mesh katmanını, ardından IBSS bağlantısını kaldırın.
+
+Her kartta sırasıyla:
+
+```bash
+./bat-down.sh
+./ibss-down.sh
+```
+
+`bat-down.sh` mesh katmanını kapatır. Ardından `ibss-down.sh`, kablosuz arayüzü IBSS kullanımından çıkararak normal Wi-Fi kullanımına geri döndürür.
+
+## Kurulum sırası
+
+Tüm süreç özetle aşağıdaki sırayla ilerler:
+
+```text
+1. iw ve batctl paketlerini kur
+2. ibss-up.sh, ibss-down.sh, bat-up.sh ve bat-down.sh dosyalarını karta aktar
+3. Dosyalara çalıştırma izni ver
+4. Her düğümde ./ibss-up.sh <düğüm-no> çalıştır
+5. IBSS bağlantısını iw komutlarıyla kontrol et
+6. Her düğümde ./bat-up.sh <düğüm-no> çalıştır
+7. bat0, batctl n ve batctl o ile mesh durumunu kontrol et
+8. bat0 adresleri arasında ping testi yap
+9. İşlem sonunda ./bat-down.sh ve ./ibss-down.sh çalıştır
+```
