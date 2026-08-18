@@ -183,6 +183,7 @@
               "tr/projects/mediabox",
               "tr/projects/firewall",
               "tr/projects/hotspot",
+              "tr/projects/homeassistant",
               {
                 "group": "Teknofest",
                 "pages": [
@@ -371,6 +372,7 @@
               "en/projects/mediabox",
               "en/projects/firewall",
               "en/projects/hotspot",
+              "en/projects/homeassistant",
               {
                 "group": "Teknofest",
                 "pages": [
