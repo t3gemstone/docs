@@ -1,0 +1,74 @@
+---
+title: "Mesh Networking with IBSS and BATMAN-adv: What Is It?"
+description: "How the IBSS and BATMAN-adv mesh architecture works on T3 Gemstone O1, including the tested environment and addressing plan"
+---
+
+
+This project builds a two-hop wireless mesh network using three **T3 Gemstone O1** boards without requiring a central access point. The `wlan0` interfaces form a shared **IBSS (ad-hoc)** wireless cell, while **BATMAN-adv** provides Layer 2 multi-hop communication over those direct wireless adjacencies.
+
+At the end of the setup, Node 1 and Node 3 cannot reach each other directly over the IBSS subnet, but BATMAN-adv carries traffic through Node 2:
+
+```text
+Node 1  <------ IBSS ------>  Node 2  <------ IBSS ------>  Node 3
+  |                             |                             |
+192.168.100.1              192.168.100.2              192.168.100.3
+
+Node 1  <----------- no direct IBSS reachability ----------->  Node 3
+
+BATMAN-adv / bat0:
+192.168.200.1  <========= through Node 2 =========>  192.168.200.3
+```
+
+The configuration described on this page was verified bidirectionally in a real three-node test.
+
+## What are IBSS and BATMAN-adv?
+
+### IBSS
+
+**IBSS (Independent Basic Service Set)** is an IEEE 802.11 ad-hoc operating mode in which wireless stations join the same cell without an access point. In this project, the `wlan0` interface on every Gemstone board joins the same IBSS cell using an identical SSID, frequency, and fixed BSSID.
+
+IBSS provides the direct wireless adjacency layer in this setup. It is not used by itself as the multi-hop forwarding mechanism.
+
+### BATMAN-adv
+
+**BATMAN-adv** is a Layer 2 mesh component implemented in the Linux kernel. It uses the direct IBSS adjacencies and exposes a virtual mesh interface named `bat0` for upper-layer communication.
+
+The routing algorithm used in this project is **BATMAN_V**. Two `batctl` commands are especially useful when verifying the mesh:
+
+```bash
+sudo batctl n
+sudo batctl o
+```
+
+- `batctl n` shows direct BATMAN-adv neighbors.
+- `batctl o` shows originators and the selected next hop.
+
+Used together, IBSS provides the direct radio links while BATMAN-adv provides multi-hop forwarding over those links.
+
+## Tested environment
+
+| Component | Value |
+| --- | --- |
+| Hardware | 3 × T3 Gemstone O1 |
+| Operating system | Ubuntu 24.04 LTS (Noble Numbat) |
+| Architecture | aarch64 |
+| Kernel | Linux 6.12.24-ti, PREEMPT_RT |
+| Wireless interface | `wlan0` |
+| IBSS SSID | `gemstone-mesh` |
+| IBSS frequency | 2412 MHz, channel 1 |
+| Fixed IBSS BSSID | `02:12:34:56:78:9a` |
+| BATMAN-adv algorithm | `BATMAN_V` |
+| batctl | `debian-2024.0-1` |
+| BATMAN-adv | Included in the tested image; module version `2024.2` was shown during the successful test |
+
+## Addressing plan
+
+Two separate IP subnets are used so that direct IBSS reachability can be distinguished from mesh reachability.
+
+| Node | `wlan0` / IBSS IP | `bat0` / Mesh IP | `bat0` MAC |
+| --- | --- | --- | --- |
+| Node 1 | `192.168.100.1/24` | `192.168.200.1/24` | `02:ba:70:00:00:01` |
+| Node 2 | `192.168.100.2/24` | `192.168.200.2/24` | `02:ba:70:00:00:02` |
+| Node 3 | `192.168.100.3/24` | `192.168.200.3/24` | `02:ba:70:00:00:03` |
+
+The `192.168.100.0/24` subnet is used to check direct IBSS reachability, while `192.168.200.0/24` is assigned to `bat0` for mesh communication.

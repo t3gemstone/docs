@@ -1,0 +1,173 @@
+---
+title: "Mesh Networking with IBSS and BATMAN-adv: How to Set It Up"
+description: "Setting up an IBSS and BATMAN-adv mesh network on T3 Gemstone O1 using the required userspace tools and helper scripts"
+---
+
+This page explains how to start an IBSS-based wireless network and the BATMAN-adv mesh layer running on top of it across three T3 Gemstone O1 boards.
+
+The contents of the `.sh` files used for the setup are not published in this documentation. The required files must already be transferred to each Gemstone board and made executable.
+
+## Install the required tools
+
+The tested Gemstone image already includes the `batman-adv` kernel module. Install the `iw` and `batctl` userspace packages:
+
+```bash
+sudo apt install iw
+sudo apt install batctl
+```
+
+- `iw` is used to inspect the wireless interface and verify the IBSS connection.
+- `batctl` is used to inspect the BATMAN-adv mesh interface, direct neighbors, and originator table.
+
+## Transfer the setup files to each board
+
+Each T3 Gemstone O1 board must contain the following four files:
+
+```text
+ibss-up.sh
+ibss-down.sh
+bat-up.sh
+bat-down.sh
+```
+
+Transfer the files from your computer to the Gemstone board and place them in the same working directory. Then make them executable:
+
+```bash
+chmod +x ibss-up.sh ibss-down.sh bat-up.sh bat-down.sh
+```
+
+The same files are used on all three boards. The boards are distinguished by the node number passed when the scripts are executed.
+
+## 1. Start the IBSS network
+
+Run `ibss-up.sh` on each board first. Each board must use a different node number.
+
+### Node 1
+
+```bash
+./ibss-up.sh 1
+```
+
+### Node 2
+
+```bash
+./ibss-up.sh 2
+```
+
+### Node 3
+
+```bash
+./ibss-up.sh 3
+```
+
+After this step, the IBSS-side addresses are:
+
+| Node | IBSS address |
+| --- | --- |
+| Node 1 | `192.168.100.1/24` |
+| Node 2 | `192.168.100.2/24` |
+| Node 3 | `192.168.100.3/24` |
+
+Verify the IBSS state on each board with:
+
+```bash
+iw dev wlan0 info
+iw dev wlan0 link
+iw dev wlan0 station dump
+```
+
+In a successful setup, `wlan0` should operate in IBSS mode and the board should be joined to the shared `gemstone-mesh` cell.
+
+## 2. Start the BATMAN-adv mesh layer
+
+After IBSS is active on all three boards, run `bat-up.sh`. Use the same node number that was assigned during the IBSS step.
+
+### Node 1
+
+```bash
+./bat-up.sh 1
+```
+
+### Node 2
+
+```bash
+./bat-up.sh 2
+```
+
+### Node 3
+
+```bash
+./bat-up.sh 3
+```
+
+After this step, the `bat0` mesh interfaces use the following addresses:
+
+| Node | Mesh address |
+| --- | --- |
+| Node 1 | `192.168.200.1/24` |
+| Node 2 | `192.168.200.2/24` |
+| Node 3 | `192.168.200.3/24` |
+
+Verify that the mesh interface is present:
+
+```bash
+ip -br addr show bat0
+```
+
+Then inspect BATMAN-adv neighbor and forwarding information:
+
+```bash
+sudo batctl n
+sudo batctl o
+```
+
+`batctl n` shows direct BATMAN-adv neighbors, while `batctl o` shows known mesh originators and the selected next hop.
+
+## 3. Check mesh connectivity
+
+After the setup is complete, test connectivity using the `bat0` addresses.
+
+For example, from Node 1 to Node 3:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+From Node 3 to Node 1:
+
+```bash
+ping -c 5 192.168.200.1
+```
+
+Neighbor and forwarding information may take a short time to converge immediately after BATMAN-adv is started. If the first attempt does not receive a reply, wait a few seconds and repeat `batctl n`, `batctl o`, and the ping test.
+
+See the **What We Did** page for the actual three-node terminal results and the multi-hop verification chain.
+
+## Shut down the network
+
+When stopping the setup, remove the BATMAN-adv mesh layer first and then stop the IBSS configuration.
+
+Run the following on each board in this order:
+
+```bash
+./bat-down.sh
+./ibss-down.sh
+```
+
+`bat-down.sh` stops the mesh layer. `ibss-down.sh` then removes the IBSS configuration and returns the wireless interface to normal Wi-Fi operation.
+
+## Setup sequence
+
+The complete process can be summarized as follows:
+
+```text
+1. Install iw and batctl
+2. Transfer ibss-up.sh, ibss-down.sh, bat-up.sh, and bat-down.sh to each board
+3. Make the files executable
+4. Run ./ibss-up.sh <node-number> on each node
+5. Verify IBSS with iw
+6. Run ./bat-up.sh <node-number> on each node
+7. Inspect bat0, batctl n, and batctl o
+8. Test connectivity between bat0 addresses
+9. Run ./bat-down.sh and ./ibss-down.sh when finished
+```

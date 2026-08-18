@@ -1,0 +1,74 @@
+---
+title: "IBSS ve BATMAN-adv ile Mesh Ağ: Nedir?"
+description: "T3 Gemstone O1 üzerinde IBSS ve BATMAN-adv tabanlı mesh ağın çalışma mantığı, test ortamı ve adresleme yapısı"
+---
+
+
+Bu projede üç adet **T3 Gemstone O1** kartı kullanılarak merkezi bir erişim noktasına ihtiyaç duymayan, iki atlamalı bir kablosuz mesh ağ oluşturulur. `wlan0` arayüzleri **IBSS (ad-hoc)** modunda ortak bir kablosuz hücre oluşturur; **BATMAN-adv** ise bu doğrudan kablosuz komşulukların üzerinde Layer 2 çok atlamalı iletişim sağlar.
+
+Kurulum sonunda Düğüm 1 ile Düğüm 3 doğrudan IBSS üzerinden birbirine erişemezken, BATMAN-adv etkinleştirildiğinde trafik Düğüm 2 üzerinden taşınır:
+
+```text
+Düğüm 1  <------ IBSS ------>  Düğüm 2  <------ IBSS ------>  Düğüm 3
+   |                              |                              |
+192.168.100.1                192.168.100.2                192.168.100.3
+
+Düğüm 1  <----------- doğrudan IBSS erişimi yok ----------->  Düğüm 3
+
+BATMAN-adv / bat0:
+192.168.200.1  <======== Düğüm 2 üzerinden ========>  192.168.200.3
+```
+
+Bu dokümanda kullanılan yapı, üç düğümlü gerçek testte iki yönlü olarak doğrulanmıştır.
+
+## IBSS ve BATMAN-adv nedir?
+
+### IBSS
+
+**IBSS (Independent Basic Service Set)**, kablosuz cihazların bir erişim noktası kullanmadan aynı IEEE 802.11 ad-hoc hücresine katılarak doğrudan haberleşmesini sağlayan çalışma modudur. Bu projede tüm Gemstone kartlarında `wlan0` arayüzü aynı SSID, frekans ve sabit BSSID ile aynı IBSS hücresine katılır.
+
+IBSS bu yapıda doğrudan kablosuz komşuluk katmanını sağlar. Tek başına çok atlamalı yönlendirme görevi üstlenmez.
+
+### BATMAN-adv
+
+**BATMAN-adv**, Linux kernel içinde çalışan Layer 2 mesh bileşenidir. IBSS üzerindeki doğrudan komşulukları kullanır ve üst katmanların haberleşmesi için `bat0` isimli sanal bir mesh arayüzü oluşturur.
+
+Bu projede yönlendirme algoritması **BATMAN_V** olarak seçilmiştir. Mesh durumunu incelemek için özellikle şu iki `batctl` komutu kullanılır:
+
+```bash
+sudo batctl n
+sudo batctl o
+```
+
+- `batctl n`: doğrudan BATMAN-adv komşularını gösterir.
+- `batctl o`: originator ve seçilen next-hop bilgisini gösterir.
+
+Bu iki katman birlikte kullanıldığında IBSS doğrudan radyo bağlantısını, BATMAN-adv ise bu bağlantıların üzerinde çok atlamalı iletimi sağlar.
+
+## Test edilen ortam
+
+| Bileşen | Değer |
+| --- | --- |
+| Donanım | 3 × T3 Gemstone O1 |
+| İşletim sistemi | Ubuntu 24.04 LTS (Noble Numbat) |
+| Mimari | aarch64 |
+| Kernel | Linux 6.12.24-ti, PREEMPT_RT |
+| Kablosuz arayüz | `wlan0` |
+| IBSS SSID | `gemstone-mesh` |
+| IBSS frekansı | 2412 MHz, Kanal 1 |
+| Sabit IBSS BSSID | `02:12:34:56:78:9a` |
+| BATMAN-adv algoritması | `BATMAN_V` |
+| batctl | `debian-2024.0-1` |
+| BATMAN-adv | Kullanılan imajda hazır; başarılı testte modül sürümü `2024.2` |
+
+## Adresleme planı
+
+Doğrudan IBSS erişimi ile mesh erişimini birbirinden ayırabilmek için iki farklı ağ kullanılır.
+
+| Düğüm | `wlan0` / IBSS IP | `bat0` / Mesh IP | `bat0` MAC |
+| --- | --- | --- | --- |
+| Düğüm 1 | `192.168.100.1/24` | `192.168.200.1/24` | `02:ba:70:00:00:01` |
+| Düğüm 2 | `192.168.100.2/24` | `192.168.200.2/24` | `02:ba:70:00:00:02` |
+| Düğüm 3 | `192.168.100.3/24` | `192.168.200.3/24` | `02:ba:70:00:00:03` |
+
+`192.168.100.0/24` ağı doğrudan IBSS erişimini kontrol etmek, `192.168.200.0/24` ağı ise `bat0` üzerinden mesh iletişimini doğrulamak için kullanılır.
