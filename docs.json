@@ -127,6 +127,21 @@
                           "tr/boards/o1/ai/libraries/vxlib",
                           "tr/boards/o1/ai/libraries/dsplib"
                         ]
+                      },
+                      {
+                        "group": "AI Hızlandırıcılar",
+                        "pages": [
+                          {
+                            "group": "DeepX",
+                            "pages": [
+                              "tr/boards/o1/ai/deepx/introduction",
+                              "tr/boards/o1/ai/deepx/installation",
+                              "tr/boards/o1/ai/deepx/usage",
+                              "tr/boards/o1/ai/deepx/examples",
+                              "tr/boards/o1/ai/deepx/troubleshooting"
+                            ]
+                          }
+                        ]
                       }
                     ]
                   },
@@ -160,9 +175,9 @@
               "tr/projects/introduction",
               "tr/projects/cloud",
               "tr/projects/preempt-rt",
-              "tr/projects/nuttx",
-              "tr/projects/zephyr-os",
               "tr/projects/ardupilot",
+              "tr/projects/nuttx",
+              "tr/projects/px4",
               "tr/projects/vtol",
               "tr/projects/swupdate",
               "tr/projects/mediabox",
@@ -173,7 +188,9 @@
                 "group": "Teknofest",
                 "pages": [
                   "tr/projects/teknofest-suv",
-                  "tr/projects/teknofest-ika"
+                  "tr/projects/teknofest-ika",
+                  "tr/projects/teknofest-celikkubbe",
+                  "tr/projects/teknofest-robotaksi"
                 ]
               }
             ]
@@ -299,6 +316,21 @@
                           "en/boards/o1/ai/libraries/vxlib",
                           "en/boards/o1/ai/libraries/dsplib"
                         ]
+                      },
+                      {
+                        "group": "AI Accelerators",
+                        "pages": [
+                          {
+                            "group": "DeepX",
+                            "pages": [
+                              "en/boards/o1/ai/deepx/introduction",
+                              "en/boards/o1/ai/deepx/installation",
+                              "en/boards/o1/ai/deepx/usage",
+                              "en/boards/o1/ai/deepx/examples",
+                              "en/boards/o1/ai/deepx/troubleshooting"
+                            ]
+                          }
+                        ]
                       }
                     ]
                   },
@@ -332,9 +364,9 @@
               "en/projects/introduction",
               "en/projects/cloud",
               "en/projects/preempt-rt",
-              "en/projects/nuttx",
-              "en/projects/zephyr-os",
               "en/projects/ardupilot",
+              "en/projects/nuttx",
+              "en/projects/px4",
               "en/projects/vtol",
               "en/projects/swupdate",
               "en/projects/mediabox",
@@ -345,7 +377,9 @@
                 "group": "Teknofest",
                 "pages": [
                   "en/projects/teknofest-suv",
-                  "en/projects/teknofest-ika"
+                  "en/projects/teknofest-ika",
+                  "en/projects/teknofest-celikkubbe",
+                  "en/projects/teknofest-robotaksi"
                 ]
               }
             ]

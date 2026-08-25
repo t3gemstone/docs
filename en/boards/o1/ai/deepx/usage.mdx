@@ -1,0 +1,349 @@
+---
+title: 'Usage'
+description: 'Managing the DX-M1 Module and Running Inference with Python'
+---
+
+import SnippetDeepxStatus from '/snippets/boards/o1/deepx/dxrt-status.mdx';
+
+This section explains how to manage the DX-M1 accelerator module with command line tools, how to measure its
+performance and how to run inference using the Python interface.
+
+<Note>
+In order to run the commands in this section, the driver and runtime installation must be completed. You can
+review the [Installation](/en/boards/o1/ai/deepx/installation) section for the installation steps.
+</Note>
+
+## Command Line Tools
+
+The following helper tools are installed together with the DX-RT runtime.
+
+| Tool          | Description                                                              |
+| ------------- | ------------------------------------------------------------------------ |
+| `dxrt-cli`    | Tool for querying the device status, monitoring, resetting and firmware update |
+| `dxtop`       | Monitoring tool that displays the NPU core utilization in real time       |
+| `run_model`   | Benchmark tool that measures the performance of a compiled model          |
+| `parse_model` | Tool for inspecting the structure and memory usage of a `.dxnn` model file |
+
+### Querying the Device Status
+
+The `--status` option is used to display the instantaneous temperature, voltage and clock frequency values
+of the module.
+
+<SnippetDeepxStatus />
+
+The `--info` option is used to display the hardware and version information of the module.
+
+```bash
+dxrt-cli --info
+```
+
+The frequently used options of the `dxrt-cli` tool are listed in the table below.
+
+| Option                | Description                                                     |
+| --------------------- | --------------------------------------------------------------- |
+| `-s`, `--status`      | Displays the device status                                      |
+| `-i`, `--info`        | Displays the device information                                 |
+| `-m`, `--monitor <n>` | Displays the device status continuously at `n` second intervals |
+| `-d`, `--device <id>` | Specifies the device the command will be applied to             |
+| `-r`, `--reset`       | Resets the NPU cores                                            |
+| `-u`, `--fwupdate`    | Updates the device firmware with the specified file             |
+| `-v`, `--version`     | Displays the version information                                |
+| `-h`, `--help`        | Displays the usage information                                  |
+
+For example, you can use the command below to monitor the device status at 1 second intervals.
+
+```bash
+dxrt-cli --monitor 1
+```
+
+<Warning>
+The temperature of the module staying at high levels for a long time causes the hardware to lower its clock
+frequency in order to protect itself and the performance to decrease. Monitoring the temperature values with
+`dxrt-cli --monitor` is recommended in applications that you run under heavy workload.
+</Warning>
+
+### Monitoring the NPU Utilization
+
+You can use the `dxtop` tool to observe how busy the NPU cores are while your application is running.
+
+```bash
+dxtop
+```
+
+The tool displays the utilization ratio, the temperature and the memory consumption for each NPU core in
+real time. Pressing the `q` key is enough to exit the application.
+
+## Downloading Pre-compiled Models
+
+The NPU can only run models compiled into the `.dxnn` format. You do not need to compile your own model in
+order to try the examples in this section; more than three hundred pre-compiled models are provided in the
+DEEPX model repository (Model Zoo).
+
+### Downloading Models
+
+The `setup.sh` script in the DX-APP repository is used to access the entire model repository and to download
+models by category. The script places the downloaded files into the `assets/models` directory.
+
+The file names of some frequently used models are listed in the table below.
+
+| Model                      | Task                  | File name                                 |
+| -------------------------- | --------------------- | ----------------------------------------- |
+| `YoloV5S`                  | Object detection      | `yolov5-s_640x640.dxnn`                   |
+| `YoloV7`                   | Object detection      | `yolov7_640x640.dxnn`                     |
+| `ResNet50`                 | Classification        | `resnet50_224x224.dxnn`                   |
+| `MobileNetV2`              | Classification        | `mobilenetv2_224x224.dxnn`                |
+| `YOLOv5s_Face`             | Face detection        | `yolov5-s-face_640x640.dxnn`              |
+| `yolov5s_seg`              | Instance segmentation | `yolov5-s-seg_640x640.dxnn`               |
+| `DeepLabV3PlusMobileNetV2` | Semantic segmentation | `deeplabv3plus_mobilenetv2_512x512.dxnn`  |
+| `FastDepth_1`              | Depth estimation      | `fastdepth_224x224.dxnn`                  |
+
+```bash
+git clone https://github.com/DEEPX-AI/dx_app.git
+cd dx_app
+
+# Lists the models available for download
+./setup.sh --list
+
+# Downloads only the specified models
+./setup.sh --models YoloV5S YoloV7 ResNet50
+
+# Downloads the models in the specified task category
+./setup.sh --category "Object Detection"
+```
+
+<Tip>
+You can verify that the model you downloaded is valid and runs on the board with the
+`run_model -m ./assets/models/yolov5-s_640x640.dxnn -b` command.
+</Tip>
+
+The options of the script related to model downloading are listed in the table below.
+
+| Option               | Description                                                               |
+| -------------------- | ------------------------------------------------------------------------- |
+| `--list`             | Lists the models available for download                                   |
+| `--models <m1> <m2>` | Downloads only the models whose names are specified                       |
+| `--category <name>`  | Downloads all of the models in the specified task category                |
+| `--demo-models`      | Downloads only the models used by the demo scripts                        |
+| `--all`              | Downloads all models in the repository without requiring interaction      |
+| `--dry-run`          | Shows which files would be downloaded without downloading them            |
+| `--workers <n>`      | Sets the number of concurrent downloads (default `4`)                     |
+| `--no-force`         | Does not download files that have already been downloaded                 |
+
+<Note>
+When the script is run without any option, the category and model selection is made through a menu. The list
+of available models is kept in the `scripts/modelzoo_manifest.json` file.
+</Note>
+
+<Warning>
+Since the `--all` option downloads all models in the repository, it requires tens of gigabytes of disk space.
+Downloading only the models you need with the `--models` or `--category` options is recommended.
+</Warning>
+
+## Measuring Model Performance
+
+The `run_model` tool is used to measure the real performance of a compiled model on the board.
+
+```bash
+run_model -m yolov5-s_640x640.dxnn -b -l 100 -v
+```
+
+<ParamField body="-m, --model" required>
+The path of the `.dxnn` model file to be measured.
+</ParamField>
+
+<ParamField body="-b, --benchmark">
+Measures in maximum throughput mode. It is the default operating mode.
+</ParamField>
+
+<ParamField body="-s, --single">
+Measures on a single core, sequentially with a single input.
+</ParamField>
+
+<ParamField body="-l, --loops" default="30">
+The number of inference loops to be performed.
+</ParamField>
+
+<ParamField body="-t, --time">
+The duration of the measurement in seconds. When specified, it overrides the `--loops` value.
+</ParamField>
+
+<ParamField body="-w, --warmup-runs" default="0">
+The number of warm-up rounds to be performed before starting the measurement.
+</ParamField>
+
+<ParamField body="-v, --verbose">
+Displays the NPU processing time and latency values in detail.
+</ParamField>
+
+As a result of the command, the NPU processing time, the latency and the frames per second (FPS) values are
+reported.
+
+<Tip>
+To inspect the layer structure, the memory usage and the task distribution on the NPU of a model, you can use
+the `parse_model -m yolov5-s_640x640.dxnn -v` command.
+</Tip>
+
+## Running Inference with Python
+
+The `InferenceEngine` class in the `dx_engine` package is used to make use of the NPU in Python applications.
+The basic flow consists of the steps of loading the model, preparing the input buffer, running the inference
+and processing the results.
+
+```python
+import numpy as np
+from dx_engine import InferenceEngine
+
+# The compiled model file is loaded
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+
+    # An input buffer of the size expected by the model is prepared
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    # The inference is executed
+    outputs = ie.run([buffer])
+
+    for index, output in enumerate(outputs):
+        print(f"output[{index}]: shape={output.shape}, dtype={output.dtype}")
+```
+
+<Warning>
+Using `np.zeros()` while creating the input buffer is not recommended. Since all of the virtual memory pages
+allocated with `np.zeros()` point to the same physical page, the PCIe DMA driver produces an `EFAULT` error
+when it sees the same physical page more than once. For this reason the buffer must be allocated with
+`np.empty()` and filled with `fill()` as in the example above.
+</Warning>
+
+### Getting Model Information
+
+The information about the input and output layers can be queried from the runtime so that the pre-processing
+and post-processing steps can be written correctly.
+
+```python
+from dx_engine import InferenceEngine
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    print("Input buffer size  :", ie.get_input_size())
+    print("Output buffer size :", ie.get_output_size())
+    print("Input tensors      :", ie.get_input_tensors_info())
+    print("Output tensors     :", ie.get_output_tensors_info())
+```
+
+### Asynchronous Inference
+
+In applications that process continuous data such as a video stream, sending a new frame without waiting for
+the result of the inference increases the performance. The `run_async` method is used for this purpose. The
+method returns a job id without waiting for the inference to complete.
+
+There are two methods for collecting the results. The results can be delivered automatically by registering a
+callback function, or the result can be requested by using the `wait` method with the job id.
+
+<CodeGroup>
+
+```python Callback
+import numpy as np
+from dx_engine import InferenceEngine
+
+
+def on_inference_done(outputs, user_arg):
+    # The post-processing steps are performed inside this function
+    print("Inference completed:", user_arg)
+    return 0
+
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    # The callback function is registered
+    ie.register_callback(on_inference_done)
+
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    for index in range(10):
+        # The inference request is queued without waiting for the result
+        ie.run_async([buffer], user_arg=index)
+```
+
+```python Waiting
+import numpy as np
+from dx_engine import InferenceEngine
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    # The inference requests are queued and the job ids are stored
+    job_ids = [ie.run_async([buffer], user_arg=index) for index in range(10)]
+
+    # The results are collected in order with the job ids
+    for job_id in job_ids:
+        outputs = ie.wait(job_id)
+```
+
+</CodeGroup>
+
+<Warning>
+These two methods must not be used together. If the results will be collected with the `wait` method, a
+callback function must not be registered with `register_callback`.
+</Warning>
+
+<Note>
+Since the callback function is executed in a separate thread, a lock must be used when accessing shared data
+structures.
+</Note>
+
+### Performance Measurement and Device Monitoring
+
+The inference performance can be measured with the `run_benchmark` method, and the device status can be read
+from within the application with the `DeviceStatus` class.
+
+```python
+import numpy as np
+from dx_engine import InferenceEngine
+from dx_engine.device_status import DeviceStatus
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    fps = ie.run_benchmark(100, [buffer])
+    print(f"Average FPS: {fps}")
+
+status = DeviceStatus.get_current_status(0)
+print("Temperature      :", status.get_temperature(0), "C")
+print("Core utilization :", status.get_core_utilization(0), "%")
+print("Used memory      :", status.get_memory_used())
+print("Free memory      :", status.get_memory_free())
+```
+
+<Tip>
+You can access the latency and NPU processing time statistics with the `ie.get_latency_mean()` and
+`ie.get_npu_inference_time_mean()` methods.
+</Tip>
+
+## C/C++ API
+
+In addition to the Python interface, DX-RT also provides a C and C++ interface. On the C++ side the same
+workflow is performed with the `dxrt::InferenceEngine` class.
+
+```cpp
+#include "dxrt/dxrt_cxx_api.h"
+#include <vector>
+
+int main()
+{
+    // The compiled model file is loaded
+    dxrt::InferenceEngine ie("yolov5-s_640x640.dxnn");
+
+    // An input buffer of the size expected by the model is prepared
+    std::vector<uint8_t> input(ie.GetInputSize(), 0);
+
+    // The inference is executed
+    auto outputs = ie.Run(input.data());
+
+    return 0;
+}
+```
+
+<Tip>
+All examples for the C++ and Python APIs are available in the `dx_rt/examples` directory of the SDK.
+</Tip>

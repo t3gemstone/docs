@@ -4,40 +4,44 @@ description: 'Planned Projects and Stages'
 icon: "location-crosshairs"
 ---
 
-<Tip>
+import { Progress } from '/snippets/progress.mdx';
+
 This section contains new projects planned with Gemstone and their completion stages.
 To contribute by taking part in the relevant projects, visit their Github pages or community forums.
-</Tip>
 
-<Card horizontal title="Apache Nuttx" icon="spinner" href="./roadmap#apache-nuttx">
-  `In Progress` `45%`
+<Card horizontal arrow="true" title="Apache Nuttx&PX4" icon="spinner" href="./roadmap#apache-nuttx&px4">
+  <Progress percent={90} />
 </Card>
 
-<Card horizontal title="Wayland Transition" icon="spinner" href="./roadmap#wayland-transition">
-  `In Progress` `30%`
+<Card horizontal arrow="true" title="Wayland Transition" icon="spinner" href="./roadmap#wayland-transition">
+  <Progress percent={30} />
 </Card>
 
-<Card horizontal title="Buildroot" icon="spinner" href="./roadmap#buildroot">
-  `In Progress` `10%`
+<Card horizontal arrow="true" title="Buildroot" icon="spinner" href="./roadmap#buildroot">
+  <Progress percent={80} />
 </Card>
 
-<Card horizontal title="ChibiOS + Ardupilot" icon="clock" href="./roadmap#chibios-+-ardupilot">
-  `Not Started Yet` `0%`
+<Card horizontal arrow="true" title="Zenoh" icon="spinner" href="./roadmap#zenoh">
+  <Progress percent={60} />
 </Card>
 
-<Card horizontal title="PX4 Autopilot" icon="clock" href="./roadmap#px4-autopilot">
-  `Not Started Yet` `0%`
+<Card horizontal arrow="true" title="ChibiOS + Ardupilot" icon="spinner" href="./roadmap#chibios-+-ardupilot">
+  <Progress percent={60} />
 </Card>
 
-<Card horizontal title="Phoenix RTOS" icon="clock" href="./roadmap#phoenix-rtos">
-  `Not Started Yet` `0%`
+<Card horizontal arrow="true" title="PX4 Autopilot" icon="spinner" href="./roadmap#px4-autopilot">
+  <Progress percent={60} />
 </Card>
 
-<Card horizontal title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
-  `Not Started Yet` `0%`
+<Card horizontal arrow="true" title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
+  `Not Started Yet`
 </Card>
 
-## Apache Nuttx
+<Card horizontal arrow="true" title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
+  `Not Started Yet`
+</Card>
+
+## Apache Nuttx&PX4
 
 Pixhawk [Flight Controller](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html)
 hardware mostly contains STM32 with Cortex-M architecture. The autopilot named PX4 runs on the real-time operating
@@ -59,22 +63,21 @@ system named Apache Nuttx and does not have support for Texas AM67a.
 This project aims to run Apache Nuttx and PX4 on the Cortex-R5 cores found on T3-GEM-O1 development boards. The current
 status and pending tasks are in the table below.
 
-|                                                                                                             |                                |
-|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
-| Running NuttX on R5 cores                                                                                   | `Completed`                    |
-| GPIO driver support                                                                                         | `Completed`                    |
-| Serial port driver support                                                                                  | `Completed`                    |
-| Access to NuttShell (nsh) console                                                                           | `Completed`                    |
-| Loading NuttX onto the R5 core via the remoteproc mechanism by U-Boot or Linux                              | `Completed`                    |
-| Communication between NuttX running on the R5 core and Linux running on the A53 core via Texas IPC mechanism | Volunteer Developer Needed     |
-| PWM driver support                                                                                          | Volunteer Developer Needed     |
-| SPI driver support                                                                                          | Volunteer Developer Needed     |
-| I2C driver support                                                                                          | Volunteer Developer Needed     |
-| Pinmux settings for all pins on the 40-pin HAT                                                              | Volunteer Developer Needed     |
-| Running Ardupilot and PX4 autopilots as apps on the Nuttx OS on Gemstone                                    | Volunteer Developer Needed     |
-| CAN Bus driver support                                                                                      | Volunteer Developer Needed     |
-| USB driver support                                                                                          | Volunteer Developer Needed     |
-| SD card and eMMC driver support                                                                             | Volunteer Developer Needed     |
+|                                                                                                              |                                |
+|:-------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Running NuttX on R5 cores                                                                                    | `Completed`                    |
+| GPIO driver support                                                                                          | `Completed`                    |
+| Serial port driver support                                                                                   | `Completed`                    |
+| Access to NuttShell (nsh) console                                                                            | `Completed`                    |
+| Loading NuttX onto the R5 core via the remoteproc mechanism by U-Boot or Linux                               | `Completed`                    |
+| I2C driver support                                                                                           | `Completed`                    |
+| SPI driver support                                                                                           | `Completed`                    |
+| PWM driver support                                                                                           | `Completed`                    |
+| ECAP(APWM) driver support                                                                                    | `Completed`                    |
+| Pinmux settings for all pins on the 40-pin HAT                                                               | `Completed`                    |
+| Running the PX4 autopilot as an app on the Nuttx OS on Gemstone                                              | `Completed`                    |
+| Communication between NuttX running on the R5 core and Linux running on the A53 core via Texas IPC mechanism | `Completed`                    |
+| CAN Bus driver support                                                                                       | Volunteer Developer Needed     |
 
 ## ChibiOS + Ardupilot
 
@@ -102,40 +105,27 @@ cores.
   </Frame>
 </Columns>
 
-The planned tasks are listed in the table below.
+The current status and pending tasks are in the table below.
 
 |                                                                                                             |                                |
 |:------------------------------------------------------------------------------------------------------------|-------------------------------:|
-| Porting the ChibiOS HAL for the AM67a Cortex-R5 cores                                                       | Volunteer Developer Needed     |
-| Loading ChibiOS onto the R5 core via the remoteproc mechanism by U-Boot or Linux                            | Volunteer Developer Needed     |
-| Serial port (UART) driver support and console access                                                        | Volunteer Developer Needed     |
-| GPIO driver support                                                                                         | Volunteer Developer Needed     |
-| Building Ardupilot for the R5 cores using the AP_HAL_ChibiOS layer                                          | Volunteer Developer Needed     |
-| Running Ardupilot as an autopilot on top of ChibiOS                                                         | Volunteer Developer Needed     |
-| SPI and I2C driver support (for sensors such as IMU, barometer, etc.)                                       | Volunteer Developer Needed     |
-| PWM driver support (for motor and servo outputs)                                                            | Volunteer Developer Needed     |
+| Porting the ChibiOS HAL to the AM67A Cortex-R5 cores                                                        | **In Progress**                |
+| Running ArduPilot as a functional autopilot on ChibiOS                                                      | **In Progress**                |
+| Loading ChibiOS onto an R5 core from U-Boot or Linux using remoteproc                                       | `Completed`                    |
+| Serial port (UART) driver support and console access                                                        | `Completed`                    |
+| GPIO driver support                                                                                         | `Completed`                    |
+| Building ArduPilot for the R5 cores using the AP_HAL_ChibiOS layer                                          | `Completed`                    |
+| SPI and I2C driver support for sensors such as IMUs and barometers                                          | `Completed`                    |
+| PWM driver support for motor and servo outputs                                                              | `Completed`                    |
 | CAN Bus (DroneCAN) driver support                                                                           | Volunteer Developer Needed     |
-| Communication between ChibiOS running on the R5 core and Linux running on the A53 core via Texas IPC        | Volunteer Developer Needed     |
-| Providing MAVLink telemetry and ground control station (GCS) connectivity                                   | Volunteer Developer Needed     |
-
-## PX4 Autopilot
-
-The goal is to run the PX4 autopilot on Gemstone Linux (without NuttX).
-
-<Columns cols={1}>
-  <Frame caption="PX4 Autopilot">
-  <a href="https://github.com/t3gemstone/PX4-Autopilot" target="_blank">
-    <img src="/images/px4-autopilot-b.png" noZoom />
-  </a>
-  </Frame>
-</Columns>
+| Communication via Texas IPC between ChibiOS on the R5 core and Linux on the A53 cores                       | Volunteer Developer Needed     |
+| Establishing MAVLink telemetry and ground control station (GCS) connectivity                                | Volunteer Developer Needed     |
 
 ## Buildroot
 
 Support for Gemstone will be added to Buildroot, a Linux build system with a somewhat lighter structure compared 
 to the Yocto Project. The goal is for a person downloading buildroot to see `T3-GEM-O1` as a board in the
-official buildroot system, and to be able to compile and load two image types named `Minimal` and `Kiosk` onto the
-development board.
+official buildroot system, and to be able to compile the appropriate image type and flash it onto their development board.
 
 <Columns cols={1}>
   <Frame caption="Buildroot">
@@ -147,19 +137,7 @@ development board.
 
 |                                                                                                             |                                |
 |:------------------------------------------------------------------------------------------------------------|-------------------------------:|
-| Adding T3-GEM-O1 configuration to Buildroot and creating a pull request to its [address](https://github.com/t3gemstone/buildroot) | Volunteer Developer Needed     |
-| Creating two image types named Minimal and Kiosk and similarly creating a merge request                     | Volunteer Developer Needed     |
-
-## Phoenix RTOS
-
-The goal is to run the open-source real-time operating system Phoenix, which has a microkernel architecture 
-on Gemstone.
-
-<Frame caption="Phoenix RTOS">
-  <a href="https://github.com/t3gemstone/phoenix-rtos-project" target="_blank">
-    <img src="/images/phoenix-rtos.png" noZoom />
-  </a>
-</Frame>
+| Adding T3-GEM-O1 configuration to Buildroot and creating a pull request to its [address](https://github.com/t3gemstone/buildroot) | `Completed`     |
 
 ## Wayland Transition
 
@@ -193,3 +171,44 @@ This will allow taking advantage of new hardware drivers, improvements, and bug 
   </a>
   </Frame>
 </Columns>
+
+## Gemstone Distro
+
+Currently, the kernel, bootloader, and firmware used in the ecosystem are built through Yocto for educational purposes.
+Subsequently, images are produced by combining them with various versions of Pardus, Ubuntu, and Debian distributions.
+The goal is to change this approach and produce an independent distribution called Gemstone Distro by compiling all
+core software—such as the Kernel, Drivers, U-Boot, and Firmware without Yocto, and porting the latest Ubuntu version.
+While the Gemstone Image Writer application includes distributions like Ubuntu, Pardus, and Debian with their own
+interfaces and desktop environments, Gemstone Distro will feature entirely its own interfaces.
+
+It is also possible to transition to image-building systems that compile using web-based CI/CD tools instead of
+systems like Devbox, Taskfile, and Distrobox.
+
+## Zenoh
+
+The Eclipse [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) project runs on various MCUs with low
+resource consumption requirements. As stated in the official code repository, it has been adapted for boards
+such as Arduino, STM32, and ESP. However, there is no known adaptation work available for the AM67A Cortex R5
+architectures found on the T3 Gemstone O1.
+
+The aim of this work is to enable the zenoh-pico project to work together with lwIp on the AM67A Cortex-R5,
+to remove dynamic memory usage and implement static memory adaptation, and to make it usable as a library,
+thereby creating a pull request to the official code repositories by specifying T3 Gemstone O1 compatibility.
+
+<Columns cols={1}>
+  <Frame caption="[What is Zenoh](https://zenoh.io/docs/overview/what-is-zenoh/)">
+    <img src="/images/zenoh.png" noZoom />
+  </Frame>
+</Columns>
+
+The following steps will be carried out by examining the [MCU](./tr/boards/o1/peripherals/mcu) section of the documentation and the [Examples](https://github.com/t3gemstone/examples) repository.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) compiled as a Gemstone R5 MCU application in its current state | `Completed` |
+| Elimination of dynamic memory usage in the project and conversion to static memory allocation | `Completed` |
+| Writing examples that work with FreeRTOS and lwIP | `Completed` |
+| Making the project compilable as a library and usable in other MCU firmware | `Completed` |
+| Having the Cortex R5 Zenoh MCU project route via IPC instead of real Ethernet, using the virtual [RPMSG Net](https://github.com/t3gemstone/rpmsg-net) device on Linux | `Completed` |
+| Setting up a 2 Gemstone (IPC) + 1 Linux Desktop PC (WiFi) setup and enabling communication between devices via Zenoh | **Awaiting Volunteer Developer** |
+| Adding QUIC protocol support to the project | **Awaiting Volunteer Developer** |

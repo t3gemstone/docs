@@ -1,0 +1,179 @@
+---
+title: 'Troubleshooting'
+description: 'Frequently Encountered Problems When Using the DX-M1'
+---
+
+This section contains the problems frequently encountered during the installation and usage of the DX-M1
+accelerator module, along with suggested solutions.
+
+<AccordionGroup>
+
+  <Accordion title="Module is not listed in the lspci output">
+
+    The module not being listed on the PCIe bus at all indicates that the problem is at the hardware level.
+
+    Apply the steps below in order.
+
+    1. Cut the power of the board and remove the module from its slot and insert it again. Make sure that
+       the module is fully seated in the slot and that the retaining screw is tightened.
+    2. Check that the power adapter you are using can supply the total consumption of the board and the
+       module. Insufficient supply causes the module to fail to establish the PCIe link.
+    3. Review whether there is an error related to the PCIe link in the kernel logs.
+
+    ```bash
+    sudo dmesg | grep -i pcie
+    ```
+  </Accordion>
+
+  <Accordion title="Driver modules are not loaded">
+
+    If the `lsmod | grep dx` command produces empty output, the driver has not been loaded into the kernel.
+
+    First check whether the driver produces an error while it is being loaded.
+
+    ```bash
+    sudo dmesg | grep -i dxrt
+    ```
+
+    You can try loading the driver manually.
+
+    ```bash
+    sudo modprobe dxrt_driver
+    ```
+
+  </Accordion>
+
+  <Accordion title="Permission denied error when accessing the device file">
+
+    The `Permission denied` error indicates that the user does not have permission to access the device file
+    created by the driver.
+
+    You can temporarily run the application as the privileged user.
+
+    ```bash
+    sudo dxrt-cli -s
+    ```
+
+    For a permanent solution, you can inspect the owner and the permissions of the device file and add your
+    user to the relevant group.
+
+    ```bash
+    ls -l /dev/dxrt*
+    ```
+  </Accordion>
+
+  <Accordion title="EFAULT error during inference">
+
+    This error can be encountered in Python applications when the input buffer is created with `np.zeros()`.
+    All of the virtual memory pages allocated with `np.zeros()` point to the same physical page, and the
+    PCIe DMA driver produces an error when it sees the same physical page more than once.
+
+    Create the input buffer in the following way.
+
+    ```python
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+    ```
+  </Accordion>
+
+  <Accordion title="A version mismatch is reported while loading the model">
+
+    The DX-RT runtime verifies the compilation version of the loaded model. The model having been compiled
+    with a DX-COM version older than the runtime on the board causes this error.
+
+    Check the installed versions.
+
+    ```bash
+    dxrt-cli -v
+    ```
+
+    To solve the problem, you need to recompile the model using a DX-COM version that is compatible with the
+    runtime version.
+  </Accordion>
+
+  <Accordion title="Frame rate is lower than expected">
+
+    The frame rate staying below expectations usually originates from the steps other than the NPU.
+
+    First determine where the bottleneck is. You can use the benchmark tool to measure the pure performance
+    of the model on the NPU.
+
+    ```bash
+    run_model -m model.dxnn -b -l 100 -v
+    ```
+
+    If this measurement gives the expected values but your application runs slowly, the bottleneck is in the
+    pre-processing, post-processing or display steps. In that case you can consider the following.
+
+    - Use the asynchronous template instead of the synchronous one. This way the CPU can prepare the next
+      frame while the NPU performs inference.
+    - Disable visualization.
+    - Use the C++ equivalents instead of post-processing steps written in Python.
+
+    If the measurement is low as well, check the temperature of the module.
+
+    ```bash
+    dxrt-cli --monitor 1
+    ```
+
+    <Warning>
+      If the temperature remains high, the hardware lowers its clock frequency in order to protect itself.
+      In that case you need to improve the ventilation of the module or use a heatsink.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="The model runs correctly but the results are wrong">
+
+    The compilation process being successful does not guarantee that the model will produce correct results.
+    There are two most common reasons for this situation.
+
+    - **Pre-processing mismatch:** The pre-processing steps defined in the configuration file during
+      compilation must be exactly the same as the steps applied during training. Differences in the color
+      space conversion, the normalization values and the resizing method lead to incorrect results.
+    - **Insufficiency of the calibration dataset:** The images used during quantization not representing the
+      environment in which the model will run causes the accuracy to drop noticeably.
+
+    To verify the model output, you can compare the result of the ONNX model on the computer with the NPU
+    result using the same input.
+  </Accordion>
+
+  <Accordion title="Multiple applications cannot use the NPU at the same time">
+
+    If more than one process will use the NPU at the same time, the `dxrt` service that manages the resource
+    sharing must be running.
+
+    ```bash
+    systemctl status dxrt
+    ```
+
+    If the service is not running, start it and enable it so that it starts automatically at boot.
+
+    ```bash
+    sudo systemctl enable --now dxrt
+    ```
+  </Accordion>
+
+  <Accordion title="Installing both an SSD and the accelerator into the M.2 slot">
+
+    There is a single M.2 2280 slot on the T3 Gemstone O1 development board. For this reason an NVMe SSD and
+    the DX-M1 accelerator module cannot be used at the same time.
+
+    If you need additional storage space, you can use the microSD card slot or a storage device connected
+    over USB.
+  </Accordion>
+
+</AccordionGroup>
+
+## Support
+
+If your problem is not covered in this section, you can request support through the
+[T3 Gemstone Community Forum](https://community.t3gemstone.org). Including the information below when you
+post makes it possible to solve the problem faster.
+
+```bash
+uname -a
+lspci
+lsmod | grep dx
+dxrt-cli -s
+dxrt-cli -v
+```

@@ -1,0 +1,294 @@
+---
+title: 'PX4'
+description: 'PX4 Autopilot'
+---
+
+<Warning>
+PX4 support for Gemstone is still in the development phase. It runs on the
+main-domain R5F core, and some peripherals on the board, such as CAN Bus, are
+not yet available. The board also has no barometer or GPS, so altitude and
+absolute position estimation are limited.
+</Warning>
+
+PX4 is an open-source autopilot platform for drones and other unmanned vehicles.
+It provides a complete flight-control stack, from low-level sensor drivers up to
+vehicle control and mission execution. On the Gemstone board, PX4 runs on the
+R5F cores on top of NuttX, using the same custom `t3-gem-o1` configuration
+created for the bare NuttX build. The flight software starts automatically
+when the board boots, and the QGroundControl ground control application
+connects to the vehicle over the network.
+
+Unlike a standalone NuttX build, PX4 vendors both NuttX and its application
+framework as git submodules. A recursive clone therefore pulls the correct,
+Gemstone-tuned NuttX automatically, so there is no need to download or build
+NuttX separately.
+
+## 1. Compilation
+
+### 1.1. Downloading Source Codes
+
+On Ubuntu/Debian systems, first install the tools needed for downloading and
+compiling with the package manager:
+
+```bash
+sudo apt update
+sudo apt install git make cmake ninja-build gcc-arm-none-eabi python3-venv picocom
+```
+
+PX4 references the Gemstone NuttX and NuttX‑apps as git submodules, so the
+sources are downloaded with a single recursive clone:
+
+```bash
+# Clone PX4 together with its submodules
+git clone --recursive https://github.com/t3gemstone/PX4-Autopilot.git
+
+# Change to your main working directory
+cd PX4-Autopilot
+```
+
+If you cloned without `--recursive`, fetch the
+submodules afterwards with `git submodule update --init --recursive`.
+
+### 1.2. Setting Up the Python Environment
+
+PX4's build system relies on a set of Python tools such as `kconfiglib`,
+`empy` and `jinja2`. Because recent Debian/Ubuntu releases restrict
+system‑wide `pip` installations, install them into a virtual environment
+(run from the `PX4-Autopilot` directory cloned in section 1.1):
+
+```bash
+python3 -m venv ~/px4-venv
+source ~/px4-venv/bin/activate
+pip install -r Tools/setup/requirements.txt
+```
+
+Activate the environment with `source ~/px4-venv/bin/activate` in every new
+shell before building.
+
+### 1.3. Compiling the Project
+
+PX4 builds a specific board target directly, so no separate configuration step
+is required. With the Python environment from section 1.2 active, compile the
+Gemstone board image:
+
+```bash
+make t3gemstone_o1_default
+```
+
+This performs a parallel build and produces
+`build/t3gemstone_o1_default/t3gemstone_o1_default.elf` (the image loaded onto
+the R5F core) along with `.bin` and `.px4` files.
+
+## 2. Running
+
+Like the bare NuttX image, PX4 runs on the main-domain R5F core and is loaded
+from Linux or U-Boot using the `remoteproc` mechanism. While PX4 runs on the R5F
+core, Linux continues to run on the A53 cores.
+
+<Tip>
+   To use the `remoteproc` mechanism in U-Boot, you can refer to the [2.8. Running the Compiled Project in U-Boot](/en/boards/o1/peripherals/mcu#2-8-running-the-compiled-project-at-the-u-boot-stage)
+   section.
+</Tip>
+
+Program files to be loaded onto the cores via remoteproc must be copied to the
+`/lib/firmware` directory with predefined names. At system startup, the
+remoteproc mechanism will automatically load the programs onto the relevant
+cores. Follow the steps below to run PX4 using remoteproc.
+
+1.  Copy the compiled image to the board (the board is reachable at
+    `192.168.7.2` when connected over the USB Type-C cable):
+
+    ```bash
+    ubuntu@host:~$ scp build/t3gemstone_o1_default/t3gemstone_o1_default.elf gemstone@192.168.7.2:~
+    ```
+
+2.  On the board, place the image in the `/lib/firmware` directory with the
+    predefined name and reboot:
+
+    ```bash
+    gemstone@t3-gem-o1:~$ sudo cp ~/t3gemstone_o1_default.elf /lib/firmware/j722s-main-r5f0_0-fw
+    gemstone@t3-gem-o1:~$ sudo reboot
+    ```
+
+3.  Connect a USB-to-TTL device to the UART-MAIN1's GPIO-14 (TX) and
+    GPIO-15 (RX) pins on the 40-pin HAT, then open the NuttShell console
+    from your PC (exit with `Ctrl-A` followed by `Ctrl-X`; the device name
+    may differ, e.g. `/dev/ttyUSB1`, if other USB serial adapters are
+    connected):
+
+    ```bash
+    ubuntu@host:~$ picocom -b 115200 /dev/ttyUSB0
+    ```
+
+4.  From the opened `nsh` console you can inspect the running system with
+    commands such as `ver all`, `top`, and `uorb status`.
+
+## 3. Using the Sensors
+
+The on‑board InvenSense ICM‑20948, a 9‑axis IMU with an accelerometer,
+gyroscope and an integrated AK09916 magnetometer, is connected to the R5F over
+SPI. The boot script (section 4) already starts the driver together with the
+rest of the flight stack; the commands below are useful when experimenting
+with the driver on its own:
+
+```bash
+nsh> icm20948 -s -b 1 -c 3 -M start
+```
+
+Here `-s` selects the SPI interface, `-b 1` the SPI bus, `-c 3` the
+chip‑select, and `-M` additionally enables the magnetometer. Once the driver is
+running, you can stream the live sensor data through PX4's uORB middleware with
+the `listener` command:
+
+```bash
+nsh> listener sensor_accel
+nsh> listener sensor_gyro
+nsh> listener sensor_mag
+```
+
+To observe the overall system, `uorb top` lists the publication rates of all
+active topics and `work_queue status` shows the timing of the driver's work
+queue.
+
+## 4. Flight Stack Autostart
+
+When the R5F starts, PX4 starts all of its components automatically: the sensor driver, attitude estimation, the
+flight controllers and the telemetry link. The board is configured as a Generic Quadcopter X airframe. No manual
+startup commands are needed.
+
+You can verify that the system is running from the `nsh` console. The `uorb top` command lists the data topics that
+PX4's components publish, together with their update rates; sensor and attitude topics updating at a steady rate mean
+the flight software is alive:
+
+```bash
+nsh> uorb top
+#  TOPIC NAME                    INST #SUB RATE #LOST #Q SIZE
+#  sensor_accel                     0    4  400     0  1  48
+#  vehicle_attitude                 0    6  100     0  1  56
+#  ...
+```
+
+The `listener` command prints the live content of a topic. For example, the vehicle's current orientation:
+
+```bash
+nsh> listener vehicle_attitude
+#  TOPIC: vehicle_attitude
+#   vehicle_attitude
+#    timestamp: 87243147 (0.021 seconds ago)
+#    q: [0.9998, 0.0011, -0.0134, 0.0092]
+```
+
+## 5. Networking and QGroundControl
+
+PX4 and the Linux side are connected by a network link: `eth0` on NuttX and `eth1` on Linux.
+
+- **NuttX IP**: `192.168.10.2`
+- **Linux `eth1` IP**: `192.168.10.1`
+- **MAVLink Port**: UDP `14550`
+
+### 5.1. Installing the Network Module
+
+Install the network module package and reboot the board:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo apt update
+gemstone@t3-gem-o1:~$ sudo apt install kernel-module-virtio-net-6.12.24-ti
+gemstone@t3-gem-o1:~$ sudo reboot
+```
+
+### 5.2. Configuring the Link
+
+Configure the Linux side of the link (required after every boot):
+
+```bash
+gemstone@t3-gem-o1:~$ sudo nmcli device set eth1 managed no
+gemstone@t3-gem-o1:~$ sudo ip link set eth1 up
+gemstone@t3-gem-o1:~$ sudo ip addr add 192.168.10.1/24 dev eth1
+gemstone@t3-gem-o1:~$ sudo sysctl -w net.ipv4.ip_forward=1
+```
+
+Configure the NuttX side from the `nsh` console and verify the link:
+
+```bash
+nsh> ifconfig eth0 192.168.10.2 gw 192.168.10.1
+nsh> ifup eth0
+nsh> ping -c 3 192.168.10.1
+#  56 bytes from 192.168.10.1: icmp_seq=0 time=0.0 ms
+#  56 bytes from 192.168.10.1: icmp_seq=1 time=0.0 ms
+#  56 bytes from 192.168.10.1: icmp_seq=2 time=0.0 ms
+#  3 packets transmitted, 3 received, 0% packet loss
+```
+
+### 5.3. Reaching the Board Network from the PC
+
+Connect the Gemstone board to your PC via USB Type-C cable and add a route so that the `192.168.10.0/24` network is
+reachable through the board:
+
+```bash
+ubuntu@host:~$ sudo ip route add 192.168.10.0/24 via 192.168.7.2
+ubuntu@host:~$ ping -c 2 192.168.10.2
+#  64 bytes from 192.168.10.2: icmp_seq=1 ttl=64 time=0.42 ms
+#  64 bytes from 192.168.10.2: icmp_seq=2 ttl=64 time=0.31 ms
+```
+
+Find your PC's own address on the board network; it is used as the MAVLink target in the next step:
+
+```bash
+ubuntu@host:~$ ip route get 192.168.7.2 | grep -oP 'src \K\S+'
+#  192.168.7.60
+```
+
+### 5.4. QGroundControl Connection
+
+QGroundControl (QGC) is the application used to monitor and control the vehicle from a PC. Install it from
+[qgroundcontrol.com](https://qgroundcontrol.com/) and start it.
+
+Start the telemetry link from the `nsh` console, replacing `192.168.7.60` with your PC's address from the previous
+step:
+
+```bash
+nsh> mavlink start -u 14556 -o 14550 -t 192.168.7.60
+```
+
+QGC will automatically detect and connect to the vehicle if UDP autoconnect is enabled (default setting).
+
+## 6. Troubleshooting
+
+### 6.1. No eth1 Interface on Linux
+
+Check that the `virtio_net` module is loaded:
+
+```bash
+gemstone@t3-gem-o1:~$ lsmod | grep virtio_net
+#  virtio_net             45056  0
+#  net_failover           20480  1 virtio_net
+```
+
+If the command prints nothing, load the module manually and check again:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo modprobe virtio_net
+```
+
+### 6.2. No MAVLink Connection
+
+Verify network configuration from the PC; the board must answer:
+
+```bash
+ubuntu@host:~$ ping -c 2 192.168.10.2
+#  64 bytes from 192.168.10.2: icmp_seq=1 ttl=64 time=0.42 ms
+```
+
+If there is no answer, repeat the steps in [Networking and QGroundControl](#5-networking-and-qgroundcontrol).
+
+Check that the telemetry link is running and transmitting on the NuttX side; the `tx rate` value must be greater
+than zero:
+
+```bash
+nsh> mavlink status
+#  instance #0:
+#          ...
+#          tx rate avg: 2543 B/s
+```
+
+Ensure QGC UDP autoconnect is enabled in Application Settings.

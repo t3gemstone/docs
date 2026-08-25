@@ -1,0 +1,108 @@
+---
+title: 'Giriş'
+description: 'DeepX DX-M1 NPU Hızlandırıcı Modülü'
+---
+
+DeepX, yapay zeka çıkarım işlemlerini düşük güç tüketimi ile gerçekleştirmek amacıyla NPU
+(Neural Processing Unit / Sinirsel İşlem Birimi) hızlandırıcıları geliştiren bir yarı iletken firmasıdır.
+
+T3 Gemstone O1 geliştirme kartı üzerindeki M.2 2280 yuvası PCIe arabirimi sunduğu için, bu yuvaya takılan
+**DeepX DX-M1** hızlandırıcı modülü ile kartın yapay zeka işlem gücü önemli ölçüde artırılabilmektedir.
+
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/ai/deepx-dx-m1-pcie.webp" />
+</Frame>
+
+Geliştirme kartının işlemcisinde yer alan C7x DSP ve MMA birimleri 4 TOPS işlem gücü sunmaktadır. DX-M1
+modülü ise tek başına 25 TOPS işlem gücü sağlayarak daha büyük modellerin, daha yüksek çözünürlükte ve daha
+fazla kare hızı ile çalıştırılmasına olanak tanımaktadır.
+
+<Note>
+DX-M1 modülü, kart üzerindeki M.2 2280 yuvasını kullanmaktadır. Bu yuva aynı zamanda NVMe SSD için de
+kullanıldığından, hızlandırıcı modül ile SSD aynı anda takılamamaktadır.
+</Note>
+
+## Teknik Özellikler
+
+| Özellik             | Değer                                 |
+| ------------------- | ------------------------------------- |
+| Hızlandırıcı        | DEEPX DX-M1                           |
+| İşlem Gücü          | 25 TOPS (INT8)                        |
+| Yerleşik Bellek     | 4GB LPDDR5                            |
+| Arabirim            | PCIe Gen3, M.2 M-key                  |
+| Form Faktör         | M.2 2280                              |
+| Güç Tüketimi        | 2W - 5W                               |
+| Model Formatı       | `.dxnn` (ONNX modellerinden derlenir) |
+| Programlama Arayüzü | C/C++ ve Python                       |
+
+<Tip>
+Modüle ait güncel ve ayrıntılı donanım bilgilerine [DEEPX DX-M1 ürün sayfası](https://deepx.ai/products/dx-m1/)
+üzerinden erişebilirsiniz.
+</Tip>
+
+## DXNN Yazılım Geliştirme Kiti
+
+DX-M1 modülü, DEEPX tarafından sağlanan **DXNN SDK** ile birlikte kullanılmaktadır. SDK, modelin
+hazırlanmasından kart üzerinde çalıştırılmasına kadar olan süreci kapsayan bileşenlerden oluşmaktadır.
+
+<CardGroup cols={2}>
+  <Card title="DX-COM" icon="gears">
+    ONNX formatındaki modelleri, bir yapılandırma dosyası eşliğinde NPU üzerinde çalışabilen `.dxnn`
+    formatına derleyen model derleyicisidir. Geliştirme bilgisayarında çalıştırılır.
+  </Card>
+
+  <Card title="DX-RT" icon="microchip">
+    NPU donanımı ile haberleşen çalışma zamanı (runtime) katmanıdır. Model yükleme, girdi/çıktı yönetimi ve
+    çıkarım işlemlerini yürütür. C/C++ ve Python arayüzleri sunar.
+  </Card>
+
+  <Card title="DXRT-NPU-Driver" icon="plug">
+    Hızlandırıcı modülün PCIe üzerinden işletim sistemi tarafından tanınmasını sağlayan çekirdek
+    sürücüsüdür.
+  </Card>
+
+  <Card title="DX-STREAM" icon="video">
+    GStreamer tabanlı görüntü işleme hatları (pipeline) oluşturmak için kullanılan özel eklenti kümesidir.
+    Gerçek zamanlı video akışlarının işlenmesinde kullanılır.
+  </Card>
+
+  <Card title="DX-APP" icon="code">
+    Nesne tespiti, sınıflandırma, segmentasyon gibi görevler için hazır örnek uygulamalar içeren
+    şablon projedir.
+  </Card>
+
+  <Card title="DX Model Zoo" icon="box-archive">
+    Önceden derlenmiş `.dxnn` modellerinin bulunduğu model deposudur. Derleme adımına ihtiyaç duymadan
+    hızlı denemeler yapmaya olanak tanır.
+  </Card>
+</CardGroup>
+
+## Kullanım Alanları
+
+- Nesne tespiti (YOLO ailesi modelleri)
+- Nesne takibi ve çoklu kanal video analizi
+- Görüntü sınıflandırma
+- Anlamsal segmantasyon (semantic segmentation)
+- Poz tahmini (pose estimation)
+- Optik karakter tanıma (OCR)
+- Yüz tanıma
+
+## Doküman İçeriği
+
+<CardGroup cols={2}>
+  <Card title="Kurulum" icon="screwdriver-wrench" href="/tr/boards/o1/ai/deepx/installation">
+    Donanım montajı, sürücü ve çalışma zamanı kurulumu
+  </Card>
+
+  <Card title="Kullanım" icon="terminal" href="/tr/boards/o1/ai/deepx/usage">
+    Cihaz durumunun izlenmesi ve Python ile çıkarım yapılması
+  </Card>
+
+  <Card title="Örnek Uygulamalar" icon="play" href="/tr/boards/o1/ai/deepx/examples">
+    DX-APP örnekleri ve DX-STREAM ile video işleme
+  </Card>
+
+  <Card title="Sorun Giderme" icon="circle-question" href="/tr/boards/o1/ai/deepx/troubleshooting">
+    Sık karşılaşılan hatalar ve çözümleri
+  </Card>
+</CardGroup>

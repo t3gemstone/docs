@@ -23,7 +23,7 @@ Bunun için kendi akıllı ev sunucunuzu kendi cihazınızda barındırmanız ve
 Ancak evinizde böyle bir merkez çalıştırmak için farklı markalara ait cihazların birbiriyle haberleştirilmesi, dış dünyadan 
 güvenli erişim sağlayamama ve sistemi sürekli ayakta tutma gibi teknik problemleri beraberinde getirir. 
 Bu problemler çoğu zaman karmaşık konfigürasyonlar ve yüksek maliyetli donanımlar ile çözülür. 
-T3 Gemstone O1 projesi, Home Assistant entegrasyonu ile bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
+T3 Gemstone O1 geliştirme kartı, Home Assistant entegrasyonu ile bu problemlerin kolay, maliyetsiz ve güvenli bir şekilde çözülmesini sağlar.
 
 
 ## 2. Home Assistant Kurulum
@@ -31,7 +31,14 @@ T3 Gemstone O1 projesi, Home Assistant entegrasyonu ile bu problemlerin kolay, m
 Home Assistant, açık kaynak kodlu bir akıllı ev ve otomasyon platformudur. Sensör verilerini izleme, ışık, priz ve diğer cihazları kontrol etme, 
 otomatik senaryolar oluşturma ve mobil cihazlardan erişim gibi özellikleri tek bir sistemde sunar.
 
-Gemstone geliştirme kartına [terminal bağlantısı](/tr/quickstart/#2-gemstone’u-keşfet) yaptıktan sonra aşağıdaki
+<Warning>
+Home Assistant kurulumu yalnızca **Debian** imajlarında çalışmaktadır. Ubuntu gibi diğer
+dağıtımların imajlarında Home Assistant Supervisor hizmeti düzgün çalışmadığı için desteklenmemektedir.
+Bu nedenle karta imaj yazarken [Karta yüklenecek işletim sistemini seç](/tr/quickstart#1-2-4-karta-yüklenecek-işletim-sistemini-seç)
+bölümünde anlatıldığı gibi bir Debian imajı seçtiğinizden emin olunuz.
+</Warning>
+
+T3 Gemstone O1 geliştirme kartına [terminal bağlantısı](/tr/quickstart/#2-gemstone’u-keşfet) yaptıktan sonra aşağıdaki
 komut ile öncelikle Docker kurulumunu başlatınız.
 
 ```bash
@@ -41,10 +48,17 @@ sudo curl -fsSL https://get.docker.com | sudo sh
 Docker kurulumu tamamlandıktan sonra **Home Assistant'ı** kurabilirsiniz.
 
 ```bash
-sudo apt install t3-gem-homeassistant
+sudo apt install homeassistant-supervised
 ```
 
-Kurulum bittikten sonra Supervisor’ın tüm hizmetleri indirip ayağa kaldırması internet hızınıza bağlı olarak 5-10 dakika sürebilir. 
+Kurulum tamamlandıktan sonra Home Assistant hizmetlerinin doğru şekilde başlatılabilmesi için geliştirme kartını
+yeniden başlatmanız gerekmektedir.
+
+```bash
+sudo reboot
+```
+
+Kart yeniden başladıktan sonra Supervisor’ın tüm hizmetleri indirip ayağa kaldırması internet hızınıza bağlı olarak 5-10 dakika sürebilir. 
 Durumu aşağıdaki komutla takip edebilirsiniz:
 
 ```bash
@@ -145,25 +159,25 @@ Açılan menüdeki arama alanına "esphome" yazılır.
 Arama sonuçlarında görüntülenen ESPHome seçeneğine tıklanır.
 
 <Frame caption="Home Assistant ESPHome">
-  <img src="/images/homeassistant/tr/esphome.png" alt="Adım f" />
+  <img src="/images/homeassistant/tr/esphome.png" alt="Home Assistant ESPHome" />
 </Frame>
 
 Açılan menüde Kurulum seçeneğine tıklanır ve yüklemenin tamamlanması beklenir.
 
 <Frame caption="Home Assistant ESPHome Yüklendikten Sonra">
-  <img src="/images/homeassistant/tr/esphome-installed.png" alt="Adım g" />
+  <img src="/images/homeassistant/tr/esphome-installed.png" alt="Home Assistant ESPHome Yüklendikten Sonra" />
 </Frame>
 
 Yükleme tamamlandıktan sonra görüntülenen menüde başlat butonuna tıklanır.
 
 <Frame caption="Home Assistant ESPHome Yüklendikten Sonra">
-  <img src="/images/homeassistant/tr/esphome-installed-2.png" alt="Adım h" />
+  <img src="/images/homeassistant/tr/esphome-installed-2.png" alt="Home Assistant ESPHome Yüklendikten Sonra" />
 </Frame>
 
 "Web Arayüzünü Aç" butonuna tıklanır.
 
 <Frame caption="ESPHome Hoşgeldin Ekranı">
-  <img src="/images/homeassistant/tr/esphome-welcome.png" alt="Adım i" />
+  <img src="/images/homeassistant/tr/esphome-welcome.png" alt="ESPHome Hoşgeldin Ekranı" />
 </Frame>
 
 ###  4.2 ESPHome'un Deneyap Kart için Konfigüre Edilmesi
@@ -171,31 +185,31 @@ Yükleme tamamlandıktan sonra görüntülenen menüde başlat butonuna tıklan�
 Açılan menüde "Create Device" seçeneğine tıklanır.
 
 <Frame caption="ESPHome Yeni Cihaz Ekleme Ekranı">
-  <img src="/images/homeassistant/tr/esphome-add-device.png" alt="Adım j" />
+  <img src="/images/homeassistant/tr/esphome-add-device.png" alt="ESPHome Yeni Cihaz Ekleme Ekranı" />
 </Frame>
 
 "Create new project" butonuna tıklanarak işlem devam ettirilir.
 
 <Frame caption="ESPHome Cihaz Konfigürasyon Ekranı">
-  <img src="/images/homeassistant/tr/esphome-device-config.png" alt="Adım k" />
+  <img src="/images/homeassistant/tr/esphome-device-config.png" alt="ESPHome Cihaz Konfigürasyon Ekranı" />
 </Frame>
 
 Açılan sayfada kullanacağınız MCU modeline göre arama yapılır.
 
 <Frame caption="ESPHome Cihaz Konfigürasyon Ekranı">
-  <img src="/images/homeassistant/tr/esphome-device-config-2.png" alt="Adım l" />
+  <img src="/images/homeassistant/tr/esphome-device-config-2.png" alt="ESPHome Cihaz Konfigürasyon Ekranı" />
 </Frame>
 
 Bu adımda, uygun model seçilir.
 
 <Frame caption="ESPHome Cihaz Tip Seçim Ekranı">
-  <img src="/images/homeassistant/tr/esphome-device-name.png" alt="Adım m" />
+  <img src="/images/homeassistant/tr/esphome-device-name.png" alt="ESPHome Cihaz Tip Seçim Ekranı" />
 </Frame>
 
 Bu adımda, karta bir isim konulması gerekmektedir..
 
 <Frame caption="ESPHome Cihaz Konfigürasyonun Tamamlanması">
-  <img src="/images/homeassistant/tr/esphome-device-wifi.png" alt="Adım n" />
+  <img src="/images/homeassistant/tr/esphome-device-wifi.png" alt="ESPHome Cihaz Konfigürasyonun Tamamlanması" />
 </Frame>
 
 Bu adımda ise "Network Name" ve "Password" alanlarına modeminizin SSID ve şifresi girilir.
@@ -221,7 +235,7 @@ substitutions:
 Ardından, bu bölümde yapılan **pin tanımlamaları** YAML dosyasının en alt kısmına kopyalanır.
 
 <Frame caption="ESPHome YAML Dosyasına Sensör Ekleme">
-  <img src="/images/homeassistant/tr/esphome-add-sensor.png" alt="Adım y" />
+  <img src="/images/homeassistant/tr/esphome-add-sensor.png" alt="ESPHome YAML Dosyasına Sensör Ekleme" />
 </Frame>
 
 Bu örnekte bir hareket sensörü bağlanacağı için, aşağıdaki tanımlamalar yukarıdaki şekilde YAML dosyasının en altına yapıştırılır.
@@ -250,7 +264,7 @@ Sağ alt köşede bulunan "Install" butonuna tıklanır. Bu adım ile yapıland�
 ###  4.3 ESPHome için Deneyap Kart'a Yazılım Yüklenmesi
 
 <Frame caption="ESPHome Yazılım Yükleme Seçenekleri">
-  <img src="/images/homeassistant/tr/esphome-flash-options.png" alt="Adım z" />
+  <img src="/images/homeassistant/tr/esphome-flash-options.png" alt="ESPHome Yazılım Yükleme Seçenekleri" />
 </Frame>
 
 Öncelikle, **Deneyap Kart**, **T3 Gemstone O1** geliştirme kartınızın herhangi bir USB çıkışına bağlanır. 
@@ -258,50 +272,50 @@ Açılan menüde çeşitli yükleme seçenekleri görüntülenir ancak ilk yükl
 Daha sonraki yüklemelerde kablosuz yükleme yapılabilir.
 
 <Frame caption="ESPHome Yazılım Yükleme">
-  <img src="/images/homeassistant/tr/esphome-flashing.png" alt="Adım a1" />
+  <img src="/images/homeassistant/tr/esphome-flashing.png" alt="ESPHome Yazılım Yükleme" />
 </Frame>
 
 **Port seçimi** bölümünde listelenen uygun seçenek seçilir. Eğer birden fazla port görünüyorsa, Deneyap Kart çıkarılıp yeniden takıldığında ve menü tekrar açıldığında görünmeyen port, doğru port olarak belirlenir.
 
 <Frame caption="ESPHome Yazılım Yükleme Log Ekranı">
-  <img src="/images/homeassistant/tr/esphome-flash-log.png" alt="Adım b1" />
+  <img src="/images/homeassistant/tr/esphome-flash-log.png" alt="ESPHome Yazılım Yükleme Log Ekranı" />
 </Frame>
 
 Yükleme işlemi başlatılır. İlk yükleme, biraz zaman alabileceği için sabırlı olunması önerilir.
 
 <Frame caption="ESPHome Yazılım Yükleme Log Ekranı">
-  <img src="/images/homeassistant/tr/esphome-flash-log-2.png" alt="Adım c1" />
+  <img src="/images/homeassistant/tr/esphome-flash-log-2.png" alt="ESPHome Yazılım Yükleme Log Ekranı" />
 </Frame>
 
 Yükleme tamamlandıktan sonra, ESPHome ana ekranına gidilir ve "Logs" bölümüne tıklanır. 
 Açılan menüde artık "Wirelessly" seçeneği kullanılabilir. 
 
 <Frame caption="ESPHome cihazı Ekleme">
-  <img src="/images/homeassistant/tr/esphome-find.png" alt="Adım d1" />
+  <img src="/images/homeassistant/tr/esphome-find.png" alt="ESPHome cihazı Ekleme" />
 </Frame>
 
 **Home Assistant** üzerinde, **Ayarlar > Cihazlar ve Hizmetler > Entegrasyon Ekle** bölümüne gidilir ve burada bulunan esphome cihazının üzerindeki ekle butonuna tıklanır.
 
 <Frame caption="ESPHome cihazı Ekleme">
-  <img src="/images/homeassistant/tr/esphome-add-device-homeassistant.png" alt="Adım d1" />
+  <img src="/images/homeassistant/tr/esphome-add-device-homeassistant.png" alt="ESPHome cihazı Ekleme" />
 </Frame>
 
 Bu aşamada karşımıza çıkan **Gönder** butonuna tıklanır.
 
 <Frame caption="ESPHome cihazı Ekleme">
-  <img src="/images/homeassistant/tr/esphome-homeassistant-name.png" alt="Adım d1" />
+  <img src="/images/homeassistant/tr/esphome-homeassistant-name.png" alt="ESPHome cihazı Ekleme" />
 </Frame>
 
 Bu adımda ise karta Home Assistant için bir isim verilir. Sonrasında **Atla ve Bitir** butonuna tıklanarak devam edilebilir.
 
 <Frame caption="ESPHome Cihazlar">
-  <img src="/images/homeassistant/tr/esphome-devices.png" alt="Adım e1" />
+  <img src="/images/homeassistant/tr/esphome-devices.png" alt="ESPHome Cihazlar" />
 </Frame>
 
 **ESPHome** altında yer alan **"1 cihaz"** seçeneğine tıklanır.
 
 <Frame caption="ESPHome Cihaz Detayları">
-  <img src="/images/homeassistant/tr/esphome-device-details.png" alt="Adım f1" />
+  <img src="/images/homeassistant/tr/esphome-device-details.png" alt="ESPHome Cihaz Detayları" />
 </Frame>
 
 Tebrikler! Bir hareket sensörü başarıyla **Home Assistant** platformuna entegre edilmiştir. Eklenen sensörün durumu, anlık olarak görüntülenebilir.

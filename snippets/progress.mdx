@@ -1,0 +1,26 @@
+export const Progress = ({ percent }) => (
+  <div className="flex items-center gap-3 my-2">
+    <div className="relative flex-1 h-2.5 rounded-full bg-gray-200/70 dark:bg-gray-700/50 overflow-hidden">
+      <div
+        className="relative h-full rounded-full overflow-hidden transition-all duration-500"
+        style={{
+          width: `${percent}%`,
+          background: 'linear-gradient(90deg, #059669, #10b981, #34d399)',
+          boxShadow: '0 0 10px rgba(16, 185, 129, 0.4)',
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+            animation: 'progress-shimmer 2.2s ease-in-out infinite',
+          }}
+        ></div>
+      </div>
+    </div>
+    <span className="text-xs font-semibold tabular-nums text-emerald-600 dark:text-emerald-400 leading-none">
+      %{percent}
+    </span>
+    <style>{`@keyframes progress-shimmer { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }`}</style>
+  </div>
+);
