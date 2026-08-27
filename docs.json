@@ -185,6 +185,14 @@
               "tr/projects/hotspot",
               "tr/projects/homeassistant",
               {
+                "group": "Mesh Ağ",
+                "pages": [
+                  "tr/projects/mesh-network/overview",
+                  "tr/projects/mesh-network/setup",
+                  "tr/projects/mesh-network/verification"
+                ]
+              },
+              {
                 "group": "Teknofest",
                 "pages": [
                   "tr/projects/teknofest-suv",
@@ -373,6 +381,14 @@
               "en/projects/firewall",
               "en/projects/hotspot",
               "en/projects/homeassistant",
+              {
+                "group": "Mesh Network",
+                "pages": [
+                  "en/projects/mesh-network/overview",
+                  "en/projects/mesh-network/setup",
+                  "en/projects/mesh-network/verification"
+                ]
+              },
               {
                 "group": "Teknofest",
                 "pages": [

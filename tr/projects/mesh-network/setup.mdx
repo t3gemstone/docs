@@ -1,0 +1,574 @@
+---
+title: "Kurulum"
+description: "T3 Gemstone O1 üzerinde IBSS ve BATMAN-adv yapılandırması"
+---
+
+Bu bölümde kablosuz mesh ağın terminal üzerinden nasıl yapılandırılacağı açıklanmaktadır.
+
+Komutlar, T3 Gemstone O1 üzerinde doğrulanan mesh testinde kullanılan yapılandırmaya dayanmaktadır. Orijinal yardımcı scriptlerdeki işlemler burada açılarak verilmiştir. Böylece kurulum, harici `.sh` dosyaları kopyalanmadan veya çalıştırılmadan tamamen yeniden gerçekleştirilebilir.
+
+Yapılandırmayı her düğümde tekrarlayın. Her düğüm:
+
+- Aynı kablosuz arayüzü
+- Aynı SSID'yi
+- Aynı frekansı
+- Aynı BSSID'yi
+- Aynı BATMAN-adv yönlendirme algoritmasını
+- Benzersiz bir düğüm numarasını
+
+kullanmalıdır.
+
+Bu rehberde örnek olarak `1`, `2` ve `3` düğüm numaraları kullanılmıştır. Mesh ağ üç düğümle sınırlı değildir.
+
+## 1. Gereksinimler
+
+Test edilen T3 Gemstone O1 imajında `batman-adv` kernel modülü hazır olarak bulunmaktadır.
+
+Gerekli kullanıcı alanı araçlarını kurun:
+
+```bash
+sudo apt update
+sudo apt install iw batctl
+```
+
+Kablosuz aygıtın IBSS modunu desteklediğini kontrol edin:
+
+```bash
+iw list
+```
+
+`Supported interface modes` bölümünde `IBSS` satırının bulunduğunu doğrulayın.
+
+BATMAN-adv kernel modülünün kullanılabilir olduğunu da kontrol edebilirsiniz:
+
+```bash
+modinfo batman-adv
+```
+
+## 2. Düğüm Numarasını Belirleyin
+
+Her karta benzersiz bir düğüm numarası verilmelidir.
+
+Düğüm numarası şu değerlerin üretilmesinde kullanılır:
+
+- Doğrudan IBSS adresi: `192.168.100.N/24`
+- Mesh adresi: `192.168.200.N/24`
+- Benzersiz, locally administered `bat0` MAC adresi
+
+Her kartta `NODE` değişkenini farklı bir değere ayarlayın.
+
+Düğüm 1 için:
+
+```bash
+NODE=1
+```
+
+Düğüm 2 için:
+
+```bash
+NODE=2
+```
+
+Düğüm 3 için:
+
+```bash
+NODE=3
+```
+
+Test edilen yapılandırmada `1` ile `250` arasındaki düğüm numaraları kullanılabilir.
+
+Sonraki komutlarda `$NODE` değişkeni kullanıldığı için aynı prosedür her kartta tekrar uygulanabilir.
+
+## 3. IBSS Yapılandırması
+
+Önce ortak kablosuz parametreleri tanımlayın:
+
+```bash
+IFACE=wlan0
+SSID=gemstone-mesh
+FREQ=2412
+BSSID=02:12:34:56:78:9a
+```
+
+Tüm düğümlerde `SSID`, `FREQ` ve `BSSID` değerleri tamamen aynı olmalıdır.
+
+### Otomatik Wi-Fi yönetimini devre dışı bırakın
+
+Normal Wi-Fi yönetim servisleri, IBSS yapılandırılırken arayüzü tekrar managed moda çevirebilir.
+
+Kullanılabilecek iki Wi-Fi backend servisini durdurun ve maskeleyin:
+
+```bash
+sudo systemctl stop iwd wpa_supplicant 2>/dev/null
+sudo systemctl mask iwd wpa_supplicant 2>/dev/null
+```
+
+`wlan0` arayüzünü NetworkManager bağlantısından çıkarın ve unmanaged olarak işaretleyin:
+
+```bash
+sudo nmcli device disconnect $IFACE 2>/dev/null
+sudo nmcli device set $IFACE managed no 2>/dev/null
+```
+
+> **Not:** NetworkManager servisinin tamamı durdurulmaz. Böylece SSH için kullanılabilecek `usb0` gibi diğer arayüzlerin bağlantısı kesilmez.
+
+### wlan0 arayüzünü IBSS moduna geçirin
+
+Arayüzü kapatın:
+
+```bash
+sudo ip link set $IFACE down
+```
+
+Kablosuz arayüz tipini IBSS olarak ayarlayın:
+
+```bash
+sudo iw dev $IFACE set type ibss
+```
+
+Arayüzü tekrar açın:
+
+```bash
+sudo ip link set $IFACE up
+```
+
+Arayüz durumunun oturması için bekleyin:
+
+```bash
+sleep 2
+```
+
+Arayüzün IBSS modunda kaldığını doğrulayın:
+
+```bash
+iw dev $IFACE info
+```
+
+Çıktıda şu satır bulunmalıdır:
+
+```text
+type IBSS
+```
+
+Arayüz tekrar managed moda dönüyorsa kablosuz yönetim servislerini kontrol edin:
+
+```bash
+systemctl is-active iwd wpa_supplicant NetworkManager
+```
+
+### IBSS hücresine katılın
+
+Ortak `gemstone-mesh` hücresine katılın:
+
+```bash
+sudo iw dev $IFACE ibss join $SSID $FREQ fixed-freq $BSSID
+```
+
+Tüm düğümler aynı IBSS hücresine katılmalıdır.
+
+### MTU ayarını yapın
+
+Test edilen yapılandırmada `bat0` üzerinde 1500 byte MTU elde edebilmek için `wlan0` üzerinde `1532` MTU değeri denenir.
+
+Şu komutu çalıştırın:
+
+```bash
+sudo ip link set $IFACE mtu 1532 2>/dev/null || echo "Note: MTU 1532 was rejected; BATMAN-adv fragmentation will be used."
+```
+
+### Doğrudan bağlantı IP adresini verin
+
+`wlan0` üzerindeki mevcut IP adreslerini temizleyin:
+
+```bash
+sudo ip addr flush dev $IFACE
+```
+
+Düğüme özel IBSS adresini atayın:
+
+```bash
+sudo ip addr add 192.168.100.$NODE/24 dev $IFACE
+```
+
+Komşu keşfinin başlaması için bekleyin:
+
+```bash
+sleep 3
+```
+
+## 4. IBSS'i Doğrulayın
+
+Arayüz durumunu inceleyin:
+
+```bash
+iw dev $IFACE info
+```
+
+Mevcut IBSS bağlantısını inceleyin:
+
+```bash
+iw dev $IFACE link
+```
+
+Algılanan eş istasyonları inceleyin:
+
+```bash
+iw dev $IFACE station dump
+```
+
+Mevcut regulatory domain bilgisini inceleyin:
+
+```bash
+iw reg get
+```
+
+Başarılı bir yapılandırmada:
+
+- `wlan0` arayüzü `IBSS` modunda olmalı
+- `gemstone-mesh` hücresine katılım görünmeli
+- Yapılandırılan frekans görünmeli
+- Komşu düğümler aynı hücreye katıldıktan sonra eş istasyonlar görünmeli
+- Düğüme özel `192.168.100.N/24` adresi bulunmalı
+
+IP adresini şu komutla kontrol edin:
+
+```bash
+ip -br addr show $IFACE
+```
+
+Bu aşamada IBSS, doğrudan radyo bağlantısı kurabilen düğümler arasında kablosuz iletişim sağlar.
+
+## 5. BATMAN-adv Yapılandırması
+
+BATMAN-adv'i yalnızca IBSS çalışır durumdayken yapılandırın.
+
+Mesh arayüzünü ve yönlendirme algoritmasını tanımlayın:
+
+```bash
+MESH_IF=bat0
+ALGO=BATMAN_V
+```
+
+Düğüm numarasından benzersiz, locally administered bir MAC adresi üretin:
+
+```bash
+BAT_MAC=$(printf "02:ba:70:00:00:%02x" "$NODE")
+```
+
+Düğüme özel mesh IP adresini üretin:
+
+```bash
+BAT_IP="192.168.200.$NODE/24"
+```
+
+Üretilen değerleri kontrol edebilirsiniz:
+
+```bash
+echo "Node: $NODE"
+echo "bat0 MAC: $BAT_MAC"
+echo "bat0 IP: $BAT_IP"
+```
+
+### IBSS ön koşulunu kontrol edin
+
+`wlan0` arayüzünün hâlâ IBSS modunda olduğunu doğrulayın:
+
+```bash
+iw dev $IFACE info
+```
+
+Arayüzün bir IBSS hücresine katılmış olduğunu doğrulayın:
+
+```bash
+iw dev $IFACE link
+```
+
+Arayüz IBSS modunda değilse veya beklenen hücreye katılmamışsa devam etmeyin.
+
+### Mevcut BATMAN-adv yapılandırmasını temizleyin
+
+Önceki bir yapılandırmadan `bat0` mevcutsa mesh yapısını yeniden oluşturmadan önce eski arayüz bağlantısını kaldırın.
+
+Arayüzün varlığını kontrol edin:
+
+```bash
+ip link show $MESH_IF
+```
+
+Mevcutsa şu komutları çalıştırın:
+
+```bash
+sudo ip link set $MESH_IF down 2>/dev/null || true
+sudo batctl meshif $MESH_IF interface del $IFACE 2>/dev/null || sudo batctl if del $IFACE 2>/dev/null || true
+sleep 1
+```
+
+`bat0` mevcut değilse sonraki adıma geçin.
+
+### BATMAN-adv modülünü yükleyin
+
+Kernel modülünü yükleyin:
+
+```bash
+sudo modprobe batman-adv
+```
+
+Modülün başlatılması için bekleyin:
+
+```bash
+sleep 1
+```
+
+### BATMAN_V algoritmasını seçin
+
+Kablosuz arayüzü mesh'e eklemeden önce yönlendirme algoritmasını seçin:
+
+```bash
+sudo batctl ra $ALGO
+```
+
+Seçilen algoritmayı kontrol edin:
+
+```bash
+sudo batctl ra
+```
+
+Tüm düğümlerde aynı yönlendirme algoritması kullanılmalıdır.
+
+### wlan0 arayüzünü BATMAN-adv'e ekleyin
+
+IBSS arayüzünü BATMAN-adv mesh yapısına ekleyin:
+
+```bash
+sudo batctl if add $IFACE 2>/dev/null || sudo batctl meshif $MESH_IF interface add $IFACE
+```
+
+Fiziksel arayüz mesh'e eklendiğinde BATMAN-adv sanal `bat0` arayüzünü oluşturur.
+
+### bat0 MAC adresini yapılandırın
+
+MAC adresini değiştirmeden önce `bat0` arayüzünü kapatın:
+
+```bash
+sudo ip link set $MESH_IF down
+```
+
+Düğüme özel MAC adresini verin:
+
+```bash
+sudo ip link set $MESH_IF address "$BAT_MAC"
+```
+
+Aynı sistem imajından oluşturulan birden fazla kart kullanıldığında her kart için benzersiz `bat0` MAC adresi kullanılması önemlidir.
+
+### Mesh IP adresini yapılandırın
+
+`bat0` üzerindeki mevcut adresleri temizleyin:
+
+```bash
+sudo ip addr flush dev $MESH_IF
+```
+
+`bat0` arayüzünü açın:
+
+```bash
+sudo ip link set $MESH_IF up
+```
+
+Düğüme özel mesh adresini atayın:
+
+```bash
+sudo ip addr add "$BAT_IP" dev $MESH_IF
+```
+
+Yapılandırılan MAC adresini doğrulayın:
+
+```bash
+cat /sys/class/net/$MESH_IF/address
+```
+
+Çıktı `$BAT_MAC` değeriyle aynı olmalıdır.
+
+## 6. Mesh Keşfini Bekleyin
+
+BATMAN-adv'in komşu düğümlerle mesh bilgisini paylaşabilmesi için bir miktar süre gerekir.
+
+Keşif için bekleyin:
+
+```bash
+sleep 15
+```
+
+Ardından arayüz ilişkisini kontrol edin:
+
+```bash
+sudo batctl if
+```
+
+`bat0` arayüzünü inceleyin:
+
+```bash
+ip -br addr show $MESH_IF
+```
+
+MTU değerini kontrol edin:
+
+```bash
+cat /sys/class/net/$MESH_IF/mtu
+```
+
+Test edilen yapılandırmada `bat0` için beklenen MTU değeri `1500`'dür.
+
+## 7. Mesh Durumunu Kontrol Edin
+
+Doğrudan BATMAN-adv komşularını görüntüleyin:
+
+```bash
+sudo batctl n
+```
+
+Bilinen originator düğümleri ve seçilen next-hop bilgilerini görüntüleyin:
+
+```bash
+sudo batctl o
+```
+
+BATMAN-adv kernel modülü sürümünü kontrol edin:
+
+```bash
+cat /sys/module/batman_adv/version
+```
+
+`batctl` sürümünü kontrol edin:
+
+```bash
+batctl -v
+```
+
+`sudo batctl n` herhangi bir komşu göstermiyorsa şunları doğrulayın:
+
+- Diğer düğümlerde IBSS yapılandırmasının tamamlandığını
+- Diğer düğümlerde BATMAN-adv yapılandırmasının tamamlandığını
+- Tüm düğümlerin `BATMAN_V` kullandığını
+- Tüm düğümlerin aynı IBSS SSID, frekans ve BSSID değerlerini kullandığını
+- `iw dev wlan0 station dump` çıktısında beklenen IBSS eşlerinin göründüğünü
+
+## 8. Mesh İletişimini Test Edin
+
+Uygulamalar mesh iletişimi için `bat0` adreslerini kullanmalıdır.
+
+Örneğin Düğüm 1'den Düğüm 2'ye:
+
+```bash
+ping -c 5 192.168.200.2
+```
+
+Düğüm 1'den Düğüm 3'e:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+Ek düğümlerde IP adresi düğüm numarasından türetilir:
+
+```text
+192.168.200.N
+```
+
+Başarılı ping uçtan uca iletişimin çalıştığını gösterir. Ancak tek başına trafiğin çok atlamalı bir yol kullandığını kanıtlamaz. Doğrulama bölümünde komşu ve originator tabloları incelenerek üç düğümlü testte ara düğüm üzerinden iletim nasıl kanıtlandığı gösterilmektedir.
+
+## 9. Temizlik
+
+Mesh artık gerekli olmadığında önce BATMAN-adv katmanını kaldırın, ardından `wlan0` arayüzünü normal managed Wi-Fi moduna döndürün.
+
+### BATMAN-adv'i kaldırın
+
+Değişkenler mevcut terminal oturumunda tanımlı değilse yeniden tanımlayın:
+
+```bash
+IFACE=wlan0
+MESH_IF=bat0
+```
+
+`bat0` üzerindeki IP adreslerini temizleyin:
+
+```bash
+sudo ip addr flush dev $MESH_IF 2>/dev/null || true
+```
+
+`bat0` arayüzünü kapatın:
+
+```bash
+sudo ip link set $MESH_IF down 2>/dev/null || true
+```
+
+`wlan0` arayüzünü BATMAN-adv'den çıkarın:
+
+```bash
+sudo batctl if del $IFACE 2>/dev/null || sudo batctl meshif $MESH_IF interface del $IFACE 2>/dev/null || true
+```
+
+BATMAN-adv kernel modülünü kaldırın:
+
+```bash
+sudo modprobe -r batman_adv 2>/dev/null || true
+```
+
+Modülün ve arayüzün kaldırıldığını kontrol edin:
+
+```bash
+lsmod | grep batman || echo "BATMAN-adv removed."
+ip link show $MESH_IF 2>/dev/null || echo "bat0 is not present."
+```
+
+### Normal Wi-Fi moduna dönün
+
+IBSS IP adresini temizleyin:
+
+```bash
+sudo ip addr flush dev $IFACE
+```
+
+`wlan0` arayüzünü kapatın:
+
+```bash
+sudo ip link set $IFACE down
+```
+
+Arayüzü managed moda döndürün:
+
+```bash
+sudo iw dev $IFACE set type managed
+```
+
+Varsayılan MTU değerini geri yükleyin:
+
+```bash
+sudo ip link set $IFACE mtu 1500
+```
+
+Normal Wi-Fi servislerinin maskesini kaldırın:
+
+```bash
+sudo systemctl unmask iwd wpa_supplicant
+```
+
+`iwd` servisini başlatın:
+
+```bash
+sudo systemctl start iwd
+```
+
+`wlan0` arayüzünü tekrar NetworkManager yönetimine verin:
+
+```bash
+sudo nmcli device set $IFACE managed yes
+```
+
+Arayüzü açın:
+
+```bash
+sudo ip link set $IFACE up
+```
+
+Kart artık normal managed Wi-Fi yapılandırmasına dönebilir.

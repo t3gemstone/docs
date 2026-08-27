@@ -1,0 +1,211 @@
+---
+title: "Mesh Network"
+description: "Build a multi-hop wireless mesh network on T3 Gemstone O1 using IBSS and BATMAN-adv"
+---
+
+This project explains how to build a wireless mesh network between multiple **T3 Gemstone O1** boards without requiring a central access point.
+
+The wireless interfaces first establish direct peer-to-peer links using **IBSS (ad-hoc mode)**. **BATMAN-adv** then operates on top of these links and provides Layer 2 multi-hop forwarding between nodes.
+
+By the end of this section, you will understand:
+
+- What a wireless mesh network is
+- How IBSS provides direct wireless connectivity
+- How BATMAN-adv provides multi-hop forwarding
+- How IBSS and BATMAN-adv work together on T3 Gemstone O1
+- How the mesh topology was verified using three nodes
+
+## 1. Mesh Networks
+
+A wireless mesh network consists of multiple nodes that can communicate with each other without depending on a central access point.
+
+In a traditional Wi-Fi network, wireless devices normally communicate through an access point:
+
+```text
+Node 1 ──┐
+Node 2 ──┼── Access Point
+Node 3 ──┘
+```
+
+In a mesh network, nodes can establish links with neighboring nodes and traffic can be forwarded through intermediate nodes:
+
+```text
+Node 1 <------> Node 2 <------> Node 3 <------> ... <------> Node N
+```
+
+For example, if Node 1 cannot directly communicate with Node 3, Node 2 can act as an intermediate node:
+
+```text
+Node 1 ------> Node 2 ------> Node 3
+```
+
+This allows the network to extend communication beyond a single direct wireless link.
+
+The mesh architecture described in this project uses two components:
+
+- **IBSS** for direct wireless links between neighboring nodes
+- **BATMAN-adv** for Layer 2 multi-hop forwarding across those links
+
+## 2. IBSS
+
+**IBSS (Independent Basic Service Set)** is an IEEE 802.11 ad-hoc operating mode.
+
+Unlike a normal Wi-Fi network, IBSS does not require an access point. Wireless devices join the same IBSS cell and communicate directly with other devices that are within wireless range.
+
+In this project, every T3 Gemstone O1 node uses the same IBSS parameters:
+
+```text
+SSID:       gemstone-mesh
+Frequency:  2412 MHz
+Channel:    1
+BSSID:      02:12:34:56:78:9a
+```
+
+Each node configures its `wlan0` interface in IBSS mode and joins this shared wireless cell.
+
+```text
+Gemstone O1              Gemstone O1
+   wlan0 <--------------> wlan0
+              IBSS
+```
+
+IBSS provides the direct wireless link between nodes. However, IBSS itself does not provide automatic multi-hop forwarding between nodes that cannot communicate directly.
+
+For example:
+
+```text
+Node 1 <------> Node 2 <------> Node 3
+```
+
+Node 1 may communicate directly with Node 2, and Node 2 may communicate directly with Node 3. Without an additional forwarding mechanism, Node 2 does not automatically relay traffic between Node 1 and Node 3.
+
+This is the role of BATMAN-adv.
+
+## 3. BATMAN-adv
+
+**BATMAN-adv** is a Layer 2 mesh networking component implemented in the Linux kernel.
+
+It operates on top of network interfaces such as `wlan0` and creates a virtual mesh interface named `bat0`.
+
+```text
+Application
+    |
+    v
+  bat0
+    |
+    v
+BATMAN-adv
+    |
+    v
+  wlan0
+    |
+    v
+   IBSS
+```
+
+The physical wireless interface provides connectivity to neighboring nodes, while BATMAN-adv determines how Ethernet frames should be forwarded through the mesh.
+
+The `bat0` interface is used for communication over the resulting mesh network.
+
+The routing algorithm used in this project is:
+
+```text
+BATMAN_V
+```
+
+The following commands are useful for inspecting the mesh:
+
+```bash
+sudo batctl n
+sudo batctl o
+```
+
+`batctl n` displays directly reachable BATMAN-adv neighbors.
+
+`batctl o` displays known originators and the selected next hop toward each destination.
+
+## 4. Architecture
+
+IBSS and BATMAN-adv perform different tasks in the network.
+
+```text
+        Direct wireless links
+               (IBSS)
+
+Node 1 <------> Node 2 <------> Node 3
+   |               |               |
+  bat0            bat0            bat0
+   |               |               |
+   +-------- BATMAN-adv Mesh ------+
+```
+
+The relationship can be summarized as follows:
+
+```text
+IBSS
+  |
+  +-- Provides direct wireless connectivity
+      between neighboring nodes
+
+BATMAN-adv
+  |
+  +-- Provides Layer 2 multi-hop forwarding
+      across those wireless links
+```
+
+Together, they form the mesh architecture used in this project:
+
+```text
+IBSS + BATMAN-adv
+        |
+        v
+Multi-hop wireless mesh
+```
+
+For example, when Node 1 and Node 3 do not have a direct wireless path, BATMAN-adv can forward traffic through Node 2:
+
+```text
+Node 1
+   |
+   v
+Node 2
+   |
+   v
+Node 3
+```
+
+The applications running on the nodes use the `bat0` interface, while BATMAN-adv handles the forwarding path over the underlying IBSS links.
+
+> **Note:** This project does not use IEEE 802.11s mesh mode. The wireless interface operates in IBSS mode, and multi-hop forwarding is provided separately by BATMAN-adv.
+
+## 5. Tested Configuration
+
+The mesh architecture is not limited to three nodes. Multiple T3 Gemstone O1 boards can participate in the same mesh when they use compatible wireless and BATMAN-adv settings.
+
+The configuration documented in this guide was verified using three boards.
+
+| Component | Tested value |
+| --- | --- |
+| Board | T3 Gemstone O1 |
+| Nodes used for verification | 3 |
+| Operating system | Ubuntu 24.04 LTS |
+| Architecture | aarch64 |
+| Kernel | Linux 6.12.24-ti, PREEMPT_RT |
+| Wireless interface | `wlan0` |
+| Wireless mode | IBSS |
+| SSID | `gemstone-mesh` |
+| Frequency | 2412 MHz |
+| Channel | 1 |
+| BSSID | `02:12:34:56:78:9a` |
+| Mesh layer | BATMAN-adv |
+| Routing algorithm | `BATMAN_V` |
+
+The three-node verification topology was:
+
+```text
+Node 1 <------> Node 2 <------> Node 3
+```
+
+During the multi-hop test, direct data communication between Node 1 and Node 3 was intentionally prevented. This made it possible to verify that communication between the edge nodes was forwarded through Node 2 rather than using a direct wireless path.
+
+The next section explains how to configure the IBSS wireless links and create the BATMAN-adv mesh.

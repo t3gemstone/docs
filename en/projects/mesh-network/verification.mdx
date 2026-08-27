@@ -1,0 +1,488 @@
+---
+title: "Verification"
+description: "Verify direct IBSS links and multi-hop BATMAN-adv forwarding on T3 Gemstone O1"
+---
+
+This section verifies that the configured network is actually forwarding traffic across multiple wireless hops.
+
+The mesh itself is not limited to three nodes. The procedure below uses **three T3 Gemstone O1 boards only as a controlled verification topology**.
+
+The test separates two different behaviors:
+
+- Direct communication over the IBSS links
+- Multi-hop communication over the BATMAN-adv mesh
+
+This distinction is important because a successful ping alone does not prove that traffic crossed an intermediate node.
+
+## 1. Test Topology
+
+The verified topology uses three nodes:
+
+```text
+Node 1 <------> Node 2 <------> Node 3
+
+Node 1 <---------- X ----------> Node 3
+```
+
+Node 1 and Node 2 can communicate directly.
+
+Node 2 and Node 3 can communicate directly.
+
+Direct data communication between Node 1 and Node 3 is intentionally blocked during the test.
+
+The expected behavior is:
+
+| Test | Path | Expected result |
+| --- | --- | --- |
+| Direct IBSS | Node 1 → Node 2 | Success |
+| Direct IBSS | Node 1 → Node 3 | Failure |
+| BATMAN-adv | Node 1 → Node 3 | Success through Node 2 |
+| Relay removed | Node 1 → Node 3 | Failure |
+
+The direct-link subnet and mesh subnet remain separate:
+
+```text
+wlan0 / IBSS: 192.168.100.N/24
+bat0 / Mesh:   192.168.200.N/24
+```
+
+This makes it possible to distinguish direct radio reachability from mesh forwarding.
+
+## 2. Collect MAC Addresses
+
+Before applying isolation, collect the `wlan0` MAC address on every node:
+
+```bash
+ip link show wlan0 | grep ether
+```
+
+Record the addresses:
+
+```text
+Node 1 wlan0 MAC: <NODE1_MAC>
+Node 2 wlan0 MAC: <NODE2_MAC>
+Node 3 wlan0 MAC: <NODE3_MAC>
+```
+
+Use the `wlan0` addresses for the isolation test.
+
+## 3. Apply Direct-Link Isolation
+
+The verified test used MAC-based logical isolation rather than physical distance.
+
+This keeps the test repeatable and prevents changing signal conditions from creating an unintended direct path between Node 1 and Node 3.
+
+Install `nftables` if it is not already available:
+
+```bash
+sudo apt install nftables
+```
+
+### Node 1
+
+Set the MAC address of Node 3:
+
+```bash
+NODE3_MAC=<NODE3_MAC>
+```
+
+Create an ingress filter on `wlan0`:
+
+```bash
+sudo nft add table netdev isolation
+```
+
+```bash
+sudo nft add chain netdev isolation ingress \
+'{ type filter hook ingress device wlan0 priority 0; policy accept; }'
+```
+
+Block frames arriving directly from Node 3:
+
+```bash
+sudo nft add rule netdev isolation ingress ether saddr "$NODE3_MAC" drop
+```
+
+### Node 3
+
+Set the MAC address of Node 1:
+
+```bash
+NODE1_MAC=<NODE1_MAC>
+```
+
+Create the same ingress filter:
+
+```bash
+sudo nft add table netdev isolation
+```
+
+```bash
+sudo nft add chain netdev isolation ingress \
+'{ type filter hook ingress device wlan0 priority 0; policy accept; }'
+```
+
+Block frames arriving directly from Node 1:
+
+```bash
+sudo nft add rule netdev isolation ingress ether saddr "$NODE1_MAC" drop
+```
+
+Do not apply this isolation on Node 2. Node 2 must remain able to communicate directly with both edge nodes.
+
+Check the active filter on Node 1 and Node 3:
+
+```bash
+sudo nft list table netdev isolation
+```
+
+> **Note:** The filter operates on the data path. An isolated station may still appear in `iw dev wlan0 station dump` because IEEE 802.11 management traffic is not the evidence used by this test. Direct IP reachability and BATMAN-adv forwarding are verified separately.
+
+## 4. Verify Direct IBSS
+
+Before evaluating BATMAN-adv, verify the direct IBSS topology using the `192.168.100.x` addresses.
+
+The IBSS configuration from the Setup section must already be active on all three nodes.
+
+### Node 1
+
+Test the direct link to Node 2:
+
+```bash
+ping -c 5 192.168.100.2
+```
+
+Expected result:
+
+```text
+Success
+```
+
+Test the direct link to Node 3:
+
+```bash
+ping -c 5 192.168.100.3
+```
+
+Expected result:
+
+```text
+Failure
+```
+
+### Node 3
+
+Test the direct link to Node 2:
+
+```bash
+ping -c 5 192.168.100.2
+```
+
+Expected result:
+
+```text
+Success
+```
+
+Test the direct link to Node 1:
+
+```bash
+ping -c 5 192.168.100.1
+```
+
+Expected result:
+
+```text
+Failure
+```
+
+These results establish the direct wireless topology:
+
+```text
+Node 1 <------> Node 2 <------> Node 3
+
+Node 1 <---------- X ----------> Node 3
+```
+
+At this stage, Node 2 is reachable from both edge nodes, but the direct IBSS subnet does not provide forwarding between Node 1 and Node 3.
+
+## 5. Verify BATMAN-adv
+
+Complete the BATMAN-adv configuration from the Setup section on all three nodes while keeping the isolation rules active.
+
+Allow the mesh state to converge:
+
+```bash
+sleep 15
+```
+
+### Check direct neighbors
+
+On Node 1:
+
+```bash
+sudo batctl n
+```
+
+Node 1 should show Node 2 as a direct BATMAN-adv neighbor.
+
+Node 3 should not appear as a direct neighbor in this controlled topology.
+
+On Node 2:
+
+```bash
+sudo batctl n
+```
+
+Node 2 should show both edge nodes as direct neighbors.
+
+On Node 3:
+
+```bash
+sudo batctl n
+```
+
+Node 3 should show Node 2 as its direct neighbor.
+
+The expected logical neighbor topology is:
+
+```text
+Node 1 <------> Node 2 <------> Node 3
+```
+
+### Check the forwarding path
+
+On Node 1:
+
+```bash
+sudo batctl o
+```
+
+The originator table should contain the remote edge node even though it is not a direct neighbor.
+
+The important result is that the selected next hop toward Node 3 is Node 2.
+
+Conceptually:
+
+```text
+Destination: Node 3
+Next hop:    Node 2
+```
+
+This is stronger evidence than a successful IP ping because it shows that BATMAN-adv selected the intermediate node as the forwarding path.
+
+Repeat the same check on Node 3:
+
+```bash
+sudo batctl o
+```
+
+The selected next hop toward Node 1 should be Node 2.
+
+## 6. Trace the Multi-hop Path
+
+From Node 1, trace the BATMAN-adv path toward the remote edge node.
+
+Use the Node 3 originator MAC:
+
+```bash
+sudo batctl tr <NODE3_MAC>
+```
+
+The expected path contains the intermediate node before the destination:
+
+```text
+Node 2
+Node 3
+```
+
+You can also use the BATMAN-adv ping mechanism:
+
+```bash
+sudo batctl ping <NODE3_MAC>
+```
+
+These commands inspect the mesh layer directly rather than relying only on IP connectivity.
+
+## 7. Test End-to-End Traffic
+
+With BATMAN-adv active, test the `bat0` addresses.
+
+From Node 1:
+
+```bash
+ping -c 10 192.168.200.3
+```
+
+Expected result:
+
+```text
+Success
+```
+
+From Node 3:
+
+```bash
+ping -c 10 192.168.200.1
+```
+
+Expected result:
+
+```text
+Success
+```
+
+These successful mesh pings must be evaluated together with the failed direct IBSS tests.
+
+The combined result is:
+
+```text
+Direct IBSS:
+
+Node 1 ---------------- X ----------------> Node 3
+
+
+BATMAN-adv:
+
+Node 1 ------------> Node 2 ------------> Node 3
+```
+
+This demonstrates that the edge-node traffic is forwarded through the intermediate node.
+
+## 8. Check Forwarding on Node 2
+
+Additional evidence can be collected directly from the relay node.
+
+On Node 2, inspect BATMAN-adv forwarding statistics before generating traffic:
+
+```bash
+sudo batctl s | grep -E "^\s+forward"
+```
+
+Generate traffic from Node 1 to Node 3:
+
+```bash
+ping -c 10 192.168.200.3
+```
+
+Then check the counters again on Node 2:
+
+```bash
+sudo batctl s | grep -E "^\s+forward"
+```
+
+An increase in forwarding-related counters provides additional evidence that Node 2 handled transit traffic.
+
+You can also observe BATMAN-adv frames on Node 2:
+
+```bash
+sudo tcpdump -i wlan0 -n -e ether proto 0x4305
+```
+
+`0x4305` is the BATMAN-adv EtherType.
+
+These checks are optional but provide additional data-plane evidence beyond the neighbor and originator tables.
+
+## 9. Remove the Relay
+
+A final control test can be used to confirm that the working edge-to-edge path depends on Node 2.
+
+On Node 2, disable the wireless interface:
+
+```bash
+sudo ip link set wlan0 down
+```
+
+On Node 1, wait for the mesh information to expire:
+
+```bash
+sleep 30
+```
+
+Inspect the originator table:
+
+```bash
+sudo batctl o
+```
+
+Then test the remote mesh address:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+Expected result:
+
+```text
+Failure
+```
+
+Restore Node 2:
+
+```bash
+sudo ip link set wlan0 up
+```
+
+Wait for mesh discovery:
+
+```bash
+sleep 20
+```
+
+On Node 1, inspect the originator table again:
+
+```bash
+sudo batctl o
+```
+
+Repeat the mesh ping:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+Expected result:
+
+```text
+Success
+```
+
+This confirms that the verified multi-hop path depended on Node 2 and that communication returned after the relay rejoined the mesh.
+
+## 10. Remove the Isolation
+
+After verification, remove the temporary isolation table on Node 1 and Node 3:
+
+```bash
+sudo nft delete table netdev isolation 2>/dev/null || true
+```
+
+The normal mesh cleanup procedure is described in the Setup section.
+
+## 11. Result
+
+The three-node test verifies the following chain of evidence:
+
+1. Node 1 can directly reach Node 2 over IBSS.
+2. Node 3 can directly reach Node 2 over IBSS.
+3. Node 1 and Node 3 cannot directly reach each other over the isolated IBSS data path.
+4. `batctl n` shows the expected direct-neighbor relationships.
+5. `batctl o` shows that the remote edge node is reached through Node 2.
+6. `batctl tr` exposes the intermediate mesh hop.
+7. Communication between the edge-node `bat0` addresses succeeds.
+8. Removing Node 2 breaks the edge-to-edge mesh path.
+9. Restoring Node 2 restores communication.
+
+The verified forwarding path is therefore:
+
+```text
+Node 1 ------> Node 2 ------> Node 3
+```
+
+and in the reverse direction:
+
+```text
+Node 3 ------> Node 2 ------> Node 1
+```
+
+This verifies Layer 2 multi-hop forwarding with BATMAN-adv over the underlying IBSS wireless links.
