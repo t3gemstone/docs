@@ -206,6 +206,6 @@ The three-node verification topology was:
 Node 1 <------> Node 2 <------> Node 3
 ```
 
-During the multi-hop test, direct data communication between Node 1 and Node 3 was intentionally prevented. This made it possible to verify that communication between the edge nodes was forwarded through Node 2 rather than using a direct wireless path.
+In the tested physical topology, Node 1 and Node 3 did not have direct wireless reachability. Node 1 could reach Node 2 directly, and Node 3 could reach Node 2 directly. This topology was then used to verify that BATMAN-adv could carry traffic between the edge nodes through Node 2.
 
 The next section explains how to configure the IBSS wireless links and create the BATMAN-adv mesh.
