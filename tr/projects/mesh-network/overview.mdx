@@ -164,7 +164,7 @@ IBSS + BATMAN-adv
 Çok atlamalı kablosuz mesh
 ```
 
-Örneğin Düğüm 1 ile Düğüm 3 arasında doğrudan kablosuz yol yoksa BATMAN-adv trafiği Düğüm 2 üzerinden iletebilir:
+Örneğin Düğüm 1 ile Düğüm 3 arasında doğrudan IBSS erişimi yoksa BATMAN-adv trafiği Düğüm 2 üzerinden iletebilir:
 
 ```text
 Düğüm 1
@@ -206,8 +206,12 @@ Bu dokümanda açıklanan yapılandırma üç kart kullanılarak doğrulanmışt
 
 ```text
 Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
+
+Düğüm 1 <---------- X ----------> Düğüm 3
 ```
 
-Test edilen fiziksel topolojide Düğüm 1 ile Düğüm 3 arasında doğrudan kablosuz erişim gözlemlenmemiştir. Düğüm 1, Düğüm 2'ye; Düğüm 3 ise Düğüm 2'ye doğrudan erişebilmiştir. Bu topoloji daha sonra BATMAN-adv'in uç düğümler arasındaki trafiği Düğüm 2 üzerinden iletebildiğini doğrulamak için kullanılmıştır.
+Kaydedilen testte Düğüm 1 ile Düğüm 2 ve Düğüm 3 ile Düğüm 2 arasında doğrudan IBSS/IP erişimi gözlemlenmiştir. Düğüm 1 ile Düğüm 3 arasında ise doğrudan IBSS/IP erişimi gözlemlenmemiştir.
+
+BATMAN-adv etkinleştirildikten sonra Düğüm 1 ile Düğüm 3, `bat0` adresleri üzerinden başarılı şekilde iletişim kurmuştur. Komşu ve originator tabloları Düğüm 2'nin ara iletim düğümü olduğunu göstermiştir.
 
 Bir sonraki bölümde IBSS kablosuz bağlantılarının nasıl yapılandırılacağı ve BATMAN-adv mesh katmanının nasıl oluşturulacağı açıklanmaktadır.

@@ -1,103 +1,148 @@
 ---
 title: "Verification"
-description: "Verify direct IBSS links and multi-hop BATMAN-adv forwarding on T3 Gemstone O1"
+description: "Verify direct IBSS reachability and multi-hop BATMAN-adv forwarding on T3 Gemstone O1"
 ---
 
-This section verifies that the configured network is actually forwarding traffic across multiple wireless hops.
+This section verifies the tested three-node topology using the terminal evidence captured during the experiment.
 
-The mesh itself is not limited to three nodes. The procedure below uses **three T3 Gemstone O1 boards as the tested verification topology**.
+The mesh architecture itself is not limited to three nodes. Three T3 Gemstone O1 boards were used here to demonstrate and verify the multi-hop behavior.
 
-The verification separates two different behaviors:
+The decisive test sequence is:
 
-- Direct communication over the IBSS links
-- Multi-hop communication over the BATMAN-adv mesh
+```text
+Direct IBSS:
 
-This distinction is important because a successful end-to-end ping alone does not show whether the destination was reached directly or through an intermediate mesh node.
+Node 1 <------> Node 2 <------> Node 3
+Node 1 <---------- X ----------> Node 3
+
+
+BATMAN-adv:
+
+Node 1 ----------> Node 2 ----------> Node 3
+```
+
+The captured evidence shows that:
+
+1. Node 1 could reach Node 2 directly over the IBSS subnet.
+2. Node 3 could reach Node 2 directly over the IBSS subnet.
+3. Node 1 and Node 3 could not reach each other directly over the IBSS subnet.
+4. BATMAN-adv neighbor tables matched the expected three-node topology.
+5. BATMAN-adv originator tables selected Node 2 as the next hop between the two edge nodes.
+6. After mesh convergence, Node 1 and Node 3 communicated successfully through their `bat0` addresses.
 
 ## 1. Test Topology
 
-The tested physical topology was:
+The test used the following addresses:
+
+| Node | `wlan0` / IBSS | `bat0` / Mesh | `wlan0` MAC |
+| --- | --- | --- | --- |
+| Node 1 | `192.168.100.1/24` | `192.168.200.1/24` | `b0:8c:b3:c3:75:b6` |
+| Node 2 | `192.168.100.2/24` | `192.168.200.2/24` | `b0:8c:b3:c3:83:ea` |
+| Node 3 | `192.168.100.3/24` | `192.168.200.3/24` | `b0:8c:b3:c3:77:f8` |
+
+The two subnets have different purposes:
 
 ```text
-Node 1 <------> Node 2 <------> Node 3
-
-Node 1 <---------- X ----------> Node 3
+192.168.100.0/24 -> direct IBSS/IP reachability
+192.168.200.0/24 -> BATMAN-adv mesh communication through bat0
 ```
 
-During the test:
+## 2. IBSS State
 
-- Node 1 could communicate directly with Node 2.
-- Node 2 could communicate directly with Node 3.
-- Direct wireless reachability between Node 1 and Node 3 was not observed.
+The captured terminal output confirms that the boards joined the same IBSS cell.
 
-The direct-link subnet and mesh subnet were kept separate:
+Representative captured output:
 
 ```text
-wlan0 / IBSS: 192.168.100.N/24
-bat0 / Mesh:   192.168.200.N/24
+Joined IBSS 02:12:34:56:78:9a (on wlan0)
+SSID: gemstone-mesh
+freq: 2412.0
 ```
 
-This makes it possible to compare direct IBSS reachability with BATMAN-adv mesh reachability.
+The interface configuration also showed `wlan0` operating in IBSS mode on channel 1 at 2412 MHz.
 
-## 2. Verify Direct IBSS Reachability
+The common wireless parameters were therefore:
 
-Before evaluating BATMAN-adv, verify the direct IBSS topology using the `192.168.100.x` addresses.
+```text
+Interface:  wlan0
+Mode:       IBSS
+SSID:       gemstone-mesh
+Frequency:  2412 MHz
+Channel:    1
+BSSID:      02:12:34:56:78:9a
+```
 
-The IBSS configuration from the Setup section must already be active on all three nodes.
+## 3. Direct IBSS Evidence
+
+The first test establishes which nodes were directly reachable using the `wlan0` IBSS addresses.
 
 ### Node 1
 
-Test Node 2:
+Node 1 could reach Node 2:
 
 ```bash
 ping -c 5 192.168.100.2
 ```
 
-Observed result:
+Captured terminal result:
 
 ```text
-Success
+5 packets transmitted, 5 received, 0% packet loss
 ```
 
-Test Node 3:
+Node 1 could not reach Node 3:
 
 ```bash
 ping -c 5 192.168.100.3
 ```
 
-Observed result:
+Captured terminal result:
 
 ```text
-Failure
+From 192.168.100.1 icmp_seq=1 Destination Host Unreachable
+From 192.168.100.1 icmp_seq=5 Destination Host Unreachable
+
+5 packets transmitted, 0 received, +2 errors, 100% packet loss
+```
+
+The Node 1 test therefore produced:
+
+```text
+Node 1 <------> Node 2
+Node 1 <--- X ---> Node 3
 ```
 
 ### Node 3
 
-Test Node 2:
+The reverse side was also tested.
+
+Node 3 could reach Node 2:
 
 ```bash
-ping -c 5 192.168.100.2
+ping -c 4 192.168.100.2
 ```
 
-Observed result:
+Captured terminal result:
 
 ```text
-Success
+4 packets transmitted, 4 received, 0% packet loss
 ```
 
-Test Node 1:
+Node 3 could not reach Node 1:
 
 ```bash
-ping -c 5 192.168.100.1
+ping -c 4 192.168.100.1
 ```
 
-Observed result:
+Captured terminal result:
 
 ```text
-Failure
+From 192.168.100.3 icmp_seq=1 Destination Host Unreachable
+
+4 packets transmitted, 0 received, +1 errors, 100% packet loss
 ```
 
-These results show the direct IBSS reachability observed during the test:
+The direct IBSS evidence therefore establishes the observed edge topology:
 
 ```text
 Node 1 <------> Node 2 <------> Node 3
@@ -105,156 +150,219 @@ Node 1 <------> Node 2 <------> Node 3
 Node 1 <---------- X ----------> Node 3
 ```
 
-IBSS provided the direct wireless links, but the two edge nodes were not directly reachable from each other in the tested physical topology.
+## 4. BATMAN-adv Neighbors
 
-## 3. Verify BATMAN-adv Neighbors
+After the direct topology was established, BATMAN-adv was enabled on all three boards.
 
-Complete the BATMAN-adv configuration from the Setup section on all three nodes.
+The tested configuration used:
 
-Allow the mesh state to converge:
-
-```bash
-sleep 15
+```text
+Routing algorithm: BATMAN_V
+Mesh interface:    bat0
 ```
 
-On Node 1:
-
-```bash
-sudo batctl n
-```
-
-In the test, Node 1 showed Node 2 as its direct BATMAN-adv neighbor.
-
-On Node 2:
+### Node 1
 
 ```bash
 sudo batctl n
 ```
 
-In the test, Node 2 showed both edge nodes as direct neighbors.
+The captured neighbor table contained only Node 2:
 
-On Node 3:
+```text
+Neighbor
+b0:8c:b3:c3:83:ea
+```
+
+MAC mapping:
+
+```text
+b0:8c:b3:c3:83:ea = Node 2
+```
+
+### Node 2
 
 ```bash
 sudo batctl n
 ```
 
-In the test, Node 3 showed Node 2 as its direct neighbor.
+The captured neighbor table contained both edge nodes:
 
-The observed neighbor topology was therefore:
+```text
+Neighbor
+b0:8c:b3:c3:77:f8
+b0:8c:b3:c3:75:b6
+```
+
+MAC mapping:
+
+```text
+b0:8c:b3:c3:77:f8 = Node 3
+b0:8c:b3:c3:75:b6 = Node 1
+```
+
+### Node 3
+
+```bash
+sudo batctl n
+```
+
+The captured neighbor table contained Node 2:
+
+```text
+Neighbor
+b0:8c:b3:c3:83:ea
+```
+
+The BATMAN-adv neighbor tables therefore match:
 
 ```text
 Node 1 <------> Node 2 <------> Node 3
 ```
 
-## 4. Verify the Forwarding Path
+## 5. Forwarding Path
 
-Inspect the originator table on Node 1:
+A successful endpoint ping alone is not sufficient to identify the forwarding path.
+
+For this reason, the BATMAN-adv originator table was also inspected.
+
+### Node 1 to Node 3
+
+On Node 1:
 
 ```bash
 sudo batctl o
 ```
 
-In the test, Node 3 appeared as a known originator and Node 2 was selected as the next hop toward it.
+Condensed captured entries:
 
-Conceptually:
+```text
+Originator                  Nexthop
+b0:8c:b3:c3:77:f8     ->    b0:8c:b3:c3:83:ea
+b0:8c:b3:c3:83:ea     ->    b0:8c:b3:c3:83:ea
+```
+
+Using the tested MAC mapping:
+
+```text
+b0:8c:b3:c3:77:f8 = Node 3
+b0:8c:b3:c3:83:ea = Node 2
+```
+
+Therefore:
 
 ```text
 Destination: Node 3
 Next hop:    Node 2
 ```
 
-Repeat the check on Node 3:
+### Node 3 to Node 1
+
+On Node 3:
 
 ```bash
 sudo batctl o
 ```
 
-Node 2 should be selected as the next hop toward Node 1.
-
-This information shows that BATMAN-adv learned a path to the remote edge node through the intermediate node.
-
-## 5. Trace the Multi-hop Path
-
-From Node 1, trace the BATMAN-adv path toward Node 3 using its originator MAC address:
-
-```bash
-sudo batctl tr <NODE3_MAC>
-```
-
-The observed path should include Node 2 before Node 3:
+Condensed captured entries:
 
 ```text
-Node 2
-Node 3
+Originator                  Nexthop
+b0:8c:b3:c3:75:b6     ->    b0:8c:b3:c3:83:ea
+b0:8c:b3:c3:83:ea     ->    b0:8c:b3:c3:83:ea
 ```
 
-You can also test connectivity directly at the BATMAN-adv layer:
+Using the tested MAC mapping:
 
-```bash
-sudo batctl ping <NODE3_MAC>
+```text
+b0:8c:b3:c3:75:b6 = Node 1
+b0:8c:b3:c3:83:ea = Node 2
 ```
 
-These commands inspect the mesh path independently of the IP-level ping test.
+Therefore:
 
-## 6. Test End-to-End Mesh Traffic
+```text
+Destination: Node 1
+Next hop:    Node 2
+```
 
-With BATMAN-adv active, test communication using the `bat0` addresses.
+The originator tables provide direct routing evidence that the remote edge node is reached through Node 2.
 
-From Node 1:
+## 6. End-to-End Mesh Evidence
+
+The final test uses the `bat0` addresses rather than the direct IBSS addresses.
+
+A short convergence interval was observed after BATMAN-adv startup. Initial `bat0` ping attempts could fail while neighbor and originator information was still being learned. After the tables stabilized, the final captured tests succeeded in both directions.
+
+### Node 1 to Node 3
 
 ```bash
 ping -c 5 192.168.200.3
 ```
 
-Observed result:
+An initial attempt before convergence produced:
 
 ```text
-Success
+5 packets transmitted, 0 received, 100% packet loss
 ```
 
-From Node 3:
+After mesh convergence, the final captured result was:
+
+```text
+5 packets transmitted, 5 received, 0% packet loss
+```
+
+Compare this with the direct IBSS result:
+
+```text
+Node 1 -> 192.168.100.3 -> 100% packet loss
+Node 1 -> 192.168.200.3 ->   0% packet loss
+```
+
+### Node 3 to Node 1
 
 ```bash
-ping -c 5 192.168.200.1
+ping -c 4 192.168.200.1
 ```
 
-Observed result:
+An initial attempt before convergence produced:
 
 ```text
-Success
+4 packets transmitted, 0 received, 100% packet loss
 ```
 
-The direct IBSS test and the mesh test can now be compared:
+After mesh convergence, the final captured result was:
 
 ```text
-Direct IBSS:
-
-Node 1 ---------------- X ----------------> Node 3
-
-
-BATMAN-adv:
-
-Node 1 ------------> Node 2 ------------> Node 3
+4 packets transmitted, 4 received, 0% packet loss
 ```
 
-Node 1 and Node 3 were not directly reachable over the tested IBSS topology, while communication between their `bat0` addresses succeeded after BATMAN-adv was enabled.
+Compare this with the direct IBSS result:
 
-Together with the `batctl n` and `batctl o` results, this verifies that the edge-node traffic was forwarded through Node 2.
+```text
+Node 3 -> 192.168.100.1 -> 100% packet loss
+Node 3 -> 192.168.200.1 ->   0% packet loss
+```
 
 ## 7. Result
 
-The three-node test produced the following verification chain:
+The captured evidence can be summarized as follows:
 
-1. Node 1 could directly reach Node 2 over IBSS.
-2. Node 3 could directly reach Node 2 over IBSS.
-3. Direct IBSS reachability between Node 1 and Node 3 was not observed in the tested physical topology.
-4. `batctl n` showed the expected direct-neighbor relationships.
-5. `batctl o` showed Node 2 as the next hop toward the remote edge node.
-6. `batctl tr` showed the intermediate mesh hop.
-7. Communication between the edge-node `bat0` addresses succeeded.
+| Verification | Captured result |
+| --- | --- |
+| Node 1 → Node 2 over IBSS | `0% packet loss` |
+| Node 1 → Node 3 over IBSS | `100% packet loss` |
+| Node 3 → Node 2 over IBSS | `0% packet loss` |
+| Node 3 → Node 1 over IBSS | `100% packet loss` |
+| Node 1 direct BATMAN-adv neighbor | Node 2 |
+| Node 2 direct BATMAN-adv neighbors | Node 1 and Node 3 |
+| Node 3 direct BATMAN-adv neighbor | Node 2 |
+| Node 1 → Node 3 selected next hop | Node 2 |
+| Node 3 → Node 1 selected next hop | Node 2 |
+| Node 1 → Node 3 over `bat0` after convergence | `0% packet loss` |
+| Node 3 → Node 1 over `bat0` after convergence | `0% packet loss` |
 
-The verified forwarding path was:
+The verified forwarding path is:
 
 ```text
 Node 1 ------> Node 2 ------> Node 3
@@ -266,4 +374,34 @@ and in the reverse direction:
 Node 3 ------> Node 2 ------> Node 1
 ```
 
-This verifies Layer 2 multi-hop forwarding with BATMAN-adv over the underlying IBSS wireless links in the tested T3 Gemstone O1 topology.
+The failed direct edge-to-edge IBSS pings, successful direct communication with Node 2 from both sides, BATMAN-adv neighbor tables, originator/next-hop information, and successful bidirectional `bat0` pings together demonstrate multi-hop Layer 2 forwarding through Node 2 in the tested topology.
+
+## 8. Additional Checks
+
+The following commands can be used for additional mesh diagnostics. They are useful for further verification, but their results are not part of the captured evidence summarized above.
+
+Trace the BATMAN-adv path toward a remote originator:
+
+```bash
+sudo batctl tr <REMOTE_ORIGINATOR_MAC>
+```
+
+Use BATMAN-adv's own ping mechanism:
+
+```bash
+sudo batctl ping <REMOTE_ORIGINATOR_MAC>
+```
+
+Inspect forwarding-related statistics:
+
+```bash
+sudo batctl s | grep -E "^\s+forward"
+```
+
+Observe BATMAN-adv Ethernet frames:
+
+```bash
+sudo tcpdump -i wlan0 -n -e ether proto 0x4305
+```
+
+These checks are optional and are not required to reproduce the captured verification chain above.

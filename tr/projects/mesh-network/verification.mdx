@@ -1,103 +1,148 @@
 ---
 title: "Doğrulama"
-description: "T3 Gemstone O1 üzerinde doğrudan IBSS bağlantılarını ve çok atlamalı BATMAN-adv iletimini doğrulayın"
+description: "T3 Gemstone O1 üzerinde doğrudan IBSS erişimini ve çok atlamalı BATMAN-adv iletimini doğrulayın"
 ---
 
-Bu bölümde yapılandırılan ağın gerçekten birden fazla kablosuz atlama üzerinden trafik ilettiği doğrulanmaktadır.
+Bu bölümde test edilen üç düğümlü topoloji, deney sırasında kaydedilen terminal çıktıları kullanılarak doğrulanmaktadır.
 
-Mesh ağ üç düğümle sınırlı değildir. Aşağıdaki prosedürde **üç T3 Gemstone O1 kartı test edilen doğrulama topolojisi olarak** kullanılmıştır.
+Mesh mimarisi üç düğümle sınırlı değildir. Burada çok atlamalı davranışı göstermek ve doğrulamak için üç T3 Gemstone O1 kartı kullanılmıştır.
 
-Doğrulama iki farklı davranışı birbirinden ayırır:
+Belirleyici test zinciri:
 
-- IBSS bağlantıları üzerinden doğrudan iletişim
-- BATMAN-adv mesh üzerinden çok atlamalı iletişim
+```text
+Doğrudan IBSS:
 
-Bu ayrım önemlidir çünkü yalnızca başarılı bir uçtan uca ping sonucu, hedefe doğrudan mı yoksa bir ara mesh düğümü üzerinden mi ulaşıldığını tek başına göstermez.
+Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
+Düğüm 1 <---------- X ----------> Düğüm 3
+
+
+BATMAN-adv:
+
+Düğüm 1 ----------> Düğüm 2 ----------> Düğüm 3
+```
+
+Kaydedilen kanıtlar şunları göstermektedir:
+
+1. Düğüm 1, IBSS ağı üzerinden Düğüm 2'ye doğrudan erişebilmiştir.
+2. Düğüm 3, IBSS ağı üzerinden Düğüm 2'ye doğrudan erişebilmiştir.
+3. Düğüm 1 ile Düğüm 3, IBSS ağı üzerinden birbirine doğrudan erişememiştir.
+4. BATMAN-adv komşuluk tabloları beklenen üç düğümlü topolojiyle eşleşmiştir.
+5. BATMAN-adv originator tabloları iki uç düğüm arasında sonraki atlama olarak Düğüm 2'yi seçmiştir.
+6. Mesh yakınsamasından sonra Düğüm 1 ile Düğüm 3, `bat0` adresleri üzerinden başarılı şekilde iletişim kurmuştur.
 
 ## 1. Test Topolojisi
 
-Test edilen fiziksel topoloji:
+Testte aşağıdaki adresler kullanılmıştır:
+
+| Düğüm | `wlan0` / IBSS | `bat0` / Mesh | `wlan0` MAC |
+| --- | --- | --- | --- |
+| Düğüm 1 | `192.168.100.1/24` | `192.168.200.1/24` | `b0:8c:b3:c3:75:b6` |
+| Düğüm 2 | `192.168.100.2/24` | `192.168.200.2/24` | `b0:8c:b3:c3:83:ea` |
+| Düğüm 3 | `192.168.100.3/24` | `192.168.200.3/24` | `b0:8c:b3:c3:77:f8` |
+
+İki ağ farklı amaçlarla kullanılmıştır:
 
 ```text
-Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
-
-Düğüm 1 <---------- X ----------> Düğüm 3
+192.168.100.0/24 -> doğrudan IBSS/IP erişimi
+192.168.200.0/24 -> bat0 üzerinden BATMAN-adv mesh iletişimi
 ```
 
-Test sırasında:
+## 2. IBSS Durumu
 
-- Düğüm 1, Düğüm 2 ile doğrudan iletişim kurabilmiştir.
-- Düğüm 2, Düğüm 3 ile doğrudan iletişim kurabilmiştir.
-- Düğüm 1 ile Düğüm 3 arasında doğrudan kablosuz erişim gözlemlenmemiştir.
+Kaydedilen terminal çıktıları kartların aynı IBSS hücresine katıldığını doğrulamaktadır.
 
-Doğrudan bağlantı ağı ile mesh ağı ayrı tutulmuştur:
+Kaydedilen temsili çıktı:
 
 ```text
-wlan0 / IBSS: 192.168.100.N/24
-bat0 / Mesh:   192.168.200.N/24
+Joined IBSS 02:12:34:56:78:9a (on wlan0)
+SSID: gemstone-mesh
+freq: 2412.0
 ```
 
-Bu sayede doğrudan IBSS erişimi ile BATMAN-adv mesh erişimi karşılaştırılabilir.
+Arayüz yapılandırmasında `wlan0` arayüzünün 2412 MHz kanal 1 üzerinde IBSS modunda çalıştığı da görülmüştür.
 
-## 2. Doğrudan IBSS Erişimini Doğrulayın
+Ortak kablosuz parametreler:
 
-BATMAN-adv davranışını değerlendirmeden önce `192.168.100.x` adresleri üzerinden doğrudan IBSS topolojisini doğrulayın.
+```text
+Arayüz:     wlan0
+Mod:        IBSS
+SSID:       gemstone-mesh
+Frekans:    2412 MHz
+Kanal:      1
+BSSID:      02:12:34:56:78:9a
+```
 
-Kurulum bölümündeki IBSS yapılandırması üç düğümde de aktif olmalıdır.
+## 3. Doğrudan IBSS Kanıtı
+
+İlk testte `wlan0` IBSS adresleri kullanılarak hangi düğümlerin doğrudan erişilebilir olduğu belirlenmiştir.
 
 ### Düğüm 1
 
-Düğüm 2'yi test edin:
+Düğüm 1, Düğüm 2'ye erişebilmiştir:
 
 ```bash
 ping -c 5 192.168.100.2
 ```
 
-Gözlemlenen sonuç:
+Kaydedilen terminal sonucu:
 
 ```text
-Başarılı
+5 packets transmitted, 5 received, 0% packet loss
 ```
 
-Düğüm 3'ü test edin:
+Düğüm 1, Düğüm 3'e erişememiştir:
 
 ```bash
 ping -c 5 192.168.100.3
 ```
 
-Gözlemlenen sonuç:
+Kaydedilen terminal sonucu:
 
 ```text
-Başarısız
+From 192.168.100.1 icmp_seq=1 Destination Host Unreachable
+From 192.168.100.1 icmp_seq=5 Destination Host Unreachable
+
+5 packets transmitted, 0 received, +2 errors, 100% packet loss
+```
+
+Düğüm 1 tarafındaki test sonucu:
+
+```text
+Düğüm 1 <------> Düğüm 2
+Düğüm 1 <--- X ---> Düğüm 3
 ```
 
 ### Düğüm 3
 
-Düğüm 2'yi test edin:
+Ters taraf da test edilmiştir.
+
+Düğüm 3, Düğüm 2'ye erişebilmiştir:
 
 ```bash
-ping -c 5 192.168.100.2
+ping -c 4 192.168.100.2
 ```
 
-Gözlemlenen sonuç:
+Kaydedilen terminal sonucu:
 
 ```text
-Başarılı
+4 packets transmitted, 4 received, 0% packet loss
 ```
 
-Düğüm 1'i test edin:
+Düğüm 3, Düğüm 1'e erişememiştir:
 
 ```bash
-ping -c 5 192.168.100.1
+ping -c 4 192.168.100.1
 ```
 
-Gözlemlenen sonuç:
+Kaydedilen terminal sonucu:
 
 ```text
-Başarısız
+From 192.168.100.3 icmp_seq=1 Destination Host Unreachable
+
+4 packets transmitted, 0 received, +1 errors, 100% packet loss
 ```
 
-Bu sonuçlar test sırasında gözlemlenen doğrudan IBSS erişimini gösterir:
+Doğrudan IBSS kanıtı böylece şu topolojiyi ortaya koymaktadır:
 
 ```text
 Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
@@ -105,154 +150,217 @@ Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
 Düğüm 1 <---------- X ----------> Düğüm 3
 ```
 
-IBSS doğrudan kablosuz bağlantıları sağlamıştır ancak test edilen fiziksel topolojide iki uç düğüm birbirine doğrudan erişememiştir.
+## 4. BATMAN-adv Komşuları
 
-## 3. BATMAN-adv Komşularını Doğrulayın
+Doğrudan topoloji belirlendikten sonra üç kartta da BATMAN-adv etkinleştirilmiştir.
 
-Kurulum bölümündeki BATMAN-adv yapılandırmasını üç düğümde de tamamlayın.
+Test edilen yapılandırma:
 
-Mesh durumunun yakınsaması için bekleyin:
-
-```bash
-sleep 15
+```text
+Yönlendirme algoritması: BATMAN_V
+Mesh arayüzü:            bat0
 ```
 
-Düğüm 1 üzerinde:
-
-```bash
-sudo batctl n
-```
-
-Testte Düğüm 1, Düğüm 2'yi doğrudan BATMAN-adv komşusu olarak göstermiştir.
-
-Düğüm 2 üzerinde:
+### Düğüm 1
 
 ```bash
 sudo batctl n
 ```
 
-Testte Düğüm 2 her iki uç düğümü de doğrudan komşu olarak göstermiştir.
+Kaydedilen komşuluk tablosunda yalnızca Düğüm 2 bulunmaktadır:
 
-Düğüm 3 üzerinde:
+```text
+Neighbor
+b0:8c:b3:c3:83:ea
+```
+
+MAC eşleşmesi:
+
+```text
+b0:8c:b3:c3:83:ea = Düğüm 2
+```
+
+### Düğüm 2
 
 ```bash
 sudo batctl n
 ```
 
-Testte Düğüm 3, Düğüm 2'yi doğrudan komşu olarak göstermiştir.
+Kaydedilen komşuluk tablosunda iki uç düğüm de bulunmaktadır:
 
-Gözlemlenen komşuluk topolojisi:
+```text
+Neighbor
+b0:8c:b3:c3:77:f8
+b0:8c:b3:c3:75:b6
+```
+
+MAC eşleşmeleri:
+
+```text
+b0:8c:b3:c3:77:f8 = Düğüm 3
+b0:8c:b3:c3:75:b6 = Düğüm 1
+```
+
+### Düğüm 3
+
+```bash
+sudo batctl n
+```
+
+Kaydedilen komşuluk tablosunda Düğüm 2 bulunmaktadır:
+
+```text
+Neighbor
+b0:8c:b3:c3:83:ea
+```
+
+BATMAN-adv komşuluk tabloları şu yapıyla eşleşmektedir:
 
 ```text
 Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
 ```
 
-## 4. İletim Yolunu Doğrulayın
+## 5. İletim Yolu
 
-Düğüm 1 üzerinde originator tablosunu inceleyin:
+Yalnızca başarılı bir uçtan uca ping, iletim yolunu belirlemek için yeterli değildir.
+
+Bu nedenle BATMAN-adv originator tablosu da incelenmiştir.
+
+### Düğüm 1'den Düğüm 3'e
+
+Düğüm 1 üzerinde:
 
 ```bash
 sudo batctl o
 ```
 
-Testte Düğüm 3 bilinen bir originator olarak görünmüş ve Düğüm 2, Düğüm 3'e doğru sonraki atlama olarak seçilmiştir.
+Kaydedilen çıktının sadeleştirilmiş ilgili satırları:
 
-Kavramsal olarak:
+```text
+Originator                  Nexthop
+b0:8c:b3:c3:77:f8     ->    b0:8c:b3:c3:83:ea
+b0:8c:b3:c3:83:ea     ->    b0:8c:b3:c3:83:ea
+```
+
+Testteki MAC eşleşmelerine göre:
+
+```text
+b0:8c:b3:c3:77:f8 = Düğüm 3
+b0:8c:b3:c3:83:ea = Düğüm 2
+```
+
+Sonuç:
 
 ```text
 Hedef:          Düğüm 3
 Sonraki atlama: Düğüm 2
 ```
 
-Aynı kontrolü Düğüm 3 üzerinde tekrarlayın:
+### Düğüm 3'ten Düğüm 1'e
+
+Düğüm 3 üzerinde:
 
 ```bash
 sudo batctl o
 ```
 
-Düğüm 1'e doğru sonraki atlama olarak Düğüm 2 seçilmelidir.
-
-Bu bilgi BATMAN-adv'in uzak uç düğüme ara düğüm üzerinden bir yol öğrendiğini gösterir.
-
-## 5. Çok Atlamalı Yolu İzleyin
-
-Düğüm 1'den Düğüm 3'e doğru BATMAN-adv yolunu, Düğüm 3 originator MAC adresini kullanarak izleyin:
-
-```bash
-sudo batctl tr <NODE3_MAC>
-```
-
-Gözlemlenen yol Düğüm 3'ten önce Düğüm 2'yi içermelidir:
+Kaydedilen çıktının sadeleştirilmiş ilgili satırları:
 
 ```text
-Düğüm 2
-Düğüm 3
+Originator                  Nexthop
+b0:8c:b3:c3:75:b6     ->    b0:8c:b3:c3:83:ea
+b0:8c:b3:c3:83:ea     ->    b0:8c:b3:c3:83:ea
 ```
 
-BATMAN-adv katmanında doğrudan bağlantı testi de yapılabilir:
+Testteki MAC eşleşmelerine göre:
 
-```bash
-sudo batctl ping <NODE3_MAC>
+```text
+b0:8c:b3:c3:75:b6 = Düğüm 1
+b0:8c:b3:c3:83:ea = Düğüm 2
 ```
 
-Bu komutlar IP seviyesindeki ping testinden bağımsız olarak mesh yolunu inceler.
+Sonuç:
 
-## 6. Uçtan Uca Mesh Trafiğini Test Edin
+```text
+Hedef:          Düğüm 1
+Sonraki atlama: Düğüm 2
+```
 
-BATMAN-adv aktif durumdayken `bat0` adresleri üzerinden iletişimi test edin.
+Originator tabloları, uzak uç düğüme Düğüm 2 üzerinden ulaşıldığına dair doğrudan yönlendirme kanıtı sağlar.
 
-Düğüm 1'den:
+## 6. Uçtan Uca Mesh Kanıtı
+
+Son testte doğrudan IBSS adresleri yerine `bat0` adresleri kullanılmıştır.
+
+BATMAN-adv başlatıldıktan sonra kısa bir yakınsama süresi gözlemlenmiştir. Komşuluk ve originator bilgileri henüz öğrenilirken ilk `bat0` ping denemeleri başarısız olabilmiş, tablolar kararlı hale geldikten sonra nihai testler iki yönde de başarılı olmuştur.
+
+### Düğüm 1'den Düğüm 3'e
 
 ```bash
 ping -c 5 192.168.200.3
 ```
 
-Gözlemlenen sonuç:
+Yakınsama öncesindeki ilk denemede:
 
 ```text
-Başarılı
+5 packets transmitted, 0 received, 100% packet loss
 ```
 
-Düğüm 3'ten:
+Mesh yakınsamasından sonra kaydedilen nihai sonuç:
+
+```text
+5 packets transmitted, 5 received, 0% packet loss
+```
+
+Doğrudan IBSS testiyle karşılaştırıldığında:
+
+```text
+Düğüm 1 -> 192.168.100.3 -> %100 packet loss
+Düğüm 1 -> 192.168.200.3 ->   %0 packet loss
+```
+
+### Düğüm 3'ten Düğüm 1'e
 
 ```bash
-ping -c 5 192.168.200.1
+ping -c 4 192.168.200.1
 ```
 
-Gözlemlenen sonuç:
+Yakınsama öncesindeki ilk denemede:
 
 ```text
-Başarılı
+4 packets transmitted, 0 received, 100% packet loss
 ```
 
-Doğrudan IBSS testi ile mesh testi karşılaştırıldığında:
+Mesh yakınsamasından sonra kaydedilen nihai sonuç:
 
 ```text
-Doğrudan IBSS:
-
-Düğüm 1 --------------- X ---------------> Düğüm 3
-
-
-BATMAN-adv:
-
-Düğüm 1 -----------> Düğüm 2 -----------> Düğüm 3
+4 packets transmitted, 4 received, 0% packet loss
 ```
 
-Test edilen IBSS topolojisinde Düğüm 1 ile Düğüm 3 arasında doğrudan erişim gözlemlenmemiş, BATMAN-adv etkinleştirildikten sonra ise `bat0` adresleri arasındaki iletişim başarılı olmuştur.
+Doğrudan IBSS testiyle karşılaştırıldığında:
 
-`batctl n` ve `batctl o` sonuçlarıyla birlikte değerlendirildiğinde bu durum, uç düğümler arasındaki trafiğin Düğüm 2 üzerinden iletildiğini doğrular.
+```text
+Düğüm 3 -> 192.168.100.1 -> %100 packet loss
+Düğüm 3 -> 192.168.200.1 ->   %0 packet loss
+```
 
 ## 7. Sonuç
 
-Üç düğümlü test şu doğrulama zincirini üretmiştir:
+Kaydedilen kanıtlar şu şekilde özetlenebilir:
 
-1. Düğüm 1, IBSS üzerinden Düğüm 2'ye doğrudan erişebilmiştir.
-2. Düğüm 3, IBSS üzerinden Düğüm 2'ye doğrudan erişebilmiştir.
-3. Test edilen fiziksel topolojide Düğüm 1 ile Düğüm 3 arasında doğrudan IBSS erişimi gözlemlenmemiştir.
-4. `batctl n`, beklenen doğrudan komşuluk ilişkilerini göstermiştir.
-5. `batctl o`, uzak uç düğüme doğru sonraki atlama olarak Düğüm 2'yi göstermiştir.
-6. `batctl tr`, ara mesh atlamasını göstermiştir.
-7. Uç düğümlerin `bat0` adresleri arasındaki iletişim başarılı olmuştur.
+| Doğrulama | Kaydedilen sonuç |
+| --- | --- |
+| Düğüm 1 → Düğüm 2, IBSS | `%0 packet loss` |
+| Düğüm 1 → Düğüm 3, IBSS | `%100 packet loss` |
+| Düğüm 3 → Düğüm 2, IBSS | `%0 packet loss` |
+| Düğüm 3 → Düğüm 1, IBSS | `%100 packet loss` |
+| Düğüm 1 doğrudan BATMAN-adv komşusu | Düğüm 2 |
+| Düğüm 2 doğrudan BATMAN-adv komşuları | Düğüm 1 ve Düğüm 3 |
+| Düğüm 3 doğrudan BATMAN-adv komşusu | Düğüm 2 |
+| Düğüm 1 → Düğüm 3 seçilen next-hop | Düğüm 2 |
+| Düğüm 3 → Düğüm 1 seçilen next-hop | Düğüm 2 |
+| Düğüm 1 → Düğüm 3, `bat0`, yakınsama sonrası | `%0 packet loss` |
+| Düğüm 3 → Düğüm 1, `bat0`, yakınsama sonrası | `%0 packet loss` |
 
 Doğrulanan iletim yolu:
 
@@ -266,4 +374,34 @@ ters yönde ise:
 Düğüm 3 ------> Düğüm 2 ------> Düğüm 1
 ```
 
-Bu sonuç, test edilen T3 Gemstone O1 topolojisinde alttaki IBSS kablosuz bağlantıları üzerinde BATMAN-adv ile Katman 2 seviyesinde çok atlamalı veri iletiminin çalıştığını doğrular.
+Uç düğümler arasındaki doğrudan IBSS pinglerinin başarısız olması, her iki uç düğümün Düğüm 2 ile doğrudan iletişim kurabilmesi, BATMAN-adv komşuluk tabloları, originator/next-hop bilgisi ve iki yönlü başarılı `bat0` pingleri birlikte değerlendirildiğinde, test edilen topolojide Düğüm 2 üzerinden çok atlamalı Katman 2 veri iletiminin çalıştığı doğrulanmaktadır.
+
+## 8. Ek Kontroller
+
+Aşağıdaki komutlar ek mesh teşhisi için kullanılabilir. Bu kontroller yararlıdır ancak sonuçları yukarıdaki kaydedilmiş kanıt zincirinin bir parçası olarak sunulmamaktadır.
+
+Uzak originator'a doğru BATMAN-adv yolunu incelemek için:
+
+```bash
+sudo batctl tr <REMOTE_ORIGINATOR_MAC>
+```
+
+BATMAN-adv'in kendi ping mekanizmasını kullanmak için:
+
+```bash
+sudo batctl ping <REMOTE_ORIGINATOR_MAC>
+```
+
+İletimle ilgili istatistikleri incelemek için:
+
+```bash
+sudo batctl s | grep -E "^\s+forward"
+```
+
+BATMAN-adv Ethernet çerçevelerini gözlemlemek için:
+
+```bash
+sudo tcpdump -i wlan0 -n -e ether proto 0x4305
+```
+
+Bu kontroller isteğe bağlıdır ve yukarıdaki kaydedilmiş doğrulama zincirini yeniden üretmek için zorunlu değildir.

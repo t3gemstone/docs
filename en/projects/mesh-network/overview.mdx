@@ -162,7 +162,7 @@ IBSS + BATMAN-adv
 Multi-hop wireless mesh
 ```
 
-For example, when Node 1 and Node 3 do not have a direct wireless path, BATMAN-adv can forward traffic through Node 2:
+For example, when Node 1 and Node 3 do not have direct IBSS reachability, BATMAN-adv can forward traffic through Node 2:
 
 ```text
 Node 1
@@ -204,8 +204,12 @@ The three-node verification topology was:
 
 ```text
 Node 1 <------> Node 2 <------> Node 3
+
+Node 1 <---------- X ----------> Node 3
 ```
 
-In the tested physical topology, Node 1 and Node 3 did not have direct wireless reachability. Node 1 could reach Node 2 directly, and Node 3 could reach Node 2 directly. This topology was then used to verify that BATMAN-adv could carry traffic between the edge nodes through Node 2.
+During the captured test, direct IBSS/IP reachability was observed between Node 1 and Node 2 and between Node 3 and Node 2. Direct IBSS/IP reachability between Node 1 and Node 3 was not observed.
+
+After BATMAN-adv was enabled, Node 1 and Node 3 successfully communicated through their `bat0` addresses. The neighbor and originator tables showed Node 2 as the intermediate forwarding node.
 
 The next section explains how to configure the IBSS wireless links and create the BATMAN-adv mesh.
