@@ -45,7 +45,55 @@ When USB is not connected, the development board is protected against reverse po
 If the 12V battery is connected backwards while the USB is plugged in, the development board may be seriously damaged and there may even be a risk of fire. Therefore, the polarity must be checked before connecting the battery while the power connection is via USB.
 </Danger>
 
-## 1. Pinout
+## 1. LED
+
+The board has 6 LEDs so you can tell whether it has powered on,
+whether it's running normally, and whether the USB ports are healthy
+— without needing to check a screen or the logs.
+
+<Frame caption="LEDs on the board">
+  <img className="rounded-lg" src="/images/o1-board/39-board-leds.jpg" />
+</Frame>
+
+#### 1.1. System LED (right) — PWR / ACT
+
+The `PWR` LED lights up red as the board powers on. Once the system
+has fully booted, the `ACT` LED turns green and blinks at a steady
+interval, indicating that the system is running normally. If the
+blinking stops, the system has locked up.
+
+#### 1.2. User LED (left) — GREEN / RED
+
+The `RED` LED lights up red during boot and turns off once the system
+has fully booted. After boot, the system doesn't use the user LEDs;
+you can configure `GREEN` and `RED` however you like.
+
+```bash
+echo 1 | sudo tee /sys/class/leds/GREEN/brightness   # turn on
+echo 0 | sudo tee /sys/class/leds/GREEN/brightness   # turn off
+```
+
+```bash
+echo 1 | sudo tee /sys/class/leds/RED/brightness   # turn on
+echo 0 | sudo tee /sys/class/leds/RED/brightness   # turn off
+```
+
+#### 1.3. USB Power LEDs
+
+The two green LEDs next to the USB ports indicate whether there's a
+fault (over-current/over-voltage) on the board's power input. The
+LEDs turn off when a fault occurs on the power line.
+
+#### 1.4. LED State on a Boot Failure
+
+If the `PWR` (right) and `RED` (left) LEDs stay lit red for an
+extended period without turning off, the system has gotten stuck
+during boot. You can first check the
+[Bootmode Switch](/en/quickstart#1-3-bootmode-switch) combination on
+the back of the board. If that's not the issue, please connect to the
+board over a TTL console connection and check the boot error messages.
+
+## 2. Pinout
 
 <Frame caption="Photos for the GPIO pins of the board">
   <img className="rounded-lg" src="/images/o1-board/32-gpio.png" />
@@ -63,7 +111,7 @@ the relevant pins were disabled and converted to `UART-MAIN6`.
 
 <SnippetPinout func="FUNCTION" pins="PINS" />
 
-#### 1.1. UART-MAIN1
+#### 2.1. UART-MAIN1
 
 This UART interface can be accessed via the `/dev/ttyS3` device on the Gemstone board.
 
@@ -75,7 +123,7 @@ you type on the screen.
 
 <SnippetPicocomUart />
 
-#### 1.2. I2C-MCU0
+#### 2.2. I2C-MCU0
 
 This I2C interface can be accessed via the `/dev/i2c-1` device on the Gemstone board.
 
@@ -86,7 +134,7 @@ connected and idle.
 
 <SnippetI2cDetect />
 
-#### 1.3. I2C-WKUP0
+#### 2.3. I2C-WKUP0
 
 <Warning>
 This I2C interface is used to identify **Hardware Attached on Top (HAT)** devices connected to the board via the
@@ -94,7 +142,7 @@ This I2C interface is used to identify **Hardware Attached on Top (HAT)** device
 no HAT will be connected to the board, these pins should be left unconnected.
 </Warning>
 
-#### 1.4. SPI-MCU0
+#### 2.4. SPI-MCU0
 
 This SPI interface can be accessed via the `/dev/spidev0.0` and `/dev/spidev0.2` devices on the Gemstone board.  
 `/dev/spidev0.0` corresponds to SPI-MCU0 CS0, and `/dev/spidev0.2` corresponds to SPI-MCU0 CS2.
@@ -106,7 +154,7 @@ command. If the connections are correct, you should see the text "Hello World" o
 
 <SnippetSPIHelloWorld />
 
-#### 1.5. PWM-1B
+#### 2.5. PWM-1B
 
 This PWM interface can be accessed via the `/sys/class/pwm/pwmchip5/pwm1` device on the Gemstone board.
 
@@ -116,13 +164,13 @@ below. After enabling the device with the `enable` command, the PWM output can b
 
 <SnippetPWM1B />
 
-#### 1.6. PWM-ECAP0
+#### 2.6. PWM-ECAP0
 
 This PWM interface can be accessed via the `/sys/class/pwm/pwmchip0/pwm0` device on the Gemstone board.
 
 <SnippetPWMEcap0 />
 
-#### 1.7. PCM-McASP0
+#### 2.7. PCM-McASP0
 
 Pulse-code Modulation (PCM), or Multichannel Audio Serial Port (McASP) as it is called in Texas Instruments SoCs,
 can be used in real-time audio processing applications requiring low-latency and high-quality digital audio
@@ -130,7 +178,7 @@ streaming. The `FS` pin provides a frame-sync signal to an external audio device
 pin similarly provides a clock signal. The `DIN` pin allows data input from a digital audio device like an
 I2S microphone, and the `DOUT` pin allows data output to a digital audio device like a DAC.
 
-## 2. Device Tree
+## 3. Device Tree
 
 The configurations (UART, PWM, I2C, GPIO, ...) that the 40-pin I/O ports on the board can be used for are defined
 in files called [Device Tree Overlay](/en/faq#what-is-device-tree-overlay). To activate the desired configuration(s), the relevant overlay files
@@ -141,16 +189,16 @@ For Texas Instruments ARM64-based SoCs, the source code for all overlay files is
 Those for the T3-GEM-O1 board are named in the format `k3-am67a-t3-gem-o1-<overlay_name>.dtso`. Each overlay
 file includes information at the beginning about its purpose.
 
-### 2.1. Example: Routing UART6 signals to the 40-pin HAT
+### 3.1. Example: Routing UART6 signals to the 40-pin HAT
 
 By default, the T3-GEM-O1's 40-pin HAT has only one serial port. For projects requiring multiple serial ports,
 other pins on the 40-pin HAT must be converted to serial ports.
 
-#### 2.1.1. Examining the Pinout
+#### 3.1.1. Examining the Pinout
 
 When examining the T3-GEM-O1's pinout, it can be seen that pins 7 and 11 on the HAT can be used as UART6_RX and UART6_TX.
 
-#### 2.1.2. Finding the Relevant Overlay File
+#### 3.1.2. Finding the Relevant Overlay File
 
 The next step is to determine which [Device Tree Overlay](/en/faq#what-is-device-tree-overlay) file provides the
 desired configuration.  All [Device Tree Overlay](/en/faq#what-is-device-tree-overlay) files are located in
@@ -158,7 +206,7 @@ the `/boot/overlays` folder on the development board. They can be listed by runn
 
 <SnippetDeviceTreeOverlays />
 
-#### 2.1.3. Updating the uEnv.txt File
+#### 3.1.3. Updating the uEnv.txt File
 
 In this example, the `k3-am67a-t3-gem-o1-uart-ttys6.dtbo` overlay file will be used. For the bootloader to load
 this file before the operating system starts, it must be added to the `overlays` section in the `/boot/uEnv.txt`
@@ -166,7 +214,7 @@ file as shown below. Overlay file names are added with a space between them.
 
 <code>overlays=k3-am67a-t3-gem-o1-spidev0-2cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
 
-#### 2.1.4. Verification
+#### 3.1.4. Verification
 
 After saving the changes, the board should be rebooted using the `reboot` command.  
 Then, the `ls /proc/device-tree/chosen/overlays` command can be used to check whether the overlay has been added.
