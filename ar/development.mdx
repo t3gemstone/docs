@@ -1,0 +1,255 @@
+---
+title: 'التطوير'
+description: 'النظام البيئي والتطوير'
+icon: "gear-code"
+---
+
+import SnippetExamplesTargetClone from '/snippets/main/target/examples-clone.mdx';
+import SnippetExamplesTargetInstallDeps from '/snippets/main/target/examples-install-deps.mdx';
+import SnippetExamplesTargetBuild from '/snippets/main/target/examples-build.mdx';
+import SnippetExamplesTargetRun from '/snippets/main/target/examples-run.mdx';
+import SnippetExamplesHostClone from '/snippets/main/host/examples-clone.mdx';
+import SnippetExamplesHostInstallDeps from '/snippets/main/host/examples-install-deps.mdx';
+import SnippetExamplesHostBuild from '/snippets/main/host/examples-build.mdx';
+import SnippetExamplesHostRun from '/snippets/main/host/examples-run.mdx';
+
+يحتوي هذا القسم على معلومات حول نطاق مشروع T3 Gemstone، وما هي الأعمال التي يمكن القيام بها، وطرق تطوير البرمجيات، والتعريف بالنظام البيئي.
+
+<Tip>
+في نهاية هذا القسم ستكتسب معرفة في المواضيع التالية.
+
+* ما هي المكونات المتعلقة بالأعمال العتادية والبرمجية للوحة تطوير Gemstone
+* طرق تجميع (ترجمة) البرمجيات على اللوحة أو على جهاز كمبيوتر يعمل بنظام Ubuntu
+* ما هي المشاريع الموجودة في مستودعات Github
+</Tip>
+
+# 1\. النظام البيئي
+
+يمتلك مشروع Gemstone مكونات برمجية وعتادية مفتوحة المصدر بالكامل. وهذا يعني أنه يمكنك إعادة تصميم لوحة التطوير وفق أنظمتك الخاصة باستخدام التصاميم الإلكترونية للوحة، واستخدامها بحرية من خلال إجراء تغييرات على المكونات البرمجية والأكواد، وقد وُضِّحت الأمور التي يجب الانتباه إليها في قسم [ترخيص المستخدم النهائي](./license).
+
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/01-all-in.png" />
+</Frame>
+
+فيما يلي قائمة لتوضيح المشاريع التي يمكن استخدام لوحات التطوير فيها، ونرحب بمساهماتكم حول ما يمكن إضافته أيضاً!
+
+1. طيار آلي وحاسوب مهام مساعد للمركبات الجوية والبرية وتحت الماء غير المأهولة
+2. المركبات الزراعية، وأعمال المنازل الذكية، وإنترنت الأشياء (IoT)، والروبوتات، والأذرع الصناعية.
+3. أنظمة كاميرات تستخدم معالجة الصور والذكاء الاصطناعي معاً
+4. حاسوب مدمج للأعمال الروبوتية ذاتية التحكم
+5. اللوحات اللمسية وشاشات الأكشاك (kiosk) الموجودة في أنظمة القيادة والتحكم
+
+تُنشر العشرات من الأمثلة المختلفة للأعمال الواردة في القائمة وأخبار التقنيات الجديدة بانتظام في [منتديات المجتمع](https://community.t3gemstone.org/c/blog/71).
+
+### 1\.1\. لوحة التطوير / الحاسوب المدمج
+
+تُستخدم منتجات Gemstone غالباً في أعمال التقنيات المدمجة وهي مزوّدة بمستشعرات وأجهزة طرفية متنوعة. ومن خلال طرق الاتصال مثل المنفذ التسلسلي و CanBUS و i2c و SPI و Ethernet، يمكن تنفيذ مشاريع مثل التحكم في المحركات المختلفة و <Tooltip tip="Actuator">المشغّلات</Tooltip> بعد معالجة البيانات الواردة من المستشعرات والكاميرات.
+
+التصاميم العتادية (مثل PCB) للوحة التطوير المسماة _T3-GEM-O1_ متاحة [على هذا العنوان](https://github.com/t3gemstone/hardware). أما الأمثلة المتعلقة بكيفية استخدام العتاد الموجود عليها فقد شُرحت في الأقسام اللاحقة ([لوحات التطوير](./boards/o1/introduction)).
+
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/fritzing.svg" />
+</Frame>
+
+### 1\.2\. نظام التشغيل
+
+يوجد على Gemstone نظام تشغيل GNU/Linux. يحتوي على مكونات مثل [النواة (Kernel)](https://github.com/t3gemstone/linux) و [محمل الإقلاع (Bootloader/U-Boot)](https://github.com/t3gemstone/u-boot) و [التوزيعة (Distro)](https://github.com/t3gemstone/sdk/tree/main/distro) والبرمجيات الثابتة (Firmware)؛ وعند تجميع النظام معاً استُخدمت أدوات مثل [Yocto Project](https://kureansiklopedi.com/tr/detay/yocto-projesi-the-yocto-project-b9e7e) و [Debootstrap](https://github.com/t3gemstone/debos).
+
+استُخدمت Debian و Ubuntu و Poky كتوزيعات ([Distro](https://github.com/t3gemstone/sdk/tree/main/distro)) لنظام GNU/Linux. ولأن استخدام Debian أو Ubuntu قد يختلف وفق احتياجات اللوحة فقد قُدِّم ذلك كخيار قابل للتحديد.
+
+تُستخدم أنظمة إدارة حزم متنوعة لإجراء تحديثات البرمجيات في أنظمة تشغيل GNU/Linux. على سبيل المثال، في قسم [البدء السريع](./quickstart#2-4-تحديث-نظام-التشغيل-gemstone) قُدِّم مثال لتحديث Ubuntu عند إجراء تحديث النظام.
+
+وبالمثل، تُستخدم حزمة إدارة الحزم https://packages.t3gemstone.org/apt لجميع برمجيات لوحات T3 Gemstone المخصصة مثل النواة والمشغّلات وغيرها. وعند تشغيل أمر التحديث يتم تحميل الحزم المحدّثة من الخوادم إن وُجدت.
+
+<Tip>يمكن استخدام توزيعة نظام التشغيل المستخدمة في Gemstone أيضاً مع لوحة BeagleBoard BeagleY-AI. إذا اخترت BeagleY-AI كلوحة (Board) من تطبيق GemImager، فيمكنك استخدام بطاقة SD الناتجة على لوحة BeagleY-AI. وتوزيعة نظام التشغيل الخاصة بـ Gemstone أقوى وأحدث من تلك التي تقدمها Beagleboard.</Tip>
+
+توجد في [مستودع github](https://github.com/t3gemstone/linux/tree/v6.1.83-ti-rt-arm64-r67-t3-gem-o1) تعديلات على [Device Tree](/ar/faq#ما-هو-device-tree) لإجراء تخصيصات متنوعة على نواة Linux من أجل إقلاع أسرع ولاختيار مشغّلات العتاد الموجود على لوحات التطوير.
+
+### 1\.3\. SDK (Software Development Kit / حزمة تطوير البرمجيات)
+
+يُستخدم [T3 Gemstone SDK](https://github.com/t3gemstone/sdk) لتجميع جميع المكونات المذكورة أعلاه مثل النواة ومحمل الإقلاع والتوزيعة وغيرها، وكذلك الأدوات والحزم والبرمجيات، معاً وإنشاء ملفات الصور. وكما وُضِّح استخدامه بشكل موجز في ملف README الخاص بالمستودع المعني، فقد قُدِّم شرح أكثر تفصيلاً في قسم [SDK](./sdk/introduction) من هذا التوثيق. ونظراً لأن كل أداة من الأدوات المستخدمة في عمل SDK مثل [Devbox](https://www.jetify.com/devbox) و [Distrobox](https://github.com/89luca89/distrobox) و [Debos](https://github.com/t3gemstone/debos) و [Taskfile](https://taskfile.dev/) هي مجال يتطلب معلومات واسعة، فقد قُدِّمت مصادر مساعدة في نهاية التوثيق وفق اهتماماتك.
+
+### 1\.4\. مستودع Github
+
+تتضح أغراض استخدام المشاريع الموجودة في مستودع T3 Gemstone على Github في الجدول التالي.
+
+<Accordion title="جدول">
+
+| المشروع          | المستودع                                | الوصف |
+| :------------- | :---------------------------------- | :------- |
+| SDK            | [t3gemstone/sdk](https://github.com/t3gemstone/sdk) | حزمة تطوير برمجيات تقوم بتجميع مكونات مثل Kernel و U-Boot و Firmware و Driver و Initrd لإنشاء صورة نظام التشغيل. |
+| التوثيق  | [t3gemstone/docs](https://github.com/t3gemstone/docs) | أكواد المصدر بصيغة Mintlify لهذا التوثيق الذي تقرؤه الآن |
+| Yocto          | [t3gemstone/meta-gemstone](https://github.com/t3gemstone/meta-gemstone) | أكواد مشروع Yocto. |
+| Linux Kernel   | [t3gemstone/linux](https://github.com/t3gemstone/linux) | أكواد Linux المستخدمة في لوحات التطوير. |
+| Bootloder      | [t3gemstone/u-boot](https://github.com/t3gemstone/u-boot) | أكواد محمل الإقلاع (bootloader) المستخدم في لوحات التطوير. محمل الإقلاع هو الجزء من الكود الذي يقوم بفحوصات سلامة العتاد ويُقلع نواة Linux. |
+| Debos          | [t3gemstone/debos](https://github.com/t3gemstone/debos) | أداة لإنشاء توزيعة قائمة على Debian تم الحصول عليها باستنساخ المشروع المسمى Debos وإضافة عدد من الميزات الإضافية إليها. |
+| GemImager      | [t3gemstone/gem-imager](https://github.com/t3gemstone/gem-imager) | أداة لكتابة الصور تم الحصول عليها باستنساخ المشروع المسمى rpi-imager وإضافة ميزات إضافية مخصصة للوحات Gemstone. |
+| Hardware       | [t3gemstone/hardware](https://github.com/t3gemstone/hardware) | تصاميم PCB وغيرها للمكونات العتادية مثل اللوحة الأم للوحات Gemstone. |
+| Toolchains     | [t3gemstone/toolchains](https://github.com/t3gemstone/toolchains) | أداة تُستخدم في تجميع المشاريع مثل C/C++ وفق معماريات مختلفة. |
+| Package Server | [t3gemstone/package-server](https://github.com/t3gemstone/package-server) | خادم/نظام إدارة حزم Linux APT الموجود على العنوان packages.t3gemstone.org. |
+| noVNC          | [t3gemstone/t3-gem-vnc](https://github.com/t3gemstone/t3-gem-vnc) | برمجية تتيح الاتصال بسطح المكتب البعيد لـ Gemstone عبر المتصفح. |
+| Ardupilot      | [t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot) | برمجية طيار آلي مكيَّفة لـ Gemstone يمكن استخدامها لكل مركبة يمكن تخيلها، من المركبات الجوية والبرية والبحرية المأهولة وغير المأهولة إلى المروحيات والطائرات وحتى المركبات البحرية. |
+| NuttX          | [t3gemstone/nuttx](https://github.com/t3gemstone/nuttx) | نظام تشغيل في الوقت الفعلي يعمل على العتاد الذي يحتوي على MCU مثل PX4. وفي المرحلة القادمة سيتم تمكين تشغيله على نوى R5 MCU الموجودة في لوحات Gemstone O1. |
+</Accordion>
+
+# 2\. التطوير
+
+يمكن تنفيذ عمليات تطوير البرمجيات بطريقتين. الأولى هي القيام بها على اللوحة مباشرة باستخدام أدوات التجميع الموجودة عليها، بينما الثانية تسمى التجميع المتقاطع (Cross Compilation) وفيها تقوم بتجميع المشاريع على جهاز الكمبيوتر الخاص بك ثم تحميلها إلى اللوحة. وفيما يلي شرح لكلتا الطريقتين ومزاياهما.
+
+<Frame caption="صورة تلخص مفهومي Host (x86-64) و Target (aarch64)">
+  <img className="rounded-lg" noZoom src="/images/fig1-native-vs-cross-compiling.png" />
+</Frame>
+
+### 2\.1\. تطوير البرمجيات على اللوحة
+
+توجد مشاريع أمثلة بلغات C/C++/Python على العنوان https://github.com/t3gemstone/examples حول كيفية استخدام المكونات الموجودة على لوحة تطوير Gemstone O1 مثل المستشعرات وخطوط بيانات الاتصال والكاميرا والذكاء الاصطناعي والشبكة. وفيما يلي شرح لتنزيل هذا المشروع على اللوحة وإجراء عملية التجميع، بينما قُدِّمت شروحات منفصلة لكل مكون في قسم لوحات التطوير.
+
+<Tip>
+توضح الخطوات التالية كيفية تنزيل المشروع المسمى t3gemstone/examples إلى اللوحة وإجراء عملية التجميع وتشغيل الأمثلة. بعد إنشاء اتصال بلوحة تطوير Gemstone عبر [المنفذ التسلسلي](./quickstart#2-1-المنفذ-التسلسلي) أو [SSH](./quickstart#2-3-الاتصال-عبر-الشبكة-باستخدام-ssh) أو [VNC](./quickstart#2-2-الاتصال-بسطح-المكتب-البعيد-من-المتصفح-عبر-vnc) نفِّذ هذه العمليات.
+</Tip>
+
+#### 2\.1\.1\. تنزيل مشاريع الأمثلة باستخدام عملية Git clone
+
+<SnippetExamplesTargetClone />
+
+#### 2\.1\.2\. تثبيت الأدوات والمكتبات اللازمة للتجميع
+
+<SnippetExamplesTargetInstallDeps />
+
+#### 2\.1\.3\. تجميع مشروع مثال
+
+<SnippetExamplesTargetBuild />
+
+#### 2\.1\.4\. تشغيل المشروع المجمَّع
+
+<SnippetExamplesTargetRun />
+
+### 2\.2\. تطوير البرمجيات على جهاز المطور
+
+بينما من الممكن تجميع المشاريع على اللوحة كما شُرح أعلاه، فإن التجميع باستخدام نظام التشغيل GNU/Linux الموجود على أجهزة الكمبيوتر المحمولة والمكتبية التي تستخدمها يوفر عدداً من المزايا. على سبيل المثال، بينما تمتلك لوحة _T3-GEM-O1_ ذاكرة بسعة 4GB، قد يمتلك حاسوبك المحمول ذاكرة بسعة 16/32GB ومعالجاً أكثر تقدماً. لذلك تُستخدم أدوات التجميع المتقاطع (Cross Compile Toolchains) لتسريع عمليات التجميع.
+
+<Note>
+في حين تمتلك لوحات التطوير غالباً معالجات بمعمارية ARM، تمتلك أجهزة الكمبيوتر المحمولة والمكتبية غالباً معالجات بمعمارية Intel x86-64. وفي هذه الحالة، تكون أدوات التجميع المتقاطع (Cross) هي البرامج التي تتيح إمكانية التجميع من حاسوب بمعمارية معينة ليعمل على جهاز بمعمارية أخرى.
+</Note>
+
+#### 2\.2\.1\. وصِّل لوحة Gemstone وجهاز الكمبيوتر ببعضهما عبر Ethernet {#2-2-1-وصل-لوحة-gemstone-وجهاز-الكمبيوتر-ببعضهما-عبر-ethernet}
+
+وصِّل أحد طرفي كابل Ethernet بلوحة التطوير والطرف الآخر بجهاز الكمبيوتر. ثم عيِّن عنوان IP ثابت لجهاز الكمبيوتر على النحو التالي.
+
+<Tabs>
+  <Tab title="Windows">
+    <Frame>
+      <video controls className="w-full aspect-video" src="../videos/win-set-ip.mp4"></video>
+    </Frame>
+  </Tab>
+  <Tab title="Linux">
+    <Frame>
+      <video controls className="w-full aspect-video" src="../videos/linux-set-ip.mp4"></video>
+    </Frame>
+  </Tab>
+  <Tab title="macOS">
+    <Frame caption="مهام معلّقة: عيِّن عنوان IP من تطبيق الإعدادات">
+      <img style={{height: "300px", width: "auto"}} className="rounded-lg" noZoom src="/images/under-construction.png" />
+    </Frame>
+  </Tab>
+</Tabs>
+
+بعد تعيين عنوان IP الثابت لجهاز الكمبيوتر، ادخل إلى وحدة تحكم اللوحة عبر [المنفذ التسلسلي](./quickstart#2-1-المنفذ-التسلسلي) ثم شغّل الأوامر التالية. باستخدام الأداة `nmcli` سيتم إنشاء اتصال IP ثابت جديد وضبط أولوية هذا الاتصال لتكون أعلى من DHCP. وبهذه الطريقة سيتم تعيين عنوان IP الثابت تلقائياً.
+
+```bash
+gemstone@t3-gem-o1:~$ sudo nmcli connection add \
+  con-name "eth0-static" \
+  ifname eth0 type ethernet \
+  ip4 10.0.0.1/24 \
+  connection.autoconnect yes
+gemstone@t3-gem-o1:~$ sudo nmcli connection modify "eth0-static" connection.autoconnect-priority 10
+gemstone@t3-gem-o1:~$ sudo nmcli connection modify "eth0-dhcp" connection.autoconnect-priority 20
+```
+
+بعد تعيين عنوان IP الثابت، شغّل الأمر التالي لاختبار الاتصال. إذا تمكنت من الحصول على استجابة فإن اتصال Ethernet ناجح.
+
+```bash
+gemstone@t3-gem-o1:~$ ping 10.0.0.1
+```
+
+#### 2\.2\.2\. تنزيل مشاريع الأمثلة باستخدام عملية Git clone
+
+<SnippetExamplesHostClone />
+
+#### 2\.2\.3\. تثبيت الأدوات وسلسلة الأدوات (toolchain) اللازمة للتجميع
+
+<SnippetExamplesHostInstallDeps />
+
+#### 2\.2\.4\. تجميع مشروع مثال تقاطعياً باستخدام سلسلة الأدوات (toolchain)
+
+<SnippetExamplesHostBuild />
+
+#### 2\.2\.5\. تحميل المشروع المجمَّع إلى لوحة التطوير
+
+```bash
+ubuntu@host:examples$ scp -r build/examples gemstone@10.0.0.1:build
+```
+
+#### 2\.2\.6\. تشغيل المشروع المجمَّع
+
+<SnippetExamplesHostRun />
+
+# 3\. التطوير عن بُعد عبر VSCode (Remote Development)
+
+يمكنك التطوير عن طريق الاتصال عن بُعد بلوحة Gemstone عبر VSCode المثبت على نظام التشغيل الذي تستخدمه. وبهذه الطريقة تنفّذ عمليات تجميع الأكواد على اللوحة باستخدام موارد جهاز الكمبيوتر الخاص بك. ولكي تدعم لوحتك ذلك، يجب أن يتم التثبيت مع تحديد خيار SSH في قسم [الخدمات](./quickstart#الخدمات) المشروح في قسم البدء السريع.
+
+### 3\.1\. تثبيت الملحق
+
+لإنشاء اتصال عن بُعد عبر VSCode يجب عليك تثبيت ملحق "Remote - SSH" الذي طوّرته Microsoft.
+
+1. افتح VSCode.
+2. انقر على أيقونة **Extensions** (الملحقات) في القائمة اليسرى أو اضغط على المفاتيح `Ctrl+Shift+X`.
+3. اكتب `Remote - SSH` في شريط البحث.
+4. ابحث عن الملحق الذي نشرته Microsoft وانقر على زر **Install** (تثبيت).
+
+<Frame caption="تثبيت ملحق VSCode Remote-SSH">
+  <video controls className="w-full rounded-lg" src="/videos/vscode-remote-ssh-ext.mp4"></video>
+</Frame>
+
+### 3\.2\. تهيئة SSH (موصى بها)
+
+يُنصح بتهيئة مفاتيح SSH (SSH Keys) لتتمكن من الاتصال بسرعة دون إدخال كلمة المرور في كل مرة.
+
+#### 3\.2\.1\. إنشاء مفتاح SSH
+
+في طرفية جهاز الكمبيوتر (طرفية Linux/macOS أو Windows PowerShell) أنشئ زوجاً من المفاتيح بتشغيل الأمر التالي:
+
+```bash
+ssh-keygen -t rsa -b 4096
+```
+
+يمكنك تجاوز الأسئلة التي تظهر بعد هذا الأمر بالإعدادات الافتراضية (بالضغط على مفتاح Enter).
+
+#### 3\.2\.2\. نسخ المفتاح إلى اللوحة
+
+لنقل المفتاح العام (`public key`) الذي أنشأته إلى لوحة Gemstone استخدم الأمر التالي:
+
+```bash
+ssh-copy-id gemstone@192.168.7.2
+```
+
+<Note>
+  إذا غيّرت عنوان IP الخاص بـ Gemstone أو عيّنت [عنوان IP ثابت](#2-2-1-وصل-لوحة-gemstone-وجهاز-الكمبيوتر-ببعضهما-عبر-ethernet) فأدخل العنوان المعني.
+</Note>
+
+### 3\.3\. الاتصال بالجهاز الهدف
+
+بعد تثبيت الملحق وإتمام إعدادات SSH يمكنك بدء الاتصال.
+
+1. انقر على الأيقونة الزرقاء **Open a Remote Window** (فتح نافذة عن بُعد) الموجودة في الركن السفلي الأيسر من VSCode.
+2. اختر الخيار **Connect to Host...** من القائمة التي تظهر.
+3. اكتب `gemstone@192.168.7.2` ثم اضغط على مفتاح `Enter`.
+4. عند إنشاء الاتصال سترى العبارة **SSH: 192.168.7.2** في الركن السفلي الأيسر.
+
+### 3\.4\. فتح مجلد المشروع والعمل عليه
+
+بعد نجاح الاتصال يمكنك البدء في العمل باختيار مجلد على Gemstone عبر المسار "File > Open Folder".
+
+<Tip>
+  أثناء التطوير قد تحتاج إلى إعادة تثبيت الملحقات التي تحتاجها مثل **C/C++** أو **Python** أو **CMake Tools** أثناء اتصالك بالجهاز البعيد. يمكنك تنفيذ ذلك من تبويب الملحقات عبر الزر "Install on SSH: 192.168.7.2".
+</Tip>

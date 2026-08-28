@@ -1,0 +1,263 @@
+---
+title: 'السحابة'
+description: 'نظام السحابة الشخصية Gemstone'
+---
+
+<Frame>
+    <img noZoom src="/images/cloud/nextcloud-hub.png" alt="Nextcloud" />
+</Frame>
+
+<Tip>
+في نهاية هذا القسم ستكتسب معرفة بالمواضيع التالية.
+
+* تثبيت نظام السحابة [Nextcloud](https://github.com/t3gemstone/t3-gem-nextcloud) على لوحة تطوير Gemstone
+* الطرق المستخدمة للوصول إلى Gemstone في منزلك من هاتفك المحمول أو من الخارج
+</Tip>
+
+## 1\. مقدمة
+
+أصبح التحكم في البيانات الشخصية وأمانها اليوم أكثر أهمية من أي وقت مضى. قد ترغب في إدارة ملفاتك وصورك وتقويماتك
+وملاحظاتك وحتى كلمات المرور الخاصة بك في نظام مركزي دون الاعتماد على مزودي السحابة الكبار مثل Amazon أو Google أو
+Microsoft. للقيام بذلك يجب عليك استخدام الطريقة المسماة self-hosting، أي استضافة خادمك الخاص على أجهزتك أنت. ومع
+ذلك، فإن تشغيل خادم في منزلك يجلب معه مشاكل تقنية مثل عدم القدرة على الوصول إلى الخادم من أي مكان يتوفر فيه اتصال
+بالإنترنت وعدم القدرة على ضمان أمان البيانات. غالباً ما تُحل هذه المشاكل بطرق معقدة وعالية التكلفة. يتيح مشروع
+`GemCloud` حل هذه المشاكل بطريقة سهلة وبدون تكلفة وبشكل آمن.
+
+## 2\. تثبيت Nextcloud
+
+Nextcloud هو حل سحابي مفتوح المصدر. يجمع في تطبيق واحد عدة ميزات مثل تخزين الصور والملفات، والدردشة، والتقويم،
+ومدير كلمات المرور، وتخطيط المهام بنظام كانبان.
+
+بعد إجراء [اتصال طرفي](/ar/quickstart/#2-استكشف-gemstone) بلوحة تطوير Gemstone، ابدأ تثبيت Nextcloud بالأمر التالي.
+
+```bash
+sudo apt install t3-gem-nextcloud
+```
+
+أثناء التثبيت ستواجه شاشة إدخال كلمة المرور التالية. تُستخدم كلمة المرور هذه في قاعدة البيانات التي يستخدمها
+Nextcloud وككلمة مرور لمستخدم `admin` في Nextcloud. اختر كلمة مرور قوية وسهلة التذكر واحفظها.
+
+<Frame>
+    <img src="/images/cloud/nextcloud-password.png" alt="Nextcloud password input" />
+</Frame>
+
+عند اكتمال التثبيت، سيبدأ خادم Nextcloud بالعمل على Gemstone. أما المرحلة التالية فتشرح كيفية الاتصال بهذا النظام
+السحابي من الخارج.
+
+## 3\. الوصول من الخارج {#3-الوصول-من-الخارج}
+
+الوصول إلى أجهزة الكمبيوتر التي تستخدمها في منزلك عبر عنوان IP ممكن فقط داخل شبكة المنزل. أما إمكانية الوصول من
+الخارج إلى المكانس الروبوتية وأنظمة الإضاءة الذكية ومكيفات الهواء التي تُتحكم بها عبر الهاتف المحمول وغيرها من
+الأجهزة المنزلية التي أصبحت شائعة في السنوات الأخيرة، فتتحقق من خلال نقل البيانات إلى خوادم مختلفة ينشئها مصنعو
+هذه الأجهزة.
+
+أسهل حل للوصول إلى مشروع Gemstone Cloud من الخارج هو الاتصال بمزود خدمة الإنترنت الخاص بك (ISP: TurkNet,
+Turktelekom, Superonline وغيرها) وطلب عنوان IP ثابت وإجراء توجيه المنافذ (port forwarding) من إعدادات المودم. أما
+للمستخدمين الذين لا يرغبون في القيام بذلك، فتتوفر حلول مختلفة مثل [Tailscale](https://tailscale.com/) و
+[Localtunnel](https://theboroer.github.io/localtunnel-www/).
+
+<Tabs>
+  <Tab title="مثال على شبكة نظام المنزل الذكي">
+    ```mermaid
+    flowchart
+      n1@{ label: "Rectangle" }
+      n1["المكنسة الروبوتية"]
+      n3["مكيف الهواء"]
+      n1 --- n6
+      n2["الإضاءة"] --- n6
+      n3 --- n6
+      n6@{ shape: "diam", label: "WIFI Modem" }
+      n6@{ shape: "hex", label: "Wireless" }
+      n6
+      n5@{ shape: "stadium", label: "الخادم" }
+      n6@{ shape: "hex", label: "WIFI" } --- n5
+      n6@{ shape: "dbl-circ", label: "WIFI" }
+      n7@{ shape: "doc", label: "الهاتف المحمول" }
+      style n6 fill:#C1FF72
+      n7@{ shape: "diam", label: "الهاتف المحمول" }
+      n5@{ shape: "stadium", label: "خادم الشركة المصنعة" } --- n7@{ shape: "hex", label: "الهاتف المحمول" }
+      n8
+      n8["أنظمة المنزل الذكي"] --- n6
+      style n7 fill:#00BF63
+      n5@{ shape: "lin-cyl", label: "Server" }
+    ```
+  </Tab>
+  <Tab title="مودم ISP والشبكة المحلية">
+    <img noZoom height="600" width="600" src="/images/cloud/isp-nat-local.png" alt="Tailscale" />
+  </Tab>
+</Tabs>
+
+الفكرة الأساسية هي أن خدمة ثبّتها على جهاز الكمبيوتر الخاص بك تتواصل مع Tailscale، مما يتيح لك الوصول إلى جهاز
+الكمبيوتر الخاص بك من الخارج عبر Tailscale أيضاً.
+
+### 3\.1\. تثبيت Tailscale
+
+<Frame>
+    <img src="/images/cloud/tailscale-web.jpg" alt="Tailscale" />
+</Frame>
+
+سجّل في Tailscale بحسابك على Github أو Google أو Microsoft بالنقر على هذا [الرابط](https://login.tailscale.com/start).
+
+<Frame>
+    <img src="/images/cloud/tailscale-signup.png" alt="Tailscale signup" />
+</Frame>
+
+عند تسجيل الدخول إلى حسابك ستظهر لك لوحة تحكم Tailscale. لإضافة لوحة Gemstone، اختر الخيار
+`Machines -> Add device -> Linux server`.
+
+<Frame>
+    <img src="/images/cloud/gemstone-ekle.png" alt="إضافة Gemstone" />
+</Frame>
+
+انزل إلى أسفل الصفحة وانقر على زر `Generate install script` وانسخ أمر تثبيت Tailscale الذي تم إنشاؤه. ثم
+[اتصل باللوحة طرفياً](/ar/quickstart/#2-استكشف-gemstone) وشغّل الأمر الذي نسخته في الطرفية.
+
+<Frame>
+    <img src="/images/cloud/gen-install-script.png" alt="Install script" />
+</Frame>
+
+بعد اكتمال تثبيت Tailscale، ابدأ خدمات Tailscale بالأمر التالي.
+
+```bash
+sudo tailscale up
+```
+
+تحقق من أن الاتصال سليم بالنظر إلى ما إذا كانت عبارة `Connected` تظهر في قسم `Machines` في لوحة تحكم Tailscale.
+
+<Frame>
+    <img src="/images/cloud/gem-machine-list.png" alt="Tailnet machine list" />
+</Frame>
+
+الخطوة التالية هي جعل خادم Nextcloud قابلاً للوصول من tailnet. ادخل إلى قائمة `DNS` في لوحة التحكم وانقر على زر
+`Enable HTTPS` الموجود أسفل الصفحة، ثم زر `Enable`.
+
+<Frame>
+    <img src="/images/cloud/enable-https.png" alt="Tailnet HTTPS enable" />
+</Frame>
+
+اتصل بلوحة التطوير طرفياً واجعل Nextcloud متاحاً للمشاركة مع الأجهزة الأخرى في الشبكة باستخدام الأمر التالي.
+
+```bash
+sudo tailscale serve --bg --http=80 1453
+```
+
+بعد هذه الخطوة، يمكن للأجهزة الأخرى المضافة إلى هذه الشبكة الوصول إلى Nextcloud عبر العنوان http://gemstone. أما
+لإضافة جهاز عميل إلى الشبكة (مثل الهاتف المحمول أو الكمبيوتر الشخصي أو الجهاز اللوحي)، فاختر الخيار الآخر في قسم
+إضافة الأجهزة وهو `Machines -> Add device -> Client device`.
+
+<Frame>
+    <img src="/images/cloud/client-add.png" alt="Tailnet Add Client device" />
+</Frame>
+
+في الشاشة التي تظهر، أكمل تثبيت Tailscale على الجهاز الذي تريد إضافته باتباع تعليمات التثبيت. شغّل تطبيق Tailscale
+وسجّل الدخول بالطريقة المناسبة لنظام التشغيل لديك. عند الانتهاء من العمليات يجب أن ترى الجهاز بعلامة `Connected`
+في لوحة التحكم.
+
+<Frame>
+    <img src="/images/cloud/client-list.png" alt="Tailnet device list" />
+</Frame>
+
+عند الانتقال إلى العنوان http://gemstone من المتصفح على الجهاز الذي أضفناه، ستواجه صفحة تسجيل الدخول إلى Nextcloud.
+اسم مستخدم حساب المدير هو `admin` وكلمة المرور هي كلمة المرور `CLOUD` التي أدخلتها أثناء التثبيت.
+
+<Frame>
+    <img src="/images/cloud/nextcloud-login.png" alt="Nextcloud login" />
+</Frame>
+
+### 3\.4\. لماذا يُستخدم Tailscale؟
+
+بسبب العدد المحدود لعناوين IPv4، يستخدم مزودو خدمة الإنترنت تقنية CGNAT (Carrier-Grade NAT) لإخراج عدة مستخدمين
+إلى الإنترنت عبر عنوان IPv4 واحد. يمنع هذا الوضع الوصول المباشر إلى الخوادم العاملة في المنزل (Nextcloud في
+حالتنا). يحل Tailscale هذه المشكلة بإنشاء شبكة VPN مبنية على WireGuard، متجاوزاً بذلك حواجز CGNAT و NAT
+التقليدية. يمكن للمستخدمين الاتصال بخادم Nextcloud بأمان من أي مكان يتوفر فيه اتصال بالإنترنت، وبالأجهزة المصرّح
+لها فقط. وبذلك يوفر بيئة شبكة مغلقة ومتحكم بها دون الحاجة إلى مشاركة عنوان IP عام.
+
+### 3\.5\. الاستخدام مع IP ثابت
+
+قيد الإنشاء...
+
+## 4\. أمان متقدم
+
+### 4\.1\. التحقق بخطوتين في Nextcloud
+
+بعد تسجيل الدخول إلى حساب المدير، انقر على صورة الملف الشخصي في الأعلى، ثم انقر على خيار `Personal Settings` من
+القائمة المنسدلة.
+
+<Frame>
+    <img src="/images/cloud/nc-user-menu.png" alt="Nextcloud user menu" />
+</Frame>
+
+ثم اختر خيار `Security` من القائمة الجانبية وحدد مربع `Enable TOTP`.
+
+<Frame>
+    <img src="/images/cloud/security-settings.png" alt="Nextcloud security settings" />
+</Frame>
+
+عند تحديد هذا الخيار، أدخل كلمة المرور أو رمز QR الناتج في تطبيق المصادقة لديك لإنشاء كلمة المرور. أخيراً أدخل
+الرمز الذي تم إنشاؤه في حقل `Authentication` وانقر على زر `Verify` لإكمال العملية.
+
+<Frame>
+    <img src="/images/cloud/totp-enable.png" alt="Nextcloud totp enable" />
+</Frame>
+
+من الآن فصاعداً، سيصبح استخدام رمز التحقق بالإضافة إلى كلمة المرور عند تسجيل الدخول إلى حسابك إجراء أمان
+إضافياً مفعّلاً.
+
+### 4\.2\. تفعيل Tailnet Lock في Tailscale
+
+في هذا النظام، يُعد النظام آمناً لأن الوصول إلى Nextcloud يتم فقط بالأجهزة التي أضفناها إلى شبكة tailnet. ومع ذلك،
+توجد خادم مغلق المصدر تسميه شركة `Tailscale` باسم `Coordination Server` يتحكم في الأجهزة التي ستُضاف إلى الشبكة.
+قرار انضمام جهاز إلى tailnet من عدمه يتخذه هذا الخادم.
+
+في أسوأ السيناريوهات، إذا استهدفتك شركة Tailscale، فقد تضيف أجهزة إلى tailnet لديك دون إذنك باستخدام
+`Coordination Server`. تحل شركة `Tailscale` هذه المشكلة بطريقة تسمى `Tailnet Lock`. يحفظ Tailnet Lock المفاتيح التي
+تتيح الانضمام إلى الشبكة على جهازين موجودين في شبكتك التي تحددها أنت، بدلاً من حفظها على `Coordination Server`
+الخاص بشركة Tailscale. وبذلك لا يمكن إدارة الدخول إلى tailnet لديك إلا من خلال هذين الجهازين.
+
+من لوحة التحكم، انقر على `Settings -> Device management -> Enable tailnet lock`.
+
+<Frame>
+    <img src="/images/cloud/enable-tailnet-lock-page.png" alt="Tailnet lock page" />
+</Frame>
+
+في شاشة Enable tailnet lock، انقر على زر `Add new signing node` واختر جهازين موجودين حالياً في tailnet. إذا كانت
+هناك أجهزة أخرى في tailnet لديك، فيجب أن تكون الأجهزة المختارة هنا من الأجهزة التي تثق بها.
+
+<Frame>
+    <img src="/images/cloud/tailnet-sign-nodes.png" alt="Tailnet sign nodes" />
+</Frame>
+
+عند تفعيل Tailnet Lock، تكون الطريقة الوحيدة للتراجع هي رموز إيقاف تفعيل Tailnet Lock (Tailnet lock disablement
+secret). إذا فقدت الوصول إلى شبكتك بأي شكل من الأشكال، فلن يكون من الممكن استعادتها دون هذه الرموز. توصي شركة
+Tailscale بإرسال أحد هذه الرموز إلى نظام الدعم الخاص بها، لكن يمكنك بدلاً من ذلك حفظ الرموز في مكان تثق به أنت.
+
+انتقل إلى قسم `Configure disablement options` وانقر على خيار `Don't send disablement secret to Tailscale support`.
+يجب نسخ الأمر الذي يظهر في قسم `Run command from signing node` وتشغيله على أحد الأجهزة التي أضفناها. (على سبيل
+المثال يمكنك تشغيله على لوحة Gemstone.)
+
+<Frame>
+    <img src="/images/cloud/tailnet-lock-cmd.png" alt="Tailnet lock cmd" />
+</Frame>
+
+دوّن رموز إيقاف التفعيل الناتجة عند التشغيل، والتي تكون على شكل `disablement-secret:XXXXXXXX`، في مكان آمن. وفي
+قسم `Machines` في لوحة التحكم يجب أن نرى عبارة `Signing node` تحت الجهازين اللذين اخترناهما.
+
+<Frame>
+    <img src="/images/cloud/after-tailnet-lock.png" alt="After Tailnet lock" />
+</Frame>
+
+من الآن فصاعداً، عند إنشاء جهاز جديد، لن تتمكن الأجهزة المعنية من الاتصال بشبكتك مباشرة، بل ستظهر على النحو
+التالي بحالة `Locked out`.
+
+<Frame>
+    <img src="/images/cloud/tailnet-locked-out.png" alt="Tailnet locked out" />
+</Frame>
+
+يجب تفعيل هذه الأجهزة من أحد أجهزة Signing node. للقيام بذلك، انقر على الجهاز المراد إضافته في جهاز Signing node
+واضغط على زر `Sign machine`، ثم اختر أحد الخيارات المناسبة لنظام تشغيل الجهاز وأكمل عملية التوقيع. بعد ذلك يتصل
+الجهاز بالشبكة. لإجراء عملية التوقيع على لوحة Gemstone، اختر الخيار `CLI` واتصل باللوحة طرفياً وشغّل الأمر الناتج
+في الطرفية.
+
+<Frame>
+    <img src="/images/cloud/tailnet-sign-machine.png" alt="Tailnet sign" />
+</Frame>

@@ -1,0 +1,79 @@
+---
+title: 'Yocto'
+description: 'مجموعة أدوات تطوير Gemstone'
+---
+
+import SnippetDir from '/snippets/sdk/yocto-dir.mdx';
+
+<Note>
+في هذا القسم سيتم تناول أعمال [meta-gemstone](https://github.com/t3gemstone/meta-gemstone) من Yocto المستخدمة لتجميع
+مكوّنات النواة (Kernel) ومحمل الإقلاع (Bootloader) والبرمجيات الثابتة (Firmware) وBSP (Board Support Packages) و
+Initrd (Init Ramdisk) الخاصة بلوحات تطوير Gemstone.
+</Note>
+
+<Tip>
+في نهاية القسم ستكتسب معرفة حول المواضيع التالية.
+
+* بنية أعمال Yocto الخاصة بـGemstone
+* كيفية إجراء عمليات تجميع Yocto
+</Tip>
+
+لإجراء تجميعة Yocto، تُستدعى الأوامر `devbox shell` --> `task box` --> `task yocto:build` بالترتيب.
+يتوقع Taskfile منك فقط المتغير `MACHINE` لتجميعات Yocto. وإذا لم تقم بالتعيين، يُختار `intel-corei7-64` افتراضيًا.
+
+```bash مثال
+task yocto:build MACHINE=t3-gem-o1
+```
+
+عند استدعاء الأمر أعلاه، سيقوم Yocto بعمليات تنزيل وتجميع وتغليف متنوعة لإنشاء صورة initrd والنواة ومحمل الإقلاع
+والبرمجيات الثابتة للآلة التي اخترتها. عند بدء العملية لأول مرة، تستغرق ما يقرب من ساعة واحدة اعتمادًا على سرعة
+الإنترنت وقوة المعالج وكمية RAM لديك. ونظرًا لأن Yocto يخزّن العمليات الوسيطة في القرص مؤقتًا (cache)، فستكتمل
+التجميعات اللاحقة بشكل أسرع بكثير.
+
+### 1\. meta-gemstone
+
+جُمعت جميع التطويرات الخاصة بـYocto لأجل Gemstone في الطبقة المسماة [meta-gemstone](https://github.com/t3gemstone/meta-gemstone).
+للحفاظ على البنية المعيارية لـYocto وتمكين النظام من التكيّف مع تحديثات الطبقات بسرعة، يجب عدم إجراء أي تغيير على
+<Tooltip tip="meta-ti, meta-oe, ...">الطبقات الأخرى</Tooltip>. وبدلًا من ذلك، يجب تخصيص الوصفات المطلوبة على طبقة
+meta-gemstone باستخدام ملفات `.bbappend` الخاصة بـYocto.
+
+#### 1\.1\. بنية المجلدات
+
+<SnippetDir />
+
+<ResponseField name="conf/">
+يوجد في هذا المجلد إعداد التوزيعة و<Tooltip tip="T3-GEM-O1, T3-GEM-S1, ...">تعريفات الآلات</Tooltip> وقوالب الإعداد
+الخاصة بالآلات.
+</ResponseField>
+
+<ResponseField name="recipes-core/images/">
+تُجرى التعريفات مثل الحزم التي ستتضمنها initrd والصور الأخرى ومتطلباتها وخصائصها في ملفات الوصفات ذات الامتداد `.bb`
+الموجودة داخل هذا المجلد.
+</ResponseField>
+
+<ResponseField name="recipes-*/">
+تُستخدم جميع المجلدات الأخرى التي تبدأ بـ`recipes-` لتصنيف الوصفات. وعادةً ما تُحفظ الملفات ذات الامتداد `.bbappend`
+التي تتيح تخصيص الوصفات المكتوبة في الطبقات الأخرى داخل هذه المجلدات.
+</ResponseField>
+
+### 2\. مخرجات Yocto
+
+خلال عملية التجميع، يستطيع Yocto تغليف جميع المشاريع تقريبًا بصيغة DEB أو IPK أو RPM. ونظرًا لأن Gemstone مبني على
+Debian، فقد رُئي من المناسب تغليف المشاريع المجمّعة لتوزيعة Gemstone بصيغة DEB.
+
+<Note>
+يمكنك الوصول إلى الحزم المنتجة من المجلد `<sdk-dizini>/build/yocto/tmp-musl/deploy/deb/<makine-adi>`.
+</Note>
+
+تُستخدم حزم DEB التي ينتجها Yocto في مجالين في توزيعة Gemstone:
+
+<Columns cols={2}>
+  <Card title="Debos">
+    عند إنشاء صورة Gemstone، يأخذ Debos ملفات مثل النواة ومحمل الإقلاع والبرمجيات الثابتة وdevice-tree وinitrd التي
+    ستوضع في المجلد /boot من حزم DEB التي أنشأها Yocto.
+  </Card>
+  <Card title="خادم APT الخاص بـGemstone">
+    تُنتج حزم DEB الخاصة بالآلة مثل وحدات النواة وinitrd ومحمل الإقلاع والبرمجيات الثابتة باستخدام Yocto وتُرفع إلى
+    **_[خادم APT الخاص بـGemstone](https://packages.t3gemstone.org/apt)_**.
+  </Card>
+</Columns>
