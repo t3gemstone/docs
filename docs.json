@@ -2,7 +2,10 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
   "name": "T3 Foundation Gemstone Project",
-  "favicon": "/logo/favicon.png",
+  "favicon": {
+    "light": "/logo/favicon.png",
+    "dark": "/logo/favicon-dark.png"
+  },
   "description": "T3 Gemstone Development Boards",
   "colors": {
     "primary": "#AD152A",
