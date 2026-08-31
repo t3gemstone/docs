@@ -377,6 +377,7 @@
               "en/projects/firewall",
               "en/projects/hotspot",
               "en/projects/homeassistant",
+              "en/projects/ros2",
               {
                 "group": "Teknofest",
                 "pages": [
