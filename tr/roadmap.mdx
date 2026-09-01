@@ -34,6 +34,10 @@ ziyaret edininiz.
   `Henüz Başlamadı`
 </Card>
 
+<Card horizontal arrow="true" title="Non-RT Linux Kernel Seçimi" icon="clock" href="./roadmap#non-rt-linux-kernel-seçimi">
+  `Henüz Başlamadı`
+</Card>
+
 <Card horizontal arrow="true" title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
   `Henüz Başlamadı`
 </Card>
@@ -170,6 +174,30 @@ Bu sayede yeni donanım sürücülerinden, geliştirmelerden ve hata düzeltmele
   </a>
   </Frame>
 </Columns>
+
+## Non-RT Linux Kernel Seçimi
+
+Gemstone ekosisteminde dağıtılan imajların tamamında, gerçek zamanlı (real-time) yamaları uygulanmış
+`PREEMPT_RT` çekirdeği bulunmaktadır. Bu çekirdek, uçuş kontrol, motor sürme, endüstriyel haberleşme gibi
+belirlenen süre sınırları içerisinde yanıt verilmesi gereken uygulamalar için kesme (interrupt) gecikmelerini
+öngörülebilir hale getirmektedir.
+
+Ancak gerçek zamanlılık ihtiyacı olmayan projelerde bu durum bir dezavantaja dönüşmektedir. Gerçek zamanlı
+çekirdekte kilitleme (locking) mekanizmalarının farklı çalışması ve kesmelerin ayrı thread'lerde işlenmesi
+nedeniyle sistem genelinde ek yük oluşmakta; görüntü işleme, yapay öğrenme, derleme gibi işlem gücü odaklı
+yüklerde ve toplam veri aktarım hızında (throughput) gecikmeye ve performans kaybına sebep olmaktadır.
+
+Bu çalışmada amaç, çekirdeğin kullanıcı tarafından seçilebilir hale getirilmesidir. Böylece gerçek zamanlılık
+gerektiren projelerde `PREEMPT_RT` çekirdeği, gerektirmeyen projelerde ise standart (non-RT) çekirdek
+kullanılarak performanstan ödün verilmemesi hedeflenmektedir.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Standart (non-RT) çekirdeğin Yocto derleme sistemine ayrı bir seçenek olarak eklenmesi                       | Gönüllü Geliştirici Bekleniyor |
+| Her iki çekirdeğin de DEB paketi haline getirilerek Gemstone paket deposunda yayınlanması                    | Gönüllü Geliştirici Bekleniyor |
+| Kullanıcının kurulu sistem üzerinde çekirdekler arasında geçiş yapabilmesi için araç hazırlanması            | Gönüllü Geliştirici Bekleniyor |
+| RT ve non-RT çekirdeklerin gecikme (latency) ve throughput açısından karşılaştırmalı olarak test edilmesi    | Gönüllü Geliştirici Bekleniyor |
+| Seçim yönteminin ve karşılaştırma sonuçlarının dokümantasyona eklenmesi                                      | Gönüllü Geliştirici Bekleniyor |
 
 ## Gemstone Distro
 

@@ -37,6 +37,10 @@ To contribute by taking part in the relevant projects, visit their Github pages 
   `Not Started Yet`
 </Card>
 
+<Card horizontal arrow="true" title="Non-RT Linux Kernel Selection" icon="clock" href="./roadmap#non-rt-linux-kernel-selection">
+  `Not Started Yet`
+</Card>
+
 <Card horizontal arrow="true" title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
   `Not Started Yet`
 </Card>
@@ -171,6 +175,30 @@ This will allow taking advantage of new hardware drivers, improvements, and bug 
   </a>
   </Frame>
 </Columns>
+
+## Non-RT Linux Kernel Selection
+
+All images distributed within the Gemstone ecosystem currently ship with a `PREEMPT_RT` kernel, that is, a
+kernel with the real-time patches applied. This kernel makes interrupt latencies predictable for applications
+that must respond within defined time bounds, such as flight control, motor driving, and industrial
+communication.
+
+However, this becomes a disadvantage for projects that do not need real-time behaviour. Because locking
+mechanisms behave differently and interrupts are handled in separate threads on a real-time kernel, additional
+system-wide overhead is introduced. This causes latency and performance loss in compute-oriented workloads such
+as image processing, machine learning, and compilation, as well as in overall data throughput.
+
+The goal of this work is to make the kernel selectable by the user. This way, projects that require real-time
+behaviour can use the `PREEMPT_RT` kernel, while projects that do not can use the standard (non-RT) kernel
+without sacrificing performance.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| Adding the standard (non-RT) kernel to the Yocto build system as a separate option                          | Volunteer Developer Needed     |
+| Packaging both kernels as DEB packages and publishing them in the Gemstone package repository               | Volunteer Developer Needed     |
+| Preparing a tool that lets users switch between kernels on an already installed system                      | Volunteer Developer Needed     |
+| Comparative testing of the RT and non-RT kernels in terms of latency and throughput                         | Volunteer Developer Needed     |
+| Documenting the selection method and the comparison results                                                 | Volunteer Developer Needed     |
 
 ## Gemstone Distro
 
