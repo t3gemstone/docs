@@ -1,0 +1,344 @@
+---
+title: 'ArduCopter on ChibiOS (T3 Gemstone O1)'
+description: 'Running the ArduCopter flight controller directly on the R5F core, on the ChibiOS RTOS, instead of Linux'
+---
+
+<Note>
+Source code: [github.com/HaruunGNY/T3-Gemstone-O1-Chibos](https://github.com/HaruunGNY/T3-Gemstone-O1-Chibos).
+Verified with a real flight on real hardware on 2026-08-18.
+</Note>
+
+## 1. Overview
+
+The T3 Gemstone O1 board has two separate processor core families on the
+same chip, running independently of each other:
+
+- **A53 cores**: the regular, powerful cores. A full Linux (Ubuntu) runs on
+  them. This is what you land in when you connect over SSH.
+- **MCU domain Cortex-R5F ("R5F")**: a much smaller, separate embedded core
+  with its own RAM and its own execution model. Linux can load and start a
+  program (an `.elf` file) on this core through a mechanism called
+  `remoteproc` — similar to flashing an Arduino, but as a self-contained
+  "mini computer" inside the board itself.
+
+Factory/default state of the board: a no-op "echo" test program sits idle
+on the R5F, while the real flight control runs on the A53 side, on Linux,
+via ArduCopter (the `t3-gem-ardupilot` apt package, see the
+[ArduPilot page](/en/projects/ardupilot)).
+
+What this setup does: it moves ArduCopter from Linux to the R5F. Flight
+control no longer runs on Linux — it runs directly on that small R5F core,
+on ChibiOS, an RTOS (real-time operating system — much simpler than Linux,
+with predictable scheduling, designed for embedded systems). From this
+point on, Linux's job is limited to:
+
+- Loading the correct program onto the R5F at boot,
+- Handing over the hardware paths the R5F needs (SPI, PWM),
+- Bridging MAVLink traffic to QGroundControl through a memory region
+  shared between the R5F and Linux.
+
+Why do this: the R5F offers much lower latency / more predictable timing
+than Linux (real-time = "you can guarantee exactly when each loop
+iteration will run") — an interesting alternative for timing-sensitive
+work like flight control.
+
+### Concepts
+
+| Term | Meaning |
+|---|---|
+| **HAL (Hardware Abstraction Layer)** | ArduPilot's hardware-facing layer. The same ArduCopter code can run on different hardware (Linux, ChibiOS, etc.) through different HALs. The custom HAL here is called `AP_HAL_ChibiOS_K3`. |
+| **RTOS** | Real-Time Operating System — an OS for small/embedded systems that can guarantee "this task will finish within exactly this much time." ChibiOS is the RTOS used here. |
+| **remoteproc** | A Linux kernel subsystem that lets Linux load and start/stop a program (`.elf`) on a neighboring core (the R5F, in our case). Controlled via files under `/sys/class/remoteproc/remoteproc2/`. |
+| **waf** | ArduPilot's build tool — similar to `make`, invoked as `python3 waf <command>`. |
+| **arm-none-eabi-gcc** | A cross-compiler that produces code for an embedded ARM core like the R5F (your host machine is likely x86_64, while the R5F is ARM). |
+
+<Warning>
+**Never run an arm/motor test without removing the propellers.** With this
+firmware, motors can genuinely spin once armed. **GPS does not work** in
+this setup — there are no GPS-dependent modes like Auto/Guided/RTL/PosHold;
+test knowing there is no "rescue" mode like RTL (return-to-launch).
+Battery voltage/current telemetry is also unavailable — monitor the battery
+visually/manually. The first deploy/test should always be done with the
+board bench-mounted and propellers removed.
+</Warning>
+
+## 2. Requirements
+
+- A **T3 Gemstone O1** board with T3's official operating system installed
+  and running (see [Imaging](/en/imager/introduction)).
+- A **USB-C cable** connecting the board to the host computer (for the
+  board's USB-Ethernet debug link).
+- A **host computer** (Linux/Ubuntu recommended).
+- Wiring for GPS, RC receiver, motors/ESCs, etc. is not covered on this
+  page — for wiring, see the [ArduPilot page](/en/projects/ardupilot).
+
+Board details (T3's official image defaults): address `192.168.7.2` (over
+USB-Ethernet), user `gemstone`, SSH/sudo password `gem`.
+
+## 3. Installation
+
+### 3.1. Host Software Setup
+
+Install the following on your host computer (not the board):
+
+```bash
+ubuntu@host:~$ sudo apt update
+ubuntu@host:~$ sudo apt install -y git make python3 python3-pip sshpass ssh gcc-arm-none-eabi
+ubuntu@host:~$ pip3 install empy==3.3.4
+```
+
+<Note>
+The `empy` version matters — a version other than `pip install
+empy==3.3.4` may cause build errors.
+</Note>
+
+Verify the setup:
+
+```bash
+ubuntu@host:~$ arm-none-eabi-gcc --version
+ubuntu@host:~$ python3 -c "import em; print('empy OK')"
+```
+
+### 3.2. Getting the Repository and Building
+
+```bash
+ubuntu@host:~$ git clone https://github.com/HaruunGNY/T3-Gemstone-O1-Chibos.git
+ubuntu@host:~$ cd T3-Gemstone-O1-Chibos
+ubuntu@host:~$ python3 waf configure --board GemstoneO1R5F
+ubuntu@host:~$ python3 waf copter
+```
+
+<Note>
+The first run needs internet access — waf automatically tries to fetch its
+own submodule (`modules/waf`). The build produces
+`build/GemstoneO1R5F/bin/arducopter` (an ELF) — this is the actual program
+you will load onto the R5F.
+</Note>
+
+### 3.3. First Deploy to the Board (Test Only, Not Persistent)
+
+On the host, copy the built file to the board:
+
+```bash
+ubuntu@host:~$ sshpass -p gem scp build/GemstoneO1R5F/bin/arducopter gemstone@192.168.7.2:/tmp/ap-k3.elf
+```
+
+Connect to the board (`ssh gemstone@192.168.7.2`, password `gem`) and run
+the following in that session:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo systemctl stop arducopter
+gemstone@t3-gem-o1:~$ sudo sh -c 'echo 4b00000.spi > /sys/bus/platform/drivers/omap2_mcspi/unbind'
+gemstone@t3-gem-o1:~$ sudo cp /tmp/ap-k3.elf /lib/firmware/ap-k3.elf
+gemstone@t3-gem-o1:~$ sudo sh -c 'echo stop > /sys/class/remoteproc/remoteproc2/state'
+gemstone@t3-gem-o1:~$ sudo sh -c 'echo ap-k3.elf > /sys/class/remoteproc/remoteproc2/firmware'
+gemstone@t3-gem-o1:~$ sudo sh -c 'echo start > /sys/class/remoteproc/remoteproc2/state'
+```
+
+In order: stops the old Linux/ArduCopter service, releases the SPI bus the
+IMU uses to the R5F, copies the file to the location `remoteproc` expects,
+then tells remoteproc to stop, load the new file, and start.
+
+<Warning>
+The command that writes `"stop"` to `remoteproc2/state` only works
+**while the R5F is still running TI's factory/stock firmware**. Our own
+(ChibiOS/ArduCopter) firmware does not yet implement the special handshake
+signal (mailbox) that remoteproc's "stop" command expects. So if the R5F
+is already running our firmware, you cannot load a new version with the
+sequence above — you must first fully reboot the board with `sudo reboot`,
+reconnect, and then re-run the 6 commands above. **So the loop on every
+code change is: reboot → reconnect → 6 commands.**
+</Warning>
+
+To see the program's debug output (`trace0`, 16 KB, not circular):
+
+```bash
+gemstone@t3-gem-o1:~$ sudo cat /sys/kernel/debug/remoteproc/remoteproc2/trace0
+```
+
+### 3.4. Making It Persistent
+
+For the board to come up with this firmware automatically on every boot,
+on the board run:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo sh -c 'test -f /lib/firmware/j722s-mcu-r5f0_0-fw.bak || cp /lib/firmware/j722s-mcu-r5f0_0-fw /lib/firmware/j722s-mcu-r5f0_0-fw.bak'
+gemstone@t3-gem-o1:~$ sudo cp /tmp/ap-k3.elf /lib/firmware/j722s-mcu-r5f0_0-fw
+gemstone@t3-gem-o1:~$ sudo systemctl disable --now arducopter
+```
+
+Then install the 3 services below and reboot the board.
+
+**Reverting** (back to Linux/ArduCopter, on the board):
+
+```bash
+gemstone@t3-gem-o1:~$ sudo cp /lib/firmware/j722s-mcu-r5f0_0-fw.bak /lib/firmware/j722s-mcu-r5f0_0-fw
+gemstone@t3-gem-o1:~$ sudo systemctl disable chibios-spi-release chibios-pwm-clocks gem-storaged
+gemstone@t3-gem-o1:~$ sudo systemctl enable arducopter
+gemstone@t3-gem-o1:~$ sudo reboot
+```
+
+#### 3.4.1. The 3 On-Board systemd Services
+
+All three run on the board's own Linux, tied to `sysinit.target` (they run
+before the network/SSH comes up):
+
+| Service | What it does |
+|---|---|
+| `chibios-spi-release.service` | Releases SPI0 from Linux to the R5F |
+| `chibios-pwm-clocks.service` | Enables the motor PWM clocks — without this, arm appears to succeed but motors never spin |
+| `gem-storaged.service` | Writes calibration/parameter data to disk — must be board-native |
+
+<Note>
+Why `gem-storaged` must start automatically on the board itself: ArduCopter
+waits at most 60 seconds at boot for calibration data. A version triggered
+over SSH once missed that window while waiting for the network to come up,
+and overwrote real calibration data with an empty one. Because
+`sysinit.target` is triggered by the board's own kernel — independent of
+the host/SSH — this race condition is eliminated entirely.
+</Note>
+
+To install each one (replace `<file>` with the service name):
+
+```bash
+ubuntu@host:~$ sshpass -p gem scp deploy/systemd-board/<file>.service gemstone@192.168.7.2:/tmp/<file>.service
+```
+
+```bash
+gemstone@t3-gem-o1:~$ sudo cp /tmp/<file>.service /etc/systemd/system/<file>.service
+gemstone@t3-gem-o1:~$ sudo systemctl daemon-reload
+gemstone@t3-gem-o1:~$ sudo systemctl enable --now <file>.service
+```
+
+For `gem-storaged.service`, also copy its Python script:
+
+```bash
+ubuntu@host:~$ sshpass -p gem scp deploy/board/gem_storaged.py gemstone@192.168.7.2:/tmp/gem_storaged.py
+```
+
+```bash
+gemstone@t3-gem-o1:~$ sudo cp /tmp/gem_storaged.py /home/gemstone/gem_storaged.py
+```
+
+## 4. Configuration
+
+Because the IMU read rate is hardware-fixed at 100Hz, set the
+`SCHED_LOOP_RATE` parameter to **`50`** in QGroundControl (Vehicle Setup →
+Parameters) — otherwise you will get a "Main loop slow" / "Gyro rate"
+error and be unable to arm.
+
+## 5. Usage
+
+### 5.1. QGroundControl Connection
+
+ArduCopter carries MAVLink data over a memory region shared between the
+R5F and Linux (address `0xA1120000`, 64 KiB, a "ring buffer"). A bridge
+running on the host converts this to UDP 14550:
+
+```bash
+ubuntu@host:~$ mkdir -p ~/.config/systemd/user
+ubuntu@host:~$ cp deploy/systemd-host/gem-mavbridge.service ~/.config/systemd/user/
+ubuntu@host:~$ systemctl --user daemon-reload
+ubuntu@host:~$ systemctl --user enable --now gem-mavbridge
+ubuntu@host:~$ loginctl enable-linger "$USER"
+```
+
+Once set up, just open QGroundControl — it automatically listens on and
+connects to UDP 14550. Seeing "Not Ready" with the ArduPilot logo means
+the connection succeeded.
+
+### 5.2. Verification Checklist
+
+```bash
+gemstone@t3-gem-o1:~$ cat /sys/class/remoteproc/remoteproc2/state /sys/class/remoteproc/remoteproc2/firmware
+# -> should print "running" and "j722s-mcu-r5f0_0-fw"
+
+gemstone@t3-gem-o1:~$ systemctl is-active arducopter; systemctl is-enabled arducopter
+# -> should print inactive / disabled
+
+gemstone@t3-gem-o1:~$ systemctl is-active chibios-spi-release chibios-pwm-clocks gem-storaged
+# -> all three should print "active"
+```
+
+```bash
+ubuntu@host:~$ systemctl --user is-active gem-mavbridge
+# -> should print "active"
+```
+
+## 6. Known Limitations
+
+These reflect the real state at the verified flight on 2026-08-18 — not
+bugs, but the current real boundaries of this experimental setup:
+
+- **GPS has not been tested yet.** On the normal Linux/ArduCopter setup,
+  GPS connects over `UART-MAIN6` and works fine (see the
+  [ArduPilot page](/en/projects/ardupilot)). But in this repo's
+  ChibiOS/R5F HAL (`AP_HAL_ChibiOS_K3`), `serial3` is still an empty stub.
+  The claim that "the R5F can never physically reach this port" turned out
+  to be doubtful (the R5F already successfully reaches another port in the
+  same hardware family), so a minimal probe (`am67_uart6_probe`) that
+  tests reachability was written and compiled but never actually run on
+  real hardware. Auto/Guided/RTL/PosHold cannot be used.
+- **IMU read rate is fixed at 100Hz** — `SCHED_LOOP_RATE=50` is required
+  (see [Configuration](#4-configuration)). A faster read method was tried
+  but silently produced corrupt data.
+- **The `ARMING_CHECK` parameter appears "missing"** — cosmetic; ArduPilot
+  recently renamed this parameter and QGC's internal list has not caught
+  up. Does not block arming/flight.
+- **A full reboot is required after every firmware change** — the
+  remoteproc mailbox stop handshake is not implemented yet.
+- **`trace0` debug output is 16 KB and not circular.**
+- **No battery voltage/current telemetry** — not defined at the hardware
+  level.
+
+## 7. Troubleshooting
+
+### 7.1. "can't stop rproc: -16" / "module-reset assert failed, ret=-19"
+
+The R5F is already running our own firmware and isn't responding to the
+"stop" command. Reboot the board and redo the deploy steps from
+[Section 3.3](#33-first-deploy-to-the-board-test-only-not-persistent).
+There is no shortcut — a reboot is required every time.
+
+### 7.2. Arms, but the motors never spin
+
+Check whether `chibios-pwm-clocks.service` is installed and active (see
+[Section 3.4.1](#341-the-3-on-board-systemd-services)).
+
+### 7.3. QGroundControl won't connect
+
+Check in order: is the board powered on and connected over USB-C, does
+`systemctl --user is-active gem-mavbridge` say "active", is the R5F
+actually running (`remoteproc2/state` → "running").
+
+### 7.4. Calibration/settings disappear after a reboot
+
+Verify `gem-storaged.service` is running board-native (via the board's own
+systemd, not triggered over SSH).
+
+### 7.5. "Bus error" reading/writing through `/dev/mem`
+
+On this board, accesses to memory regions shared with the R5F require
+both the start and end address to be 8-byte aligned — the
+`read_aligned()`/`write_aligned()` functions in the Python scripts under
+`deploy/` already handle this.
+
+### 7.6. I want to try getting GPS working
+
+The serial port GPS is wired to (`UART-MAIN6`) is in the same hardware
+family as another port the R5F already successfully reaches — so the
+assumption "the R5F can never reach it" is not certain, but this has not
+yet been verified on real hardware.
+
+## Repository Layout
+
+```
+.                                  ArduPilot source (emirhan-sonmez/ardupilot @ gemstone-o1-r5f-hal)
+├── libraries/AP_HAL_ChibiOS_K3/   Custom HAL backend for the R5F
+├── modules/ChibiOS-Gemstone-O1-Port/   ChibiOS port (emirhan-sonmez/ChibiOS-Gemstone-O1-Port @ gemstone-o1-r5f)
+└── deploy/                        Board/host-side parts specific to this project, not in either upstream repo
+    ├── board/gem_storaged.py      Parameter-saving script that runs on the board
+    ├── host/gem_mavbridge.py, run_bridge.py   Host<->board MAVLink bridge
+    ├── systemd-board/             The 3 board-native service definitions
+    └── systemd-host/              The host-side systemd --user service definition
+```
