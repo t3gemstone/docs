@@ -421,6 +421,195 @@
             ]
           }
         ]
+      },
+      {
+        "global": {
+          "dropdowns": [
+            {
+              "dropdown": "الصفحة الرئيسية",
+              "description": "موقع T3 Gemstone",
+              "href": "https://www.t3gemstone.org",
+              "icon": "firefox"
+            },
+            {
+              "dropdown": "GitHub",
+              "description": "مستودع الأكواد المصدريّة",
+              "href": "https://github.com/t3gemstone",
+              "icon": "github"
+            },
+            {
+              "dropdown": "المنتدى",
+              "description": "منتديات المجتمع",
+              "href": "https://community.t3gemstone.org",
+              "icon": "discourse"
+            },
+            {
+              "dropdown": "المتجر",
+              "description": "المتجر",
+              "href": "https://magaza.deneyapkart.org",
+              "icon": "shop"
+            }
+          ]
+        },
+        "language": "ar",
+        "groups": [
+          {
+            "group": "البدء",
+            "pages": [
+              "ar/introduction",
+              "ar/quickstart",
+              "ar/development",
+              "ar/academy/academy"
+            ]
+          },
+          {
+            "group": "لوحات التطوير",
+            "pages": [
+              {
+                "group": "T3-GEM-O1",
+                "pages": [
+                  "ar/boards/o1/introduction",
+                  "ar/boards/o1/tiam67",
+                  {
+                    "group": "المكوّنات",
+                    "pages": [
+                      "ar/boards/o1/peripherals/introduction",
+                      "ar/boards/o1/peripherals/serial",
+                      "ar/boards/o1/peripherals/gpio",
+                      "ar/boards/o1/peripherals/i2c",
+                      "ar/boards/o1/peripherals/canbus",
+                      "ar/boards/o1/peripherals/eeprom",
+                      "ar/boards/o1/peripherals/imu",
+                      "ar/boards/o1/peripherals/pwm",
+                      "ar/boards/o1/peripherals/camera",
+                      "ar/boards/o1/peripherals/touchscreen",
+                      "ar/boards/o1/peripherals/rtc",
+                      "ar/boards/o1/peripherals/jtag",
+                      "ar/boards/o1/peripherals/mcu"
+                    ]
+                  },
+                  {
+                    "group": "الذكاء الاصطناعي الطرفي",
+                    "pages": [
+                      "ar/boards/o1/ai/introduction",
+                      "ar/boards/o1/ai/ecosystem",
+                      "ar/boards/o1/ai/installation",
+                      "ar/boards/o1/ai/edgeai",
+                      "ar/boards/o1/ai/edgeai-tensorlab",
+                      "ar/boards/o1/ai/data-labeling",
+                      "ar/boards/o1/ai/process",
+                      "ar/boards/o1/ai/usage",
+                      "ar/boards/o1/ai/examples",
+                      {
+                        "group": "المستوى المتقدم",
+                        "pages": [
+                          "ar/boards/o1/ai/libraries/introduction",
+                          "ar/boards/o1/ai/libraries/mathlib",
+                          "ar/boards/o1/ai/libraries/vxlib",
+                          "ar/boards/o1/ai/libraries/dsplib"
+                        ]
+                      },
+                      {
+                        "group": "مسرّعات الذكاء الاصطناعي",
+                        "pages": [
+                          {
+                            "group": "DeepX",
+                            "pages": [
+                              "ar/boards/o1/ai/deepx/introduction",
+                              "ar/boards/o1/ai/deepx/installation",
+                              "ar/boards/o1/ai/deepx/usage",
+                              "ar/boards/o1/ai/deepx/examples",
+                              "ar/boards/o1/ai/deepx/troubleshooting"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "ar/boards/o1/pcb"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "نظام التشغيل",
+            "pages": [
+              "ar/distros/introduction",
+              "ar/distros/minimal",
+              "ar/distros/kiosk",
+              "ar/distros/desktop",
+              "ar/distros/components"
+            ]
+          },
+          {
+            "group": "أداة كتابة الصور",
+            "pages": [
+              "ar/imager/introduction",
+              "ar/imager/customization",
+              "ar/imager/emmc"
+            ]
+          },
+          {
+            "group": "المشاريع",
+            "icon": "code",
+            "pages": [
+              "ar/projects/introduction",
+              "ar/projects/cloud",
+              "ar/projects/preempt-rt",
+              "ar/projects/ardupilot",
+              "ar/projects/nuttx",
+              "ar/projects/px4",
+              "ar/projects/vtol",
+              "ar/projects/swupdate",
+              "ar/projects/mediabox",
+              "ar/projects/firewall",
+              "ar/projects/hotspot",
+              "ar/projects/homeassistant",
+              {
+                "group": "Teknofest",
+                "pages": [
+                  "ar/projects/teknofest-suv",
+                  "ar/projects/teknofest-ika",
+                  "ar/projects/teknofest-celikkubbe",
+                  "ar/projects/teknofest-robotaksi"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "SDK",
+            "icon": "laptop-code",
+            "pages": [
+              "ar/sdk/introduction",
+              "ar/sdk/components",
+              "ar/sdk/debos",
+              "ar/sdk/yocto",
+              "ar/sdk/uboot",
+              "ar/sdk/kernel"
+            ]
+          },
+          {
+            "group": "الأدلة",
+            "icon": "books",
+            "pages": [
+              "ar/guides/introduction",
+              "ar/guides/basic",
+              "ar/guides/medium",
+              "ar/guides/advanced",
+              "ar/guides/end"
+            ]
+          },
+          {
+            "group": "أخرى",
+            "pages": [
+              "ar/faq",
+              "ar/troubleshoting",
+              "ar/license",
+              "ar/changelog",
+              "ar/roadmap"
+            ]
+          }
+        ]
       }
     ]
   },

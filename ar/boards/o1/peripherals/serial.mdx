@@ -1,0 +1,94 @@
+---
+title: 'المنفذ التسلسلي'
+description: 'استخدام المنفذ التسلسلي'
+---
+
+import SnippetDevices from '/snippets/boards/o1/serial/devices.mdx';
+import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
+import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
+
+<Tip>
+في نهاية القسم ستكتسب خبرة في المواضيع التالية
+
+- إنشاء اتصال منفذ تسلسلي بين حاسوب المطوّر وGemstone عبر كابل USB TTL.
+- توصيل الحاسوبين عبر الطرفية.
+- التحضير المسبق لمشروع [t3gemstone/examples/serial](https://github.com/t3gemstone/examples/tree/main/serial).
+</Tip>
+
+المنفذ التسلسلي هو مسار اتصال يتيح نقل البيانات بين أجهزة مثل الحواسيب والمتحكمات الدقيقة. يتحقق هذا الاتصال
+عادةً عبر بروتوكول `UART (Universal Asynchronous Receiver-Transmitter)` وهو مثالي لنقل البيانات بسرعات منخفضة.
+على سبيل المثال، عند الاتصال بوحدات خارجية مثل GPS وRadio Transmitter، يُفضل في الغالب المنفذ التسلسلي.
+
+### واجهات المنفذ التسلسلي
+
+واجهات المنفذ التسلسلي الموجودة على لوحة T3-GEM-O1 مذكورة في الجدول أدناه.
+
+<Frame caption="الأطراف التي يمكن استخدامها كمنفذ تسلسلي">
+  <img className="rounded-lg" src="/images/o1-board/33-serials.png" />
+</Frame>
+
+<Frame caption="توصيل منفذ TTL الخاص بـUART-MAIN0">
+  <img className="rounded-lg" src="/images/o1-board/35-serial-port-ttl-2.png" />
+</Frame>
+
+<SnippetDevices int="الواجهة" device="الجهاز" file="ملف Overlay" notes="ملاحظات" />
+
+<Note>
+- يُوصَل إلى طرفية Linux عبر المنفذ التسلسلي UART-MAIN0.
+- عند تفعيل الـoverlay `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtso`، يُعطل طرف TX الخاص بـUART‑MAIN1،
+  بينما يستمر طرف RX بالعمل بشكل طبيعي.
+- عند تفعيل المنفذ التسلسلي UART-MAIN6، يتعطل Bluetooth.
+</Note>
+
+يجب إضافة أسماء ملفات overlay للواجهات المراد تفعيلها إلى المتغير `overlays` في ملف `/boot/uEnv.txt`.
+يمكن الوصول إلى معلومات تفصيلية عن الـOverlays من قسم [Device Tree](./introduction/#2-device-tree).
+
+### استخدام المنفذ التسلسلي
+
+<Steps>
+  <Step title="اتصال SSH/VNC">
+  اتصل بلوحة التطوير عبر إحدى طريقتي
+  [SSH](../../../quickstart#2-3-الاتصال-عبر-الشبكة-باستخدام-ssh) أو
+  [VNC](../../../quickstart#2-2-الاتصال-بسطح-المكتب-البعيد-من-المتصفح-عبر-vnc).
+  </Step>
+  <Step title="Shell">
+  أنشئ سكربتات Bash Shell.
+  </Step>
+  <Step title="TTL والطرفية">
+  وصّل حاسوب المطوّر ولوحة Gemstone باستخدام كابل TTL، ونفّذ تبادل البيانات عبر الطرفية المسماة Tabby.sh.
+  </Step>
+</Steps>
+
+#### 1\. إنشاء سكربت Shell
+
+أنشئ ملف سكربت لعمليات فتح المنفذ التسلسلي وإرسال البيانات.
+
+```bash
+touch serial-test.sh
+```
+
+#### 2\. استخدام محرر النصوص
+
+من واجهة الطرفية، افتح ملف `serial-test.sh` باستخدام محرر النصوص المسمى `nano`.
+
+```bash
+nano serial-test.sh
+```
+
+بعد نسخ الكود التالي، الصقه في ملف `serial-test.sh`.
+
+<SnippetExamplesSerialScript />
+
+بعد الضغط على `CTRL+X`، اضغط على زر `Y` للخروج من محرر nano وإتمام عملية الحفظ.
+
+#### 3\. تشغيل سكربت Shell
+
+اجعل ملف `serial-test.sh` قابلًا للتنفيذ باستخدام الأمر `chmod` ثم شغّله.
+
+<SnippetExamplesSerial />
+
+#### 4\. الاتصال
+
+<Frame >
+  <video controls className="w-full aspect-video" src="/videos/seri-test.mp4"></video>
+</Frame>

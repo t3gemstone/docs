@@ -1,0 +1,345 @@
+---
+title: 'الاستخدام'
+description: 'إدارة وحدة DX-M1 وإجراء الاستدلال باستخدام Python'
+---
+
+import SnippetDeepxStatus from '/snippets/boards/o1/deepx/dxrt-status.mdx';
+
+يشرح هذا القسم إدارة وحدة المسرّع DX-M1 باستخدام أدوات سطر الأوامر، وقياس أدائها، وإجراء الاستدلال باستخدام
+واجهة Python.
+
+<Note>
+لكي يمكن تنفيذ الأوامر في هذا القسم، يجب أن يكون تثبيت المشغّل ووقت التشغيل قد اكتمل. يمكنك مراجعة قسم
+[التثبيت](/ar/boards/o1/ai/deepx/installation) لخطوات التثبيت.
+</Note>
+
+## أدوات سطر الأوامر
+
+تُثبَّت الأدوات المساعدة التالية مع وقت تشغيل DX-RT.
+
+| الأداة        | الوصف                                                                 |
+| ------------- | ------------------------------------------------------------------------ |
+| `dxrt-cli`    | أداة استعلام حالة الجهاز ومراقبته وإعادة تعيينه وتحديث برمجياته            |
+| `dxtop`       | أداة مراقبة تعرض استخدام أنوية NPU في الوقت الفعلي                        |
+| `run_model`   | أداة قياس أداء (benchmark) لنموذج مجمَّع                                  |
+| `parse_model` | أداة فحص بنية ملف النموذج `.dxnn` واستخدام الذاكرة فيه                     |
+
+### الاستعلام عن حالة الجهاز
+
+لعرض قيم درجة الحرارة والجهد وتردد الساعة اللحظية للوحدة، يُستخدم الخيار `--status`.
+
+<SnippetDeepxStatus />
+
+لعرض معلومات العتاد والإصدار الخاصة بالوحدة، يُستخدم الخيار `--info`.
+
+```bash
+dxrt-cli --info
+```
+
+تُدرج الخيارات شائعة الاستخدام لأداة `dxrt-cli` في الجدول التالي.
+
+| الخيار              | الوصف                                                              |
+| -------------------- | --------------------------------------------------------------------- |
+| `-s`, `--status`     | يعرض حالة الجهاز                                                    |
+| `-i`, `--info`       | يعرض معلومات الجهاز                                                 |
+| `-m`, `--monitor <n>`| يعرض حالة الجهاز بشكل مستمر بفواصل زمنية مقدارها `n` ثانية            |
+| `-d`, `--device <id>`| يحدد الجهاز الذي سيُطبق عليه الأمر                                    |
+| `-r`, `--reset`      | يعيد تعيين أنوية NPU                                                |
+| `-u`, `--fwupdate`   | يحدّث برمجية الجهاز (firmware) بالملف المحدد                          |
+| `-v`, `--version`    | يعرض معلومات الإصدار                                                |
+| `-h`, `--help`       | يعرض معلومات الاستخدام                                               |
+
+على سبيل المثال، لمراقبة حالة الجهاز بفواصل زمنية مقدارها ثانية واحدة، يمكنك استخدام الأمر التالي.
+
+```bash
+dxrt-cli --monitor 1
+```
+
+<Warning>
+بقاء درجة حرارة الوحدة عند مستويات عالية لفترة طويلة يتسبب في خفض العتاد لتردد الساعة بهدف حماية نفسه، ومن
+ثم انخفاض الأداء. في التطبيقات التي تشغّلها تحت حمل عمل كثيف، يُنصح بمتابعة قيم درجة الحرارة باستخدام
+`dxrt-cli --monitor`.
+</Warning>
+
+### مراقبة استخدام NPU
+
+لملاحظة مدى انشغال أنوية NPU أثناء عمل تطبيقك، يمكنك استخدام أداة `dxtop`.
+
+```bash
+dxtop
+```
+
+تعرض الأداة نسبة الاستخدام ودرجة الحرارة واستهلاك الذاكرة لكل نواة NPU في الوقت الفعلي. يكفي الضغط على المفتاح
+`q` للخروج من التطبيق.
+
+## تنزيل النماذج الجاهزة
+
+يستطيع NPU تشغيل النماذج المجمّعة بصيغة `.dxnn` فقط. لتجربة الأمثلة في هذا القسم، لا حاجة لتجميع نموذجك الخاص؛
+إذ يُقدم مستودع نماذج DEEPX (Model Zoo) أكثر من ثلاثمئة نموذج مجمّع مسبقاً وجاهز.
+
+### تنزيل النماذج
+
+للوصول إلى كامل مستودع النماذج وتنزيل النماذج حسب الفئات، يُستخدم السكربت `setup.sh` الموجود في مستودع DX-APP.
+يضع السكربت الملفات المنزّلة في المجلد `assets/models`.
+
+تُدرج أسماء ملفات بعض النماذج شائعة الاستخدام في الجدول التالي.
+
+| النموذج                   | المهمة             | اسم الملف                                 |
+| -------------------------- | ------------------- | ----------------------------------------- |
+| `YoloV5S`                  | اكتشاف الأجسام      | `yolov5-s_640x640.dxnn`                   |
+| `YoloV7`                   | اكتشاف الأجسام      | `yolov7_640x640.dxnn`                     |
+| `ResNet50`                 | التصنيف             | `resnet50_224x224.dxnn`                   |
+| `MobileNetV2`              | التصنيف             | `mobilenetv2_224x224.dxnn`                |
+| `YOLOv5s_Face`             | اكتشاف الوجوه       | `yolov5-s-face_640x640.dxnn`              |
+| `yolov5s_seg`              | تقسيم الأمثلة       | `yolov5-s-seg_640x640.dxnn`               |
+| `DeepLabV3PlusMobileNetV2` | التقسيم الدلالي     | `deeplabv3plus_mobilenetv2_512x512.dxnn`  |
+| `FastDepth_1`              | تقدير العمق         | `fastdepth_224x224.dxnn`                  |
+
+```bash
+git clone https://github.com/DEEPX-AI/dx_app.git
+cd dx_app
+
+# يسرد النماذج المتاحة للتنزيل
+./setup.sh --list
+
+# ينزّل النماذج المحددة فقط
+./setup.sh --models YoloV5S YoloV7 ResNet50
+
+# ينزّل النماذج في فئة المهمة المحددة
+./setup.sh --category "Object Detection"
+```
+
+<Tip>
+يمكنك التحقق من أن النموذج الذي نزّلته صالح ويعمل على اللوحة باستخدام الأمر
+`run_model -m ./assets/models/yolov5-s_640x640.dxnn -b`.
+</Tip>
+
+تُدرج خيارات السكربت المتعلقة بتنزيل النماذج في الجدول التالي.
+
+| الخيار              | الوصف                                                                  |
+| -------------------- | ------------------------------------------------------------------------- |
+| `--list`             | يسرد النماذج القابلة للتنزيل                                              |
+| `--models <m1> <m2>` | ينزّل النماذج المحددة بالاسم فقط                                           |
+| `--category <ad>`    | ينزّل جميع النماذج في فئة المهمة المحددة                                   |
+| `--demo-models`      | ينزّل النماذج التي تستخدمها سكربتات العرض التوضيحي فقط                     |
+| `--all`              | ينزّل جميع النماذج في المستودع دون الحاجة إلى تفاعل                        |
+| `--dry-run`          | يعرض الملفات التي سيتم تنزيلها دون إجراء التنزيل                            |
+| `--workers <n>`      | يحدد عدد عمليات التنزيل المتزامنة (الافتراضي `4`)                          |
+| `--no-force`         | لا يعيد تنزيل الملفات التي سبق تنزيلها                                      |
+
+<Note>
+عند تشغيل السكربت دون إعطاء أي خيار، يتم اختيار الفئة والنموذج عبر القائمة. تُحفظ قائمة النماذج المتاحة في
+الملف `scripts/modelzoo_manifest.json`.
+</Note>
+
+<Warning>
+بما أن الخيار `--all` ينزّل جميع النماذج في المستودع، فإنه يتطلب مساحة قرص تبلغ عشرات الجيجابايت. يُنصح بتنزيل
+النماذج التي تحتاجها فقط باستخدام الخيارين `--models` أو `--category`.
+</Warning>
+
+## قياس أداء النموذج
+
+لقياس الأداء الفعلي لنموذج مجمَّع على اللوحة، تُستخدم أداة `run_model`.
+
+```bash
+run_model -m yolov5-s_640x640.dxnn -b -l 100 -v
+```
+
+<ParamField body="-m, --model" required>
+مسار ملف النموذج `.dxnn` الذي سيُقاس أداؤه.
+</ParamField>
+
+<ParamField body="-b, --benchmark">
+يقيس في وضع الإنتاجية القصوى. وهو وضع التشغيل الافتراضي.
+</ParamField>
+
+<ParamField body="-s, --single">
+يقيس على نواة واحدة وبمدخل واحد بشكل تسلسلي.
+</ParamField>
+
+<ParamField body="-l, --loops" default="30">
+عدد دورات الاستدلال التي ستُنفَّذ.
+</ParamField>
+
+<ParamField body="-t, --time">
+مدة القياس بالثواني. عند تحديدها تتجاوز قيمة `--loops`.
+</ParamField>
+
+<ParamField body="-w, --warmup-runs" default="0">
+عدد جولات الإحماء التي ستُنفَّذ قبل بدء القياس.
+</ParamField>
+
+<ParamField body="-v, --verbose">
+يعرض زمن معالجة NPU وقيم زمن الاستجابة (latency) بشكل تفصيلي.
+</ParamField>
+
+نتيجةً للأمر، تُبلَّغ قيم زمن معالجة NPU وزمن الاستجابة وعدد الأطر في الثانية (FPS).
+
+<Tip>
+لفحص بنية طبقات النموذج واستخدام الذاكرة وتوزيع المهام على NPU، يمكنك استخدام الأمر
+`parse_model -m yolov5-s_640x640.dxnn -v`.
+</Tip>
+
+## إجراء الاستدلال باستخدام Python
+
+لاستخدام NPU في تطبيقات Python، تُستخدم الفئة `InferenceEngine` الموجودة داخل الحزمة `dx_engine`. يتكون السير
+الأساسي من خطوات تحميل النموذج، وتحضير مخزن (buffer) الإدخال، وتشغيل الاستدلال، ومعالجة النتائج.
+
+```python
+import numpy as np
+from dx_engine import InferenceEngine
+
+# يُحمَّل ملف النموذج المجمَّع
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+
+    # يُحضَّر مخزن إدخال بالحجم الذي يتوقعه النموذج
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    # يُنفَّذ الاستدلال
+    outputs = ie.run([buffer])
+
+    for index, output in enumerate(outputs):
+        print(f"output[{index}]: shape={output.shape}, dtype={output.dtype}")
+```
+
+<Warning>
+عند إنشاء مخزن الإدخال، لا يُنصح باستخدام `np.zeros()`. نظراً لأن جميع عناوين الذاكرة الافتراضية المخصصة عبر
+`np.zeros()` تشير إلى نفس العنوان الفيزيائي، فإن مشغّل PCIe DMA ينتج خطأ `EFAULT` عندما يرى نفس العنوان
+الفيزيائي أكثر من مرة. لذلك، وكما في المثال أعلاه، يجب تخصيص المخزن باستخدام `np.empty()` ثم ملؤه باستخدام
+`fill()`.
+</Warning>
+
+### الحصول على معلومات النموذج
+
+يمكن الاستعلام عن معلومات طبقات الإدخال والإخراج من وقت التشغيل حتى تُكتب خطوتا المعالجة المسبقة والمعالجة
+اللاحقة بشكل صحيح.
+
+```python
+from dx_engine import InferenceEngine
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    print("Input buffer size  :", ie.get_input_size())
+    print("Output buffer size :", ie.get_output_size())
+    print("Input tensors      :", ie.get_input_tensors_info())
+    print("Output tensors     :", ie.get_output_tensors_info())
+```
+
+### الاستدلال غير المتزامن
+
+في التطبيقات التي تُعالج فيها البيانات بشكل مستمر مثل بث الفيديو، يؤدي إرسال إطار جديد دون انتظار نتيجة عملية
+الاستدلال إلى زيادة الأداء. ولهذا الغرض يُستخدم المنهج `run_async`. يعيد المنهج رقم مهمة دون انتظار اكتمال
+الاستدلال.
+
+هناك طريقتان لتجميع النتائج. يمكن تسجيل دالة رد اتصال (callback) لتوصيل النتائج تلقائياً، أو يمكن طلب النتائج
+باستخدام رقم المهمة عبر المنهج `wait`.
+
+<CodeGroup>
+
+```python رد الاتصال
+import numpy as np
+from dx_engine import InferenceEngine
+
+
+def on_inference_done(outputs, user_arg):
+    # تُنفَّذ خطوات المعالجة اللاحقة داخل هذه الدالة
+    print("Inference completed:", user_arg)
+    return 0
+
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    # تُسجَّل دالة رد الاتصال
+    ie.register_callback(on_inference_done)
+
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    for index in range(10):
+        # يُضاف طلب الاستدلال إلى قائمة الانتظار دون انتظار النتيجة
+        ie.run_async([buffer], user_arg=index)
+```
+
+```python الانتظار
+import numpy as np
+from dx_engine import InferenceEngine
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    # تُضاف طلبات الاستدلال إلى قائمة الانتظار وتُخزَّن أرقام المهام
+    job_ids = [ie.run_async([buffer], user_arg=index) for index in range(10)]
+
+    # تُجمع النتائج بالترتيب باستخدام أرقام المهام
+    for job_id in job_ids:
+        outputs = ie.wait(job_id)
+```
+
+</CodeGroup>
+
+<Warning>
+لا ينبغي استخدام هاتين الطريقتين معاً. إذا كانت النتائج ستُجمَّع باستخدام المنهج `wait`، فيجب عدم تسجيل دالة رد
+الاتصال باستخدام `register_callback`.
+</Warning>
+
+<Note>
+نظراً لأن دالة رد الاتصال تُنفَّذ في خيط (thread) منفصل، فيجب استخدام قفل عند الوصول إلى بنى البيانات
+المشتركة.
+</Note>
+
+### قياس الأداء ومراقبة الجهاز
+
+يمكن قياس أداء الاستدلال باستخدام المنهج `run_benchmark`، كما يمكن قراءة حالة الجهاز من داخل التطبيق باستخدام
+الفئة `DeviceStatus`.
+
+```python
+import numpy as np
+from dx_engine import InferenceEngine
+from dx_engine.device_status import DeviceStatus
+
+with InferenceEngine("yolov5-s_640x640.dxnn") as ie:
+    buffer = np.empty(ie.get_input_size(), dtype=np.uint8)
+    buffer.fill(0)
+
+    fps = ie.run_benchmark(100, [buffer])
+    print(f"Average FPS: {fps}")
+
+status = DeviceStatus.get_current_status(0)
+print("Temperature      :", status.get_temperature(0), "C")
+print("Core utilization :", status.get_core_utilization(0), "%")
+print("Used memory      :", status.get_memory_used())
+print("Free memory      :", status.get_memory_free())
+```
+
+<Tip>
+يمكنك الوصول إلى إحصائيات زمن الاستجابة وزمن معالجة NPU باستخدام المنهجين `ie.get_latency_mean()` و
+`ie.get_npu_inference_time_mean()`.
+</Tip>
+
+## واجهة C/C++
+
+يقدم DX-RT واجهة C وC++ بالإضافة إلى واجهة Python. في جانب C++، يُنفَّذ سير العمل نفسه باستخدام الفئة
+`dxrt::InferenceEngine`.
+
+```cpp
+#include "dxrt/dxrt_cxx_api.h"
+#include <vector>
+
+int main()
+{
+    // يُحمَّل ملف النموذج المجمَّع
+    dxrt::InferenceEngine ie("yolov5-s_640x640.dxnn");
+
+    // يُحضَّر مخزن إدخال بالحجم الذي يتوقعه النموذج
+    std::vector<uint8_t> input(ie.GetInputSize(), 0);
+
+    // يُنفَّذ الاستدلال
+    auto outputs = ie.Run(input.data());
+
+    return 0;
+}
+```
+
+<Tip>
+توجد جميع الأمثلة الخاصة بواجهتي C++ وPython في المجلد `dx_rt/examples` داخل الـ SDK.
+</Tip>

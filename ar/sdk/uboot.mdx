@@ -1,0 +1,99 @@
+---
+title: 'U-Boot'
+description: 'محمل الإقلاع'
+---
+
+عند بدء تجميعة Yocto، يتم تنزيل [U-Boot المستخدم في لوحات Gemstone](https://github.com/t3gemstone/u-boot) تلقائيًا
+وتجميعه وتغليف مخرجاته. وبالتالي ليست هناك حاجة لتشغيل أمر إضافي.
+
+إذا كانت هناك حالة تستلزم إعادة تجميع U-Boot (مثل إضافة دعم إقلاع نظام التشغيل عبر SSD)، فيمكن اتباع الخطوات التالية.
+
+<Note>
+يمكن إجراء بعض العمليات مثل تغيير معاملات النواة أو إضافة device-tree overlay دون الحاجة إلى إعادة تجميع U-Boot،
+وذلك بتحديث الملف `/boot/uEnv.txt`.
+</Note>
+
+<Warning>
+جميع الأوامر الواردة أدناه ستُنفَّذ داخل distrobox. لذلك يجب عليك أولًا تشغيل الأمرين
+`devbox shell` --> `task box`. بالإضافة إلى ذلك، لتتمكن من الانتقال إلى بيئة Yocto، يجب تشغيل الأمر
+`m:oeinit t3-gem-o1`.
+</Warning>
+
+### تحديث الإعداد عبر Menuconfig
+
+إذا كنت ستقوم بتفعيل/تعطيل ميزات متنوعة (مثل تفعيل أمر TFTP) بدلًا من إجراء تغييرات في أكواد المصدر، فيمكنك الوصول
+إلى menuconfig بالأوامر التالية.
+
+<Note>
+في هذا المثال سيتم الشرح على لوحة T3-GEM-O1. إذا كنت ستطبّق ما تم على آلة مختلفة، فغيّر اسم الآلة بشكل مناسب.
+</Note>
+
+<AccordionGroup>
+
+  <Accordion title="فتح شاشة Menuconfig">
+  ```bash
+  bitbake -c menuconfig virtual/bootloader
+  ```
+
+  <Frame>
+    <img src="/images/u-boot-menuconfig.png" />
+  </Frame>
+
+  بعد تغيير الإعدادات التي تريدها، اضغط على مفتاح `ESC` حتى تظهر النافذة التالية. ثم اختر الزر "Yes".
+
+  <Frame>
+    <img src="/images/u-boot-menuconfig-save.png" />
+  </Frame>
+  </Accordion>
+
+  <Accordion title="جعل التغييرات دائمة">
+  في هذه المرحلة يمكنك إعادة تجميع U-Boot، لكن التغييرات التي أجريتها تبقى على حاسوبك فقط وتُفقد إذا قمت بتنظيف مجلد
+  build. لمنع ذلك، اتبع الخطوات التالية.
+
+  ```bash
+  bitbake -c diffconfig virtual/bootloader
+  cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/u-boot-t3-gem-o1/2025.04+git/fragment.cfg \
+      /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files/fragment.config
+  ```
+
+  غيّر اسم الملف `fragment.config` الموجود في المجلد
+  `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/files` إلى اسم يوضح التغيير الذي أجريته دون تغيير
+  الامتداد `.config`. ثم أضف هذا الاسم إلى المتغير `SRC_URI` في الملف
+  `meta-gemstone/dynamic-layers/meta-ti/recipes-bsp/u-boot-t3-gem-o1/u-boot-t3-gem-o1_2025.04.bb`. ولأغراض المثال، لنفترض
+  أننا سمّينا الملف `fragment-enable-tftp.config`.
+
+  ```bash highlight=5
+  SRC_URI:append:t3-gem-o1 = " \
+      file://uEnv-desktop.txt \
+      file://uEnv-rd.txt \
+      file://fragment-mmc-env.config \
+      file://fragment-enable-tftp.config \
+  "
+  ```
+  </Accordion>
+
+  <Accordion title="إعادة تجميع U-Boot">
+  ```bash
+  bitbake -c clean virtual/bootloader
+  bitbake virtual/bootloader
+  ```
+
+  إذا اكتملت الأوامر أعلاه بنجاح، سيُنشأ الملفان u-boot.img وu-boot-spl.bin في المجلد
+  `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`.
+  </Accordion>
+
+</AccordionGroup>
+
+### إجراء تغييرات في أكواد المصدر
+
+افتح المجلد `<sdk-dizini>/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/u-boot-t3-gem-o1/2025.04+git/git`
+في محرر النصوص لديك. بعد تغيير الأجزاء التي تريدها، قم بتجميع U-Boot بالأوامر التالية. حتى لا تفقد تغييراتك، يمكنك
+إنشاء fork خاص بك [لمستودع T3 Gemstone U-Boot](https://github.com/t3gemstone/u-boot) وإرسالها إليه.
+
+```bash
+bitbake virtual/bootloader
+```
+
+بعد انتهاء التجميع، انسخ الملفات المنشأة في المجلد `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images` إلى المجلد `/boot`
+على بطاقة SD. إذا كنت قد حللت مشكلة أو أضفت ميزة جديدة، فيمكنك إنشاء pull request إلى
+[مستودع T3 Gemstone U-Boot](https://github.com/t3gemstone/u-boot) حتى يستفيد المجتمع منه.

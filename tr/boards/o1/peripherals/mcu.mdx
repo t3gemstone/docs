@@ -24,7 +24,7 @@ Bölüm bitiminde aşağıdaki konularda bilgi ve deneyim kazanacaksınız.
 </Tip>
 
 **T3-GEM-O1** geliştirme kartının birincil odak noktası Linux olmakla birlikte, üzerinde bulunan Texas AM67
-mikroişlemcisinin barındırdığı R5 ve C7x çekirdeklerinin de gücünden faydalanılmaktadır. 
+mikroişlemcisinin barındırdığı R5 ve C7x çekirdeklerinin de gücünden faydalanılmaktadır.
 Örneğin Linux (Cortex-A) üzerinde görüntü işleme çeşitli işlemler yapıp bunları MCU (Cortex-R5) yazılımlarına
 aktararak çeşitli servoların sürülmesi, sensörlerin okunması gibi senaryolara imkan sağlanabilmektedir.
 Bu bölümde R5 çekirdekleri için nasıl yazılım derleneceği, debug yapılacağı vb. konular irdelenecektir.
@@ -108,7 +108,7 @@ başlatır (gnome, kde, xfce).
 ## 2. MCU Yazılım Geliştirme
 
 <Tip>
-  Bu bölümde Cortex-R5 ve C7x çekirdekleri için Bare-metal yazılım geliştirme süreci anlatılmaktadır. 
+  Bu bölümde Cortex-R5 ve C7x çekirdekleri için Bare-metal yazılım geliştirme süreci anlatılmaktadır.
   İlgili mimarilerde çalışacak yazılımlar Texas SDK ve araçları ile derlenerek geliştirme kartına yüklenmektedir.
 </Tip>
 
@@ -141,7 +141,7 @@ MCU projelerini derleyebilmek için altyapı oluşturulmuştur. Projeyi klonlad�
 almaktadır. Amacınıza uygun bir örnek proje bulup `mcu` proje dizinine kopyalamanız ve onun üzerinde geliştirme yapmanız
 tavsiye edilir.
 
-Her bir örnek projenin altında farklı çekirdekler için alt dizinler bulunmaktadır. 
+Her bir örnek projenin altında farklı çekirdekler için alt dizinler bulunmaktadır.
 Örneğin `hello_world` projesinde aşağıdaki dizinler mevcuttur.
 
 <SnippetHelloWorld />
@@ -175,7 +175,7 @@ tanımlanmıştır. Yeni çevre birimler eklemek veya mevcut olanların Pin Mux 
 GUI aracı kullanılır.
 
 <Warning>
-SysConfig GUI aracını kullanmadan önce kaynakları doğru bir şekilde paylaştırmak ve beklenmedik hatalarla karşılaşmamak için 
+SysConfig GUI aracını kullanmadan önce kaynakları doğru bir şekilde paylaştırmak ve beklenmedik hatalarla karşılaşmamak için
 [Kaynakların çekirdekler arasında paylaştırılması](/tr/boards/o1/peripherals/mcu#3-kaynakların-çekirdekler-arasında-paylaştırılması)
 bölümünü okuyunuz.
 </Warning>
@@ -220,7 +220,7 @@ Firmware isimlerine ve hangi çekirdeğin hangi remoteproc cihazına karşılık
 `head /sys/class/remoteproc/remoteproc*/firmware` komutu ile erişilebilir. Her boot sonrasında çekirdekler
 farklı remoteproc cihazlarına karşılık gelebildiği için kontrol edilmesi gerekmektedir.
 
-<SnippetRemoteProc />
+<SnippetRemoteproc />
 
 <Warning>
 Yukarıdaki prosedür, uzak çekirdeklerin sorunsuz bir şekilde kapatılmasını ve yeniden başlatılmasını sağlar. Bazı
@@ -288,7 +288,7 @@ Linux tarafından bu birimin kullanılmadığının belirtilmesi gerekmektedir.
 
 Aşağıda verilen tabloda HAT'a çıkan pinlerin SOC'de hangi pinlere denk geldiği, hangi çevre birim olarak
 kullanılabilecekleri (Pinmux), Linux tarafından varsayılan olarak kullanılıp kullanılmadığı, kullanılıyorsa
-hangi amaçla kullanıldığı ve bunun nasıl devre dışı bırakılabileceği gibi bilgiler bulunabilir. 
+hangi amaçla kullanıldığı ve bunun nasıl devre dışı bırakılabileceği gibi bilgiler bulunabilir.
 
 <SnippetResources />
 
@@ -320,7 +320,7 @@ Yukarıdaki işlemler sonucu istenmeyen bir durum oluşursa
 
 Yukarıdaki işlemler sonucunda artık `mcu_spi0` mcu çekirdeklerden kullanılabilir durumda olacaktır. Ancak tabloda
 bulunan `Linux'ta Kullanım Amacı` bölümünde `- LPS22DFTR basınç ve ICM20948 imu spi` için kullanıldığı belirtilmiştir.
-Dolayısıyla bu çevresel birimlere Linux'ta erişim kapatılmış olacak ve MCU tarafından sürülmesi gerekecektir. 
+Dolayısıyla bu çevresel birimlere Linux'ta erişim kapatılmış olacak ve MCU tarafından sürülmesi gerekecektir.
 
 ### 3.2. Örnek Senaryo: PWM ile MCU'dan Servo Motorun Sürülmesi
 
