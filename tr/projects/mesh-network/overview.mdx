@@ -1,0 +1,217 @@
+---
+title: "Mesh Ağ"
+description: "T3 Gemstone O1 üzerinde IBSS ve BATMAN-adv kullanarak çok atlamalı kablosuz mesh ağ oluşturun"
+---
+
+Bu proje, merkezi bir erişim noktasına ihtiyaç duymadan birden fazla **T3 Gemstone O1** kartı arasında kablosuz mesh ağ oluşturmayı açıklar.
+
+Kablosuz arayüzler önce **IBSS (ad-hoc mod)** kullanarak doğrudan eşler arası bağlantılar kurar. Ardından **BATMAN-adv**, bu bağlantıların üzerinde çalışarak düğümler arasında Katman 2 seviyesinde çok atlamalı veri iletimi sağlar.
+
+Bu bölümün sonunda:
+
+- Kablosuz mesh ağın ne olduğunu
+- IBSS'in doğrudan kablosuz bağlantıyı nasıl sağladığını
+- BATMAN-adv'in çok atlamalı veri iletimini nasıl sağladığını
+- IBSS ve BATMAN-adv'in T3 Gemstone O1 üzerinde birlikte nasıl çalıştığını
+- Mesh topolojisinin üç düğümlü bir testle nasıl doğrulandığını
+
+öğreneceksiniz.
+
+## 1. Mesh Ağlar
+
+Kablosuz mesh ağ, merkezi bir erişim noktasına bağlı olmadan birbirleriyle iletişim kurabilen birden fazla düğümden oluşur.
+
+Geleneksel bir Wi-Fi ağında kablosuz cihazlar genellikle bir erişim noktası üzerinden iletişim kurar:
+
+```text
+Düğüm 1 ──┐
+Düğüm 2 ──┼── Erişim Noktası
+Düğüm 3 ──┘
+```
+
+Mesh ağda ise düğümler komşu düğümlerle doğrudan bağlantı kurabilir ve trafik ara düğümler üzerinden iletilebilir:
+
+```text
+Düğüm 1 <------> Düğüm 2 <------> Düğüm 3 <------> ... <------> Düğüm N
+```
+
+Örneğin Düğüm 1, Düğüm 3 ile doğrudan iletişim kuramıyorsa Düğüm 2 ara düğüm olarak kullanılabilir:
+
+```text
+Düğüm 1 ------> Düğüm 2 ------> Düğüm 3
+```
+
+Bu sayede ağ, tek bir doğrudan kablosuz bağlantının kapsama alanının ötesine iletişim sağlayabilir.
+
+Bu projede kullanılan mesh mimarisi iki bileşenden oluşur:
+
+- Komşu düğümler arasındaki doğrudan kablosuz bağlantılar için **IBSS**
+- Bu bağlantılar üzerinden Katman 2 seviyesinde çok atlamalı veri iletimi için **BATMAN-adv**
+
+## 2. IBSS
+
+**IBSS (Independent Basic Service Set)**, IEEE 802.11 standardındaki ad-hoc çalışma modudur.
+
+Normal bir Wi-Fi ağından farklı olarak IBSS bir erişim noktası gerektirmez. Kablosuz cihazlar aynı IBSS hücresine katılır ve kablosuz kapsama alanındaki diğer cihazlarla doğrudan iletişim kurar.
+
+Bu projede her T3 Gemstone O1 düğümü aynı IBSS parametrelerini kullanır:
+
+```text
+SSID:       gemstone-mesh
+Frekans:    2412 MHz
+Kanal:      1
+BSSID:      02:12:34:56:78:9a
+```
+
+Her düğüm `wlan0` arayüzünü IBSS modunda yapılandırır ve aynı kablosuz hücreye katılır.
+
+```text
+Gemstone O1              Gemstone O1
+   wlan0 <--------------> wlan0
+              IBSS
+```
+
+IBSS, düğümler arasındaki doğrudan kablosuz bağlantıyı sağlar. Ancak doğrudan iletişim kuramayan düğümler arasında otomatik çok atlamalı veri iletimi sağlamaz.
+
+Örneğin:
+
+```text
+Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
+```
+
+Düğüm 1, Düğüm 2 ile; Düğüm 2 ise Düğüm 3 ile doğrudan iletişim kurabilir. Ek bir iletim mekanizması olmadan Düğüm 2, Düğüm 1 ile Düğüm 3 arasındaki trafiği otomatik olarak aktarmaya başlamaz.
+
+Bu görevi BATMAN-adv üstlenir.
+
+## 3. BATMAN-adv
+
+**BATMAN-adv**, Linux kernel içinde çalışan Katman 2 seviyesinde bir mesh ağ bileşenidir.
+
+`wlan0` gibi ağ arayüzlerinin üzerinde çalışır ve `bat0` adında sanal bir mesh arayüzü oluşturur.
+
+```text
+Uygulama
+    |
+    v
+  bat0
+    |
+    v
+BATMAN-adv
+    |
+    v
+  wlan0
+    |
+    v
+   IBSS
+```
+
+Fiziksel kablosuz arayüz komşu düğümlere bağlantı sağlarken BATMAN-adv, Ethernet çerçevelerinin mesh ağ üzerinden hangi yol ile iletileceğini belirler.
+
+Oluşan mesh ağ üzerinden iletişim için `bat0` arayüzü kullanılır.
+
+Bu projede kullanılan yönlendirme algoritması:
+
+```text
+BATMAN_V
+```
+
+Mesh durumunu incelemek için özellikle şu komutlar kullanılır:
+
+```bash
+sudo batctl n
+sudo batctl o
+```
+
+`batctl n`, doğrudan erişilebilen BATMAN-adv komşularını gösterir.
+
+`batctl o`, bilinen originator düğümleri ve her hedefe doğru seçilen sonraki atlamayı gösterir.
+
+## 4. Mimari
+
+IBSS ve BATMAN-adv ağ içinde farklı görevler üstlenir.
+
+```text
+       Doğrudan kablosuz bağlantılar
+                 (IBSS)
+
+Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
+   |                |                |
+  bat0             bat0             bat0
+   |                |                |
+   +--------- BATMAN-adv Mesh -------+
+```
+
+Bu ilişki şu şekilde özetlenebilir:
+
+```text
+IBSS
+  |
+  +-- Komşu düğümler arasında doğrudan
+      kablosuz bağlantı sağlar
+
+BATMAN-adv
+  |
+  +-- Bu bağlantılar üzerinden Katman 2
+      çok atlamalı veri iletimi sağlar
+```
+
+Birlikte bu projede kullanılan mesh mimarisini oluştururlar:
+
+```text
+IBSS + BATMAN-adv
+        |
+        v
+Çok atlamalı kablosuz mesh
+```
+
+Örneğin Düğüm 1 ile Düğüm 3 arasında doğrudan IBSS erişimi yoksa BATMAN-adv trafiği Düğüm 2 üzerinden iletebilir:
+
+```text
+Düğüm 1
+   |
+   v
+Düğüm 2
+   |
+   v
+Düğüm 3
+```
+
+Düğümler üzerinde çalışan uygulamalar `bat0` arayüzünü kullanır. Alttaki IBSS bağlantıları üzerindeki iletim yolunu BATMAN-adv yönetir.
+
+> **Not:** Bu proje IEEE 802.11s mesh modunu kullanmaz. Kablosuz arayüz IBSS modunda çalışır ve çok atlamalı veri iletimi ayrı olarak BATMAN-adv tarafından sağlanır.
+
+## 5. Test Edilen Yapılandırma
+
+Mesh mimarisi üç düğümle sınırlı değildir. Uyumlu kablosuz ve BATMAN-adv ayarlarını kullanan birden fazla T3 Gemstone O1 kartı aynı mesh ağa katılabilir.
+
+Bu dokümanda açıklanan yapılandırma üç kart kullanılarak doğrulanmıştır.
+
+| Bileşen | Test edilen değer |
+| --- | --- |
+| Kart | T3 Gemstone O1 |
+| Doğrulamada kullanılan düğüm sayısı | 3 |
+| İşletim sistemi | Ubuntu 24.04 LTS |
+| Mimari | aarch64 |
+| Kernel | Linux 6.12.24-ti, PREEMPT_RT |
+| Kablosuz arayüz | `wlan0` |
+| Kablosuz mod | IBSS |
+| SSID | `gemstone-mesh` |
+| Frekans | 2412 MHz |
+| Kanal | 1 |
+| BSSID | `02:12:34:56:78:9a` |
+| Mesh katmanı | BATMAN-adv |
+| Yönlendirme algoritması | `BATMAN_V` |
+
+Üç düğümlü doğrulama topolojisi:
+
+```text
+Düğüm 1 <------> Düğüm 2 <------> Düğüm 3
+
+Düğüm 1 <---------- X ----------> Düğüm 3
+```
+
+Kaydedilen testte Düğüm 1 ile Düğüm 2 ve Düğüm 3 ile Düğüm 2 arasında doğrudan IBSS/IP erişimi gözlemlenmiştir. Düğüm 1 ile Düğüm 3 arasında ise doğrudan IBSS/IP erişimi gözlemlenmemiştir.
+
+BATMAN-adv etkinleştirildikten sonra Düğüm 1 ile Düğüm 3, `bat0` adresleri üzerinden başarılı şekilde iletişim kurmuştur. Komşu ve originator tabloları Düğüm 2'nin ara iletim düğümü olduğunu göstermiştir.
+
+Bir sonraki bölümde IBSS kablosuz bağlantılarının nasıl yapılandırılacağı ve BATMAN-adv mesh katmanının nasıl oluşturulacağı açıklanmaktadır.

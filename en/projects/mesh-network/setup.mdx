@@ -1,0 +1,572 @@
+---
+title: "Setup"
+description: "Configure IBSS and BATMAN-adv on T3 Gemstone O1"
+---
+
+This section explains how to configure the wireless mesh network directly from the terminal.
+
+The commands are based on the configuration used during the verified T3 Gemstone O1 mesh test. The original helper scripts are expanded here so that the complete setup can be reproduced without copying or executing external `.sh` files.
+
+Repeat the configuration on every node. Each node must use:
+
+- The same wireless interface
+- The same SSID
+- The same frequency
+- The same BSSID
+- The same BATMAN-adv routing algorithm
+- A unique node number
+
+The examples in this guide use node numbers `1`, `2`, and `3`, but the mesh is not limited to three nodes.
+
+## 1. Requirements
+
+The tested T3 Gemstone O1 image already includes the `batman-adv` kernel module.
+
+Install the required userspace tools:
+
+```bash
+sudo apt update
+sudo apt install iw batctl
+```
+
+Check that the wireless device supports IBSS mode:
+
+```bash
+iw list
+```
+
+Under `Supported interface modes`, verify that `IBSS` is listed.
+
+You can also check that the BATMAN-adv kernel module is available:
+
+```bash
+modinfo batman-adv
+```
+
+## 2. Select a Node Number
+
+Each board needs a unique node number.
+
+The node number is used to derive:
+
+- The direct IBSS address: `192.168.100.N/24`
+- The mesh address: `192.168.200.N/24`
+- A unique locally administered `bat0` MAC address
+
+On each board, set `NODE` to a different value.
+
+For Node 1:
+
+```bash
+NODE=1
+```
+
+For Node 2:
+
+```bash
+NODE=2
+```
+
+For Node 3:
+
+```bash
+NODE=3
+```
+
+The tested configuration accepts node numbers from `1` to `250`.
+
+The rest of the commands use the `$NODE` variable, so the same procedure can be repeated on every board.
+
+## 3. Configure IBSS
+
+First define the shared wireless parameters:
+
+```bash
+IFACE=wlan0
+SSID=gemstone-mesh
+FREQ=2412
+BSSID=02:12:34:56:78:9a
+```
+
+All nodes must use exactly the same `SSID`, `FREQ`, and `BSSID`.
+
+### Disable automatic Wi-Fi management
+
+The normal Wi-Fi management services may change the interface back to managed mode while IBSS is being configured.
+
+Stop and mask both possible Wi-Fi backends:
+
+```bash
+sudo systemctl stop iwd wpa_supplicant 2>/dev/null
+sudo systemctl mask iwd wpa_supplicant 2>/dev/null
+```
+
+Disconnect `wlan0` from NetworkManager and mark it as unmanaged:
+
+```bash
+sudo nmcli device disconnect $IFACE 2>/dev/null
+sudo nmcli device set $IFACE managed no 2>/dev/null
+```
+
+> **Note:** NetworkManager itself is not stopped. This avoids interrupting other interfaces such as `usb0`, which may be used for SSH access.
+
+### Switch wlan0 to IBSS mode
+
+Bring the interface down:
+
+```bash
+sudo ip link set $IFACE down
+```
+
+Change the wireless interface type to IBSS:
+
+```bash
+sudo iw dev $IFACE set type ibss
+```
+
+Bring the interface back up:
+
+```bash
+sudo ip link set $IFACE up
+```
+
+Allow the interface state to settle:
+
+```bash
+sleep 2
+```
+
+Verify that the interface remained in IBSS mode:
+
+```bash
+iw dev $IFACE info
+```
+
+The output should contain:
+
+```text
+type IBSS
+```
+
+If the interface changes back to managed mode, inspect the wireless management services:
+
+```bash
+systemctl is-active iwd wpa_supplicant NetworkManager
+```
+
+### Join the IBSS cell
+
+Join the shared `gemstone-mesh` cell:
+
+```bash
+sudo iw dev $IFACE ibss join $SSID $FREQ fixed-freq $BSSID
+```
+
+Every node must join the same IBSS cell.
+
+### Configure MTU
+
+The tested setup attempts to use an MTU of `1532` on `wlan0` so that BATMAN-adv can expose a `1500` byte MTU on `bat0`.
+
+Run:
+
+```bash
+sudo ip link set $IFACE mtu 1532 2>/dev/null || echo "Note: MTU 1532 was rejected; BATMAN-adv fragmentation will be used."
+```
+
+### Assign the direct-link IP address
+
+Remove any existing address from `wlan0`:
+
+```bash
+sudo ip addr flush dev $IFACE
+```
+
+Assign the node-specific IBSS address:
+
+```bash
+sudo ip addr add 192.168.100.$NODE/24 dev $IFACE
+```
+
+Allow peer discovery to begin:
+
+```bash
+sleep 3
+```
+
+## 4. Verify IBSS
+
+Inspect the interface:
+
+```bash
+iw dev $IFACE info
+```
+
+Inspect the current IBSS connection:
+
+```bash
+iw dev $IFACE link
+```
+
+Inspect detected peer stations:
+
+```bash
+iw dev $IFACE station dump
+```
+
+Inspect the current regulatory domain:
+
+```bash
+iw reg get
+```
+
+A successful configuration should show:
+
+- `wlan0` in `IBSS` mode
+- Membership in the `gemstone-mesh` cell
+- The configured frequency
+- Peer stations after neighboring nodes join the same cell
+- A node-specific `192.168.100.N/24` address
+
+Check the address with:
+
+```bash
+ip -br addr show $IFACE
+```
+
+At this point, IBSS provides direct wireless connectivity between nodes that can reach each other over the radio link.
+
+## 5. Configure BATMAN-adv
+
+Configure BATMAN-adv only after IBSS is active.
+
+Define the mesh interface and routing algorithm:
+
+```bash
+MESH_IF=bat0
+ALGO=BATMAN_V
+```
+
+Generate a unique locally administered MAC address from the node number:
+
+```bash
+BAT_MAC=$(printf "02:ba:70:00:00:%02x" "$NODE")
+```
+
+Generate the node-specific mesh IP address:
+
+```bash
+BAT_IP="192.168.200.$NODE/24"
+```
+
+You can inspect the generated values with:
+
+```bash
+echo "Node: $NODE"
+echo "bat0 MAC: $BAT_MAC"
+echo "bat0 IP: $BAT_IP"
+```
+
+### Check the IBSS prerequisite
+
+Confirm that `wlan0` is still in IBSS mode:
+
+```bash
+iw dev $IFACE info
+```
+
+Confirm that the interface joined an IBSS cell:
+
+```bash
+iw dev $IFACE link
+```
+
+Do not continue until the interface is in IBSS mode and the output shows that it has joined the expected cell.
+
+### Remove an existing BATMAN-adv configuration
+
+If `bat0` already exists from an earlier configuration, remove the previous interface association before rebuilding the mesh.
+
+Check whether the interface exists:
+
+```bash
+ip link show $MESH_IF
+```
+
+If it exists, run:
+
+```bash
+sudo ip link set $MESH_IF down 2>/dev/null || true
+sudo batctl meshif $MESH_IF interface del $IFACE 2>/dev/null || sudo batctl if del $IFACE 2>/dev/null || true
+sleep 1
+```
+
+If `bat0` does not exist, continue to the next step.
+
+### Load BATMAN-adv
+
+Load the kernel module:
+
+```bash
+sudo modprobe batman-adv
+```
+
+Allow the module to initialize:
+
+```bash
+sleep 1
+```
+
+### Select BATMAN_V
+
+Select the routing algorithm before adding the wireless interface:
+
+```bash
+sudo batctl ra $ALGO
+```
+
+Check the selected algorithm:
+
+```bash
+sudo batctl ra
+```
+
+All nodes must use the same routing algorithm.
+
+### Add wlan0 to BATMAN-adv
+
+Add the IBSS interface to the BATMAN-adv mesh:
+
+```bash
+sudo batctl if add $IFACE 2>/dev/null || sudo batctl meshif $MESH_IF interface add $IFACE
+```
+
+BATMAN-adv creates the virtual `bat0` interface after the physical interface is added to the mesh.
+
+### Configure the bat0 MAC address
+
+Bring `bat0` down before changing its MAC address:
+
+```bash
+sudo ip link set $MESH_IF down
+```
+
+Assign the node-specific MAC address:
+
+```bash
+sudo ip link set $MESH_IF address "$BAT_MAC"
+```
+
+Using a unique `bat0` MAC address on each board is important when multiple boards originate from the same system image.
+
+### Configure the mesh IP address
+
+Remove any existing address from `bat0`:
+
+```bash
+sudo ip addr flush dev $MESH_IF
+```
+
+Bring `bat0` up:
+
+```bash
+sudo ip link set $MESH_IF up
+```
+
+Assign the node-specific mesh address:
+
+```bash
+sudo ip addr add "$BAT_IP" dev $MESH_IF
+```
+
+Verify the configured MAC address:
+
+```bash
+cat /sys/class/net/$MESH_IF/address
+```
+
+It should match the value generated in `$BAT_MAC`.
+
+## 6. Wait for Mesh Discovery
+
+BATMAN-adv needs time to exchange mesh information with neighboring nodes.
+
+Wait for discovery:
+
+```bash
+sleep 15
+```
+
+Then inspect the interface association:
+
+```bash
+sudo batctl if
+```
+
+Inspect `bat0`:
+
+```bash
+ip -br addr show $MESH_IF
+```
+
+Check its MTU:
+
+```bash
+cat /sys/class/net/$MESH_IF/mtu
+```
+
+The tested configuration expects `bat0` to use an MTU of `1500`.
+
+## 7. Check the Mesh
+
+Display direct BATMAN-adv neighbors:
+
+```bash
+sudo batctl n
+```
+
+Display known originators and selected next hops:
+
+```bash
+sudo batctl o
+```
+
+Check the BATMAN-adv kernel module version:
+
+```bash
+cat /sys/module/batman_adv/version
+```
+
+Check the `batctl` version:
+
+```bash
+batctl -v
+```
+
+If `sudo batctl n` does not show any neighbors, verify that:
+
+- Other nodes completed the IBSS configuration
+- Other nodes completed the BATMAN-adv configuration
+- Every node uses `BATMAN_V`
+- Every node uses the same IBSS SSID, frequency, and BSSID
+- `iw dev wlan0 station dump` shows the expected IBSS peers
+
+## 8. Test Mesh Connectivity
+
+Applications should use the `bat0` addresses for mesh communication.
+
+For example, from Node 1 to Node 2:
+
+```bash
+ping -c 5 192.168.200.2
+```
+
+From Node 1 to Node 3:
+
+```bash
+ping -c 5 192.168.200.3
+```
+
+For additional nodes, use the address derived from their node number:
+
+```text
+192.168.200.N
+```
+
+A successful ping confirms end-to-end connectivity, but it does not by itself prove that the path is multi-hop. The verification section explains how to inspect the neighbor and originator tables and how the three-node test was used to verify an intermediate forwarding path.
+
+## 9. Cleanup
+
+When the mesh is no longer needed, remove the BATMAN-adv layer first and then return `wlan0` to normal managed Wi-Fi mode.
+
+### Remove BATMAN-adv
+
+Define the interfaces if they are not already present in the current shell:
+
+```bash
+IFACE=wlan0
+MESH_IF=bat0
+```
+
+Remove the IP address from `bat0`:
+
+```bash
+sudo ip addr flush dev $MESH_IF 2>/dev/null || true
+```
+
+Bring `bat0` down:
+
+```bash
+sudo ip link set $MESH_IF down 2>/dev/null || true
+```
+
+Remove `wlan0` from BATMAN-adv:
+
+```bash
+sudo batctl if del $IFACE 2>/dev/null || sudo batctl meshif $MESH_IF interface del $IFACE 2>/dev/null || true
+```
+
+Unload the BATMAN-adv kernel module:
+
+```bash
+sudo modprobe -r batman_adv 2>/dev/null || true
+```
+
+Check that the module and interface were removed:
+
+```bash
+lsmod | grep batman || echo "BATMAN-adv removed."
+ip link show $MESH_IF 2>/dev/null || echo "bat0 is not present."
+```
+
+### Restore managed Wi-Fi mode
+
+Remove the IBSS IP address:
+
+```bash
+sudo ip addr flush dev $IFACE
+```
+
+Bring `wlan0` down:
+
+```bash
+sudo ip link set $IFACE down
+```
+
+Return the interface to managed mode:
+
+```bash
+sudo iw dev $IFACE set type managed
+```
+
+Restore the default MTU:
+
+```bash
+sudo ip link set $IFACE mtu 1500
+```
+
+Unmask the normal Wi-Fi services:
+
+```bash
+sudo systemctl unmask iwd wpa_supplicant
+```
+
+Start `iwd`:
+
+```bash
+sudo systemctl start iwd
+```
+
+Return `wlan0` to NetworkManager management:
+
+```bash
+sudo nmcli device set $IFACE managed yes
+```
+
+Bring the interface up:
+
+```bash
+sudo ip link set $IFACE up
+```
+
+The board can now return to its normal managed Wi-Fi configuration.
