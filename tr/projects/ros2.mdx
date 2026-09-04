@@ -1,0 +1,426 @@
+---
+title: 'ROS 2'
+description: 'T3 Gemstone üzerinde Ubuntu 22.04 ve ROS 2 Humble kurulumu'
+---
+
+## 1. Amaç
+
+T3 Gemstone üzerinde kullanılan Ubuntu 22.04 tabanlı minimal sistem imajında,
+ROS 2 Humble kurulumu için gerekli paket kaynakları ve bazı sistem bileşenleri
+varsayılan olarak hazır bulunmayabilir. Bu durumda ROS 2 paketleri sistem
+tarafından bulunamayabilir veya bağımlılık sorunları ortaya çıkabilir.
+
+Bu doküman, T3 Gemstone üzerinde ROS 2 Humble `ros-base` kurulumunun gerçekleştirilmesini amaçlar.
+
+Kurulum; sistemin kontrol edilmesi, ağ ve paket yöneticisinin doğrulanması,
+ROS 2 APT kaynağının eklenmesi, ROS 2 Humble'ın kurulması ve kurulumun
+test edilmesi adımlarından oluşur.
+
+## 2. Kullanılan sistem
+
+| Bileşen | Bilgi |
+|---|---|
+| Kart | T3 Gemstone |
+| Mimari | AArch64 / ARM64 |
+| İşletim sistemi | Ubuntu 22.04 Jammy Jellyfish |
+| ROS dağıtımı | ROS 2 Humble |
+| ROS kurulum türü | `ros-base` |
+
+---
+
+## 3. İlk sistem kontrolü
+
+Sistem bilgilerini kontrol edin:
+
+```bash
+cat /etc/os-release
+uname -m
+hostnamectl
+```
+
+Beklenen temel bilgiler:
+
+```text
+Ubuntu 22.04 / Jammy
+aarch64
+```
+
+---
+
+## 4. İnternet ve DNS kontrolü
+
+ROS 2 paketlerinin indirilebilmesi için internet bağlantısının çalıştığını
+kontrol edin:
+
+```bash
+ping -c 3 8.8.8.8
+```
+
+Ardından alan adı çözümlemesinin çalıştığını doğrulayın:
+
+```bash
+getent hosts github.com
+getent hosts packages.ros.org
+getent hosts packages.t3gemstone.org
+```
+
+IP adresine erişilebildiği hâlde alan adları çözümlenemiyorsa DNS
+yapılandırmasını yenileyin:
+
+```bash
+IFACE=$(ip route | awk '/default/ {print $5; exit}')
+
+sudo systemctl restart systemd-resolved
+sudo resolvectl dns "$IFACE" 1.1.1.1 8.8.8.8
+sudo resolvectl flush-caches
+```
+
+DNS erişimini tekrar kontrol edin:
+
+```bash
+getent hosts packages.ros.org
+```
+
+---
+
+## 5. Paket sistemini düzeltme ve güncelleme
+
+Yarım kalan paket işlemlerini tamamlayın:
+
+```bash
+sudo dpkg --configure -a
+sudo apt --fix-broken install
+sudo apt clean
+sudo rm -rf /var/lib/apt/lists/*
+sudo apt update
+sudo apt upgrade -y
+```
+
+T3 Gemstone imajında Ubuntu Jammy güncelleme ve güvenlik depolarının eksik
+olması durumunda `jammy-updates` ve `jammy-security` depolarının etkin
+olduğunu doğrulayın.
+
+Sistem üzerindeki Ubuntu Jammy kaynaklarını kontrol edin:
+
+```bash
+grep -R "jammy" /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null
+```
+
+---
+ROS 2 paketlerinin indirilebilmesi için kuruluma başlamadan önce kartın internet bağlantısının çalıştığını doğrulayın.
+
+## 6. ROS 2 Humble Kurulumu
+
+ROS 2 Humble, Ubuntu 22.04 Jammy ile uyumludur. T3 Gemstone üzerinde daha az
+paket ve bağımlılık içeren `ros-base` kurulumu tercih edilir.
+
+Kuruluma başlamadan önce sistemin paket listesini güncelleyin:
+
+```bash
+sudo apt update
+```
+
+### 6.1. ROS 2 Kurulumu İçin Gerekli Araçların Kurulması
+
+ROS 2 APT deposunun sisteme eklenebilmesi için gerekli temel araçları kurun:
+
+```bash
+sudo apt install -y \
+curl \
+gnupg \
+lsb-release \
+software-properties-common
+```
+
+Kurulumun ardından gerekli komutların sistemde bulunduğunu doğrulayın:
+
+```bash
+command -v curl
+command -v add-apt-repository
+```
+
+Beklenen çıktı:
+
+```text
+/usr/bin/curl
+/usr/bin/add-apt-repository
+```
+
+Örnek terminal çıktısı:
+
+```text
+gemstone@t3-gem-o1:~$ command -v curl
+/usr/bin/curl
+
+gemstone@t3-gem-o1:~$ command -v add-apt-repository
+/usr/bin/add-apt-repository
+```
+
+Universe deposunu etkinleştirin:
+
+```bash
+sudo add-apt-repository universe
+```
+
+Depo yapılandırmasının ardından paket listesini tekrar güncelleyin:
+
+```bash
+sudo apt update
+```
+
+---
+
+### 6.2. ROS 2 APT Kaynağının Eklenmesi
+
+ROS 2 paketlerinin `apt` aracılığıyla kurulabilmesi için ROS APT kaynağının
+sisteme eklenmesi gerekir.
+
+Güncel ROS APT kaynak paketi sürümünü alın:
+
+```bash
+export ROS_APT_SOURCE_VERSION=$(curl -s \
+https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest \
+| grep -F "tag_name" \
+| awk -F\" '{print $4}')
+```
+
+Alınan sürüm bilgisini kontrol edin:
+
+```bash
+echo "$ROS_APT_SOURCE_VERSION"
+```
+
+Komut sonucunda ROS APT kaynak paketinin sürüm bilgisi görüntülenmelidir.
+
+Sistemin Ubuntu sürüm kod adını kullanarak uygun ROS 2 APT kaynak paketini
+indirin:
+
+```bash
+curl -L \
+-o /tmp/ros2-apt-source.deb \
+"https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb"
+```
+
+İndirilen `.deb` paketini kurun:
+
+```bash
+sudo dpkg -i /tmp/ros2-apt-source.deb
+```
+
+ROS APT kaynağının eklenmesinin ardından paket listesini yeniden güncelleyin:
+
+```bash
+sudo apt update
+```
+
+> **Not:**  
+> `Unable to locate package ros-humble-ros-base` çıktısı, ilgili ROS 2
+> paketinin APT kaynaklarında bulunamadığını gösterir. Bu durumda ROS 2 APT
+> kaynağının doğru şekilde eklendiği ve `sudo apt update` işleminin başarıyla
+> tamamlandığı doğrulanmalıdır.
+
+---
+
+### 6.3. ROS 2 Humble ROS Base Kurulumu
+
+Kurulumdan önce paketin sistem tarafından bulunabildiğini ve bağımlılıkların
+çözülebildiğini doğrulamak için kurulumu simüle edin:
+
+```bash
+sudo apt install --simulate ros-humble-ros-base
+```
+
+Simülasyon sırasında paket veya bağımlılık hatası görülmemesi durumunda
+ROS 2 Humble ROS Base paketini kurun:
+
+```bash
+sudo apt install -y ros-humble-ros-base
+```
+
+`ros-base`, ROS 2'nin temel bileşenlerini içerir. Masaüstü ve grafik arayüz
+araçları bu kurulumla birlikte gelmez. Bu nedenle T3 Gemstone gibi gömülü
+sistemlerde daha hafif bir ROS 2 kurulumu sağlar.
+
+---
+
+## 7. ROS 2 Ortamının Etkinleştirilmesi
+
+ROS 2 kurulumunun ardından ROS komutlarının kullanılabilmesi için ROS ortamının
+terminal oturumuna yüklenmesi gerekir.
+
+### 7.1. Mevcut Terminal İçin ROS 2 Ortamını Etkinleştirme
+
+Mevcut terminal oturumunda ROS 2 Humble ortamını etkinleştirin:
+
+```bash
+source /opt/ros/humble/setup.bash
+```
+
+Bu komut yalnızca mevcut terminal oturumu için geçerlidir. Yeni bir terminal
+açıldığında komutun yeniden çalıştırılması gerekir.
+
+---
+
+### 7.2. ROS 2 Ortamını Kalıcı Olarak Etkinleştirme
+
+Her yeni terminal açıldığında ROS 2 ortamının otomatik olarak yüklenmesi için
+aşağıdaki komutu çalıştırın:
+
+```bash
+grep -qxF 'source /opt/ros/humble/setup.bash' ~/.bashrc || \
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+```
+
+Bu komut, aynı `source` satırının `.bashrc` dosyasına birden fazla kez
+eklenmesini engeller.
+
+Değişiklikleri mevcut terminal oturumuna uygulayın:
+
+```bash
+source ~/.bashrc
+```
+
+---
+
+### 7.3. ROS 2 Kurulumunun Kontrol Edilmesi
+
+Etkin ROS dağıtımını kontrol edin:
+
+```bash
+echo "$ROS_DISTRO"
+```
+
+Beklenen çıktı:
+
+```text
+humble
+```
+
+ROS 2 komut satırı aracının kullanılabilir olduğunu doğrulayın:
+
+```bash
+ros2 --help
+```
+
+Beklenen çıktının başlangıcı aşağıdaki gibi olmalıdır:
+
+```text
+usage: ros2 [-h] [--use-python-default-buffering]
+
+ros2 is an extensible command-line tool for ROS 2.
+
+options:
+  -h, --help
+```
+
+ROS 2 tarafından kullanılabilir komutlar arasında aşağıdakiler bulunmalıdır:
+
+```text
+Commands:
+  action
+  bag
+  component
+  daemon
+  doctor
+  interface
+  launch
+  lifecycle
+  multicast
+  node
+  param
+  pkg
+  plugin
+  run
+  security
+  service
+  topic
+```
+
+Son olarak `ros-humble-ros-base` paketinin sistemde kurulu olduğunu doğrulayın:
+
+```bash
+dpkg -l | grep ros-humble-ros-base
+```
+
+Başarılı bir kurulumda aşağıdakine benzer bir çıktı görüntülenmelidir:
+
+```text
+ii  ros-humble-ros-base  0.10.0-1jammy.20260607.150006  arm64  A package which extends 'ros_core' and includes other basic functionalities like tf2 and urdf.
+```
+
+> Paket sürüm numarası zaman içerisinde değişebilir. Doğrulama sırasında
+> satırın `ii` ile başlaması ve `ros-humble-ros-base` paketinin listelenmesi
+> yeterlidir.
+
+---
+
+## 8. Basit topic haberleşme testi
+
+### Terminal 1 — yayıncı
+
+```bash
+source /opt/ros/humble/setup.bash
+
+ros2 topic pub /test_konusu std_msgs/msg/String "{data: 'Selam T3 Gemstone'}"
+```
+
+### Terminal 2 — dinleyici
+
+```bash
+source /opt/ros/humble/setup.bash
+
+ros2 topic echo /test_konusu
+```
+
+Yayınlanan mesajın ikinci terminalde görüntülenmesi, temel ROS 2 topic
+haberleşmesinin çalıştığını doğrular.
+
+---
+
+## 9. `demo_nodes_cpp` bulunamadı hatası
+
+`ros-humble-ros-base` kurulumu hafif bir ROS 2 kurulumudur ve demo paketleri
+varsayılan olarak bulunmayabilir.
+
+`demo_nodes_cpp` paketinin gerekli olması durumunda aşağıdaki komutu kullanın:
+
+```bash
+sudo apt install -y ros-humble-demo-nodes-cpp
+```
+
+Yayıncı düğümü çalıştırarak kurulumu test edin:
+
+```bash
+ros2 run demo_nodes_cpp talker
+```
+
+Başka bir terminalde dinleyici düğümü çalıştırın:
+
+```bash
+ros2 run demo_nodes_cpp listener
+```
+
+---
+
+## 10. Son kontrol
+
+Kurulumun tamamlandığını doğrulamak için aşağıdaki komutları çalıştırın:
+
+```bash
+cat /etc/os-release
+uname -m
+printenv ROS_DISTRO
+ros2 --help
+```
+
+Kurulum tamamlandığında aşağıdaki koşullar sağlanmalıdır:
+
+- Ubuntu 22.04 Jammy çalışmalı
+- Mimari `aarch64` görünmeli
+- `ROS_DISTRO=humble` olmalı
+- `ros2` komutu çalışmalı
+
+## 11. Karta İmaj Yükleme
+
+T3 Gemstone karta işletim sistemi imajının yüklenmesiyle ilgili genel bilgilere
+[buradan ulaşabilirsiniz](https://docs.t3gemstone.org/tr/imager).
