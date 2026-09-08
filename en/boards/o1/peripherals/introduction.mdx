@@ -45,6 +45,25 @@ When USB is not connected, the development board is protected against reverse po
 If the 12V battery is connected backwards while the USB is plugged in, the development board may be seriously damaged and there may even be a risk of fire. Therefore, the polarity must be checked before connecting the battery while the power connection is via USB.
 </Danger>
 
+## Power Button
+
+The power button on the board lets you shut the development board down or turn it
+back on without having to issue a command to the operating system.
+
+| Action | Button usage |
+| --- | --- |
+| Shutting down | Short press (~3 seconds) |
+| Turning on | Long press (~15 seconds), then a short press |
+
+Pressing the button for about 3 seconds while the board is on shuts the system down. To turn
+a powered-off board back on, first press and hold the button for about 15 seconds, then give
+it one more short press.
+
+<Tip>
+Instead of the power button, you can also shut the board down with the `poweroff`
+command from the console.
+</Tip>
+
 ## 1. LED
 
 The board has 6 LEDs so you can tell whether it has powered on,
