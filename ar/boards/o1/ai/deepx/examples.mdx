@@ -1,0 +1,278 @@
+---
+title: 'تطبيقات نموذجية'
+description: 'قوالب DX-APP ومعالجة الفيديو باستخدام DX-STREAM'
+---
+
+تقدم DEEPX مشروعين مرجعيين منفصلين لتطوير التطبيقات التي تستخدم وحدة المسرّع بسرعة. يحتوي **DX-APP** على قوالب
+تطبيقات نموذجية يمكنها العمل بشكل مستقل. أما **DX-STREAM** فيتيح إنشاء خطوط معالجة فيديو في الوقت الفعلي مبنية
+على GStreamer.
+
+<Note>
+لكي يمكن تنفيذ الأوامر في هذا القسم، يجب أن يكون تثبيت المشغّل ووقت التشغيل قد اكتمل. يمكنك التحقق من التثبيت
+باستخدام الأمر `dxrt-cli -s`.
+</Note>
+
+## تطبيقات DX-APP النموذجية
+
+يحتوي DX-APP على قوالب C++ وPython جاهزة لمهام مثل اكتشاف الأجسام والتصنيف وتقدير الوضعية والتقسيم وتقدير العمق
+والتعرف على الوجوه.
+
+<Steps>
+
+  <Step title="تنزيل المشروع">
+    ```bash
+    git clone https://github.com/DEEPX-AI/dx_app.git
+    cd dx_app
+    ```
+  </Step>
+
+  <Step title="تثبيت الاعتماديات">
+
+    شغّل السكربت الذي يثبّت أدوات التجميع ومكتبة OpenCV.
+
+    ```bash
+    ./install.sh --all
+    ```
+  </Step>
+
+  <Step title="تنزيل النماذج ومقاطع الفيديو النموذجية">
+
+    تُنزَّل النماذج ومقاطع الفيديو المستخدمة في التطبيقات النموذجية باستخدام السكربت `setup.sh`.
+
+    ```bash
+    # يتم اختيار الفئة والنموذج عبر القائمة
+    ./setup.sh
+
+    # تُنزَّل النماذج المحددة فقط
+    ./setup.sh --models YoloV7 ResNet50
+
+    # تُدرج جميع النماذج المتاحة للتنزيل
+    ./setup.sh --list
+    ```
+
+    تُنزَّل النماذج إلى المجلد `assets/models` ومقاطع الفيديو إلى المجلد `assets/videos`.
+  </Step>
+
+  <Step title="تجميع المشروع">
+    ```bash
+    ./build.sh
+    ```
+
+    نتيجةً للتجميع، تُنشأ الملفات القابلة للتنفيذ في المجلد `bin`.
+
+    <Tip>
+      إذا كنت ترغب في تجميع التطبيق الذي تحتاجه فقط، فيمكنك تحديد الهدف بالصيغة
+      `./build.sh --target yolov9s_sync`. يمكنك سرد الأهداف المتاحة باستخدام الأمر `./build.sh --target list`.
+    </Tip>
+  </Step>
+
+  <Step title="تشغيل الأمثلة">
+
+    لتجربة جميع الأمثلة عبر القائمة، يمكنك استخدام سكربت العرض التوضيحي.
+
+    ```bash
+    ./run_demo.sh
+    ```
+
+    من الممكن أيضاً تشغيل مثال معين مباشرة.
+
+    <CodeGroup>
+
+    ```bash Python
+    python3 src/python_example/object_detection/yolov7/yolov7_sync.py \
+      --model assets/models/yolov7_640x640.dxnn \
+      --image sample/img/sample_street.jpg
+    ```
+
+    ```bash C++
+    ./bin/yolov7_sync \
+      -m assets/models/yolov7_640x640.dxnn \
+      -i sample/img/sample_street.jpg
+    ```
+
+    </CodeGroup>
+  </Step>
+
+</Steps>
+
+### خيارات سطر الأوامر المشتركة
+
+تستخدم جميع الأمثلة داخل DX-APP خيارات سطر الأوامر نفسها.
+
+| الخيار              | الوصف                                                             |
+| -------------------- | -------------------------------------------------------------------- |
+| `-m`, `--model`      | مسار ملف النموذج `.dxnn` الذي سيُشغَّل                                |
+| `-i`, `--image`      | ملف أو مجلد الصور الذي سيُستخدم كمدخل                                 |
+| `-v`, `--video`      | ملف الفيديو الذي سيُستخدم كمدخل                                       |
+| `-c`, `--camera`     | رقم جهاز الكاميرا الذي سيُستخدم كمدخل                                  |
+| `-r`, `--rtsp`       | عنوان بث RTSP الذي سيُستخدم كمدخل                                     |
+| `-l`, `--loop`       | عدد مرات تكرار الاستدلال                                               |
+| `--no-display`       | يعطّل نافذة العرض المرئي                                               |
+| `--save`             | يحفظ المخرجات الناتجة في ملف                                            |
+| `--show-log`         | ينتج مخرجات سجل تفصيلية                                                |
+
+<Note>
+تعد الخيارات `--image` و`--video` و`--camera` و`--rtsp` بدائل لبعضها البعض، ولا يمكن استخدام سوى واحد منها.
+وعندما لا يُحدَّد أي منها، تُختار تلقائياً صورة نموذجية مناسبة للمهمة.
+</Note>
+
+<Tip>
+إذا لم تكن هناك شاشة متصلة بلوحة التطوير أو كنت تعمل عبر SSH، فيجب عليك استخدام الخيار `--no-display`. لعرض
+النتيجة، يمكنك حفظ المخرجات في ملف باستخدام الخيار `--save`.
+</Tip>
+
+### القوالب المتزامنة وغير المتزامنة
+
+تُقدَّم التطبيقات النموذجية بصيغتين: `_sync` و`_async`.
+
+- تنفّذ القوالب **المتزامنة (`_sync`)** خطوات المعالجة المسبقة والاستدلال والمعالجة اللاحقة بشكل تسلسلي. وهي
+  مناسبة للعمل على صورة واحدة وتصحيح الأخطاء.
+- تتيح القوالب **غير المتزامنة (`_async`)** لوحدة المعالجة المركزية (CPU) تحضير الإطار رقم `N+1` بينما يعالج
+  NPU الإطار رقم `N`. ويُفضَّل استخدامها لرفع معدل الأطر في بثوث الفيديو إلى أقصى حد.
+
+## معالجة الفيديو باستخدام DX-STREAM
+
+DX-STREAM هي مجموعة إضافات تضيف دعم DEEPX NPU إلى البنية الأساسية GStreamer. وبذلك يمكن معالجة الصور القادمة من
+الكاميرا أو ملف الفيديو أو بث RTSP داخل خط (pipeline) واحد.
+
+### عناصر الإضافات
+
+| العنصر           | الوصف                                                                    |
+| ---------------- | --------------------------------------------------------------------------- |
+| `dxpreprocess`   | يحوّل الصورة إلى الحجم والصيغة اللذين يتوقعهما النموذج                        |
+| `dxinfer`        | ينفّذ عملية الاستدلال على NPU                                                 |
+| `dxpostprocess`  | يحوّل مخرجات النموذج إلى بيانات وصفية ذات معنى (صندوق محيط، فئة، إلخ)         |
+| `dxtracker`      | يتتبّع الأجسام المكتشفة بين الأطر                                              |
+| `dxosd`          | يرسم النتائج على الصورة                                                       |
+| `dxgather`       | يجمع الفروع في مخرج واحد في التدفقات المتعددة                                   |
+| `dxrate`         | يحدد معدل الأطر الذي سيُجرى عليه الاستدلال                                      |
+| `dxmsgconv`      | يحوّل البيانات الوصفية إلى صيغة رسالة                                           |
+| `dxmsgbroker`    | ينقل الرسائل إلى خادم خارجي (مثل MQTT)                                         |
+
+يمكنك فحص الإضافات المثبتة وخصائصها باستخدام الأداة `gst-inspect-1.0`.
+
+```bash
+gst-inspect-1.0 dxinfer
+```
+
+### خط نموذجي
+
+يقرأ الخط التالي ملف فيديو، ويجري اكتشاف الأجسام باستخدام نموذج YOLO، ويرسم النتائج على الصورة ثم يحفظها في ملف
+فيديو.
+
+```bash
+gst-launch-1.0 urisourcebin uri=file:///home/gemstone/dx_app/assets/videos/snowboard.mp4 ! decodebin ! \
+  dxpreprocess \
+    preprocess-id=1 \
+    resize-width=640 \
+    resize-height=640 ! \
+  queue max-size-buffers=1 ! \
+  dxinfer \
+    preprocess-id=1 \
+    inference-id=1 \
+    model-path=/home/gemstone/dx_app/assets/models/yolov7_640x640.dxnn ! \
+  queue max-size-buffers=1 ! \
+  dxpostprocess \
+    inference-id=1 \
+    library-file-path=/usr/share/gstdxstream/lib/libpostprocess_yolov7.so \
+    function-name=PostProcess ! \
+  queue max-size-buffers=1 ! \
+  dxosd ! \
+  videoconvert ! jpegenc quality=85 ! avimux ! \
+  filesink location=/home/gemstone/output.avi
+```
+تُحفظ المخرجات الناتجة في الموقع `/home/gemstone/output.avi`. يمكنك الوصول إليها عبر هذا الملف.
+
+<Frame caption="مخرجات الخط النموذجي: تُرسم الأجسام المكتشفة بواسطة YOLOv7 على الأطر.">
+  <img className="rounded-lg" src="/images/o1-board/ai/deepx-dxstream-output.gif" />
+</Frame>
+
+<Note>
+أُنشئت الصورة أعلاه مع خفض الدقة والمدة حتى يمكن مشاركتها بصيغة GIF في التوثيق. أما المخرجات الفعلية التي ينتجها
+الخط فتكون بدقة الفيديو المصدر وبطوله الكامل.
+</Note>
+
+منطق عمل الخط هو كما يلي.
+
+<ParamField body="urisourcebin ! decodebin">
+يقرأ مصدر الفيديو ويفك تشفيره. تُعطى الخاصية `uri` مسار الملف المراد معالجته.
+</ParamField>
+
+<ParamField body="dxpreprocess">
+يعيد تحجيم الأطر وفقاً لقيمتي `resize-width` و`resize-height`. تُستخدم قيمة `preprocess-id` للمطابقة مع عنصر
+`dxinfer` التالي.
+</ParamField>
+
+<ParamField body="dxinfer">
+يشغّل النموذج `.dxnn` المحدد عبر `model-path` على NPU.
+</ParamField>
+
+<ParamField body="dxpostprocess">
+يحلل مخرجات النموذج باستخدام المكتبة المشتركة المحددة عبر `library-file-path`. تختلف المكتبة المستخدمة حسب عائلة
+النموذج.
+</ParamField>
+
+<ParamField body="dxosd">
+يرسم نتائج الاكتشاف على الإطار.
+</ParamField>
+
+<ParamField body="videoconvert ! jpegenc ! avimux">
+يحوّل الأطر إلى صيغة الألوان التي يتوقعها المشفّر، ويضغطها بصيغة JPEG بقيمة `quality=85`، ثم يجمع الأطر الناتجة في
+حاوية AVI.
+</ParamField>
+
+<ParamField body="filesink">
+يكتب الفيديو الناتج في الملف المحدد عبر `location`.
+</ParamField>
+
+<Tip>
+في الأنظمة المتصلة بشاشة، يمكنك عرض المخرجات مباشرة على الشاشة مع معلومات معدل الأطر باستخدام
+`videoconvert ! fpsdisplaysink sync=false` بدلاً من حفظها في ملف. في التثبيتات التي لا تحتوي على بيئة X11، يجب
+استخدام `kmssink` بدلاً من `ximagesink`.
+</Tip>
+
+<Note>
+تتيح عناصر `queue` عمل الخط بشكل غير متزامن. عند إزالة هذه العناصر، تنخفض سرعة الأطر لأن كل مرحلة تنتظر اكتمال
+المرحلة السابقة.
+</Note>
+
+### إضافة تتبّع الأجسام
+
+عند إضافة عنصر `dxtracker` بعد اكتشاف الأجسام، تُسند هوية (track ID) للأجسام المكتشفة عبر الأطر.
+
+```bash
+... ! dxpostprocess ... ! queue max-size-buffers=1 ! dxtracker ! queue ! dxosd ! ...
+```
+
+<Warning>
+يحتاج عنصر `dxtracker` إلى معلومات الصندوق المحيط (bounding box). لذلك يجب أن يقع داخل الخط بعد خطوة اكتشاف
+الأجسام.
+</Warning>
+
+## المصادر
+
+<CardGroup cols={2}>
+  <Card title="DX-APP" icon="github" href="https://github.com/DEEPX-AI/dx_app">
+    قوالب تطبيقات نموذجية
+  </Card>
+
+  <Card title="DX-STREAM" icon="github" href="https://github.com/DEEPX-AI/dx_stream">
+    إضافات GStreamer وخطوط جاهزة
+  </Card>
+
+  <Card title="DX-RT" icon="github" href="https://github.com/DEEPX-AI/dx_rt">
+    الكود المصدري لوقت التشغيل وأمثلة API
+  </Card>
+
+  <Card title="DX Model Zoo" icon="github" href="https://github.com/DEEPX-AI/dx-modelzoo">
+    مستودع نماذج جاهز
+  </Card>
+
+  <Card title="deepx-npu-sdk" icon="github" href="https://github.com/t3gemstone/deepx-npu-sdk">
+    وصفات تجميع تُنتج حزم Debian لوحدة النواة ووقت تشغيل DX-RT وإضافة GStreamer لصالح T3 Gemstone
+  </Card>
+
+  <Card title="DEEPX Model Zoo" icon="globe" href="https://developer.deepx.ai/modelzoo/">
+    مستودع النماذج الرسمي الذي تُدرج فيه نماذج `.dxnn` المجمّعة مسبقاً ويمكن تنزيلها
+  </Card>
+</CardGroup>

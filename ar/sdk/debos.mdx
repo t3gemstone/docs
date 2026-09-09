@@ -1,0 +1,156 @@
+---
+title: 'Debos'
+description: 'إنشاء صورة Gemstone'
+---
+
+<Note>
+في هذا القسم سيتم تناول بنية ملف الإعداد الخاص بالأداة المسماة Debos المستخدمة لتجميع الصور الموجودة على لوحات تطوير
+Gemstone. قبل البدء في هذا القسم، يجب أن تكون قد قرأت قسم [المكوّنات](./components#3-6-ديبوس).
+</Note>
+
+<Tip>
+قبل المتابعة، تأكد من أنك قد اطّلعت على الملفات التالية.
+
+* [sdk/distrobox.ini](https://github.com/t3gemstone/sdk/blob/main/distrobox.ini)
+* [sdk/Dockerfile](https://github.com/t3gemstone/sdk/blob/main/Dockerfile)
+* [sdk/distro/distro.yaml](https://github.com/t3gemstone/sdk/blob/main/distro/distro.yaml)
+* [sdk/distro/Taskfile.yml](https://github.com/t3gemstone/sdk/blob/main/distro/Taskfile.yml) 
+</Tip>
+
+في لوحات تطوير Gemstone، وحتى تاريخ كتابة هذه الوثيقة، توجد
+<Tooltip tip="ubuntu-22, ubuntu-24, debian-11, debian-12, pardus-23">4 توزيعات</Tooltip>, 
+<Tooltip tip="Desktop, Kiosk, Minimal">3 أنواع صور</Tooltip> و 
+<Tooltip tip="beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64">4 آلات</Tooltip>.
+لكل صورة وآلة وتوزيعة اختلافاتها الخاصة وإعدادات التخصيص الخاصة بها.
+
+عند إنشاء التوزيعة، تُستدعى الأوامر `devbox shell` --> `task box` --> `task distro:build` بالترتيب، فيُشغَّل Debos من
+داخل Docker وتُجرى التخصيصات وفقًا للمتغيرات المعطاة كمعاملات،
+[وتُنسخ الملفات اللازمة](https://github.com/t3gemstone/sdk/blob/main/distro/overlays) و
+[تُنفَّذ سكربتات التثبيت](https://github.com/t3gemstone/sdk/blob/main/distro/scripts).
+
+```bash مثال
+task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+```
+
+## 1\. المعاملات
+
+شُرحت هنا بعض المعاملات بشكل موجز، أما البقية فيجب مراجعة قسم `vars` في الملف
+[sdk/Taskfile.yml](https://github.com/t3gemstone/sdk/blob/main/Taskfile.yml).
+
+<ParamField body="MACHINE" default="t3-gem-o1" required>
+`beagley-ai` `intel-corei7-64` `t3-gem-o1` `qemuarm64`
+</ParamField>
+
+<ParamField body="DISTRO_TYPE" default="desktop" required>
+`minimal` `desktop` `kiosk`
+</ParamField>
+
+<ParamField body="DISTRO_BASE" default="ubuntu" required>
+`ubuntu` `debian` `pardus`
+</ParamField>
+
+<ParamField body="DISTRO_SUITE" default="jammy" required>
+`jammy` `noble` `bullseye` `bookworm` `yirmiuc` `yirmibes`
+</ParamField>
+
+<ParamField body="DISTRO_ARCH" default="amd64" required>
+`amd64` `arm64`
+</ParamField>
+
+<ParamField body="IMG_SIZE" default="4GB">
+هو حجم ملف الصورة ذي الامتداد **.img** الناتج عن التجميع.
+</ParamField>
+
+## 2\. التوزيعات
+
+أثناء عملية تحميل صورة على لوحة جديدة عبر تطبيق Gemstone Imager، يمكن اختيار التوزيعات المذكورة أعلاه. افتراضيًا،
+يُفضَّل استخدام توزيعة **Ubuntu 22.04** على لوحة تطوير Gemstone، ومع ذلك تم دعم صور Debian 11 وDebian 12 وPardus 23
+أيضًا مراعاةً لاحتياجات المشاريع المختلفة.
+
+<Tip>
+في توزيعات Debian (بصياغة تقريبية)، يتمثل المبدأ الأساسي في **الأمان والاستقرار**، بينما في توزيعات Ubuntu يمكن القول
+إن المبدأ نفسه مصحوب بتحديثات أكثر تكرارًا وإيصال إصدارات أحدث من الحزم الموجودة في نظام التشغيل إلى المستخدم النهائي.
+أما سبب تفضيل المستخدمين فيرتبط تمامًا بتعريفات أنظمتهم واحتياجاتهم. 
+</Tip>
+
+<ParamField body="Ubuntu 22" type="DISTRO_BASE=ubuntu DISTRO_SUITE=jammy">
+أحدث إصدار LTS (دعم طويل الأمد) من Ubuntu هو 24.04، لكن يُفضَّل الإصدار 22.04 لأنه قد تحدث مشاكل متنوعة في مشاريع مثل
+ROS وYocto على وجه الخصوص. 
+</ParamField>
+
+<ParamField body="Ubuntu 24" type="DISTRO_BASE=ubuntu DISTRO_SUITE=noble">
+يُفضَّل للحصول على أحدث المكتبات والتطبيقات. 
+</ParamField>
+
+<ParamField body="Debian 11" type="DISTRO_BASE=debian DISTRO_SUITE=bullseye">
+يُفضَّل في المشاريع التي تكون أكوادها الحالية مستقرة على Debian 11.
+</ParamField>
+
+<ParamField body="Debian 12" type="DISTRO_BASE=debian DISTRO_SUITE=bookworm">
+هو أحدث إصدار من Debian.
+</ParamField>
+
+<ParamField body="Pardus 23" type="DISTRO_BASE=pardus DISTRO_SUITE=yirmiuc">
+إصدار Pardus 23
+</ParamField>
+
+<ParamField body="Pardus 25" type="DISTRO_BASE=pardus DISTRO_SUITE=yirmibes">
+هو أحدث إصدار من Pardus.
+</ParamField>
+
+## 3\. الصور
+
+<ParamField body="Minimal" type="DISTRO_TYPE=minimal">
+يمكن استخدامها في مجالات مثل إنترنت الأشياء (IoT) وأنظمة الوقت الفعلي وتطبيقات الشبكات والبرمجيات المدمجة والمركبات
+المأهولة وغير المأهولة وتطبيقات المنازل الذكية والطيار الآلي (Autopilot) وغيرها.
+</ParamField>
+
+<ParamField body="Desktop" type="DISTRO_TYPE=desktop">
+يمكن استخدامها لأغراض الاختبار والنماذج الأولية والتطوير والتعليم وغيرها، أو كحاسوب صغير.
+</ParamField>
+
+<ParamField body="Kiosk" type="DISTRO_TYPE=kiosk">
+يمكن استخدامها في مشاريع مثل كشك (Kiosk) بشاشة لمس، ولوحة المركبات ذاتية القيادة، ولوحة القيادة والتحكم. 
+</ParamField>
+
+## 4\. الآلات
+
+<ParamField body="Gemstone O1" type="MACHINE=t3-gem-o1 DISTRO_ARCH=arm64">
+هو نوع الآلة الخاص بلوحة تطوير T3 Gemstone O1.
+</ParamField>
+
+<ParamField body="Intel Core-i7" type="MACHINE=intel-corei7-64 DISTRO_ARCH=amd64">
+يُفضَّل للاستخدام افتراضيًا عبر QEMU.
+</ParamField>
+
+<ParamField body="BeagleY AI" type="MACHINE=beagley-ai DISTRO_ARCH=arm64">
+يمكن استخدام الصور المنشأة أيضًا على لوحة تطوير BeagleY-AI.
+</ParamField>
+
+<ParamField body="Qemu ARM64" type="MACHINE=qemuarm64 DISTRO_ARCH=arm64">
+يُفضَّل للاستخدام افتراضيًا عبر QEMU.
+</ParamField>
+
+## 5\. ملف الإعداد
+
+تقرأ الأداة المسماة Debos الملف المسمى [sdk/distro/distro.yaml](https://github.com/t3gemstone/sdk/blob/main/distro/distro.yaml)
+وتنفّذ عملية من 4 مراحل لإنشاء ملف/توزيعة `.img`.
+
+<Steps>
+  <Step title="Debootstrap/Apt">
+    وفقًا لنوع التوزيعة المعطى كمعامل (Ubuntu أو Debian)، ينزّل جميع الحزم ذات الامتداد **.deb** من خوادم حزم APT
+    الخاصة بالتوزيعات المعنية باستخدام أداة `debootstrap`.
+  </Step>
+  <Step title="تثبيت الحزم">
+    لتثبيت الحزم المنزّلة ذات الامتداد **.deb**، ينشئ بنية مجلد تسمى `rootfs` ويهيّئ متطلبات نظام التشغيل GNU/Linux، ثم
+    يثبّت الحزم داخل `rootfs` بطريقة `chroot`.
+  </Step>
+  <Step title="عمليات التخصيص">
+    بعد اكتمال تثبيت حزم Deb، تُنسخ الملفات التي ستُحمَّل داخل الصورة وتُشغَّل سكربتات التثبيت وفقًا للتعريفات من
+    النوعين `overlay` و`run` الموجودة في ملف `yaml`.
+  </Step>
+  <Step title="إنشاء ملف الصورة">
+    بعد اكتمال جميع العمليات أعلاه بنجاح، تُجرى تقسيمات القرص boot وrootfs وفقًا للتعريف من النوع `image-partition`،
+    ويُنشأ الملف ذو الامتداد **.img** وتُنقل جميع الملفات داخله.
+  </Step>
+</Steps>

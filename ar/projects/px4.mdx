@@ -1,0 +1,254 @@
+---
+title: 'PX4'
+description: 'الطيار الآلي PX4'
+---
+
+<Warning>
+لا يزال دعم PX4 للوحة Gemstone قيد التطوير. يعمل على نواة R5F في النطاق الرئيسي (Main domain)، ولا يمكن بعد
+استخدام بعض الوحدات الطرفية الموجودة على اللوحة مثل ناقل CAN. وبما أن اللوحة لا تحتوي على مقياس ضغط جوي ولا
+GPS، فإن تقدير الارتفاع والموقع المطلق محدود.
+</Warning>
+
+PX4 هو منصة طيار آلي مفتوحة المصدر للطائرات المسيّرة وغيرها من المركبات غير المأهولة. يقدم حزمة تحكم طيران
+متكاملة تمتد من مشغّلات المستشعرات منخفضة المستوى إلى التحكم في المركبة وتنفيذ المهام. على لوحة Gemstone، يعمل
+PX4 فوق NuttX على نوى R5F باستخدام الإعداد المخصص `t3-gem-o1` نفسه الذي أُنشئ لتجميع NuttX العاري. تبدأ برمجية
+الطيران تلقائياً عند تشغيل اللوحة، ويتصل تطبيق التحكم الأرضي QGroundControl بالمركبة عبر الشبكة.
+
+على عكس تجميع NuttX المستقل، يحتوي PX4 على كل من NuttX وإطار عمل التطبيقات كوحدات فرعية (git submodule). لذلك،
+فإن الاستنساخ المتكرر (recursive) يجلب تلقائياً NuttX الصحيح المكيّف لـ Gemstone؛ فلا حاجة إلى تنزيل NuttX أو
+تجميعه بشكل منفصل.
+
+## 1\. التجميع
+
+### 1\.1\. تنزيل أكواد المصدر
+
+على أنظمة Ubuntu/Debian، ثبّت أولاً الأدوات اللازمة للتنزيل والتجميع عبر مدير الحزم:
+
+```bash
+sudo apt update
+sudo apt install git make cmake ninja-build gcc-arm-none-eabi python3-venv picocom
+```
+
+يشير PX4 إلى NuttX الخاص بـ Gemstone وإلى NuttX-apps كوحدات فرعية (git submodule)؛ لذلك تُنزَّل أكواد المصدر
+باستنساخ متكرر واحد:
+
+```bash
+# استنسخ PX4 مع وحداته الفرعية
+git clone --recursive https://github.com/t3gemstone/PX4-Autopilot.git
+
+# انتقل إلى دليل العمل الرئيسي
+cd PX4-Autopilot
+```
+
+يضع الخيار `--recursive` كلاً من NuttX الصحيح (فرع `px4` الخاص بـ Gemstone) و NuttX-apps في المجلد
+`platforms/nuttx/NuttX`؛ وبذلك لا حاجة إلى تنزيل NuttX منفصل. إذا استنسخت بدون `--recursive`، فيمكنك جلب الوحدات
+الفرعية لاحقاً عبر `git submodule update --init --recursive`.
+
+### 1\.2\. إعداد بيئة Python
+
+يعتمد نظام التجميع الخاص بـ PX4 على مجموعة أدوات Python مثل `kconfiglib` و `empy` و `jinja2`. نظراً لأن إصدارات
+Debian/Ubuntu الحديثة تقيّد تثبيت `pip` على مستوى النظام، ثبّت هذه الأدوات في بيئة افتراضية (نفّذ ذلك من مجلد
+`PX4-Autopilot` المستنسخ في القسم 1.1):
+
+```bash
+python3 -m venv ~/px4-venv
+source ~/px4-venv/bin/activate
+pip install -r Tools/setup/requirements.txt
+```
+
+قبل التجميع، فعّل البيئة في كل طرفية جديدة باستخدام `source ~/px4-venv/bin/activate`.
+
+### 1\.3\. تجميع المشروع
+
+يجمع PX4 هدف لوحة محدداً مباشرة؛ لذلك لا حاجة إلى خطوة إعداد منفصلة. بينما تكون بيئة Python من القسم 1.2 مفعّلة،
+جمّع صورة لوحة Gemstone:
+
+```bash
+make t3gemstone_o1_default
+```
+
+يجري هذا الأمر تجميعاً متوازياً وينتج الملف `build/t3gemstone_o1_default/t3gemstone_o1_default.elf`، وهو الصورة
+التي ستُحمَّل إلى نواة R5F، إلى جانب ملفات `.bin` و `.px4`.
+
+## 2\. التشغيل
+
+كما هو الحال في صورة NuttX العاري، يعمل PX4 على نواة R5F في النطاق الرئيسي ويُحمَّل عبر آلية `remoteproc` من
+Linux أو U-Boot. بينما يعمل PX4 على نواة R5F، يستمر Linux بالعمل على نوى A53.
+
+<Tip>
+   لاستخدام آلية `remoteproc` في U-Boot، يمكنك الاطلاع على قسم [2.8. تشغيل المشروع المجمَّع في مرحلة U-Boot](/ar/boards/o1/peripherals/mcu#2-8-تشغيل-المشروع-المجمع-في-مرحلة-u-boot).
+</Tip>
+
+يجب نسخ ملفات البرامج التي ستُحمَّل إلى النوى عبر remoteproc تحت المجلد `/lib/firmware` بأسماء معرّفة مسبقاً. عند
+بدء النظام، ستحمّل آلية remoteproc البرامج تلقائياً إلى النوى المعنية. لتشغيل PX4 عبر remoteproc، اتبع الخطوات
+التالية.
+
+1. انسخ الملف `build/t3gemstone_o1_default/t3gemstone_o1_default.elf` الناتج عن التجميع إلى المجلد `/lib/firmware`
+   باسم `j722s-main-r5f0_0-fw`.
+2. أعد تشغيل اللوحة.
+3. يمكنك الوصول إلى NuttShell بتوصيل جهاز USB-to-TTL إلى الطرفين GPIO-14 (TX) و GPIO-15 (RX) الخاصين بـ
+   UART-MAIN1 والموجودين على HAT ذي الأربعين طرفاً.
+4. من كونسول `nsh` الذي يظهر، يمكنك فحص النظام العامل باستخدام أوامر مثل `ver all` و `top` و `uorb status`.
+
+## 3\. استخدام المستشعرات
+
+وحدة IMU ذات المحاور التسعة InvenSense ICM‑20948 الموجودة على اللوحة، والتي تحتوي على مقياس تسارع وجيروسكوب
+ومقياس مغناطيسية مدمج AK09916، متصلة بـ R5F عبر SPI. يبدأ سكربت التشغيل (القسم 4) المشغّل مع بقية حزمة الطيران
+بالفعل؛ والأوامر التالية مفيدة عند تجربة المشغّل وحده:
+
+```bash
+nsh> icm20948 -s -b 1 -c 3 -M start
+```
+
+هنا يحدد `-s` واجهة SPI و `-b 1` خط SPI و `-c 3` اختيار الشريحة (chip-select)، بينما يفعّل `-M` مقياس المغناطيسية
+بالإضافة إلى ذلك. بعد أن يبدأ المشغّل بالعمل، يمكنك مراقبة بيانات المستشعرات المباشرة عبر طبقة uORB الوسيطة
+الخاصة بـ PX4 باستخدام الأمر `listener`:
+
+```bash
+nsh> listener sensor_accel
+nsh> listener sensor_gyro
+nsh> listener sensor_mag
+```
+
+لمراقبة النظام بشكل عام، يعرض `uorb top` معدلات النشر لجميع المواضيع (topic) النشطة، بينما يعرض
+`work_queue status` توقيت طابور عمل المشغّل.
+
+## 4\. التشغيل التلقائي لبرمجية الطيران
+
+عند تشغيل R5F، يبدأ PX4 جميع مكوناته تلقائياً: مشغّل المستشعرات وتقدير الوضعية (attitude) ووحدات التحكم في
+الطيران واتصال القياس عن بعد (telemetry). أُعدّت اللوحة كهيكل Generic Quadcopter X. لا حاجة إلى أوامر تشغيل يدوية.
+
+يمكنك التحقق من عمل النظام من كونسول `nsh`. يعرض الأمر `uorb top` مواضيع البيانات التي تنشرها مكونات PX4 مع
+معدلات تحديثها؛ فكون مواضيع المستشعرات والوضعية تُحدَّث بمعدل منتظم يعني أن برمجية الطيران تعمل:
+
+```bash
+nsh> uorb top
+#  TOPIC NAME                    INST #SUB RATE #LOST #Q SIZE
+#  sensor_accel                     0    4  400     0  1  48
+#  vehicle_attitude                 0    6  100     0  1  56
+#  ...
+```
+
+يطبع الأمر `listener` المحتوى المباشر لموضوع ما. على سبيل المثال وضعية المركبة اللحظية:
+
+```bash
+nsh> listener vehicle_attitude
+#  TOPIC: vehicle_attitude
+#   vehicle_attitude
+#    timestamp: 87243147 (0.021 seconds ago)
+#    q: [0.9998, 0.0011, -0.0134, 0.0092]
+```
+
+## 5\. الاتصال بالشبكة و QGroundControl {#5-الاتصال-بالشبكة-و-qgroundcontrol}
+
+يرتبط جانب PX4 وجانب Linux ببعضهما عبر اتصال شبكة: `eth0` من جهة NuttX، و `eth1` من جهة Linux.
+
+- **عنوان IP الخاص بـ NuttX**: `192.168.10.2`
+- **عنوان IP الخاص بـ `eth1` في Linux**: `192.168.10.1`
+- **منفذ MAVLink**: UDP `14550`
+
+### 5\.1\. تثبيت وحدة الشبكة
+
+ثبّت حزمة وحدة الشبكة وأعد تشغيل اللوحة:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo apt update
+gemstone@t3-gem-o1:~$ sudo apt install kernel-module-virtio-net-6.12.24-ti
+gemstone@t3-gem-o1:~$ sudo reboot
+```
+
+### 5\.2\. إعداد الاتصال
+
+اضبط جانب Linux من الاتصال (مطلوب بعد كل إقلاع):
+
+```bash
+gemstone@t3-gem-o1:~$ sudo nmcli device set eth1 managed no
+gemstone@t3-gem-o1:~$ sudo ip link set eth1 up
+gemstone@t3-gem-o1:~$ sudo ip addr add 192.168.10.1/24 dev eth1
+gemstone@t3-gem-o1:~$ sudo sysctl -w net.ipv4.ip_forward=1
+```
+
+اضبط جانب NuttX من كونسول `nsh` وتحقق من الاتصال:
+
+```bash
+nsh> ifconfig eth0 192.168.10.2 gw 192.168.10.1
+nsh> ifup eth0
+nsh> ping -c 3 192.168.10.1
+#  56 bytes from 192.168.10.1: icmp_seq=0 time=0.0 ms
+#  56 bytes from 192.168.10.1: icmp_seq=1 time=0.0 ms
+#  56 bytes from 192.168.10.1: icmp_seq=2 time=0.0 ms
+#  3 packets transmitted, 3 received, 0% packet loss
+```
+
+### 5\.3\. الوصول إلى شبكة اللوحة من جهاز الكمبيوتر
+
+وصّل لوحة Gemstone بجهاز الكمبيوتر باستخدام كابل USB Type-C وأضف مساراً (route) بحيث يمكن الوصول إلى الشبكة
+`192.168.10.0/24` عبر اللوحة:
+
+```bash
+ubuntu@host:~$ sudo ip route add 192.168.10.0/24 via 192.168.7.2
+ubuntu@host:~$ ping -c 2 192.168.10.2
+#  64 bytes from 192.168.10.2: icmp_seq=1 ttl=64 time=0.42 ms
+#  64 bytes from 192.168.10.2: icmp_seq=2 ttl=64 time=0.31 ms
+```
+
+اعثر على عنوان جهاز الكمبيوتر الخاص بك داخل شبكة اللوحة؛ سيُستخدم هذا العنوان كهدف MAVLink في الخطوة التالية:
+
+```bash
+ubuntu@host:~$ ip route get 192.168.7.2 | grep -oP 'src \K\S+'
+#  192.168.7.60
+```
+
+### 5\.4\. الاتصال بـ QGroundControl
+
+QGroundControl (QGC) هو التطبيق المستخدم لمراقبة المركبة والتحكم فيها من جهاز الكمبيوتر. ثبّته وشغّله من
+[qgroundcontrol.com](https://qgroundcontrol.com/).
+
+ابدأ اتصال القياس عن بعد من كونسول `nsh`، مع استبدال العنوان `192.168.7.60` بعنوان جهاز الكمبيوتر الذي وجدته في
+الخطوة السابقة:
+
+```bash
+nsh> mavlink start -u 14556 -o 14550 -t 192.168.7.60
+```
+
+إذا كان الاتصال التلقائي عبر UDP مفعّلاً (وهو الإعداد الافتراضي)، فسيكتشف QGC المركبة تلقائياً ويتصل بها.
+
+## 6\. استكشاف الأخطاء وإصلاحها
+
+### 6\.1\. عدم وجود واجهة eth1 في جانب Linux
+
+تحقق من أن وحدة `virtio_net` محمّلة:
+
+```bash
+gemstone@t3-gem-o1:~$ lsmod | grep virtio_net
+#  virtio_net             45056  0
+#  net_failover           20480  1 virtio_net
+```
+
+إذا لم يطبع الأمر شيئاً، فحمّل الوحدة يدوياً وتحقق مرة أخرى:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo modprobe virtio_net
+```
+
+### 6\.2\. عدم وجود اتصال MAVLink
+
+تحقق من إعداد الشبكة من جهاز الكمبيوتر؛ يجب أن تستجيب اللوحة:
+
+```bash
+ubuntu@host:~$ ping -c 2 192.168.10.2
+#  64 bytes from 192.168.10.2: icmp_seq=1 ttl=64 time=0.42 ms
+```
+
+إذا لم تكن هناك استجابة، فكرر الخطوات الواردة في قسم [الاتصال بالشبكة و QGroundControl](#5-الاتصال-بالشبكة-و-qgroundcontrol).
+
+تحقق من أن اتصال القياس عن بعد يعمل ويرسل البيانات من جانب NuttX؛ يجب أن تكون قيمة `tx rate` أكبر من الصفر:
+
+```bash
+nsh> mavlink status
+#  instance #0:
+#          ...
+#          tx rate avg: 2543 B/s
+```
+
+تأكد في QGC من أن الاتصال التلقائي عبر UDP مفعّل ضمن Application Settings.

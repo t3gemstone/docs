@@ -6,6 +6,72 @@
 /* Geist Mono for code - matching the main site */
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Noto Sans Arabic for Arabic (RTL) content.
+   Declared directly (instead of via @import) so the metric overrides below
+   take effect: the font ships with very tall vertical metrics (content box
+   ~2.1em), which pushes line boxes — and thus link border-bottoms — far
+   below the text in RTL. Normalizing the metrics keeps them as tight as the
+   Latin fonts. */
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj4wv4r4xA.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC4, U+10EFC-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+  ascent-override: 90%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj5Jv4r4xA.woff2') format('woff2');
+  unicode-range: U+0302-0303, U+0305, U+0307-0308, U+0310, U+0312, U+0315, U+031A, U+0326-0327, U+032C, U+032F-0330, U+0332-0333, U+0338, U+033A, U+0346, U+034D, U+0391-03A1, U+03A3-03A9, U+03B1-03C9, U+03D1, U+03D5-03D6, U+03F0-03F1, U+03F4-03F5, U+2016-2017, U+2034-2038, U+203C, U+2040, U+2043, U+2047, U+2050, U+2057, U+205F, U+2070-2071, U+2074-208E, U+2090-209C, U+20D0-20DC, U+20E1, U+20E5-20EF, U+2100-2112, U+2114-2115, U+2117-2121, U+2123-214F, U+2190, U+2192, U+2194-21AE, U+21B0-21E5, U+21F1-21F2, U+21F4-2211, U+2213-2214, U+2216-22FF, U+2308-230B, U+2310, U+2319, U+231C-2321, U+2336-237A, U+237C, U+2395, U+239B-23B7, U+23D0, U+23DC-23E1, U+2474-2475, U+25AF, U+25B3, U+25B7, U+25BD, U+25C1, U+25CA, U+25CC, U+25FB, U+266D-266F, U+27C0-27FF, U+2900-2AFF, U+2B0E-2B11, U+2B30-2B4C, U+2BFE, U+3030, U+FF5B, U+FF5D, U+1D400-1D7FF, U+1EE00-1EEFF;
+  ascent-override: 90%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj5bv4r4xA.woff2') format('woff2');
+  unicode-range: U+0001-000C, U+000E-001F, U+007F-009F, U+20DD-20E0, U+20E2-20E4, U+2150-218F, U+2190, U+2192, U+2194-2199, U+21AF, U+21E6-21F0, U+21F3, U+2218-2219, U+2299, U+22C4-22C6, U+2300-243F, U+2440-244A, U+2460-24FF, U+25A0-27BF, U+2800-28FF, U+2921-2922, U+2981, U+29BF, U+29EB, U+2B00-2BFF, U+4DC0-4DFF, U+FFF9-FFFB, U+10140-1018E, U+10190-1019C, U+101A0, U+101D0-101FD, U+102E0-102FB, U+10E60-10E7E, U+1D2C0-1D2D3, U+1D2E0-1D37F, U+1F000-1F0FF, U+1F100-1F1AD, U+1F1E6-1F1FF, U+1F30D-1F30F, U+1F315, U+1F31C, U+1F31E, U+1F320-1F32C, U+1F336, U+1F378, U+1F37D, U+1F382, U+1F393-1F39F, U+1F3A7-1F3A8, U+1F3AC-1F3AF, U+1F3C2, U+1F3C4-1F3C6, U+1F3CA-1F3CE, U+1F3D4-1F3E0, U+1F3ED, U+1F3F1-1F3F3, U+1F3F5-1F3F7, U+1F408, U+1F415, U+1F41F, U+1F426, U+1F43F, U+1F441-1F442, U+1F444, U+1F446-1F449, U+1F44C-1F44E, U+1F453, U+1F46A, U+1F47D, U+1F4A3, U+1F4B0, U+1F4B3, U+1F4B9, U+1F4BB, U+1F4BF, U+1F4C8-1F4CB, U+1F4D6, U+1F4DA, U+1F4DF, U+1F4E3-1F4E6, U+1F4EA-1F4ED, U+1F4F7, U+1F4F9-1F4FB, U+1F4FD-1F4FE, U+1F503, U+1F507-1F50B, U+1F50D, U+1F512-1F513, U+1F53E-1F54A, U+1F54F-1F5FA, U+1F610, U+1F650-1F67F, U+1F687, U+1F68D, U+1F691, U+1F698, U+1F6AD, U+1F6B2, U+1F6B9-1F6BA, U+1F6BC, U+1F6C6-1F6CF, U+1F6D3-1F6D7, U+1F6E0-1F6EA, U+1F6F0-1F6F3, U+1F6F7-1F6FC, U+1F700-1F7FF, U+1F800-1F80B, U+1F810-1F847, U+1F850-1F859, U+1F860-1F887, U+1F890-1F8AD, U+1F8B0-1F8BB, U+1F8C0-1F8C1, U+1F900-1F90B, U+1F93B, U+1F946, U+1F984, U+1F996, U+1F9E9, U+1FA00-1FA6F, U+1FA70-1FA7C, U+1FA80-1FA89, U+1FA8F-1FAC6, U+1FACE-1FADC, U+1FADF-1FAE9, U+1FAF0-1FAF8, U+1FB00-1FBFF;
+  ascent-override: 90%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj47v4r4xA.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  ascent-override: 90%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj41v4o.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  ascent-override: 90%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
 /* Override Mintlify's default font variables to match main site */
 :root {
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
@@ -49,4 +115,294 @@ i,
 h1, h2, h3, h4, h5, h6, p, span, div {
   font-feature-settings: "ss01" 0, "ss02" 0, "ss03" 0; /* Disable common stylistic sets */
   font-variant-alternates: normal;
+}
+
+/* ===== Arabic (RTL) typography & layout =====
+   Hook: Mintlify sets data-current-path to the current URL path (e.g. "/ar/introduction").
+   The whole layout mirrors RTL for Arabic pages: sidebar moves to the right,
+   content offsets to the right, TOC moves to the left. */
+
+/* Flip the document direction to RTL: flex rows, text alignment, and
+   logical layout then mirror automatically for Arabic pages. */
+html[data-current-path^="/ar"] {
+  direction: rtl;
+}
+
+/* Apply an Arabic-capable font stack to body and headings */
+html[data-current-path^="/ar"] body,
+html[data-current-path^="/ar"] h1,
+html[data-current-path^="/ar"] h2,
+html[data-current-path^="/ar"] h3,
+html[data-current-path^="/ar"] h4,
+html[data-current-path^="/ar"] h5,
+html[data-current-path^="/ar"] h6 {
+  font-family: 'Noto Sans Arabic', var(--font-inter);
+}
+
+/* Right-align prose in the content area */
+html[data-current-path^="/ar"] #content-area {
+  text-align: right;
+}
+
+/* Sidebar: move from the left to the right edge */
+html[data-current-path^="/ar"] #sidebar {
+  left: auto;
+  right: 0;
+  border-right-width: 0;
+  border-left-width: 1px;
+}
+
+/* Main content container: offset away from the sidebar on the right */
+@media (min-width: 1024px) {
+  html[data-current-path^="/ar"] #content-container {
+    margin-left: 0;
+    margin-right: 19rem;
+    padding-left: 2.5rem;  /* flip of lg:pr-10 */
+    padding-right: 4rem;   /* flip of lg:pl-16 */
+  }
+}
+
+/* Table of contents: flip its inner padding so it sits on the left */
+html[data-current-path^="/ar"] #table-of-contents-layout {
+  padding-left: 0;
+  padding-right: 2.5rem; /* flip of pl-10 */
+}
+
+/* ===== Lists in RTL =====
+   Mintlify draws <ul> bullets with a custom absolutely-positioned ::before
+   dot pinned to the LEFT (physical), so direction:rtl alone can't move it.
+   Flip the dot and the li gutter to the right for Arabic pages. */
+
+html[data-current-path^="/ar"] #content-area ul,
+html[data-current-path^="/ar"] #content-area ol,
+html[data-current-path^="/ar"] #content-area li {
+  direction: rtl;
+  text-align: right;
+}
+
+html[data-current-path^="/ar"] #content-area ul:not([role="tablist"]) {
+  padding-inline-start: 0;
+}
+
+html[data-current-path^="/ar"] #content-area ul > li:not([role="tab"]) {
+  padding-left: 0 !important;
+  padding-right: 2em !important;
+}
+
+html[data-current-path^="/ar"] #content-area ul > li:not([role="tab"])::before {
+  left: auto;
+  right: 0.5em;
+}
+
+/* Task lists: Mintlify pins the checkbox to the left as well */
+html[data-current-path^="/ar"] #content-area li.task-list-item {
+  padding-left: 0 !important;
+  padding-right: 1.375rem !important;
+}
+
+html[data-current-path^="/ar"] #content-area li.task-list-item>input[type="checkbox"] {
+  left: auto;
+  right: 0;
+}
+
+/* ===== Sidebar navigation items in RTL =====
+   Mintlify pins the item indicator to the LEFT (ml-4, border-l, pr-3,
+   inline padding-left:1rem on the <a>/<button>). Flip them to the right
+   for the left sidebar (nav + collapsible groups) and the TOC links. */
+
+html[data-current-path^="/ar"] #sidebar li>a[href],
+html[data-current-path^="/ar"] #sidebar li>button {
+  margin-left: 0 !important;
+  margin-right: 1rem !important;
+  padding-left: 0.75rem !important;
+  padding-right: 1rem !important;
+  border-left-width: 0 !important;
+  border-right-width: 1px !important;
+  text-align: right !important;
+}
+
+html[data-current-path^="/ar"] #table-of-contents li>a[href] {
+  padding-left: 0 !important;
+  padding-right: calc(var(--toc-padding-left) + var(--toc-focus-padding, 0rem)) !important;
+  border-left-width: 0 !important;
+  border-right-width: 1px !important;
+}
+
+html[data-current-path^="/ar"] #table-of-contents li>a[href]:focus-visible {
+  margin-left: 0 !important;
+  margin-right: -0.25rem !important;
+  /* flip of focus-visible:-ml-1 */
+}
+
+/* Deeper TOC levels carry the indicator on the <li> itself
+   (border-l pl-4 + data-active:* variants) instead of on the <a>. */
+html[data-current-path^="/ar"] #table-of-contents li.toc-item.border-l {
+  border-left-width: 0 !important;
+  border-right-width: 1px !important;
+  padding-left: 0 !important;
+  padding-right: calc(var(--toc-padding-left) + var(--toc-focus-padding, 0rem)) !important;
+}
+
+/* Heading anchor links: the chain icon is pulled outward with a negative
+   physical margin-left (-ml-10). In RTL that drags it over the title, so
+   mirror it to a negative right margin instead. */
+html[data-current-path^="/ar"] #content-area div.absolute>a[class*="-ml-10"] {
+  margin-left: 0 !important;
+  margin-right: -2.5rem !important;
+}
+
+/* API param headers (param-head): the content div uses mr-5 to offset the
+   title from the field edge in LTR; mirror it to the left in RTL. */
+html[data-current-path^="/ar"] .param-head .mr-5 {
+  margin-right: 0 !important;
+  margin-left: 1.25rem !important;
+}
+
+/* Page context menu (view/more buttons): push it to the opposite edge and
+   swap the joined group's corner rounding / shared border for RTL. */
+html[data-current-path^="/ar"] #page-context-menu.ml-auto {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+html[data-current-path^="/ar"] #page-context-menu-button {
+  border-radius: 0 0.75rem 0.75rem 0 !important; /* rounded-r-xl */
+  border-left-width: 0 !important;
+  border-right-width: 1px !important;
+}
+
+html[data-current-path^="/ar"] #page-context-menu [aria-haspopup="menu"] {
+  border-radius: 0.75rem 0 0 0.75rem !important; /* rounded-l-xl */
+}
+
+/* Pagination: mirror the prev/next link paddings and flip the chevrons.
+   LTR: prev = pl-3 pr-6 with a left-pointing chevron; next's label block =
+   pl-5 pr-3 with a right-pointing chevron. Flex direction reverses these in
+   RTL, so swap the paddings and mirror the SVG chevrons. */
+html[data-current-path^="/ar"] #pagination [data-component-part="pagination-prev"] {
+  padding-left: 1.5rem !important;
+  padding-right: 0.75rem !important;
+}
+
+html[data-current-path^="/ar"] #pagination [data-component-part="pagination-next"] .pl-5 {
+  padding-left: 0.75rem !important;
+  padding-right: 1.25rem !important;
+}
+
+html[data-current-path^="/ar"] #pagination [data-component-part="pagination-chevron"] {
+  transform: scaleX(-1);
+}
+
+/* The next panel's title/description are text-right to hug the divider and
+   label, which sit on the right in LTR but on the left in RTL. Left-align
+   them in RTL so they stay adjacent to the "التالي" label. */
+html[data-current-path^="/ar"] [data-component-part="pagination-next"] [data-component-part="pagination-title"],
+html[data-current-path^="/ar"] [data-component-part="pagination-next"] [data-component-part="pagination-description"] {
+  text-align: left !important;
+}
+
+/* Card entry links (SnippetCardEntry): flip the directional icons in RTL —
+   the arrow-right bullet before the link and the arrow-up-right-from-square
+   external-link icon inside it. */
+html[data-current-path^="/ar"] [data-component-part="card-content"] svg[style*="arrow-right.svg"],
+html[data-current-path^="/ar"] [data-component-part="card-content"] svg[style*="arrow-up-right-from-square.svg"] {
+  transform: scaleX(-1);
+}
+
+/* Link cards (<Card href>): the arrow-up-right icon sits at top-right in
+   LTR; move it to top-left and mirror the arrow for RTL. */
+html[data-current-path^="/ar"] [data-component-part="card-content-container"] .top-5.right-5 {
+  right: auto !important;
+  left: 1.25rem !important;
+}
+
+html[data-current-path^="/ar"] [data-component-part="card-content-container"] .top-5.right-5 svg {
+  transform: scaleX(-1);
+}
+
+/* Fix <Steps> component layout in RTL: flip the physical LTR offsets
+   (margin-left, padding-left, absolute left) used by Mintlify's markup.
+   Scoped to .step-container (not just .steps) so bare <Step> components
+   rendered without a <Steps> wrapper are handled too. */
+html[data-current-path^="/ar"] .steps {
+  margin-left: 0;
+  margin-right: 0.875rem;
+}
+
+html[data-current-path^="/ar"] .step-container [data-component-part="step-line"] {
+  left: auto;
+  right: 0;
+}
+
+html[data-current-path^="/ar"] .step-container [data-component-part="step-number"] {
+  left: auto;
+  right: 0;
+  margin-left: 0;
+  margin-right: -13px;
+}
+
+html[data-current-path^="/ar"] .step-container>.overflow-hidden {
+  padding-left: 1px;
+  padding-right: 2rem;
+}
+
+/* Tab panels: Mintlify uses overflow-x-auto, which computes to a vertical
+   scrollbar too, and RTL text adds a few px of vertical overflow that makes
+   an unwanted scrollbar appear. Keep horizontal scrolling, hide vertical. */
+html[data-current-path^="/ar"] [data-component-part="tab-content"] {
+  overflow-y: hidden;
+}
+
+/* Accordion (<details>/<summary>) content uses the same overflow-x-auto
+   pattern, so it can show the same spurious vertical scrollbar in RTL.
+   Keep horizontal scrolling for wide content but hide the vertical one. */
+html[data-current-path^="/ar"] [data-component-part="accordion-content"] {
+  overflow-y: hidden;
+}
+
+/* Accordion summaries in RTL: put the caret/arrow on the left and the
+   title (right-aligned) on the right, and flip the caret glyph. */
+html[data-current-path^="/ar"] [data-component-part="accordion-button"] {
+  flex-direction: row-reverse;
+}
+
+html[data-current-path^="/ar"] [data-component-part="accordion-button"] [data-component-part="accordion-title-container"] {
+  text-align: right !important;
+}
+
+/* Accordion caret in RTL: Mintlify renders the closed caret with FontAwesome
+   caret-right.svg. Point it at caret-left.svg instead (rather than flipping
+   via transform, which animates oddly). Mintlify rotates the caret 90deg on
+   open; a left caret rotated +90deg (clockwise) would point up, so rotate it
+   -90deg instead to point down. */
+html[data-current-path^="/ar"] [data-component-part="accordion-button"] [data-component-part="accordion-caret-right"] svg {
+  -webkit-mask-image: url('https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/solid/caret-left.svg') !important;
+  mask-image: url('https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/solid/caret-left.svg') !important;
+}
+
+html[data-current-path^="/ar"] details[open] [data-component-part="accordion-button"] [data-component-part="accordion-caret-right"] svg {
+  rotate: -90deg !important;
+}
+/* Tables: prose aligns cells to the logical start (right in RTL), but the
+     [&_th]:text-left utility Mintlify puts on tables — and any inline style="text-align:left" on th/td from the source — forces cells to the physical left. Right-align all table cells on Arabic pages. */ html[data-current-path^="/ar"] #content-area table th,
+     html[data-current-path^="/ar"] #content-area table td {
+  text-align: right !important;
+}
+
+/* Blockquotes: Mintlify overrides the border/padding with physical
+   border-left + padding-left, which in RTL stacks on top of the typography's
+   logical border-inline-start — giving a border on both sides. Keep only the
+   inline-start (right) border and pad the right to match LTR. */
+html[data-current-path^="/ar"] .prose blockquote {
+  border-left-width: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 1.5rem !important;
+}
+/* Keep code blocks and inline code left-to-right inside RTL content */
+html[data-current-path^="/ar"] code,
+html[data-current-path^="/ar"] pre,
+html[data-current-path^="/ar"] .code-block {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: isolate;
 }

@@ -1,0 +1,150 @@
+---
+title: 'الكاميرا'
+description: 'الكاميرا'
+---
+
+import SnippetCameraOverlaysList from '/snippets/boards/o1/camera/listoverlays.mdx';
+import SnippetCameraSetup from '/snippets/boards/o1/camera/camerasetup.mdx';
+import SnippetCameraRecordVideo from '/snippets/boards/o1/camera/recordvideo.mdx';
+import SnippetCameraTakePhoto from '/snippets/boards/o1/camera/takephoto.mdx';
+import SnippetCameraSet from '/snippets/boards/o1/camera/cameraset.mdx';
+import SnippetCameraListFormats from '/snippets/boards/o1/camera/listformats.mdx';
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-ar.mdx';
+
+<Tip>
+في نهاية القسم ستكتسب خبرة في المواضيع التالية
+
+- توصيل كاميرا CSI فعليًا بلوحة تطوير Gemstone O1.
+- تمكين الاتصال البرمجي بإضافة overlay
+</Tip>
+
+### ما هو CSI؟
+
+CSI (Camera Serial Interface) هو ناقل بيانات تسلسلي صُمم للكاميرات عالية الدقة في الأجهزة المحمولة والأنظمة
+المدمجة. طُوّرت هذه الواجهة من قبل تحالف MIPI (Mobile Industry Processor Interface)، وتوفر نقل بيانات الصور
+والفيديو بسرعة عالية وموثوقية بين المعالج ومستشعر الكاميرا. وتُفضَّل عمومًا في الكاميرات المستخدمة مع الهواتف
+الذكية والطائرات بدون طيار وأجهزة الكمبيوتر الجيبية الصغيرة.
+
+### الخطوات
+
+<Steps>
+
+  <Step title="توصيل الكابل">
+    يجب توصيل الكابل بين الكاميرا ولوحة تطوير Gemstone O1 بشكل صحيح.
+  </Step>
+
+  <Step title="إضافة Overlay">
+    لكي تعمل كاميرا CSI، يجب إضافة الـoverlay المعني إلى ملف uEnv.txt الموجود في boot partition.
+  </Step>
+
+  <Step title="إعادة تشغيل اللوحة">
+    بعد إتمام جميع هذه الخطوات، سيكفي إعادة تشغيل اللوحة.
+  </Step>
+
+</Steps>
+
+### 1\. توصيل الكابل
+
+لتوصيل الكابل بين الكاميرا ولوحة تطوير Gemstone O1 بشكل صحيح، عليك عمل توصيل كما في الصورة أدناه.
+يمكنك توصيل كابل CSI بأي من المقبسين؛ المهم هنا هو إضافة الـoverlay الذي يفعّل CSI الخاص بالمقبس الذي
+وصّلته.
+
+<Note>
+- يجب أن يواجه الجزء الذي يحتوي على المسارات النحاسية في الكابل الجزء الأبيض من المقبس.
+- الموصل البعيد عن مقبس Ethernet هو CSI0، والموصل القريب هو CSI1.
+</Note>
+
+<Frame caption="توصيل كابل الكاميرا باللوحة">
+  <img className="rounded-lg" noZoom src="/images/o1-board/15-camera-lens-3.png" />
+</Frame>
+
+### 2\. إضافة Overlay
+
+يمكنك سرد الـoverlays الخاصة بالكاميرات المدعومة باستخدام الأمر التالي.
+
+<SnippetCameraOverlaysList />
+
+من واجهة الطرفية، افتح ملف `uEnv.txt` الموجود في مجلد boot باستخدام محرر النصوص المسمى `nano`.
+
+```bash
+sudo nano /boot/uEnv.txt
+```
+
+<Tip>
+بما أننا نستخدم الأمر مع sudo، سيطلب كلمة المرور. إذا لم تغيّرها، يجب استخدام كلمة المرور التي حددتها
+عند كتابة الصورة باستخدام Gem-Imager.
+</Tip>
+
+ستجد داخل ملف `uEnv.txt` تعريفات من هذا النوع.
+
+<SnippetUEnv />
+
+أضف اسم الملف الذي حصلت عليه في الأمر السابق إلى نهاية سطر `overlays=` مع ترك مسافة. على سبيل المثال،
+عند توصيل كاميرا IMX219 بالموصل CSI0 (الموصل البعيد عن الإيثرنت)، يجب استخدام اسم الملف
+`k3-am67a-t3-gem-o1-csi0-imx219.dtbo`.
+
+الشكل النهائي لملف `uEnv.txt` سيكون هكذا. يجب وضع اسم الملف المناسب في الجزء `<dosya-adi>`.
+
+<SnippetUEnvEdit />
+
+### 3\. إعادة تشغيل اللوحة
+
+يجب إعادة تشغيل اللوحة باستخدام الأمر `reboot`.
+
+```bash
+sudo reboot
+```
+
+### 4\. تشغيل سكربت `gem-camera-setup`
+
+يجب تثبيت الكاميرات المتصلة باللوحة عبر الأمر التالي.
+
+<SnippetCameraSetup />
+
+إذا حصلت على ناتج مشابه لما سبق، فأنت قد وصلت الكاميرا باللوحة بنجاح.
+
+### 5\. إعدادات الكاميرا
+
+في البداية، يُستخدم الأمر التالي لضمان إنشاء اتصال صحيح بين مشغّل النواة (kernel driver) لمستشعر الكاميرا
+وتطبيقات المستخدم (user space). عند تشغيل الأمر، يُضبط مخرج الفيديو لمستشعر كاميرا IMX219 على دقة 640x480
+وصيغة SRGGB8. يضمن هذا الإعداد حصول التطبيقات التي ستستخدم تدفق البيانات هذا في المرحلة التالية (مثل تطبيق
+كاميرا أو gstreamer) على البيانات الصحيحة.
+
+<SnippetCameraSet />
+
+يمكنك الوصول إلى الصيغ التي تدعمها الكاميرا عبر الأمر التالي.
+
+<SnippetCameraListFormats />
+
+<Warning>
+يجب إدخال الجهاز المذكور في ناتج سكربت `gem-camera-setup` في الجزء `/dev/video-imx219-cam0`.
+</Warning>
+
+تضبط الإعدادات أدناه قيم الكسب (gain) والتعريض (exposure) للكاميرا على قيمة افتراضية معقولة.
+إذا لاحظت أن صورتك باهتة أو داكنة جدًا أو حتى فارغة، فقد تحتاج إلى ضبط هذه المعاملات وفقًا لبيئة الإضاءة
+الخاصة بك. إذا لم تكن تراقب الصورة بشكل صحيح، فقد يكون ذلك علامة على أن هذه الإعدادات خاطئة.
+
+```bash إضاءة داخلية
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=digital_gain=2048
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=analogue_gain=230
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=exposure=1750
+```
+
+```bash إضاءة طبيعية
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=digital_gain=1000
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=analogue_gain=100
+v4l2-ctl -d /dev/v4l-subdev2 --set-ctrl=exposure=1000
+```
+
+### 6\. التقاط صورة
+
+يمكنك التقاط صورة بصيغة .jpg بتشغيل الأمر التالي.
+
+<SnippetCameraTakePhoto />
+
+### 7\. تسجيل فيديو
+
+يمكنك تسجيل فيديو بصيغة .mp4 (100 إطار) بتشغيل الأمر التالي.
+
+<SnippetCameraRecordVideo />

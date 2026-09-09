@@ -1,0 +1,163 @@
+---
+title: 'GPIO'
+description: 'General Purpose Input Output (GPIO)'
+---
+
+import SnippetExamplesGpioScript from '/snippets/boards/o1/examples/gpio-script.mdx';
+import SnippetExamplesLedScript from '/snippets/boards/o1/examples/led-script.mdx';
+
+<Tip>
+في نهاية القسم ستكتسب خبرة في المواضيع التالية
+
+- استخدام GPIO عبر Gemstone
+- التحضير المسبق لمشروع [t3gemstone/examples/gpio](https://github.com/t3gemstone/examples/tree/main/gpio).
+</Tip>
+
+GPIO (General Purpose Input/Output) هي أطراف تُستخدم لعمليات الإدخال والإخراج ذات الأغراض العامة في المتحكمات
+الدقيقة ولوحات التطوير. يمكن تهيئة هذه الأطراف لاستقبال البيانات الرقمية (إدخال) وإرسال الإشارات الرقمية (إخراج).
+فيما يلي عملية وميض LED عبر أطراف GPIO على Gemstone.
+
+<Frame caption="أطراف GPIO">
+  <img className="rounded-lg" src="/images/o1-board/32-gpio.png" />
+</Frame>
+
+بالإضافة إلى المواد المذكورة في صفحة [البدء السريع](/ar/quickstart)، يلزم وجود LED وزر ومقاومة.
+
+<AccordionGroup>
+
+  <Accordion title="LED">
+    <Frame>
+      <img height="500" width="800" src="/images/led.jpg" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="الزر">
+    <Frame>
+      <img height="500" width="800" src="/images/button.jpeg" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="المقاومة">
+    <Frame>
+      <img height="500" width="800" src="/images/resistor.jpg" />
+    </Frame>
+  </Accordion>
+
+</AccordionGroup>
+
+<Steps>
+  <Step title="توصيلات GPIO">
+  قم بتوصيلات GPIO للوحة Gemstone.
+  </Step>
+
+  <Step title="اتصال SSH/VNC">
+  اتصل بلوحة التطوير عبر إحدى طريقتي
+  [SSH](../../../quickstart#2-3-الاتصال-عبر-الشبكة-باستخدام-ssh) أو
+  [VNC](../../../quickstart#2-2-الاتصال-بسطح-المكتب-البعيد-من-المتصفح-عبر-vnc).
+  </Step>
+
+  <Step title="Shell">
+  أنشئ سكربتات Bash Shell.
+  </Step>
+</Steps>
+
+## 1\. إضاءة LED
+
+### 1\.1\. توصيلات GPIO
+
+تُوصَّل أطراف LED إلى GPIOX المتاح للاستخدام كإدخال/إخراج على Gemstone كما هو موضح أدناه.
+
+<Frame caption="توصيل LED">
+  <img className="rounded-lg" src="/images/o1-board/22-led.png" />
+</Frame>
+
+### 1\.2\. إنشاء سكربت Shell
+
+بعد الاتصال بـGemstone، أنشئ ملف سكربت لعملية وميض LED.
+
+```bash
+touch led-blink.sh
+```
+
+من واجهة الطرفية، افتح ملف `led-blink.sh` باستخدام محرر النصوص المسمى `nano`.
+
+```bash
+nano led-blink.sh
+```
+
+انسخ الكود التالي والصقه في ملف led-blink.sh.
+
+<SnippetExamplesGpioScript />
+
+بعد الضغط على `CTRL+X`، اضغط على زر `Y` للخروج من محرر nano وإتمام عملية الحفظ.
+
+### 1\.3\. تشغيل سكربت Shell
+
+اجعل ملف `led-blink.sh` قابلًا للتنفيذ باستخدام الأمر `chmod`.
+
+```bash
+chmod +x led-blink.sh
+```
+
+شغّل سكربت `led-blink.sh`.
+
+```bash
+./led-blink.sh
+```
+
+أخيرًا، لاحظ وميض LED كل ثانية واحدة كما هو موضح في الفيديو التالي.
+
+<Frame caption="تطبيق وميض LED">
+  <video controls className="w-full aspect-video" src=""></video>
+</Frame>
+
+## 2\. قراءة الزر وإضاءة LED
+
+### 2\.1\. توصيلات GPIO
+
+تُوصَّل أطراف LED إلى طرف GPIOX وأطراف الزر إلى طرف GPIOY المتاحين للاستخدام كإدخال/إخراج على Gemstone
+كما هو موضح أدناه.
+
+<Frame caption="توصيل LED والزر">
+  <img className="rounded-lg" src="/images/o1-board/07-buttons-breadboard.png" />
+</Frame>
+
+### 2\.2\. إنشاء سكربت Shell
+
+أنشئ ملف السكربت.
+
+```bash
+touch button-led.sh
+```
+
+من واجهة الطرفية، افتح ملف `button-led.sh` باستخدام محرر النصوص `nano`.
+
+```bash
+nano button-led.sh
+```
+
+انسخ الكود التالي والصقه في ملف `button-led.sh`.
+
+<SnippetExamplesLedScript />
+
+بعد الضغط على `CTRL+X`، اضغط على زر `Y` للخروج من محرر nano وإتمام عملية الحفظ.
+
+### 2\.3\. تشغيل سكربت Shell
+
+اجعل ملف `button-led.sh` قابلًا للتنفيذ باستخدام الأمر `chmod`.
+
+```bash
+chmod +x button-led.sh
+```
+
+شغّل سكربت `button-led.sh`.
+
+```bash
+./button-led.sh
+```
+
+أخيرًا، لاحظ إضاءة LED طوال مدة الضغط على الزر كما هو موضح في الفيديو التالي.
+
+<Frame caption="إضاءة LED بالزر">
+  <video controls className="w-full aspect-video" src=""></video>
+</Frame>

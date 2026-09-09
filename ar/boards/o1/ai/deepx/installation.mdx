@@ -1,0 +1,168 @@
+---
+title: 'التثبيت'
+description: 'تركيب وحدة DX-M1 على اللوحة'
+---
+
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-ar.mdx';
+import SnippetDeepxLspci from '/snippets/boards/o1/deepx/lspci.mdx';
+import SnippetDeepxLsmod from '/snippets/boards/o1/deepx/lsmod.mdx';
+import SnippetDeepxStatus from '/snippets/boards/o1/deepx/dxrt-status.mdx';
+
+يشرح هذا القسم خطوات تركيب وحدة المسرّع DeepX DX-M1 على لوحة التطوير T3 Gemstone O1، وتثبيت حزم المشغّل ووقت
+التشغيل، والتحقق من التثبيت.
+
+<Steps>
+
+  <Step title="تركيب العتاد">
+
+    <Warning>
+      قبل بدء عملية التركيب، افصل مصدر الطاقة عن اللوحة. إن تركيب وحدة M.2 أو إزالتها بينما تكون اللوحة متصلة
+      بالطاقة قد يتسبب في ضرر دائم لكل من الوحدة واللوحة.
+    </Warning>
+
+    ضع وحدة DX-M1 في منفذ M.2 2280 الموجود على اللوحة بزاوية تبلغ نحو 30 درجة، ثم اجعل الوحدة في وضع أفقي وأحكم
+    ربط برغي التثبيت.
+
+    <Note>
+      تسحب الوحدة طاقة تصل إلى 5W وتُصبح ساخنة عند الحمل الكامل. في التطبيقات التي تعمل بشكل مستمر، يُنصح
+      باستخدام الوحدة مع مشتت حراري (heatsink).
+    </Note>
+  </Step>
+
+  <Step title="إضافة Overlay">
+
+    لكي يتم التعرف على وحدة DX-M1 دون مشاكل عبر ناقل PCIe، يجب تفعيل ملف الـ overlay الخاص بـ
+    `k3-am67a-t3-gem-o1-pcie-link-speed-2.dtbo` الذي يضبط سرعة الاتصال.
+
+    افتح ملف `uEnv.txt` الموجود في مجلد boot باستخدام محرر النصوص المسمى `nano` من واجهة الطرفية.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    <Tip>
+      سيطلب الأمر كلمة المرور لأننا نستخدمه مع sudo. إذا لم تغيّرها، فيجب عليك استخدام كلمة المرور التي حددتها
+      أثناء كتابة الصورة باستخدام Gem-Imager.
+    </Tip>
+
+    ستجد داخل ملف `uEnv.txt` تعريفات من هذا النوع.
+
+    <SnippetUEnv />
+
+    أضف اسم الملف `k3-am67a-t3-gem-o1-pcie-link-speed-2.dtbo` إلى نهاية سطر `overlays=` مع ترك مسافة.
+
+    سيصبح الشكل النهائي لملف `uEnv.txt` هكذا. يجب عليك وضع اسم الملف المناسب في الجزء `<dosya-adi>`.
+
+    <SnippetUEnvEdit />
+
+    بعد تعريف ملف الـ overlay، يجب إعادة تشغيل اللوحة حتى يتمكن النظام من تطبيق التغييرات التي أجريتها.
+
+    ```bash
+    sudo reboot
+    ```
+
+    <Note>
+      لا تحذف ملفات الـ overlay الأخرى الموجودة في سطر `overlays=`. وإلا ستصبح الـ overlays التي فُعِّلت سابقاً
+      غير قابلة للاستخدام.
+    </Note>
+  </Step>
+
+  <Step title="التحقق من اتصال PCIe">
+
+    بعد إعادة تشغيل اللوحة، تحقق من أنه تم اكتشاف الوحدة على ناقل PCIe.
+
+    ```bash
+    sudo apt install pciutils
+    ```
+
+    <SnippetDeepxLspci />
+
+    ظهور السطر `Processing accelerators` في المخرجات يدل على أنه تم التعرف على الوحدة على مستوى العتاد.
+
+    <Tip>
+      إذا لم تظهر الوحدة في القائمة، يمكنك مراجعة العنوان **الوحدة لا تظهر في مخرجات lspci** في قسم
+      [استكشاف الأخطاء وإصلاحها](/ar/boards/o1/ai/deepx/troubleshooting).
+    </Tip>
+  </Step>
+
+  <Step title="تثبيت المشغّل ووقت التشغيل">
+
+    بعد تحديث قائمة الحزم، ثبّت حزمة مشغّل DeepX ووقت التشغيل.
+
+    ```bash
+    sudo apt update
+    sudo apt install dxrt dx-stream
+    ```
+
+    تثبّت هذه الحزمة مشغّل النواة لـ PCIe (`dxrt_driver`, `dx_dma`)، ووقت تشغيل DX-RT، وأدوات مساعدة مثل
+    `dxrt-cli`.
+
+    أعد تشغيل اللوحة حتى يمكن تحميل المشغّل في النواة.
+
+    ```bash
+    sudo reboot
+    ```
+
+    <Tip>
+      إذا كنت ترغب في تجميع الـ SDK من الكود المصدري، فيمكنك استخدام المستودع
+      [deepx-npu-deepx](https://github.com/t3gemstone/deepx-npu-sdk) المنشور من جانبنا.
+    </Tip>
+  </Step>
+
+  <Step title="التحقق من تحميل المشغّل">
+
+    حمّل وحدات النواة ثم أعد تشغيل الخدمة.
+
+    ```bash
+    sudo modprobe dxrt_driver
+    sudo systemctl restart dxrt.service
+    ```
+
+    يحمّل أمر `modprobe` أعلاه الوحدة في اللحظة الحالية فقط. لكي يُحمَّل المشغّل تلقائياً عند كل إقلاع، أضف
+    الوحدة إلى إعداد `systemd-modules-load`.
+
+    ```bash
+    echo dxrt_driver | sudo tee /etc/modules-load.d/dxrt.conf
+    ```
+
+    يمكنك التحقق من تحميل وحدة النواة بنجاح باستخدام الأمر التالي.
+
+    <SnippetDeepxLsmod />
+
+    يمكنك أيضاً التحقق من ملفات الجهاز التي أنشأها المشغّل.
+
+    ```bash
+    ls /dev/dxrt*
+    ```
+  </Step>
+
+  <Step title="التحقق من حالة الجهاز">
+
+    تحقق من أن الوحدة قابلة للوصول من قِبل وقت التشغيل باستخدام أداة `dxrt-cli`. من المتوقع الحصول على مخرجات
+    مشابهة للمخرجات التالية. ستختلف قيم الإصدار ودرجة الحرارة وفقاً للعتاد الذي تستخدمه.
+
+    <SnippetDeepxStatus />
+  </Step>
+
+  <Step title="تثبيت حزمة Python">
+
+    تُوفر واجهة الاستدلال في جانب Python عبر الحزمة `dx_engine`. ثبّت الحزمة باستخدام `pip3`.
+
+    ```bash
+    pip3 install dx_engine
+    ```
+  </Step>
+
+  <Step title="التحقق من حزمة Python">
+
+    لكي تتمكن من إجراء الاستدلال باستخدام Python، يجب أن تكون الحزمة `dx_engine` قابلة للاستخدام.
+
+    ```bash
+    python3 -c "from dx_engine import InferenceEngine; print('dx_engine hazir')"
+    ```
+
+    إذا عمل الأمر دون أخطاء، فإن بيئة التطوير تكون جاهزة للاستخدام.
+  </Step>
+
+</Steps>
