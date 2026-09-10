@@ -1,5 +1,5 @@
 ---
-title: 'ArduCopter on ChibiOS (T3 Gemstone O1)'
+title: 'ChibiOS'
 description: 'Running the ArduCopter flight controller directly on the R5F core, on the ChibiOS RTOS, instead of Linux'
 ---
 
@@ -20,11 +20,6 @@ same chip, running independently of each other:
   program (an `.elf` file) on this core through a mechanism called
   `remoteproc` — similar to flashing an Arduino, but as a self-contained
   "mini computer" inside the board itself.
-
-Factory/default state of the board: a no-op "echo" test program sits idle
-on the R5F, while the real flight control runs on the A53 side, on Linux,
-via ArduCopter (the `t3-gem-ardupilot` apt package, see the
-[ArduPilot page](/en/projects/ardupilot)).
 
 What this setup does: it moves ArduCopter from Linux to the R5F. Flight
 control no longer runs on Linux — it runs directly on that small R5F core,
@@ -54,10 +49,8 @@ work like flight control.
 
 <Warning>
 **Never run an arm/motor test without removing the propellers.** With this
-firmware, motors can genuinely spin once armed. **GPS does not work** in
-this setup — there are no GPS-dependent modes like Auto/Guided/RTL/PosHold;
-test knowing there is no "rescue" mode like RTL (return-to-launch).
-Battery voltage/current telemetry is also unavailable — monitor the battery
+firmware, motors can genuinely spin once armed. GPS works.
+Battery voltage/current telemetry is unavailable — monitor the battery
 visually/manually. The first deploy/test should always be done with the
 board bench-mounted and propellers removed.
 </Warning>
@@ -267,24 +260,14 @@ ubuntu@host:~$ systemctl --user is-active gem-mavbridge
 
 ## 6. Known Limitations
 
-These reflect the real state at the verified flight on 2026-08-18 — not
-bugs, but the current real boundaries of this experimental setup:
+These are not bugs, but the current real boundaries of this experimental setup:
 
-- **GPS has not been tested yet.** On the normal Linux/ArduCopter setup,
-  GPS connects over `UART-MAIN6` and works fine (see the
-  [ArduPilot page](/en/projects/ardupilot)). But in this repo's
-  ChibiOS/R5F HAL (`AP_HAL_ChibiOS_K3`), `serial3` is still an empty stub.
-  The claim that "the R5F can never physically reach this port" turned out
-  to be doubtful (the R5F already successfully reaches another port in the
-  same hardware family), so a minimal probe (`am67_uart6_probe`) that
-  tests reachability was written and compiled but never actually run on
-  real hardware. Auto/Guided/RTL/PosHold cannot be used.
 - **IMU read rate is fixed at 100Hz** — `SCHED_LOOP_RATE=50` is required
   (see [Configuration](#4-configuration)). A faster read method was tried
   but silently produced corrupt data.
 - **The `ARMING_CHECK` parameter appears "missing"** — cosmetic; ArduPilot
-  recently renamed this parameter and QGC's internal list has not caught
-  up. Does not block arming/flight.
+  recently renamed this parameter to `ARMING_SKIPCHK` (with inverted logic)
+  and QGC's internal list has not caught up. Does not block arming/flight.
 - **A full reboot is required after every firmware change** — the
   remoteproc mailbox stop handshake is not implemented yet.
 - **`trace0` debug output is 16 KB and not circular.**
@@ -323,19 +306,17 @@ both the start and end address to be 8-byte aligned — the
 `read_aligned()`/`write_aligned()` functions in the Python scripts under
 `deploy/` already handle this.
 
-### 7.6. I want to try getting GPS working
+### 7.6. GPS
 
-The serial port GPS is wired to (`UART-MAIN6`) is in the same hardware
-family as another port the R5F already successfully reaches — so the
-assumption "the R5F can never reach it" is not certain, but this has not
-yet been verified on real hardware.
+GPS works. An AM67 UART serial driver for `UART-MAIN6` was added to the
+`AP_HAL_ChibiOS_K3` HAL, and the GPS got a 3D fix on real hardware.
 
 ## Repository Layout
 
 ```
-.                                  ArduPilot source (emirhan-sonmez/ardupilot @ gemstone-o1-r5f-hal)
+.                                  ArduPilot source (ardupilot @ gemstone-o1-r5f-hal)
 ├── libraries/AP_HAL_ChibiOS_K3/   Custom HAL backend for the R5F
-├── modules/ChibiOS-Gemstone-O1-Port/   ChibiOS port (emirhan-sonmez/ChibiOS-Gemstone-O1-Port @ gemstone-o1-r5f)
+├── modules/ChibiOS-Gemstone-O1-Port/   ChibiOS port (ChibiOS-Gemstone-O1-Port @ gemstone-o1-r5f)
 └── deploy/                        Board/host-side parts specific to this project, not in either upstream repo
     ├── board/gem_storaged.py      Parameter-saving script that runs on the board
     ├── host/gem_mavbridge.py, run_bridge.py   Host<->board MAVLink bridge

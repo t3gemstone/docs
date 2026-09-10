@@ -1,5 +1,5 @@
 ---
-title: 'ChibiOS Üzerinde ArduCopter (T3 Gemstone O1)'
+title: 'ChibiOS'
 description: 'ArduCopter uçuş kontrolcüsünü Linux yerine doğrudan R5F çekirdeğinde, ChibiOS RTOS üzerinde çalıştırma'
 ---
 
@@ -20,11 +20,6 @@ T3 Gemstone O1 kartının içinde iki farklı işlemci çekirdek ailesi var, ayn
   adlı bir mekanizmayla bu çekirdeğe bir program (`.elf` dosyası) yükleyip
   başlatabiliyor — tıpkı bir Arduino'ya program yüklemek gibi ama kartın
   kendi içinde, ayrı bir "bilgisayarcık" olarak.
-
-Kartın fabrika/varsayılan hali: R5F'te işe yaramaz bir "echo" test programı
-boşta duruyor, gerçek uçuş kontrolü A53 tarafında, Linux üzerinde çalışan
-ArduCopter yapıyor (`t3-gem-ardupilot` apt paketi, bkz.
-[ArduPilot sayfası](/tr/projects/ardupilot)).
 
 Bu kurulumun yaptığı: ArduCopter'ı Linux'tan R5F'e taşımak. Yani artık uçuş
 kontrolü Linux'ta değil, doğrudan o küçük R5F çekirdeğinde, ChibiOS denen bir
@@ -54,10 +49,8 @@ duyarlı işler için ilgi çekici bir alternatif.
 
 <Warning>
 **Pervaneleri (propeller) çıkarmadan hiçbir arm/motor testi yapmayın.** Bu
-firmware'de arm olduğunda motorlar gerçekten dönebilir. Bu kurulumda **GPS
-çalışmıyor** — Auto/Guided/RTL/PosHold gibi GPS gerektiren modlar yoktur,
-RTL (eve dön) gibi bir "kurtarma" modu olmadığını bilerek test edin. Batarya
-voltaj/akım telemetrisi de yok — bataryanın durumunu gözle/elle takip edin.
+firmware'de arm olduğunda motorlar gerçekten dönebilir. GPS çalışıyor. Batarya
+voltaj/akım telemetrisi yok — bataryanın durumunu gözle/elle takip edin.
 İlk defa deploy ederken/test ederken kart bir tezgahta, pervanesiz,
 sabitlenmiş halde olmalı.
 </Warning>
@@ -266,23 +259,15 @@ ubuntu@host:~$ systemctl --user is-active gem-mavbridge
 
 ## 6. Bilinen Kısıtlamalar
 
-Bunlar 2026-08-18'deki doğrulanmış uçuş anındaki gerçek durumdur — birer
-"bug" değil, bu deneysel kurulumun şu anki gerçek sınırları:
+Bunlar birer "bug" değil, bu deneysel kurulumun şu anki gerçek sınırları:
 
-- **GPS henüz test edilmedi.** Normal Linux/ArduCopter kurulumunda GPS
-  `UART-MAIN6`'ya bağlı ve sorunsuz çalışıyor (bkz.
-  [ArduPilot sayfası](/tr/projects/ardupilot)). Ama buradaki ChibiOS/R5F
-  HAL'inde (`AP_HAL_ChibiOS_K3`) `serial3` hâlâ boş bir stub. "R5F bu porta
-  fiziksel olarak hiç erişemez" iddiası şüpheli çıktı (R5F zaten aynı
-  donanım ailesinden başka bir porta başarıyla erişiyor), erişilebilirliği
-  sınayan minimal bir test kodu (`am67_uart6_probe`) yazılıp derlendi ama
-  gerçek kartta hiç çalıştırılmadı. Auto/Guided/RTL/PosHold kullanılamaz.
 - **IMU okuma hızı 100Hz'e sabit** — `SCHED_LOOP_RATE=50` şart (bkz.
   [Yapılandırma](#4-yapılandırma)). Daha hızlı bir okuma yöntemi denenmişti
   ama sessizce hatalı veri üretiyordu.
 - **`ARMING_CHECK` parametresi "eksik" görünüyor** — kozmetik, ArduPilot bu
-  parametrenin adını yakın zamanda değiştirdi, QGC'nin dahili listesi
-  güncel değil. Arm'ı/uçuşu engellemiyor.
+  parametrenin adını yakın zamanda `ARMING_SKIPCHK` olarak değiştirdi (mantığı
+  da ters çevrildi), QGC'nin dahili listesi güncel değil. Arm'ı/uçuşu
+  engellemiyor.
 - **Her firmware değişikliğinde tam reboot şart** — remoteproc mailbox
   stop-handshake'i henüz implement edilmedi.
 - **`trace0` debug çıktısı 16 KB, dairesel değil.**
@@ -318,18 +303,17 @@ R5F ile paylaşılan bellek bölgelerine erişirken başlangıç/bitiş adresi 8
 byte'a hizalı olmalı — `deploy/`'daki `read_aligned()`/`write_aligned()`
 fonksiyonları bunu zaten hallediyor.
 
-### 7.6. GPS'i çalıştırmayı denemek istiyorum
+### 7.6. GPS
 
-GPS'in bağlı olduğu seri port (`UART-MAIN6`), R5F'in zaten başarıyla
-eriştiği başka bir portla aynı donanım ailesinde — "R5F oraya hiç
-erişemez" varsayımı kesin değil, ama henüz gerçek donanımda doğrulanmadı.
+GPS çalışıyor. `UART-MAIN6` için AM67 UART seri sürücüsü
+`AP_HAL_ChibiOS_K3` HAL'ine eklendi ve gerçek kartta 3D fix alındı.
 
 ## Depo Yapısı
 
 ```
-.                                  ArduPilot kaynağı (emirhan-sonmez/ardupilot @ gemstone-o1-r5f-hal)
+.                                  ArduPilot kaynağı (ardupilot @ gemstone-o1-r5f-hal)
 ├── libraries/AP_HAL_ChibiOS_K3/   R5F için özel HAL backend
-├── modules/ChibiOS-Gemstone-O1-Port/   ChibiOS portu (emirhan-sonmez/ChibiOS-Gemstone-O1-Port @ gemstone-o1-r5f)
+├── modules/ChibiOS-Gemstone-O1-Port/   ChibiOS portu (ChibiOS-Gemstone-O1-Port @ gemstone-o1-r5f)
 └── deploy/                        Karta/host'a kurulan, hiçbir kaynak repoda olmayan parçalar
     ├── board/gem_storaged.py      Kart üzerinde çalışan parametre kaydetme betiği
     ├── host/gem_mavbridge.py, run_bridge.py   Host↔kart MAVLink köprüsü
