@@ -1,0 +1,56 @@
+---
+title: 'I2C'
+description: 'Inter-Integrated Circuit'
+---
+
+import SnippetExamplesI2CDetect from '/snippets/boards/o1/i2c/detect2.mdx';
+import SnippetInstallTools from '/snippets/boards/o1/i2c/tools.mdx';
+import SnippetDevices from '/snippets/boards/o1/i2c/devices.mdx';
+import SnippetRead from '/snippets/boards/o1/i2c/read.mdx';
+import SnippetWrite from '/snippets/boards/o1/i2c/write.mdx';
+
+بروتوكول [I2C (Inter-Integrated Circuit)](https://kureansiklopedi.com/tr/detay/i2c-inter-integrated-circuit-8c241)
+هو بروتوكول اتصال شائع يُستخدم لنقل البيانات بين المتحكمات الدقيقة والدوائر المتكاملة الأخرى. ويُفضَّل في
+التطبيقات التي تتطلب نقل بيانات بسرعات منخفضة، خاصة عند الاتصال بالمستشعرات ووحدات الذاكرة وغيرها من
+الأجهزة الطرفية.
+
+توجد على لوحة تطوير Gemstone مخرج I2C واحد (I2C1) على أطراف الـ40 pin header. يمكن توصيل أجهزة I2C المراد
+استخدامها خارجيًا عبر هذه الأطراف. كما يوجد على Gemstone مستشعر MEMS ذو 9 محاور ICM-20948 ومستشعر حرارة
+ورطوبة HDC2010 يتصلان عبر I2C.
+
+<Frame caption="أطراف I2C">
+  <img className="rounded-lg" src="/images/o1-board/37-i2c.png" />
+</Frame>
+
+### استخدام I2C
+
+بعد الاتصال بنظام تشغيل Gemstone، قم بتثبيت الحزمة `i2c-tools` لتتمكن من الكتابة إلى عناوين I2C والقراءة منها.
+
+<SnippetInstallTools />
+
+لعرض خطوط I2C الموجودة، شغّل الأمر `ls /dev/i2c-*`.
+
+<SnippetDevices />
+
+لعرض العناوين المتصلة بالأجهزة على خط `i2c-2`، شغّل الأمر التالي.
+
+<SnippetExamplesI2CDetect />
+
+<Note>
+`UU` الظاهر في ناتج الأمر أعلاه يشير إلى وجود جهاز I2C على ذلك العنوان وأنه مستخدم من قبل النظام.
+أما `40` فيعني وجود جهاز على ذلك العنوان. على سبيل المثال، لا يمكن القراءة والكتابة على العنوان 0x30،
+بينما يمكن إجراؤها على العنوان 0x40.
+</Note>
+
+لقراءة البيانات من العنوان `0x00` للجهاز المتصل بالعنوان `0x40` على خط `i2c-2`، شغّل الأمر التالي.
+
+<SnippetRead />
+
+لكتابة القيمة `0x80` إلى العنوان `0x07` للجهاز المتصل بالعنوان `0x40` على خط `i2c-2`، شغّل الأمر التالي.
+
+<SnippetWrite />
+
+<Warning>
+عناوين I2C الواردة في المثال (مثل 0x40 و0x00 و0x07) استُخدمت لأغراض توضيحية فقط. في التطبيقات التي
+ستنفذها قد تختلف عناوين أجهزة I2C. من المهم تحديد العناوين الصحيحة بالرجوع إلى وثائق الأجهزة المستخدمة.
+</Warning>

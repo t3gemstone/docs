@@ -1,0 +1,303 @@
+---
+title: 'تحضير النموذج'
+description: 'تحضير النموذج لمعالجة الصور'
+---
+
+import SnippetAIObjClassification from '/snippets/ai/object-class.mdx';
+import SnippetAIObjDetection from '/snippets/ai/object-detection.mdx';
+import SnippetAIKeypointDetection from '/snippets/ai/keypoint-detection.mdx';
+import SnippetAISegmentation from '/snippets/ai/segmentation.mdx';
+
+سيتناول هذا القسم كيفية تحضير النموذج لأغراض مثل التعرف على الأجسام في عمليات معالجة الصور. إذا أكملت تثبيت
+مشروع ```edgeai-tensorlab``` edgeai-tensorlab المشروح في القسم السابق، فيمكنك تجميع نموذجك في 3 خطوات.
+
+<Steps>
+  <Step title="تنزيل المشروع وتثبيته">
+    جهّز مشروع edgeai-tensorlab ليصبح جاهزاً للعمل وادخل إلى distrobox
+  </Step>
+  <Step title="تعديل ملف الإعداد">
+    عدّل ملف الإعداد وفقاً للنموذج المطلوب تحضيره
+  </Step>
+  <Step title="تجميع النموذج">
+    ابدأ تجميع النموذج
+  </Step>
+</Steps>
+
+## 1\. ملفات الإعداد
+
+تتيح ملفات الإعداد لأداة EdgeAI-ModelMaker تنفيذ كامل السير من التدريب إلى التجميع بشكل قابل للتكوين. يستطيع
+المستخدم في هذه الملفات تعريف معاملات خاصة بالمشروع لإنشاء نموذجه الخاص.
+
+ولأغراض التمثيل، تم توفير ملفات إعداد نموذجية لأربعة أنواع رئيسية من معالجة الصور داخل مجلد ```configs```.
+
+## 2\. تصنيف الأجسام
+
+يُستخدم ملف إعداد تصنيف الأجسام (object classification) الموجود داخل EdgeAI Model Maker لتعريف عمليتي تدريب
+النموذج وتقييمه. يتضمن هذا الملف معلومات مثل مسار مجموعة البيانات، ومعاملات التدريب (مثل batch size وعدد الـ
+epoch ومعدل التعلّم)، وبنية النموذج (مثل MobileNetV2 أو RegNetX) وإعدادات التحسين. فيما يلي محتوى ملف إعداد
+نموذجي لتصنيف الأجسام.
+
+<SnippetAIObjClassification />
+
+يمكنك تعديل ملف YAML أعلاه وفقاً لاحتياجاتك.
+
+<ParamField body="DATASET_NAME" required>
+اسم مجموعة البيانات
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+مسار مجموعة البيانات (يمكنك إدخال مسار من موقع إنترنت أو من نظام ملفاتك).
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="mobilenet_v2_lite" required>
+يُتوقع منك إدخال النموذج الأساسي الذي ستستخدمه لتصنيف الأجسام.
+النماذج المدعومة حالياً: `mobilenet_v2_lite`, `regnet_x_400mf`, `regnet_x_800mf`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+عدد الـ epoch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+حجم batch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+معدل التعلّم
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+عدد وحدات GPU المستخدمة
+</ParamField>
+
+### 2\.1\. MobileNet V2
+
+MobileNet V2 هو بنية شبكة عصبية التفافية (CNN) Convolutional Neural Network طوّرتها Google تحقق كفاءة عالية خاصةً على العتاد المحدود مثل
+الأنظمة المدمجة والأجهزة المحمولة. يقدم النموذج دقة أعلى بمعاملات أقل مقارنة بالإصدار السابق MobileNet V1.
+ويحقق ذلك بفضل بنيتين أساسيتين تُسميان Inverted Residual Block وLinear Bottleneck.
+
+بفضل هذه الميزات:
+- يصغر حجم النموذج.
+- تنخفض تكلفة الحساب.
+- تتحقق سرعة عالية في التطبيقات الفورية.
+
+يتضمن ملف الإعداد الموجود داخل EdgeAI Model Maker معاملات النسخة lite (ذات الاستهلاك الأقل للموارد) من هذه
+البنية، وقد فُضّلت لأنها تُستخدم عادةً في مهام تصنيف الأجسام.
+
+### 2\.3\. RegNet
+
+RegNet هي عائلة من بنى الشبكات القابلة للتوسع طوّرها Facebook AI Research (FAIR). تتمتع نماذج RegNet بفلسفة
+تصميم يمكن فيها تغيير معاملات الإعداد (مثل عدد القنوات وعدد الكتل ونسبة العرض) بشكل منهجي. وبذلك يمكن إنشاء
+نماذج على عتاد مختلف، من الأجهزة المدمجة الصغيرة إلى بيئات الخوادم الكبيرة، مع الحفاظ على منطق البنية نفسه.
+
+- RegNetX-400MF: إصدار خفيف بتكلفة معالجة تبلغ نحو 400 مليون FLOP.
+- RegNetX-800MF: إصدار يوفر دقة أعلى ويناسب الموارد المتوسطة المستوى.
+
+تُفضَّل هذه النماذج خاصةً في مشاريع التصنيف التي تحتاج إلى توازن بين الكفاءة والدقة.
+
+## 3\. اكتشاف الأجسام
+
+يُستخدم ملف إعداد اكتشاف الأجسام (object detection) الموجود داخل EdgeAI Model Maker لتعريف عمليتي تدريب النموذج
+وتقييمه. فيما يلي محتوى ملف إعداد نموذجي لاكتشاف الأجسام.
+
+<SnippetAIObjDetection />
+
+يمكنك تعديل ملف YAML أعلاه وفقاً لاحتياجاتك.
+
+<ParamField body="DATASET_NAME" required>
+اسم مجموعة البيانات
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+مسار مجموعة البيانات (يمكنك إدخال مسار من موقع إنترنت أو من نظام ملفاتك).
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="yolox_s_lite" required>
+يُتوقع منك إدخال النموذج الأساسي الذي ستستخدمه لتصنيف الأجسام.
+النماذج المدعومة حالياً: `yolox_s_lite`, `yolox_tiny_lite`, `yolox_nano_lite`, `yolox_pico_lite`, `yolox_femto_lite`, `yolov7_l_lite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+عدد الـ epoch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+حجم batch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+معدل التعلّم
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+عدد وحدات GPU المستخدمة
+</ParamField>
+
+### 3\.1\. ما هو YOLO؟
+
+***YOLO (You Only Look Once)*** هي خوارزمية مبنية على التعلّم العميق طُوّرت لاكتشاف الأجسام في الوقت الفعلي.
+تتنبأ YOLO بفئات الأجسام ومواقعها في الصورة من خلال عملية تغذية أمامية واحدة. ويختلف هذا النهج عن الطرق
+التقليدية ذات المرحلتين (مثل R-CNN) في أنه ينفذ عمليتي التصنيف وتحديد المواقع في مرحلة واحدة. تقسّم خوارزمية
+YOLO المدخل إلى بنية شبكية (grid). تمثل كل خلية منطقة معينة في الصورة، وبالنسبة للأجسام المحتملة في هذه
+المنطقة فإنها تتنبأ بـ:
+
+- احتمالات الفئات،
+- معلومات الإحداثيات (x, y, العرض, الارتفاع)،
+- درجات الثقة (confidence score)
+
+وبذلك يحلل النموذج جميع الأجسام في الصورة في وقت واحد وينتج مخرجات بسرعة عالية.
+
+الميزة الأهم لـ YOLO هي توفير السرعة والعمل في الوقت الفعلي. وتكتسب هذه الميزة أهمية كبيرة خاصةً في الأنظمة
+المدمجة والتطبيقات الروبوتية والمركبات ذاتية القيادة. ومع ذلك، قد تكون نسبة الدقة في الأجسام صغيرة الحجم أو
+المشاهد المزدحمة أقل مقارنة بالطرق الأخرى.
+
+<Frame caption="رسم بياني لمقارنة نماذج YOLO">
+  <img height="600" width="800" src="/images/o1-board/ai/ai-yolo-comparison.png" />
+</Frame>
+
+مع مرور الوقت، تطورت خوارزمية YOLO بإصدارات مختلفة. ففي الإصدارات الممتدة من YOLOv1 إلى YOLOv11 أُجريت
+تحسينات مهمة على مستوى كل من بنية النموذج والأداء.
+
+### 3\.2\. اكتشاف النقاط الرئيسية
+
+يُستخدم ملف إعداد اكتشاف النقاط الرئيسية (keypoint detection) الموجود داخل EdgeAI Model Maker لتعريف عمليتي
+تدريب النموذج وتقييمه.
+
+يحدد اكتشاف النقاط الرئيسية معاملات تدريب النموذج وتقييمه بهدف تحديد مواقع نقاط معينة على الصورة (مثل مفاصل
+جسم الإنسان أو النقاط المرجعية على الوجه أو نقاط الزوايا المميزة للأجسام).
+
+فيما يلي محتوى ملف إعداد نموذجي لاكتشاف النقاط الرئيسية.
+
+<SnippetAIKeypointDetection />
+
+يمكنك تعديل ملف YAML أعلاه وفقاً لاحتياجاتك.
+
+<ParamField body="ANNOTATION_PREFIX" default="instances" required>
+بادئة ملف العلامات. القيمة الافتراضية معرّفة كـ 'instances'.
+</ParamField>
+
+<ParamField body="SPLIT_NAMES" default="['train', 'val']" required>
+يحدد أسماء قسمي التدريب والتحقق في مجموعة البيانات.
+</ParamField>
+
+<ParamField body="MAX_NUM_FILES" default="[750, 250]">
+  يحدد الحد الأقصى لعدد الملفات التي سيتم تحميلها من قسمي التدريب والتحقق.
+  على سبيل المثال، القيمة `[750, 250]` تحمّل 750 مثالاً للتدريب و250 مثالاً للتحقق.
+</ParamField>
+
+<ParamField body="DATASET_NAME" required>
+  اسم مجموعة البيانات
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+  مسار مجموعة البيانات (يمكنك إدخال مسار من موقع إنترنت أو من نظام ملفاتك).
+</ParamField>
+
+<ParamField body="INPUT_ANNOTATION_PATH" required>
+  يحدد المسار المحلي لملف العلامات (annotation file) الخاص بمجموعة البيانات.
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="yolox_s_keypoint" required>
+  يُتوقع منك إدخال النموذج الأساسي الذي ستستخدمه لاكتشاف النقاط الرئيسية.
+  النماذج المدعومة حالياً: `yolox_s_keypoint`, `yoloxpose_tiny_lite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+  عدد الـ epoch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+  حجم batch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+  معدل التعلّم
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+  عدد وحدات GPU المستخدمة
+</ParamField>
+
+### 3\.3\. ما هو YOLOX-Pose؟
+
+YOLOX-Pose هو امتداد لبنية YOLOX الشهيرة (You Only Look Once - eXtended)، وهو نموذج تعلّم عميق مصمم لاكتشاف
+النقاط الرئيسية (keypoints) على جسم الإنسان. بالإضافة إلى اكتشاف الأجسام الكلاسيكي، يتنبأ هذا النموذج بمواقع
+المفاصل (مثل الكتف والمرفق والركبة والكاحل) لكل شخص تم اكتشافه بناءً على الإحداثيات.
+
+### 3\.4\. ما هو YOLOX-S-Keypoint؟
+
+YOLOX-S-Keypoint هو النسخة المعدّلة من نموذج YOLOX-S لاكتشاف النقاط الرئيسية (keypoint detection). وهو في
+الأساس يوسّع قدرات YOLOX-S السريعة والخفيفة في اكتشاف الأجسام لتقديم تنبؤات بالنقاط المحددة (keypoints) على
+الإنسان أو الأجسام.
+
+## 4\. تقسيم الصور
+
+يُستخدم ملف إعداد تقسيم الصور (Image Segmentation) الموجود داخل EdgeAI Model Maker لتعريف عمليتي تدريب النموذج
+وتقييمه.
+
+تقسيم الصور (Image Segmentation) هو عملية تقسيم الصورة إلى مناطق ذات معنى. يُحدَّد لكل بكسل الفئة التي ينتمي
+إليها سواء كانت مرتبطة بجسم في الصورة أو بالخلفية. وبذلك لا يُحدَّد موقع الأجسام فحسب، بل تُحدَّد أيضاً
+أشكالها وحدودها الكاملة.
+
+فيما يلي محتوى ملف إعداد نموذجي لاكتشاف النقاط الرئيسية.
+
+<SnippetAISegmentation />
+
+يمكنك تعديل ملف YAML أعلاه وفقاً لاحتياجاتك.
+
+<ParamField body="ANNOTATION_PREFIX" default="instances" required>
+بادئة ملف العلامات. القيمة الافتراضية معرّفة كـ 'instances'.
+</ParamField>
+
+<ParamField body="SPLIT_NAMES" default="['train', 'val']" required>
+يحدد أسماء قسمي التدريب والتحقق في مجموعة البيانات.
+</ParamField>
+
+<ParamField body="MAX_NUM_FILES" default="[750, 250]">
+يحدد الحد الأقصى لعدد الملفات التي سيتم تحميلها من قسمي التدريب والتحقق.
+على سبيل المثال، القيمة `[750, 250]` تحمّل 750 مثالاً للتدريب و250 مثالاً للتحقق.
+</ParamField>
+
+<ParamField body="DATASET_NAME" required>
+اسم مجموعة البيانات
+</ParamField>
+
+<ParamField body="INPUT_DATA_PATH" required>
+مسار مجموعة البيانات (يمكنك إدخال مسار من موقع إنترنت أو من نظام ملفاتك).
+</ParamField>
+
+<ParamField body="MODEL_NAME" default="fpn_aspp_regnetx800mf_edgeailite" required>
+يُتوقع منك إدخال النموذج الأساسي الذي ستستخدمه لاكتشاف النقاط الرئيسية.
+النماذج المدعومة حالياً: `fpn_aspp_regnetx800mf_edgeailite`, `unet_aspp_mobilenetv2_tv_edgeailite`, `deeplabv3plus_mobilenetv2_tv_edgeailite`
+</ParamField>
+
+<ParamField body="TRAINING_EPOCHS" default="10" required>
+عدد الـ epoch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="BATCH_SIZE" default="32" required>
+حجم batch المستخدم في التدريب
+</ParamField>
+
+<ParamField body="LEARNING_RATE" default="0.001" required>
+معدل التعلّم
+</ParamField>
+
+<ParamField body="NUM_GPUS" default="1" required>
+عدد وحدات GPU المستخدمة
+</ParamField>
+
+### 4\.1\. REGNETx800MF
+
+يُستخدم هذا النموذج لفصل الأجسام في الصورة بشكل تفصيلي. يتعرف جيداً على الأجسام ذات الأحجام المختلفة ويوفر
+دقة عالية في المهام الأكثر تعقيداً. ويُفضَّل في الغالب في الأنظمة الصناعية والمدمجة.
+
+### 4\.2\. UNET-MOBILENET
+
+هو نموذج تقسيم خفيف وسريع. يناسب الأجهزة المحمولة وأجهزة الكمبيوتر الصغيرة بفضل استهلاكه المنخفض للموارد.
+ويستخرج حدود الأجسام في الصورة بوضوح.
+
+### 4\.3\. DEEPLABV3plus-MOBILENET
+
+يقدم نتائج خفيفة لكنها تفصيلية. يتنبأ بدقة بمساحة الأجسام وحدودها في الصورة. وهو مناسب للتطبيقات التي تتطلب
+دقة وسرعة بمستوى متوسط على أجهزة الحافة.

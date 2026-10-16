@@ -1,0 +1,99 @@
+---
+title: 'النواة'
+description: 'نواة Linux'
+---
+
+<Note>
+في هذا القسم سيتم تناول مواضيع مثل تخصيصات نواة Linux الموجودة على لوحات تطوير Gemstone وتفعيل المشغّلات الجديدة.
+</Note>
+
+<Tip>
+في نهاية القسم ستكتسب معرفة حول المواضيع التالية.
+
+* تجميع نواة Linux الخاصة بـGemstone
+* تفعيل مشغّل عتاد جديد
+</Tip>
+
+بالنسبة للوحات Gemstone، يتم تجميع نواة Linux أيضًا بواسطة Yocto تمامًا مثل U-Boot. توجد داخل طبقة meta-gemstone وصفة
+باسم `linux-t3-gem-o1-rt_6.1.bb` تستخدم [مستودع T3 Gemstone Linux Git](https://github.com/t3gemstone/linux). وعند الانتقال
+إلى إصدار أقدم أو أحدث، يمكن أخذ الـcommit ID الخاص بالإصدار المعني وتحديث المتغير `SRCREV` الموجود في الوصفة ثم تشغيل
+الأوامر التالية لبدء التجميع.
+
+<Warning>
+جميع الأوامر الواردة أدناه ستُنفَّذ داخل distrobox. لذلك يجب عليك أولًا تشغيل الأمرين
+`devbox shell` --> `task box`. بالإضافة إلى ذلك، لتتمكن من الانتقال إلى بيئة Yocto، يجب تشغيل الأمر
+`m:oeinit t3-gem-o1`.
+</Warning>
+
+<Note>
+في هذا القسم سيتم الشرح على لوحة T3-GEM-O1. إذا كنت ستطبّق ما تم على آلة مختلفة، فغيّر اسم الآلة بشكل مناسب.
+</Note>
+
+```bash
+bitbake virtual/kernel
+```
+
+بعد اكتمال العمليات أعلاه، يمكنك نسخ الملف المسمى `Image` من المجلد `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`
+إلى المجلد `/boot` على اللوحة لإجراء اختباراتك على لوحة التطوير.
+
+### تحديث الإعداد عبر Menuconfig
+
+إذا كنت ستقوم بتفعيل/تعطيل مشغّلات عتاد متنوعة أو تغيير إعدادات النواة (باختصار، تغيير الميزات المعرّفة عبر Kconfig)،
+فيمكنك استخدام واجهة menuconfig.
+
+<AccordionGroup>
+
+  <Accordion title="فتح شاشة Menuconfig">
+  ```bash
+  bitbake -c menuconfig virtual/kernel
+  ```
+
+  <Frame>
+    <img src="/images/kernel-menuconfig.png" />
+  </Frame>
+
+  بعد تغيير الإعدادات التي تريدها، اضغط على مفتاح `ESC` حتى تظهر النافذة التالية. ثم اختر الزر "Yes".
+
+  <Frame>
+    <img src="/images/kernel-menuconfig-save.png" />
+  </Frame>
+  </Accordion>
+
+  <Accordion title="جعل التغييرات دائمة">
+  في هذه المرحلة يمكنك إعادة تجميع النواة، لكن التغييرات التي أجريتها تبقى على حاسوبك فقط وتُفقد إذا قمت بتنظيف مجلد
+  build. لمنع ذلك، اتبع الخطوات التالية.
+
+  ```bash
+  bitbake -c savedefconfig virtual/kernel
+  cp /home/workdir/build/tmp-musl/work/t3_gem_o1-gemstone-linux-musl/linux-t3-gem-o1-rt/6.1.83+git/defconfig \
+      /home/workdir/yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/
+  ```
+
+  بفضل الأوامر أعلاه، سيتم حفظ التغييرات التي أجريتها في شاشة menuconfig في الملف `defconfig` الموجود في المجلد
+  `yocto/meta-gemstone/dynamic-layers/meta-ti/recipes-kernel/linux/linux-t3-gem-o1-rt-6.1/`.
+  </Accordion>
+
+  <Accordion title="إعادة تجميع النواة">
+  ```bash
+  bitbake -c clean virtual/kernel
+  bitbake virtual/kernel
+  ```
+
+  إذا اكتملت الأوامر أعلاه بنجاح، سيُنشأ ملف Image في المجلد `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images`.
+  </Accordion>
+
+</AccordionGroup>
+
+### إجراء تغييرات في أكواد المصدر
+
+افتح المجلد `<sdk-dizini>/build/tmp-musl/work-shared/t3-gem-o1/kernel-source` في محرر النصوص لديك. بعد تغيير الأجزاء
+التي تريدها، قم بتجميع النواة بالأوامر التالية. حتى لا تفقد تغييراتك، يمكنك إنشاء fork خاص بك
+[لمستودع T3 Gemstone Linux](https://github.com/t3gemstone/linux) وإرسالها إليه.
+
+```bash
+bitbake virtual/kernel
+```
+
+بعد انتهاء التجميع، انسخ الملفات المنشأة في المجلد `<sdk-dizini>/build/t3-gem-o1/deploy-ti/images` إلى المجلد `/boot`
+على بطاقة SD. إذا كنت قد حللت مشكلة أو أضفت ميزة جديدة، فيمكنك إنشاء pull request إلى
+[مستودع T3 Gemstone Linux](https://github.com/t3gemstone/linux) حتى يستفيد المجتمع منه.

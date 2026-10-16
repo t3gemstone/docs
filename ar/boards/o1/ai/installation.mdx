@@ -1,0 +1,70 @@
+---
+title: 'التثبيت'
+description: 'تثبيت حزمة T3 Edge AI'
+---
+
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-ar.mdx';
+
+يوضح هذا القسم كيفية تثبيت حزمة Edge AI على لوحة التطوير T3 Gemstone O1. بفضل هذه الحزم، ستتمكن من تنفيذ
+عمليات معالجة الصور باستخدام مسرّعات الذكاء الاصطناعي.
+
+<Steps>
+
+  <Step title="تحديث مستودع الحزم">
+    ```bash
+    sudo apt update
+    ```
+    يساعد الحفاظ على تحديث قائمة حزم النظام على تجنب أخطاء الاعتماديات التي قد تحدث أثناء التثبيت.
+  </Step>
+
+  <Step title="تثبيت حزم T3 Edge AI">
+    ```bash
+    sudo apt install t3-gem-o1-edgeai
+    ```
+    يقوم هذا الأمر بتثبيت أدوات تطوير ومكتبات Edge AI دفعة واحدة.
+  </Step>
+
+  <Step title="تفعيل Overlay الخاص بـ Edge AI">
+
+    افتح ملف `uEnv.txt` الموجود في مجلد boot باستخدام محرر النصوص المسمى `nano` من واجهة الطرفية.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    <Tip>
+    سيطلب الأمر كلمة المرور لأننا نستخدمه مع sudo. إذا لم تغيّرها، فيجب عليك استخدام كلمة المرور التي حددتها
+    أثناء كتابة الصورة باستخدام Gem-Imager.
+    </Tip>
+
+    ستجد داخل ملف `uEnv.txt` تعريفات من هذا النوع.
+
+    <SnippetUEnv />
+
+    أضف اسم الملف `k3-am67a-t3-gem-o1-edgeai-apps.dtbo` إلى نهاية سطر `overlays=` مع ترك مسافة.
+
+    سيصبح الشكل النهائي لملف `uEnv.txt` هكذا. يجب عليك وضع اسم الملف المناسب في الجزء `<dosya-adi>`.
+
+    <SnippetUEnvEdit />
+
+    بعد تعريف ملف overlay، يجب إعادة تشغيل اللوحة حتى يتمكن النظام من تطبيق التغييرات التي أجريتها.
+
+    ```bash
+      sudo reboot
+    ```
+
+  </Step>
+
+  <Step title="تحميل متغيرات البيئة">
+    ```bash
+    sudo su
+    source /opt/t3-edgeai-env
+    ```
+    تتيح لك هذه الأوامر التبديل إلى المستخدم `root` وتحميل متغيرات البيئة اللازمة لـ Edge AI.
+
+    <Warning>ملاحظة: نظراً لاستخدام مسرّعات الذكاء الاصطناعي، تتم العمليات على مستوى العتاد. لذلك يجب تنفيذ
+    الخطوات ذات الصلة تحت المستخدم root.</Warning>
+  </Step>
+
+</Steps>

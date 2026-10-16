@@ -1,0 +1,77 @@
+---
+title: 'CAN Bus'
+description: 'Controller Area Network (CAN)'
+---
+
+<Tip>
+في نهاية القسم ستكتسب معرفة حول إنشاء واجهة CAN افتراضية على لوحة تطوير Gemstone.
+</Tip>
+
+يمكن في نظام تشغيل Gemstone إنشاء واجهة CAN افتراضية وتمكين اتصال البيانات عبرها دون الحاجة إلى أي عتاد إضافي.
+
+<Frame caption="توصيل CanBUS">
+  <img className="rounded-lg" src="/images/o1-board/36-canbus.png" />
+</Frame>
+
+* بعد الاتصال بنظام تشغيل Gemstone، قم بتثبيت الوحدة `kernel-module-vcan-6.1.83-ti`
+لإنشاء واجهة CAN افتراضية.
+
+```bash
+sudo apt install picocom kernel-module-vcan-6.1.83-ti
+```
+
+* فعّل الوحدة المثبتة باستخدام الأمر `modprobe`.
+
+```bash
+sudo modprobe vcan
+```
+
+* أنشئ واجهة CAN الافتراضية باتباع الأوامر التالية.
+
+```bash
+sudo ip link add dev vcan0 type vcan
+sudo ip link set up vcan0
+```
+
+* أنشئ ملف سكربت باسم `can-test.sh` وافتحه.
+
+```bash
+touch can-test.sh
+nano can-test.sh
+```
+
+* انسخ الكود التالي والصقه في ملف `can-test.sh`. احفظ الملف ثم أغلقه.
+
+```bash
+#!/bin/bash
+
+while :
+do
+   cansend vcan0 123 #AABBCCDDEE112233
+   sleep 1
+done
+```
+
+* لتتمكن من استخدام أوامر إرسال واستقبال حزم CAN مثل `cansend` و`candump`، قم بتثبيت الحزمة `can-utils`.
+
+```bash
+sudo apt install can-utils
+```
+
+1. افتح طرفيتين.
+
+2. من الطرفية الأولى، ابدأ عملية الاستماع إلى واجهة CAN.
+
+```bash
+candump vcan0
+```
+
+3. من الطرفية الثانية، شغّل السكربت can-test.sh.
+
+```bash
+./can-test.sh
+```
+
+<Frame caption="الاتصال عبر واجهة CAN الافتراضية">
+  <video controls className="w-full aspect-video" src="/videos/can-test.mp4"></video>
+</Frame>

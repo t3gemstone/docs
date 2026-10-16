@@ -1,0 +1,77 @@
+---
+title: 'PWM'
+description: 'Pulse Width Modulation (PWM)'
+---
+
+import SnippetDevices from '/snippets/boards/o1/pwm/devices.mdx';
+import SnippetExport1 from '/snippets/boards/o1/pwm/export1.mdx';
+import SnippetExport2 from '/snippets/boards/o1/pwm/export2.mdx';
+import SnippetEnable from '/snippets/boards/o1/pwm/enable.mdx';
+import SnippetDisable from '/snippets/boards/o1/pwm/disable.mdx';
+import SnippetUnexport from '/snippets/boards/o1/pwm/unexport.mdx';
+
+PWM (Pulse Width Modulation) هي تقنية تعديل تُستخدم للتحكم في متوسط مستوى القدرة للإشارة. يعتمد مبدأ عملها
+الأساسي على ضبط مدد بقاء موجة مربعة ذات دورة ثابتة في حالة "التشغيل" و"الإيقاف" (duty cycle). تُستخدم في
+الأنظمة المدمجة لأغراض عديدة مثل التحكم في سرعة المحركات، وضبط سطوع LED، والتحكم في المحركات المؤازرة (servo)،
+ومحوّلات الطاقة، وتوليد الإشارات التناظرية. على سبيل المثال، عند التحكم في سرعة محرك بواسطة PWM، كلما زادت
+قيمة duty cycle زاد متوسط الجهد المنقول إلى المحرك فيدور بشكل أسرع.
+
+**الدورة (period)**، وهي أحد المعاملات الأساسية لإشارة PWM، هي مدة موجة كاملة واحدة.
+أما **Duty cycle** فهي المدة التي تبقى فيها الإشارة "قيد التشغيل" ضمن الدورة الواحدة. وتحدد **القطبية (Polarite)**
+الحالة التي تكون فيها إشارة PWM نشطة (مستوى مرتفع أو منخفض). على سبيل المثال، في القطبية العادية يمثل
+duty cycle المستوى المرتفع، بينما يمثل في القطبية المعكوسة المستوى المنخفض.
+
+### واجهات PWM
+
+واجهات PWM الموجودة على لوحة T3-GEM-O1 مذكورة في الجدول أدناه.
+
+<Frame caption="أطراف PWM">
+  <img className="rounded-lg" src="/images/o1-board/38-pwm.png" />
+</Frame>
+
+<SnippetDevices int="الواجهة" device="الجهاز" file="ملف Overlay" />
+
+<Note>
+لتفعيل PWM-0A وPWM-0B معًا: `k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtso`
+
+لتفعيل PWM-1A وPWM-1B معًا: `k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtso`
+</Note>
+
+<Warning>
+تمتلك الرقاقتان `pwmchip3` و`pwmchip5` قناتين، ويمكن استخدام كل قناة كجهاز PWM.
+لكن **لا يمكن تعيين قيم دورة مختلفة** لقناتي رقاقة PWM واحدة (مثل PWM-0A وPWM-0B).
+لا مانع من تعيين duty-cycle مختلف ما دامت القناتان حصلتا على نفس قيمة الدورة.
+</Warning>
+
+يجب إضافة أسماء ملفات overlay للواجهات المراد تفعيلها إلى المتغير `overlays` في ملف `/boot/uEnv.txt`.
+يمكن الوصول إلى معلومات تفصيلية عن الـOverlays من قسم [Device Tree](./introduction/#2-device-tree).
+
+عند تفعيل جميع الـoverlays، تتوفر **8 واجهات PWM منفصلة**؛ واحدة من FAN header و7 من الـ40-pin header.
+
+### استخدام PWM
+
+يمكن الوصول إلى رقاقات PWM من المجلد `/sys/class/pwm`. لاستخدام جهاز PWM، يجب إجراء عملية `export` مسبقًا.
+على سبيل المثال، عند فحص الجدول أعلاه نجد أن واجهة `PWM-ECAP0` تقابل الجهاز `pwm0` من الرقاقة `pwmchip0`.
+بعد إجراء `export` بالأمر التالي يتكون الجهاز `/sys/class/pwm/pwmchip0/pwm0`. سبب كتابة `echo 0` هو أنه
+الجهاز رقم `0` أي `pwm0`.
+
+<SnippetExport1 />
+
+وبالمثل، إذا أردنا استخدام واجهة `PWM-0B`، فيجب تفعيل الجهاز `pwm1` من الرقاقة `pwmchip3` كما هو موضح
+في الأمر التالي. سبب كتابة `echo 1` هو أنه الجهاز رقم `1` أي `pwm1`.
+
+<SnippetExport2 />
+
+بعد عملية `export`، تُضبط متغيرا `period` و`duty_cycle` بالنانوثانية على القيم المطلوبة كما هو موضح في المثال
+التالي، وبعد تعيين قيمة `1` لمتغير `enable` الخاص بالجهاز يمكن الحصول على مخرج PWM.
+
+<SnippetEnable />
+
+لإيقاف مخرج PWM، يمكن تعيين القيمة `0` لمتغير `enable`.
+
+<SnippetDisable />
+
+إذا لم يعد جهاز PWM مرغوبًا في استخدامه، يمكن إجراء عملية `unexport`. بعد هذه العملية يُزال الجهاز من النظام.
+سبب كتابة `echo 0` هو أنه الجهاز رقم `0` أي `pwm0`.
+
+<SnippetUnexport />

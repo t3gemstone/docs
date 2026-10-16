@@ -1,0 +1,247 @@
+---
+title: 'استخدام eMMC'
+description: 'استخدام eMMC بدلاً من بطاقة SD كمساحة تخزين'
+---
+
+<Tip>
+في نهاية القسم ستكتسب معرفة حول عملية كتابة الصورة على eMMC في لوحة تطوير Gemstone.
+</Tip>
+
+يدعم نظام تشغيل Gemstone الإقلاع عبر eMMC بالإضافة إلى بطاقة SD.
+eMMC هو حل تخزين عالي الأداء وموثوق. يُفضَّل أولاً في العديد من التطبيقات لأنه يوفر وصولاً أسرع إلى البيانات
+وبنية مادية أكثر متانة مقارنة ببطاقة SD.
+
+## 1\. كتابة الصورة إلى eMMC عبر USB DFU {#1-كتابة-الصورة-إلى-emmc-عبر-usb-dfu}
+
+USB DFU (Device Firmware Upgrade) هو معيار يتيح برمجة T3 Gemstone O1 مباشرة عبر USB.
+يمكن كتابة الصورة إلى eMMC دون الحاجة إلى بطاقة SD أو نظام يعمل.
+
+<Note>
+  وثيقة DFU الرسمية لمعالج TI AM67A:
+  [USB Device Firmware Upgrade (DFU) — Processor SDK Linux for AM67A](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67a/10_00_00/exports/docs/linux/Foundational_Components/U-Boot/UG-DFU.html)
+</Note>
+
+### 1\.1\. الانتقال إلى وضع USB DFU {#1-1-الانتقال-إلى-وضع-usb-dfu}
+
+<Warning>
+  **أوقف تشغيل اللوحة تمامًا قبل بدء العملية.**
+  قد تؤدي محاولة الانتقال إلى وضع DFU أثناء عمل اللوحة إلى إتلاف eMMC.
+</Warning>
+
+<Steps>
+  <Step title="أوقف تشغيل اللوحة">
+    إذا كان نظام التشغيل يعمل فأوقفه بشكل سليم، ثم افصل مصدر الطاقة عن T3 Gemstone O1.
+  </Step>
+
+  <Step title="ضع مفتاح bootmode في وضع USB DFU">
+    بالاستناد إلى موضع المفتاح الموضح في المخطط التالي، ضع مفتاح bootmode في وضع USB DFU.
+
+    <Frame caption="الموقع الفيزيائي لمفتاح bootmode (تمثيلي)">
+      <img src="/images/o1-board/06-bootmode-2.png" />
+    </Frame>
+
+    <Note>
+      أُضيفت الصورة أعلاه لتوضيح الموقع الفيزيائي لمفتاح bootmode على اللوحة وهي تمثيلية.
+      اتبع موضع المفتاح من المخطط التالي لوضع DFU.
+    </Note>
+
+    <Frame caption="موضع مفتاح وضع إقلاع USB DFU">
+      <img src="/images/bootmode/usb-dfu-bootmode.svg" />
+    </Frame>
+  </Step>
+
+  <Step title="شغّل اللوحة بتوصيل كابل USB-C">
+    صِل كابل USB-C بمنفذ DFU الخاص باللوحة وبحاسوبك، ثم شغّل الطاقة.
+  </Step>
+
+</Steps>
+
+### 1\.2\. تحميل الصورة باستخدام GemImager
+
+يدير GemImager عملية الكتابة عبر DFU بالكامل تلقائيًا — تُرسل ملفات محمّل الإقلاع مع صورة نظام التشغيل
+وتُحمَّل بالترتيب الصحيح.
+
+<Steps>
+  <Step title="افتح GemImager">
+    شغّل **GemImager** على حاسوبك واختر اللوحة التي تريد استخدامها.
+
+    <Warning>
+      لكي يتمكن GemImager من الوصول إلى أجهزة USB، يجب **تشغيله كمدير (administrator)**.
+    </Warning>
+  </Step>
+
+  <Step title="اختر صورة نظام التشغيل">
+    بالنقر على زر **اختر نظام التشغيل** اختر الصورة التي تريد تثبيتها.
+  </Step>
+
+  <Step title="اختر جهاز التخزين">
+    انقر على زر **اختر الهدف** واختر الخيار **USB DFU**.
+
+    <Frame>
+      <img src="/images/gem-imager/select-dfu.png" />
+    </Frame>
+  </Step>
+
+  <Step title="اكتب الصورة">
+    بالنقر على زر **التالي** قم بتهيئة خيارات تخصيص نظام التشغيل (انظر صفحة [التخصيص](/ar/imager/customization))،
+    ثم اضغط على زر **اكتب**.
+
+    <Warning>
+      لا تفصل كابل USB أو مصدر الطاقة أثناء عملية الكتابة.
+    </Warning>
+
+  </Step>
+
+  <Step title="انتظر الاكتمال">
+    عند اكتمال عملية الكتابة يعرض Gem Imager رسالة نجاح.
+  </Step>
+
+  <Step title="أوقف تشغيل اللوحة وضع مفتاح bootmode في وضع eMMC">
+    أوقف تشغيل اللوحة تمامًا، ثم ضع مفتاح bootmode في وضع
+    **eMMC** كما هو موضح في الصورة التالية.
+
+    <Frame caption="موضع مفتاح وضع إقلاع eMMC">
+      <img src="/images/bootmode/emmc-bootmode.svg" />
+    </Frame>
+
+    <Note>
+      يمكنك متابعة عملية الإقلاع عبر اتصال المنفذ التسلسلي UART.
+      معدل الباود الافتراضي: **115200**
+    </Note>
+
+    بعد تشغيل الطاقة ستقلع اللوحة من الصورة الموجودة على eMMC.
+
+    <Frame caption="مخرجات المنفذ التسلسلي أثناء نقل DFU">
+      <img src="/images/gem-imager/dfu-serial.png" />
+    </Frame>
+
+    لمزيد من المعلومات حول اتصال UART انظر صفحة [المنفذ التسلسلي](/ar/boards/o1/peripherals/serial).
+  </Step>
+</Steps>
+
+## 2\. تحميل الصورة يدويًا باستخدام SDK (dfu-util)
+
+<Warning>
+  هذه الطريقة للمطورين الذين يعملون مع نظام ترجمة SDK.
+</Warning>
+
+<Note>
+  لمزيد من المعلومات حول ترجمة الصورة من الكود المصدري انظر [توثيق SDK](/ar/sdk/introduction).
+</Note>
+
+ضع اللوحة في وضع DFU عبر مفتاح bootmode كما هو موضح في خطوات [1.1. الانتقال إلى وضع USB DFU](#1-1-الانتقال-إلى-وضع-usb-dfu)،
+ثم شغّل الأوامر التالية بالترتيب.
+
+بعد ترجمة SDK ناجحة، توجد الملفات اللازمة في دليلين:
+
+| الملف | الموقع |
+|-------|-------|
+| `tiboot3.bin` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `tispl.bin` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `u-boot.img` | `build/t3-gem-o1/deploy-ti/images/t3-gem-o1/` |
+| `gemstone-*.img` | `build/debos/` |
+
+<Steps>
+  <Step title="حمّل محمّل الإقلاع للمرحلة الأولى (tiboot3.bin)">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a bootloader -D tiboot3.bin -R
+    ```
+
+    بعد هذه الخطوة ستُعاد تهيئة اللوحة وستُعاد الاتصال. انتظر بضع ثوانٍ وتحقق من أن اللوحة ما زالت ظاهرة
+    باستخدام `dfu-util -l`.
+  </Step>
+
+  <Step title="حمّل TI SPL (tispl.bin)">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a tispl.bin -D tispl.bin -R
+    ```
+  </Step>
+
+  <Step title="حمّل U-Boot (u-boot.img)">
+    ```bash
+    sudo dfu-util -d 0451:6165 -a u-boot.img -D u-boot.img -R
+    ```
+  </Step>
+
+  <Step title="انقل صورة نظام التشغيل إلى eMMC">
+    استبدل الجزء `<image-file-name>` باسم ملف الصورة الخاص بك:
+
+    ```bash
+    sudo dfu-util -d 0451:6165 -a rawemmc \
+        -D <image-file-name>.img -R
+    ```
+
+    <Warning>
+      تنقل هذه الخطوة صورة نظام التشغيل بالكامل إلى eMMC عبر USB. لا تقاطع النقل.
+      قد تستغرق هذه العملية بضع دقائق اعتمادًا على حجم الصورة وسرعة USB.
+    </Warning>
+  </Step>
+
+  <Step title="أوقف تشغيل اللوحة وضع مفتاح bootmode في وضع eMMC">
+    عندما يُبلغ `dfu-util` عن النجاح، أوقف تشغيل اللوحة تمامًا، ثم ضع مفتاح bootmode في وضع
+    **eMMC**.
+
+    <Frame caption="موضع مفتاح وضع إقلاع eMMC">
+      <img src="/images/bootmode/emmc-bootmode.svg" />
+    </Frame>
+
+    <Note>
+      يمكنك متابعة عملية الإقلاع عبر اتصال المنفذ التسلسلي UART.
+      معدل الباود الافتراضي: **115200**
+    </Note>
+
+    بعد تشغيل الطاقة ستقلع اللوحة من الصورة الموجودة على eMMC.
+  </Step>
+</Steps>
+
+### 2\.1\. خطوة التحقق
+
+عند إجراء عملية الكتابة عبر DFU باستخدام GemImager، يقوم بالترتيب بالعمليات التالية:
+
+1. ينزّل الصورة المختارة أو يقرأها
+2. يستخرج ملفات محمّل الإقلاع (`tiboot3.bin`, `tispl.bin`, `u-boot.img`)
+3. يكتب كل مرحلة من مراحل محمّل الإقلاع عبر DFU
+4. ينقل صورة نظام التشغيل بالكامل إلى eMMC (الإعداد الفرعي `rawemmc`)
+
+<Step title="تحقق من جهاز DFU">
+  تحقق من ظهور اللوحة كجهاز DFU.
+
+  <Tabs>
+    <Tab title="Linux">
+      إذا لم يكن التطبيق المسمى `dfu-util` مثبتًا، فثبّته على حاسوب Ubuntu الخاص بك باستخدام الأمر `sudo apt install dfu-util`.
+
+      ```bash
+      sudo dfu-util -l
+      ```
+    </Tab>
+    <Tab title="Windows">
+      نزّل ملف Windows الثنائي الخاص بـ `dfu-util` من قسم Releases في [الصفحة الرئيسية لـ dfu-util](https://dfu-util.sourceforge.net/)
+      وفك ضغط الملف zip، ثم شغّله:
+
+      ```powershell
+      dfu-util.exe -l
+      ```
+
+      <Note>
+        إذا كانت مخرجات `dfu-util.exe -l` فارغة على Windows، فأنت بحاجة إلى تثبيت مشغّل **WinUSB**
+        للجهاز باستخدام [Zadig](https://zadig.akeo.ie/):
+
+        1. نزّل Zadig من العنوان [zadig.akeo.ie](https://zadig.akeo.ie/) وشغّله
+            (لا يتطلب تثبيتًا؛ سيطلب موافقة مدير UAC)
+        2. إذا لم تظهر اللوحة في القائمة، فعّل الخيار **Options → List All Devices**
+        3. اختر من القائمة المنسدلة الجهاز الذي VID له `0451` / PID له `6165`
+        4. اختر **WinUSB** كمشغّل وانقر على زر **Install Driver**
+        5. عند اكتمال التثبيت سيظهر اسم المشغّل باللون الأخضر
+      </Note>
+    </Tab>
+  </Tabs>
+
+  يجب أن ترى إدخالاً يتضمن الإعدادين الفرعيين `bootloader` و `SocId` مع VID:PID **0451:6165**.
+
+  ```
+  Found DFU: [0451:6165] ver=0200, devnum=9, cfg=1, intf=0, path="1-2.2", alt=1, name="SocId", serial="01.00.00.00"
+  Found DFU: [0451:6165] ver=0200, devnum=9, cfg=1, intf=0, path="1-2.2", alt=0, name="bootloader", serial="01.00.00.00"
+  ```
+
+  إذا لم يظهر الجهاز في القائمة، فحاول مرة أخرى من الخطوة 1.
+</Step>

@@ -1,0 +1,85 @@
+---
+title: "سجل التغييرات"
+description: "سجل التغييرات"
+icon: "clock-rotate-left"
+---
+
+فيما يلي ملخص لجميع التغييرات البرمجية والعتادية الخاصة بمشروع Gemstone.
+
+<Update label="يوليو 2026">
+  * تمت إضافة دعم Zenoh Pico. وتم فتح [طلب سحب (PR) في المستودع الرسمي.](https://github.com/eclipse-zenoh/zenoh-pico/pull/1271)
+  * تمت إضافة دعم SPI و i2c و PWM إلى نظام Nuttx RTOS. [المزيد.](/ar/projects/nuttx)
+  * بدأت [أعمال](https://github.com/t3gemstone/nuttx/tree/px4) تكييف الطيار الآلي PX4 الذي يعمل على نوى Cortex R5 (دعم T3 Gemstone O1) [على هذا العنوان.](/ar/projects/px4)
+  * من خلال تنفيذ تكييف RPMSG Virtual Ethernet، أصبح بإمكان برمجيات MCU التي تعمل على Cortex R5 ونظام Linux على Cortex A57 [التواصل مع بعضهما البعض.](https://github.com/t3gemstone/rpmsg-net)
+</Update>
+
+<Update label="يونيو 2026">
+  * تم دمج T3 Gemstone O1 في مشروع [Apache Nuttx](/ar/projects/nuttx) ونُشر على [الموقع الرسمي.](https://nuttx.apache.org/docs/latest/platforms/arm/am67/boards/t3-gem-o1/index.html)
+</Update>
+
+<Update label="مايو 2026">
+  * تم [إنجاز](https://github.com/t3gemstone/mesa-pvr) تكامل [mesa](https://github.com/t3gemstone/mesa-pvr) لدعم Wayland. [المزيد.](/ar/roadmap#الانتقال-إلى-wayland)
+  * تمت [إضافة](https://github.com/t3gemstone/meta-gemstone/commit/2403da4aa7f42897839d99e98d9706c176a2ca77) دعم Realtek RTL8822CS للإصدار الجديد من T3-GEM-O1 المزوّد بوحدة Wi-Fi.
+  * تمت إضافة [مشاريع جديدة](https://docs.t3gemstone.org/tr/roadmap) إلى قسم خارطة الطريق.
+</Update>
+
+<Update label="أبريل 2026">
+  * تمت [إضافة](/ar/projects/hotspot) مثال لاستخدام لوحة تطوير Gemstone كنقطة اتصال Wi-Fi (Hotspot).
+  * تمت [إضافة](/ar/projects/firewall) مشروع جدار حماية (firewall) صغير الحجم للمستخدمين المنزليين.
+  * اكتملت [أعمال EdgeAI.](/ar/boards/o1/ai/installation)
+  * تمت [إضافة](/ar/imager/customization#استخدام-إنترنت-الحاسوب-المضيف-عبر-اللوحة) الخطوات اللازمة لمشاركة اتصال الإنترنت الخاص بجهاز الكمبيوتر مع اللوحة.
+  * تم [نشر](https://github.com/t3gemstone/ardupilot?tab=readme-ov-file#ai-swarm) [دراسة](https://discuss.ardupilot.org/t/swarm-with-local-llm/143195) أسراب مركبات الإقلاع والهبوط العمودي (VTOL) التي يتم التحكم فيها بواسطة نموذج لغوي كبير (LLM).
+</Update>
+
+<Update label="مارس 2026">
+  * تم [نشر](https://ardupilot.org/plane/docs/common-t3-gem-o1-overview.html) لوحة T3Gemstone O1 على الموقع الرسمي لـ Ardupilot! 
+</Update>
+
+<Update label="فبراير 2026">
+  * تمت [إضافة](/ar/imager/emmc#1-كتابة-الصورة-إلى-emmc-عبر-usb-dfu) ميزة تحديث البرمجيات عبر USB/DFU إلى تطبيق Gemstone Image Writer.
+  * تمت إضافة توثيق للمركبات الأرضية غير المأهولة والمركبات تحت الماء إلى قسم مشاريع Teknofest. 
+</Update>
+
+<Update label="نوفمبر 2025">
+  * تم [نشر](https://github.com/t3gemstone/hardware) المخططات العتادية!
+  * تم [الإعلان](https://forum.beagleboard.org/t/enhance-your-beagley-ai-with-t3-gemstone/42966) عن النظام البيئي لتطوير البرمجيات عبر منتديات Beaglebone.
+  * اكتمل [التوثيق](/ar/boards/o1/ai/introduction) الذي يشرح مواضيع معالجة الصور بالذكاء الاصطناعي.
+  * تمت [إضافة](https://github.com/ArduPilot/ardupilot/pull/31232) أعمال Ardupilot إلى المستودع الرسمي على github.
+  * تمت [إضافة](https://github.com/apache/nuttx/pull/17229) أعمال Nuttx إلى المستودع الرسمي على github.
+</Update>
+
+<Update label="أكتوبر 2025">
+  * تمت [إضافة](https://github.com/t3gemstone/examples/commit/e91f91ba0c00637ae0c5a2c820b27bb7ab2b5dd2) مشروع مثال لوحدة IMU.
+  * تمت [إضافة](https://github.com/t3gemstone/u-boot/pull/4#event-20288730887) دعم تحميل برمجيات MCU الثابتة من U-Boot.
+</Update>
+
+<Update label="سبتمبر 2025">
+  * تمت [إضافة](https://github.com/t3gemstone/sdk/commit/23769767bd3c5ffa7c62a6dd4722df6059b34632) دعم نظام [Pardus](https://pardus.org.tr/).
+</Update>
+
+<Update label="أغسطس 2025">
+  * اكتمل [مشروع](https://github.com/t3gemstone/t3-gem-nextcloud) [Gemcloud](./projects/cloud).
+</Update>
+
+<Update label="يوليو 2025">
+  * اكتملت المراجعة الأولى للتوثيق.
+  * تمت [إضافة](https://github.com/t3gemstone/linux/commits/v6.1.83-ti-rt-arm64-r67-t3-gem-o1/) دعم شاشة اللمس لـ T3-GEM-O1.
+  * تم [نشر](https://github.com/t3gemstone/examples/) مشاريع الأمثلة.
+  * اكتملت ميزة كتابة الصورة إلى وحدة eMMC الموجودة على لوحة التطوير لـ T3-GEM-O1 باستخدام Gemstone Imager.
+</Update>
+
+<Update label="يونيو 2025">
+  * تمت [إضافة](https://github.com/t3gemstone/linux/commits/v6.1.83-ti-rt-arm64-r67-t3-gem-o1/) دعم الكاميرا لـ T3-GEM-O1.
+  * تمت [إضافة](https://github.com/t3gemstone/linux/commits/v6.1.83-ti-rt-arm64-r67-t3-gem-o1/) دعم Bluetooth لـ T3-GEM-O1.
+  * تم [نشر](https://github.com/t3gemstone/gem-imager/releases) الإصدار v1.1.2 من تطبيق Gemstone Imager Writer.
+  * بدأ [بناء](https://github.com/t3gemstone/docs/) نظام التوثيق.
+</Update>
+
+<Update label="أبريل 2025">
+  * تم افتتاح منتديات المجتمع.
+  * تم نشر مشروع Ardupilot الذي يعمل على T3 Gemstone.
+</Update>
+
+<Update label="فبراير 2025">
+  * بدأت أعمال مشروع Gemstone.
+</Update>

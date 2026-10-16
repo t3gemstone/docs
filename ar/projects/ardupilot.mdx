@@ -1,0 +1,410 @@
+---
+title: 'ArduPilot'
+description: 'نظام طيار آلي مفتوح المصدر للوحات T3 Gemstone'
+---
+
+import SnippetArduPilotPinout from '/snippets/projects/ardupilot-pinout.mdx';
+import SnippetArduPilotDevicePaths from '/snippets/projects/ardupilot-device-paths.mdx';
+
+<Frame>
+  <img className="rounded-lg" src="/images/o1-board/19-typec.png" />
+</Frame>
+
+## 1\. نظرة عامة
+
+ArduPilot هو نظام طيار آلي مفتوح المصدر ناضج وغني بالميزات يدعم أنواعاً مختلفة من المركبات، بما في ذلك الطائرات
+ذات الأجنحة الثابتة والدوارة والمركبات الأرضية والغواصات.
+
+يغطي هذا الدليل تشغيل ArduPilot على لوحات تطوير T3 Gemstone O1.
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/g7lm5u7EQis"
+  title="T3 Gemstone O1 Quadcopter"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+## 2\. مواصفات العتاد
+
+### <Icon icon="compass" /> وحدة القياس بالقصور الذاتي (IMU)
+- **الطراز**: InvenSense ICM-20948
+- **الواجهة**: SPI
+
+### <Icon icon="magnet" /> مقياس المغناطيسية (البوصلة)
+- **الطراز**: AKM AK09916
+- **الواجهة**: داخلية (عبر ICM-20948)
+- **مسح البوصلة الخارجية عبر I2C**: مفعّل
+
+### <Icon icon="line-height" /> مقياس الضغط الجوي (البارومتر)
+- **الطراز**: STMicroelectronics LPS22DFTR
+- **الواجهة**: SPI
+
+### <Icon icon="network-wired" /> ناقل CAN
+- **جهاز الإرسال/الاستقبال**: TCAN1462-Q1
+- **الواجهة**: تتوفر واجهة CAN واحدة
+
+### <Icon icon="battery-three-quarters" /> مراقب البطارية
+- **الطراز**: ADS1115
+- **الواجهة**: يمكن توصيله خارجياً عبر I2C-MCU0 على العنوان 0x48
+- **القنوات**: محول ADC رباعي القنوات بدقة 16 بت لاستشعار الجهد/التيار
+
+### <Icon icon="lightbulb" /> مؤشرات الحالة
+- **مصابيح LED**: مصابيح LED للحالة باللونين الأخضر والأحمر
+- **الطنان (Buzzer)**: يمكن توصيله خارجياً عبر GPIO-26
+
+### <Icon icon="satellite-dish" /> GPS ومدخل RC ومخارج PWM
+- **GPS**: اتصال تسلسلي عبر UART-MAIN6، وبوصلة خارجية عبر I2C-MCU0
+- **مدخل RC**: اتصال SBUS عبر UART-MAIN1
+- **مخارج PWM**: 7 قنوات PWM عتادية يمكن الوصول إليها من رأس GPIO ذي 40 طرفاً
+
+## 3\. التثبيت
+
+يُوزَّع ArduPilot كحزمة Debian عبر مستودع APT الخاص بـ T3 Gemstone. تحتوي الحزمة على ملفات ثنائية مجمّعة مسبقاً
+لجميع أنواع المركبات وملفات الإعداد اللازمة.
+
+```bash
+gemstone@t3-gem-o1:~$ sudo apt update
+gemstone@t3-gem-o1:~$ sudo apt install t3-gem-ardupilot
+```
+
+ينشئ التثبيت بنية الأدلة التالية:
+
+```
+/opt/ardupilot/
+├── bin/
+│   ├── arducopter
+│   ├── arduplane
+│   ├── ardurover
+│   └── ardusub
+├── etc/
+│   ├── ardupilot.env
+│   └── ardupilot.parm
+└── var/
+    ├── log/
+    ├── storage/
+    └── terrain/
+```
+
+<Note>
+إذا كنت تفضل تجميع ArduPilot من المصدر، فإن تعليمات التجميع متوفرة على
+[github.com/t3gemstone/ardupilot](https://github.com/t3gemstone/ardupilot/)
+</Note>
+
+### 3\.1\. تراكبات Device-tree {#3-1-تراكبات-device-tree}
+
+قبل تشغيل ArduPilot، يجب تفعيل تراكبات device-tree المختلفة لإعداد الوحدات الطرفية اللازمة.
+
+عدّل ملف `/boot/uEnv.txt` وأضف التراكبات التالية إلى سطر `overlays=`:
+
+```
+k3-am67a-t3-gem-o1-spidev0-1cs.dtbo
+k3-am67a-t3-gem-o1-i2c1-400000.dtbo
+k3-am67a-t3-gem-o1-uart-ttys0.dtbo
+k3-am67a-t3-gem-o1-uart-ttys6.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo
+k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo
+k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo
+k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo
+```
+
+**مثال على إعداد `/boot/uEnv.txt`:**
+
+```
+overlays=k3-am67a-t3-gem-o1-spidev0-1cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-uart-ttys0.dtbo k3-am67a-t3-gem-o1-uart-ttys6.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-ecap1-gpio16.dtbo k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo k3-am67a-t3-gem-o1-pwm-epwm0-gpio5-gpio14.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio6-gpio13.dtbo
+```
+
+أعد تشغيل اللوحة حتى تدخل التغييرات حيز التنفيذ:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo reboot
+```
+
+### 3\.2\. إدارة خدمات systemd
+
+لكل نوع مركبة من ArduPilot خدمة systemd خاصة به:
+
+- `arducopter.service` - المركبات الدوارة متعددة المراوح
+- `arduplane.service` - الطائرات ذات الأجنحة الثابتة
+- `ardurover.service` - المركبات الأرضية
+- `ardusub.service` - المركبات تحت الماء
+
+<Warning>
+لا يمكن تفعيل سوى خدمة مركبة واحدة في الوقت نفسه لأنها تتعارض مع بعضها.
+</Warning>
+
+#### 3\.2\.1\. تشغيل المركبة
+
+لتشغيل ArduPilot وفقاً لنوع مركبتك، فعّل الخدمة المناسبة وابدأ تشغيلها:
+
+```bash
+# للمروحيات
+gemstone@t3-gem-o1:~$ sudo systemctl enable arducopter.service
+gemstone@t3-gem-o1:~$ sudo systemctl start arducopter.service
+```
+
+#### 3\.2\.2\. تغيير أنواع المركبات
+
+للانتقال إلى نوع مركبة مختلف، عطّل أولاً الخدمة الحالية:
+
+```bash
+# عطّل المركبة الحالية
+gemstone@t3-gem-o1:~$ sudo systemctl disable arducopter.service
+gemstone@t3-gem-o1:~$ sudo systemctl stop arducopter.service
+
+# فعّل المركبة الجديدة
+gemstone@t3-gem-o1:~$ sudo systemctl enable arduplane.service
+gemstone@t3-gem-o1:~$ sudo systemctl start arduplane.service
+```
+
+#### 3\.2\.3\. خدمة إعداد النظام
+
+`ardupilot-sysconfig.service` هي خدمة لمرة واحدة تجهّز اللوحة لتشغيل ArduPilot من خلال إعداد أطراف GPIO والوحدات
+الطرفية الأخرى. تعمل هذه الخدمة تلقائياً عند تفعيل أي خدمة مركبة ولا تتطلب تدخلاً يدوياً.
+
+#### 3\.2\.4\. التحقق من حالة الخدمة
+
+راقب حالة خدمة ArduPilot وسجلاتها:
+
+```bash
+# تحقق من حالة الخدمة
+gemstone@t3-gem-o1:~$ sudo systemctl status arducopter.service
+
+# اعرض السجلات في الوقت الفعلي
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -f
+
+# اعرض أحدث السجلات
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -r
+```
+
+## 4\. الإعداد
+
+<Note>
+بعد تعديل ملفات الإعداد، أعد تشغيل خدمة ArduPilot حتى تدخل التغييرات حيز التنفيذ:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo systemctl restart arducopter.service
+```
+</Note>
+
+### 4\.1\. إعدادات بدء تشغيل ArduPilot
+
+يحدد ملف `/opt/ardupilot/etc/ardupilot.env` [وسيطات سطر الأوامر](https://ardupilot.org/dev/docs/ardupilot-on-linux-starting.html)
+الخاصة بـ ArduPilot، بما في ذلك إعداد المنافذ التسلسلية ومسارات الأدلة وخيارات الأداء.
+
+**إعداد المنافذ التسلسلية:**
+
+```bash
+# USB Gadget Ethernet - MAVLink2 (الافتراضي)
+SERIAL0=--serial0 udp:192.168.7.255:14550:bcast
+
+# Telemetry UART 57600 Baud, MAVLink 1
+SERIAL1=--serial1 /dev/ttyS0
+
+# GPS UART 230400 Baud
+SERIAL3=--serial3 /dev/ttyS6
+
+# مدخل SBUS RC UART 100000 باود
+SERIAL5=--serial5 /dev/ttyS3
+```
+
+يمكنك عند الحاجة إزالة التعليق عن منافذ تسلسلية إضافية وإعدادها. يمكن العثور على معلومات إضافية حول المنافذ
+التسلسلية في [توثيق ArduPilot](https://ardupilot.org/copter/docs/common-serial-options.html).
+
+**مسارات الأدلة (اختياري):**
+
+```bash
+LOG_DIRECTORY=--log-directory /opt/ardupilot/var/log
+TERRAIN_DIRECTORY=--terrain-directory /opt/ardupilot/var/terrain
+STORAGE_DIRECTORY=--storage-directory /opt/ardupilot/var/storage
+MODULE_DIRECTORY=--module-directory /usr/lib/ardupilot/modules
+```
+
+### 4\.2\. معاملات ArduPilot
+
+يحدد ملف `/opt/ardupilot/etc/ardupilot.parm` المعاملات الافتراضية المحمّلة عند البدء.
+
+```
+# اضبط SERIAL5 كمدخل SBUS RC
+SERIAL5_PROTOCOL,23
+SERIAL5_BAUD,100
+```
+
+يمكن إضافة معاملات إضافية باتباع [توثيق ArduPilot](https://ardupilot.org/copter/docs/parameters.html).
+
+### 4\.3\. عزل CPU لأداء الوقت الفعلي
+
+يدعم Linux عزل نوى المعالج (CPU) عن مجدول مهام النواة. يتيح ذلك لـ ArduPilot العمل على نوى مخصصة له دون التأثر
+بالعمليات غير المتعلقة بالوقت الفعلي، مما يحسّن خصائص التأخير والتذبذب (jitter).
+
+لعزل النواتين 2 و 3 من أجل ArduPilot:
+
+1. **عدّل معاملات إقلاع النواة (Kernel)**
+
+   افتح ملف `/boot/uEnv.txt` وأضف `isolcpus=2,3` إلى معاملات النواة:
+
+   ```
+   args_mmc=setenv bootargs isolcpus=2,3 console=${console} ...
+   ```
+
+2. **اضبط تعيين CPU**
+
+   عدّل ملف `/opt/ardupilot/etc/ardupilot.env` وأزل التعليق عن سطر CPU_AFFINITY:
+
+   ```bash
+   CPU_AFFINITY=--cpu-affinity 2,3
+   ```
+
+3. **أعد تشغيل اللوحة**
+
+   ```bash
+   gemstone@t3-gem-o1:~$ sudo reboot
+   ```
+
+بعد إعادة التشغيل، يعمل ArduPilot على النواتين 2 و 3 فقط، بينما تستخدم عمليات النظام النواتين 0 و 1.
+
+## 5\. الاستخدام
+
+### 5\.1\. توجيه اللوحة
+
+ركّب اللوحة في مركبتك **بحيث يواجه شعار GemStone مقدمة المركبة**. يضمن ذلك توجيهاً صحيحاً للمستشعرات ومحاذاة
+نظام الإحداثيات.
+
+### 5\.2\. مصابيح LED للحالة
+
+تعرض مصابيح LED للحالة باللونين الأخضر والأحمر الموجودة بالقرب من منافذ CSI/DSI الحالة الراهنة لوحدة التحكم في
+الطيران. للاطلاع على أنماط LED المفصلة ومعانيها، راجع
+[توثيق ArduPilot](https://ardupilot.org/copter/docs/common-leds-pixhawk.html#boards-with-1-or-2-notify-leds).
+
+### 5\.3\. سجلات الطيران
+
+يحفظ ArduPilot سجلات الطيران في المجلد `/opt/ardupilot/var/log/` بصيغة BIN الثنائية. تُدوَّر السجلات تلقائياً ويعرض
+ملف `LASTLOG.TXT` رقم آخر سجل.
+
+يمكن تحليل هذه السجلات باستخدام [UAV Log Viewer](https://plot.ardupilot.org/).
+
+### 5\.4\. الوحدات الطرفية
+
+يوفر رأس GPIO ذو الأربعين طرفاً وصولاً إلى الوحدات الطرفية ومخارج PWM وواجهات الاتصال.
+
+#### 5\.4\.1\. مخطط أطراف GPIO
+
+يعرض الجدول التالي وظيفة كل طرف في رأس GPIO بعد تطبيق تراكبات device-tree. يفترض الجدول أن اللوحة موجَّهة بحيث
+يمكنك رؤية شعار GemStone عمودياً.
+
+<SnippetArduPilotPinout func="الوظيفة" pins="الأطراف" />
+
+#### 5\.4\.2\. مسارات الأجهزة
+
+مسارات أجهزة Linux لكل وحدة طرفية:
+
+<SnippetArduPilotDevicePaths dev="الوحدة الطرفية" path="مسار الجهاز" />
+
+#### 5\.4\.3\. مدخل RC
+
+تدعم اللوحة مدخل RC عبر بروتوكول SBUS على الطرف **UART-MAIN1 RX (GPIO-15)**. يعد SBUS بروتوكول RC رقمياً شائع
+الاستخدام يوفر اتصالاً موثوقاً بين مستقبل RC ووحدة التحكم في الطيران.
+
+##### 5\.4\.3\.1\. متطلب عكس الإشارة
+
+يستخدم بروتوكول SBUS إشارة تسلسلية معكوسة، مما يعني أنك بحاجة إلى استخدام **دائرة عاكس إشارة خارجية** بين مستقبل
+SBUS وطرف UART-MAIN1 RX. بدون هذا العاكس، لن تتمكن اللوحة من قراءة بيانات SBUS بشكل صحيح.
+
+لإنشاء دائرة عاكس الإشارة ستحتاج إلى ما يلي:
+
+- ترانزستور NPN واحد (مثال: S9014 بحزمة TO-92)
+- مقاومة واحدة 10kΩ
+- مقاومة واحدة 1kΩ
+
+<Frame caption="دائرة عاكس الإشارة">
+  <img src="/images/ardupilot-signal-inverter.png" />
+</Frame>
+
+**تفاصيل التوصيل:**
+- يُوصَّل خرج مستقبل SBUS إلى قاعدة (base) الترانزستور عبر مقاومة 1kΩ
+- يُوصَّل مجمّع (collector) الترانزستور إلى طرف UART-MAIN1 RX (GPIO-15)
+- تُوصَّل مقاومة pull-up بقيمة 10kΩ بين المجمّع و 3v3 VCC
+- يُوصَّل باعث (emitter) الترانزستور إلى GND
+
+### 5\.5\. الاتصال بـ QGroundControl
+
+QGroundControl (QGC) هي محطة التحكم الأرضية الموصى بها لـ ArduPilot. يمكنك الاتصال عبر UDP أو عبر القياس عن بعد
+التسلسلي.
+
+#### 5\.5\.1\. اتصال USB-Ethernet (الافتراضي)
+
+وصّل لوحة Gemstone بجهاز الكمبيوتر باستخدام كابل USB Type-C. تستخدم اللوحة USB Gadget API لتوفير Ethernet عبر USB
+مع إعداد IP تلقائي:
+
+- **عنوان IP الخاص باللوحة**: `192.168.7.2`
+- **عنوان IP الخاص بالكمبيوتر**: يُعيَّن عبر DHCP (غالباً `192.168.7.59`)
+- **منفذ MAVLink**: بث UDP على العنوان `192.168.7.255:14550`
+
+إذا كان الاتصال التلقائي عبر UDP مفعّلاً (وهو الإعداد الافتراضي)، فسيكتشف QGC المركبة تلقائياً ويتصل بها.
+
+#### 5\.5\.2\. اتصال القياس عن بعد التسلسلي
+
+للقياس عن بعد اللاسلكي باستخدام وحدات الراديو:
+
+1. **وصّل راديو القياس عن بعد بلوحة Gemstone**
+   - وصّل وحدة القياس عن بعد بأطراف UART-WKUP0 الموجودة على اللوحة
+
+2. **وصّل راديو القياس عن بعد بالكمبيوتر**
+   - وصّل وحدة الراديو الثانية بجهاز الكمبيوتر بمساعدة USB-to-TTL
+   - دوّن جهاز TTY الذي أُنشئ (مثال: `/dev/ttyUSB0`)
+
+3. **اضبط QGroundControl**
+   - افتح **Application Settings → Comm Links**
+   - انقر على زر **Add**
+   - اختر المنفذ التسلسلي الصحيح وسرعة الباود **57600**
+   - احفظ الإعداد وانقر على زر **Connect**
+
+يجب الآن أن تصل رسائل MAVLink وسترى حالة المركبة في QGC.
+
+## 6\. استكشاف الأخطاء وإصلاحها
+
+### 6\.1\. خدمة ArduPilot لا تعمل
+
+تحقق من حالة الخدمة وسجلاتها:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo systemctl status arducopter.service
+gemstone@t3-gem-o1:~$ sudo journalctl -u arducopter.service -r
+```
+
+### 6\.2\. عدم وجود اتصال MAVLink
+
+تحقق من إعداد الشبكة من جهاز الكمبيوتر:
+
+```bash
+ubuntu@host:~$ ping 192.168.7.2
+```
+
+تحقق من لوحة Gemstone من أن ArduPilot يعمل ويبث:
+
+```bash
+gemstone@t3-gem-o1:~$ sudo netstat -u -n | grep 14550
+```
+
+تأكد من أن الاتصال التلقائي عبر UDP في QGC مفعّل ضمن إعدادات التطبيق.
+
+### 6\.3\. عدم اكتشاف GPS
+
+يجب أن يكون GPS متصلاً بـ UART-MAIN6 (GPIO-4 و GPIO-17) وبـ I2C-MCU0 (الطرفان GPIO-2 و GPIO-3). تحقق من اتصال GPS
+على أطراف رأس GPIO وصحّح الإعداد:
+
+```bash
+gemstone@t3-gem-o1:~$ cat /opt/ardupilot/etc/ardupilot.env | grep SERIAL3
+```
+
+### 6\.4\. مخارج PWM أو المنافذ التسلسلية لا تعمل
+
+تحقق من تحميل تراكبات device-tree:
+
+```bash
+gemstone@t3-gem-o1:~$ ls /proc/device-tree/chosen/overlays
+```
+
+يجب أن ترى الأسماء المدرجة في قسم [تراكبات Device-tree](#3-1-تراكبات-device-tree). إذا كان هناك نقص، فتحقق من
+إعداد `/boot/uEnv.txt` وأعد تشغيل اللوحة.

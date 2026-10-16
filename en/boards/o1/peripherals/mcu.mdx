@@ -23,7 +23,7 @@ By the end of this section, you will gain knowledge and experience in the follow
 * Gaining awareness that software can run concurrently on the different architectures present on the development board, namely Cortex-A (Linux) and Cortex-R (MCU)
 </Tip>
 
-While the primary focus of the **T3-GEM-O1** development board is Linux, it also leverages the power of the 
+While the primary focus of the **T3-GEM-O1** development board is Linux, it also leverages the power of the
 R5 and C7x cores housed within the Texas AM67 microprocessor. For example, it is possible to perform various image
 processing tasks on Linux (Cortex-A) and transfer these to MCU (Cortex-R5) software, enabling scenarios such as
 driving various servos, reading sensors, etc. This section will cover topics such as how to compile software
@@ -50,13 +50,13 @@ called U-Boot and to enable writing images to
 [eMMC via the Gemstone Imager application](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319).
 
 U-Boot is often preferred in embedded boards containing the Linux Kernel. While pre-loaders like SBL can perform
-more basic level initialization operations, U-Boot has much more advanced features. For example, U-Boot has its own 
+more basic level initialization operations, U-Boot has much more advanced features. For example, U-Boot has its own
 Terminal/Console interface and many drivers not available in SBL, allowing for more advanced customizations.
 
 ### 1.3. U-Boot
 
-U-Boot, which takes control of the development board after SBL, activates the drivers of the relevant hardware 
-according to the configurations defined in the [Device Tree](/en/faq#what-is-a-device-tree) and executes a set of 
+U-Boot, which takes control of the development board after SBL, activates the drivers of the relevant hardware
+according to the configurations defined in the [Device Tree](/en/faq#what-is-a-device-tree) and executes a set of
 predefined commands to load components like the Linux Kernel and Initrd into RAM, handing over control to the Linux Kernel.
 
 #### 1.3.1. U-Boot Console Exercises
@@ -76,18 +76,18 @@ You can quickly browse the documents below.
 
 ### 1.4. Linux Kernel
 
-It loads the drivers for the hardware defined in the [Device Tree](/en/faq#what-is-a-device-tree). Then, if any, 
+It loads the drivers for the hardware defined in the [Device Tree](/en/faq#what-is-a-device-tree). Then, if any,
 it starts the initrd/initramfs and runs the `init` program found in the rootfs.
 
 <Tip>
-  The [Device Tree](/en/faq#what-is-a-device-tree) files for U-Boot and the Linux kernel are different from each other. 
-  The devicetree in U-Boot typically only activates enough hardware to load the kernel and initramfs from various 
+  The [Device Tree](/en/faq#what-is-a-device-tree) files for U-Boot and the Linux kernel are different from each other.
+  The devicetree in U-Boot typically only activates enough hardware to load the kernel and initramfs from various
   storage devices (MMC, SSD, SPI flash, ...) into RAM. The main hardware activation is done by the kernel.
 </Tip>
 
 ### 1.5. Initial RAM Disk (Initrd)
 
-It is a temporary filesystem located in RAM that performs intermediate tasks such as loading various kernel modules, 
+It is a temporary filesystem located in RAM that performs intermediate tasks such as loading various kernel modules,
 decrypting the disk, performing software updates, etc., before the rootfs is started.
 
 <Tip>
@@ -97,16 +97,16 @@ decrypting the disk, performing software updates, etc., before the rootfs is sta
 
 ### 1.6. Root Filesystem (Rootfs)
 
-After the initrd finishes its operations, it mounts the filesystem called rootfs, which contains system and user 
+After the initrd finishes its operations, it mounts the filesystem called rootfs, which contains system and user
 programs, libraries, and various configuration files, to the `/` directory.
 Then the kernel runs the `init` program located in the rootfs at `/init`, `/sbin/init`, or a similar directory.
-This program loads drivers for some hardware (kernel modules), system services (services such as network 
+This program loads drivers for some hardware (kernel modules), system services (services such as network
 connection, time synchronization, package update, and bluetooth) and starts the desktop environment (gnome, kde, xfce).
 
 ## 2. MCU Software Development
 
 <Tip>
-  This section describes the bare-metal software development process for Cortex-R5 and C7x cores. 
+  This section describes the bare-metal software development process for Cortex-R5 and C7x cores.
   Software running on the relevant architectures is compiled using Texas SDK and tools and loaded
   onto the development board.
 </Tip>
@@ -119,8 +119,8 @@ The tools required to compile MCU projects are listed below.
 4. Texas Instruments Code Generation Tools ARM LLVM
 
 <Tip>
-Since downloading these tools one by one from the Texas Instruments website and performing their installations 
-is cumbersome, an infrastructure has been set up in the [t3gemstone/examples](https://github.com/t3gemstone/examples) 
+Since downloading these tools one by one from the Texas Instruments website and performing their installations
+is cumbersome, an infrastructure has been set up in the [t3gemstone/examples](https://github.com/t3gemstone/examples)
 repo to download all the necessary tools and compile MCU projects. It is installed automatically when you clone the project.
 </Tip>
 
@@ -134,10 +134,10 @@ repo to download all the necessary tools and compile MCU projects. It is install
 
 ### 2.3. Create a template project
 
-The `mcu` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repo contains sample 
-projects running on two R5F real-time cores and two C7x DSP cores. Similar examples can be found in 
-the `build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples` directory. 
-It is recommended to find an example project suitable for your purpose, copy it to the `mcu` project directory, 
+The `mcu` project in the [t3gemstone/examples](https://github.com/t3gemstone/examples) repo contains sample
+projects running on two R5F real-time cores and two C7x DSP cores. Similar examples can be found in
+the `build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples` directory.
+It is recommended to find an example project suitable for your purpose, copy it to the `mcu` project directory,
 and develop on it.
 
 Under each sample project, there are subdirectories for different cores.
@@ -145,20 +145,20 @@ For example, the `hello_world` project has the following directories.
 
 <SnippetHelloWorld />
 
-The code to be written should be developed in the directory of the core on which it is intended to run, and the 
+The code to be written should be developed in the directory of the core on which it is intended to run, and the
 compiled outputs from that directory should be used.
 
-The MCU projects to be compiled are defined as the `MCU_TARGETS` variable in the `.env` file. Add the absolute or 
-relative path of the `makefile` directory of the project you want to compile to the `MCU_TARGETS` variable. Below 
+The MCU projects to be compiled are defined as the `MCU_TARGETS` variable in the `.env` file. Add the absolute or
+relative path of the `makefile` directory of the project you want to compile to the `MCU_TARGETS` variable. Below
 is an example for the `mcu-r5fss0-0_freertos` core of the `hello_world` project.
 
 <SnippetTargets />
 
 ### 2.4. Configure peripherals with SysConfig
 
-SysConfig is a configuration tool developed by Texas Instruments (TI). It is used in TI's microcontroller (MCU) 
-and processor-based development environments. Its main purpose is to allow the configuration of hardware and 
-software settings visually. Instead of writing complex initialization code directly, it allows system 
+SysConfig is a configuration tool developed by Texas Instruments (TI). It is used in TI's microcontroller (MCU)
+and processor-based development environments. Its main purpose is to allow the configuration of hardware and
+software settings visually. Instead of writing complex initialization code directly, it allows system
 configuration via a GUI by clicking options.
 
 **Main features:**
@@ -169,12 +169,12 @@ configuration via a GUI by clicking options.
 - Automatic Code Generation: Automatically generates C source files (.c, .h) based on the settings made.
 - Error prevention: Detects inappropriate pin or module combinations and warns.
 
-Which peripherals (GPIO, I2C, UART, etc.) the project uses and their configuration are defined in the `.syscfg` file. 
+Which peripherals (GPIO, I2C, UART, etc.) the project uses and their configuration are defined in the `.syscfg` file.
 The SysConfig GUI tool is used to add new peripherals or change the Pin Mux settings of existing ones.
 
 <Warning>
-Before using the SysConfig GUI tool, read the 
-[Sharing Resources Between Cores](/en/boards/o1/peripherals/mcu#3-sharing-resources-between-cores) section to 
+Before using the SysConfig GUI tool, read the
+[Sharing Resources Between Cores](/en/boards/o1/peripherals/mcu#3-sharing-resources-between-cores) section to
 correctly allocate resources and avoid unexpected errors.
 </Warning>
 
@@ -190,7 +190,7 @@ After saving your changes with the `Ctrl + S` shortcut key, you can close the Sy
 
 <Warning>
   The remoteproc infrastructure is used to allow remote software loading to the R5F and C7x cores from the Linux side.
-  For a project's compiled `.out` file to be loadable via remoteproc, certain settings must be made in the 
+  For a project's compiled `.out` file to be loadable via remoteproc, certain settings must be made in the
   SysConfig interface. After copying a new project, the following steps should be followed.
 
   1. Open the `IPC` tab under `TI DRIVERS`.
@@ -209,19 +209,19 @@ After saving your changes with the `Ctrl + S` shortcut key, you can close the Sy
 
 ### 2.7. Run the compiled project
 
-The `.out` files to be loaded to the cores via Remoteproc must be copied under the `/lib/firmware` directory 
+The `.out` files to be loaded to the cores via Remoteproc must be copied under the `/lib/firmware` directory
 with predefined names. The firmware name for each core is given in the table below.
 
 <SnippetFirmwares />
 
-The firmware names and which core corresponds to which remoteproc device can be accessed with the 
-`head /sys/class/remoteproc/remoteproc*/firmware` command. This needs to be checked because after each boot, 
+The firmware names and which core corresponds to which remoteproc device can be accessed with the
+`head /sys/class/remoteproc/remoteproc*/firmware` command. This needs to be checked because after each boot,
 the cores can correspond to different remoteproc devices.
 
-<SnippetRemoteProc />
+<SnippetRemoteproc />
 
 <Warning>
-  The above procedure ensures a clean shutdown and restart of the remote cores. In some cases, the clean shutdown 
+  The above procedure ensures a clean shutdown and restart of the remote cores. In some cases, the clean shutdown
   process may fail. In this case, we recommend the following steps:
 
   1. Place the new firmware files in the `/lib/firmware` directory.
@@ -238,11 +238,11 @@ the cores can correspond to different remoteproc devices.
 
 ### 2.8. Running the Compiled Project at the U-Boot Stage
 
-As seen in the diagram in the [Boot Diagram](/en/boards/o1/peripherals/mcu#1-boot-diagram) section, when using the 
+As seen in the diagram in the [Boot Diagram](/en/boards/o1/peripherals/mcu#1-boot-diagram) section, when using the
 execution method described in the previous section, for the MCU application to run, Linux must complete its startup process and load and start the core software. This process can cause unwanted delays in some applications. This delay can be prevented by starting the remote cores at the bootloader (U-Boot) stage.
 
 1. First, the compiled application is copied to the `/boot/mcu-fw/` directory.
-2. In the `/boot/uEnv.txt` file, the necessary parameter is defined using the table below, depending on which 
+2. In the `/boot/uEnv.txt` file, the necessary parameter is defined using the table below, depending on which
 core the compiled application belongs to.
 
 | Core          | Variable Name          |
@@ -253,7 +253,7 @@ core the compiled application belongs to.
 | c7xss0-0      | c7x0_dsp_firmware_name |
 | c7xss1-0      | c7x1_dsp_firmware_name |
 
-For example, when an application named `blink_main_r5` is desired to run on the main-r5fss0-0 core at the U-Boot 
+For example, when an application named `blink_main_r5` is desired to run on the main-r5fss0-0 core at the U-Boot
 stage, first the application is copied to the `/boot/mcu-fw` directory as shown below.
 
 ```sh
@@ -274,28 +274,28 @@ Now the `blink_main_r5` application will be started directly at the bootloader s
 
 ## 3. Sharing Resources Between Cores
 
-Due to the AM67 being a multi-core processor, the resources it possesses must be shared among these cores. For 
-example, the `main_uart1` uart peripheral cannot be used simultaneously by both Linux (A53 cores) and the 
+Due to the AM67 being a multi-core processor, the resources it possesses must be shared among these cores. For
+example, the `main_uart1` uart peripheral cannot be used simultaneously by both Linux (A53 cores) and the
 main-r5fss0-0 core. If this UART peripheral is to be used by the MCU, it must be indicated that it is not used by Linux.
 
 ### 3.1. Default Resource Allocation Table
 
-The table below provides information such as which SOC pins the pins on the HAT correspond to, which peripherals 
-they can be used as (Pinmux), whether they are used by default by Linux, if so for what purpose, and how this 
+The table below provides information such as which SOC pins the pins on the HAT correspond to, which peripherals
+they can be used as (Pinmux), whether they are used by default by Linux, if so for what purpose, and how this
 can be disabled.
 
 <SnippetResources />
 
-Look at the column named `To Disable` for the pin to be disabled. The files listed in this column 
-as `k3-am67a-t3-gem-o1-xxxxxx.dtbo` are called device-tree overlay files, which inform Linux how to use the specified 
+Look at the column named `To Disable` for the pin to be disabled. The files listed in this column
+as `k3-am67a-t3-gem-o1-xxxxxx.dtbo` are called device-tree overlay files, which inform Linux how to use the specified
 peripheral.
 
-To disable the relevant settings, open the `/boot/uEnv.txt` file and remove this file from the variable 
-named `overlays`. For some pins, the `To Disable` column contains instructions other than overlays, 
+To disable the relevant settings, open the `/boot/uEnv.txt` file and remove this file from the variable
+named `overlays`. For some pins, the `To Disable` column contains instructions other than overlays,
 such as `Must be disabled via Device-tree. (mcu_spi0)`. To disable these;
 
 - Clone the https://github.com/t3gemstone/devicetrees repo.
-- Open the `src/arm64/ti/k3-am67a-t3-gem-o1.dts` file and add the following code snippet with the necessary modifications. 
+- Open the `src/arm64/ti/k3-am67a-t3-gem-o1.dts` file and add the following code snippet with the necessary modifications.
   ```c
   &mcu_spi0 {
     status = "disabled";
@@ -307,27 +307,27 @@ such as `Must be disabled via Device-tree. (mcu_spi0)`. To disable these;
 - Reboot the board and test if it works.
 
 <Note>
-  If an undesirable situation occurs as a result of the above operations, the backed-up device-tree can be restored 
+  If an undesirable situation occurs as a result of the above operations, the backed-up device-tree can be restored
   with the command `$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb`.
 </Note>
 
-As a result of the above operations, `mcu_spi0` will now be available for use by the mcu cores. However, 
-the `Usage Purpose in Linux` section in the table indicates that it is 
-`- Used for LPS22DFTR pressure and ICM20948 imu spi`. Therefore, access to these peripherals from Linux will be 
+As a result of the above operations, `mcu_spi0` will now be available for use by the mcu cores. However,
+the `Usage Purpose in Linux` section in the table indicates that it is
+`- Used for LPS22DFTR pressure and ICM20948 imu spi`. Therefore, access to these peripherals from Linux will be
 closed and they will need to be driven by the MCU.
 
 ### 3.2. Example Scenario: Driving a Servo Motor from the MCU with PWM
 
-In a scenario where we need to drive an SG90 model servo motor from an MCU core, we must first select a PWM pin 
-on the HAT pins. For example, let's select the `GPIO-12` pin. Looking at the table, we can see that this pin is 
-in use by Linux. To disable this pin in Linux, when we look at the `To Disable` column, we see that there is only 
+In a scenario where we need to drive an SG90 model servo motor from an MCU core, we must first select a PWM pin
+on the HAT pins. For example, let's select the `GPIO-12` pin. Looking at the table, we can see that this pin is
+in use by Linux. To disable this pin in Linux, when we look at the `To Disable` column, we see that there is only
 one overlay file. To disable it, we open the `/boot/uEnv.txt` file and check the `overlays` variable.
 
 ```txt
 overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
 ```
 
-Here we can see the name of the `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` file specified in the table. We delete it, 
+Here we can see the name of the `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` file specified in the table. We delete it,
 and the overlays variable becomes as follows.
 
 ```txt

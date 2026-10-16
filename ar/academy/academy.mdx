@@ -1,0 +1,44 @@
+---
+title: "الأكاديمية"
+description: "مقاطع فيديو تعليمية"
+icon: "play"
+mode: "custom"
+---
+
+export const HeroCard = ({ filename, title, description, href }) => {
+  return (
+    <a className="group cursor-pointer pb-8" href={href}>
+      <img src={`https://raw.githubusercontent.com/t3gemstone/docs/refs/heads/main/images/${filename}.png`} className="block dark:hidden pointer-events-none group-hover:scale-105 transition-all duration-100" />
+      <img src={`https://raw.githubusercontent.com/t3gemstone/docs/refs/heads/main/images/${filename}-dark.png`} className="pointer-events-none group-hover:scale-105 transition-all duration-100 hidden dark:block" />
+      <h3 className="mt-5 text-gray-900 dark:text-zinc-50 font-medium">{title}</h3>
+      <span className="mt-1.5">
+        {description}
+      </span>
+    </a>
+  )
+}
+
+<div className="relative">
+
+  <div className="px-4 py-16 lg:py-48 lg:pb-24 max-w-3xl mx-auto">
+
+    <h1 className="text-4xl font-medium text-center text-gray-900 dark:text-zinc-50 tracking-tight">
+    مقاطع الفيديو التعليمية لـ Gemstone
+    </h1>
+
+    <p className="max-w-xl mx-auto px-4 mt-4 text-lg text-center text-gray-500 dark:text-zinc-500">
+    يحتوي هذا القسم على مقاطع فيديو تعليمية أساسية أُعدّت لمن هم في المستوى المبتدئ ولم يسبق لهم العمل في عالم Linux أو البرمجيات المدمجة ولوحات التطوير أو استخدام Linux من قبل.**(قيد الإعداد..)**
+    </p>
+
+    <div className="px-6 lg:px-0 mt-12 lg:mt-24 grid sm:grid-cols-3 gap-x-6 gap-y-4">
+      <HeroCard filename="components" title="أساسيات Linux" description="اكتسب معلومات أساسية حول تثبيت Linux واستخدامه على جهاز الكمبيوتر" />
+      <HeroCard filename="components" title="إعداد واستخدام Gemstone" description="اجعل لوحتك جاهزة بعد شرائها" />
+      <HeroCard filename="components" title="تطوير البرمجيات باستخدام Gemstone" description="طوِّر البرمجيات على Gemstone" />
+      <HeroCard filename="components" title="تخصيص عتاد وبرمجيات Gemstone" description="خصّصها من خلال التعرف على العتاد والبرمجيات عن قرب" />
+      <HeroCard filename="components" title="مشاريع Gemstone" description="طوِّر مركبات غير مأهولة أو مشاريع IoT متنوعة" />
+      <HeroCard filename="components" title="من إسهاماتكم" description="اطّلع على المشاريع التي أنجزها المجتمع" />
+    </div>
+
+  </div>
+
+</div>
