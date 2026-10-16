@@ -187,6 +187,7 @@
               "tr/projects/firewall",
               "tr/projects/hotspot",
               "tr/projects/homeassistant",
+              "tr/projects/ros2",
               {
                 "group": "Mesh Ağ",
                 "pages": [
@@ -384,6 +385,7 @@
               "en/projects/firewall",
               "en/projects/hotspot",
               "en/projects/homeassistant",
+              "en/projects/ros2",
               {
                 "group": "Mesh Network",
                 "pages": [
