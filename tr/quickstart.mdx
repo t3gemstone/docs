@@ -263,7 +263,9 @@ için kullanılmaktadır.
       ağına bağlanmasını isterseniz "Configure wireless LAN" isimli seçeneği işaretleyerek WIFI bağlantı adını ve
       şifresini giriniz.
 
-        <Warning>Dikkat: Wifi bağlantı adını (Access Point Name) ve şifresini doğru girdiğinize emin olunuz.</Warning>
+        <Warning>Dikkat: Wifi bağlantı adını (Access Point Name) ve şifresini doğru girdiğinize emin olunuz.
+        Ayrıca kart ile birlikte gönderilen Wi-Fi antenini GPIO pinlerine en yakın olan J19 konnektörüne
+        takmayı unutmayınız ([Wi-Fi Bağlantısı](./quickstart#2-5-wi-fi-bağlantısı)).</Warning>
 
     * Son olarak **Set locale settings** seçeneğini işaretleyerek Gemstone kartın klavye dilini seçiniz.
 
@@ -548,6 +550,16 @@ sudo apt update && sudo apt upgrade
 ```
 
 ### 2.5. Wi-Fi Bağlantısı
+
+<Warning>
+Wi-Fi bağlantısı için kart ile birlikte gönderilen anteni, kartın kenarındaki anten konnektörlerinden
+**GPIO pinlerine (40-pin genişletme konnektörü) en yakın olan J19 konnektörüne** takınız. Anten başka bir
+konnektöre takılırsa Wi-Fi sinyali zayıf olabilir veya kablosuz ağlar hiç görünmeyebilir.
+</Warning>
+
+<Frame caption="Wi-Fi anten konnektörü (J19)">
+  <img className="rounded-lg" src="/images/o1-board/40-wifi-antenna-tr.jpg" />
+</Frame>
 
 Kurulum esnasında değil de kurulum yapıldıktan sonra geliştirme kartını yeni bir wifi ağına dahil etmek isterseniz 
 yukarıdaki yöntemlerden herhangi biri ile karta bağlanarak Terminal açınız ve `sudo nmtui` komutunu
