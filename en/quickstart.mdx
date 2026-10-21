@@ -256,7 +256,9 @@ is used to set the board's login password and enable certain services to start a
     * If you want the board to connect to a Wi-Fi network after completing the image writing process and powering 
       it on, check the "Configure wireless LAN" option and enter the Wi-Fi network name and password.
 
-        <Warning>Note: Make sure you enter the correct Wi-Fi network name (Access Point Name) and password.</Warning>
+        <Warning>Note: Make sure you enter the correct Wi-Fi network name (Access Point Name) and password.
+        Also, don't forget to attach the Wi-Fi antenna shipped with the board to the J19 connector closest
+        to the GPIO pins ([Wi-Fi Connection](./quickstart#2-5-wi-fi-connection)).</Warning>
 
     * Finally, check the **Set locale settings** option and select the keyboard language for the Gemstone board.
 
@@ -535,6 +537,16 @@ sudo apt update && sudo apt upgrade
 ```
 
 ### 2.5. Wi-Fi Connection
+
+<Warning>
+For a Wi-Fi connection, attach the antenna shipped with the board to the **J19 connector, the antenna
+connector closest to the GPIO pins (40-pin expansion header)** on the edge of the board. If the antenna is
+attached to another connector, the Wi-Fi signal may be weak or wireless networks may not show up at all.
+</Warning>
+
+<Frame caption="Wi-Fi antenna connector (J19)">
+  <img className="rounded-lg" src="/images/o1-board/40-wifi-antenna.jpg" />
+</Frame>
 
 If you wish to connect the development board to a new WiFi network after the initial setup, rather than
 during it, open a Terminal using any of the methods described above to connect to the board.
