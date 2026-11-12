@@ -1,0 +1,52 @@
+---
+title: 'الأدنى'
+description: 'الصورة الأدنى'
+---
+
+<Note>
+قبل قراءة هذا القسم، قم بإجراء بحث قصير من خلال كتابة العناوين التالية في محرك البحث:
+"Realtime Embedded Systems" و "What is determinism in operating systems" و "Realtime operating systems" و "IOT projects".
+</Note>
+
+<Tip>
+بعض الصفحات النموذجية؛
+
+1. [Real-time Application of Embedded Systems Projects](https://mth.tc/mjBS)
+2. [Example of Embedded Systems](https://mth.tc/Q3ir3)
+3. [Example of IoT Projects](https://mth.tc/Sm3ZS)
+4. [تحويل Linux PREEMPT_RT من نظام تشغيل عام الغرض إلى منصة زمنية فعلية](https://kureansiklopedi.com/tr/detay/linux-preempt_rt-genel-amacli-isletim-sisteminden-)
+</Tip>
+
+تخيل أنك تعمل على ذراع روبوتية لأتمتة المصانع. لتمر منتجات بألوان مختلفة على خط إنتاج متحرك، وأنت تكتشف هذه
+المنتجات بكاميرا أو مستشعرات على الذراع الروبوتية وتضعها في صناديق مختلفة حسب لونها. ما التأثير الذي سيحدث
+إذا تأخرت ذراعك الروبوتية ثانية واحدة عند اكتشاف منتج أحمر؟
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/sLKXQvUkWAU"
+  title="Robotic Arm Demo"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+خاصة في المركبات غير المأهولة، من المهم جدًا معرفة عدد الثواني التي يستغرقها النظام ليعمل منذ لحظة تشغيل
+لوحة Gemstone، وأن تستجيب تطبيقاتك وتتخذ الإجراء في الوقت المتوقع. عند تطوير مشاريع مدمجة مثل مشاريع
+الطائرات المسيَّرة، تُستخدم أنظمة تشغيل زمنية فعلية حتمية صغيرة الحجم. على سبيل المثال، في وحدة التحكم
+بالطيران المسماة [PX4](https://mth.tc/gkgIy) يُفضَّل نظام تشغيل [Apache NuttX](https://github.com/t3gemstone/NuttX)،
+أو أنظمة تشغيل مثل [FreeRTOS](https://www.freertos.org/Documentation/00-Overview) في أنظمة متنوعة.
+
+تتمتع نواة Linux أيضًا بقدرة العمل بشكل زمني فعلي مثل [Tübitak GzIS](https://kureansiklopedi.com/tr/detay/tubitak-gis-gercek-zamanli-isletim-sistemi-69507)
+و NuttX و FreeRTOS و vxWorks و [Zephyr](https://www.zephyrproject.org/)، وخلافًا لتلك الأنظمة المذكورة
+فإنها تتمتع بميزة كبيرة جدًا لأنها تتيح استخدام مئات المشاريع مفتوحة المصدر. (توجد أيضًا عيوب في استخدامها
+في الأنظمة الحرجة.) (لمقال نموذجي [انقر هنا](https://mth.tc/jRzV))
+
+صورة Gemstone المسماة **الأدنى** مُحسَّنة لتعمل بسرعة (زمن الإقلاع) ولتكون ذات بنية حتمية، وهي **لا تحتوي**
+على بيئة سطح مكتب أو واجهة رسومية. ثُبّتت فقط الحزم والمشغّلات اللازمة لتشغيل النظام بشكل سليم. تقليص الحجم
+بهذا الشكل المحسَّن يتيح إقلاعًا أسرع واستخدامًا أكثر كفاءة لموارد النظام.
+
+<Frame caption="اختيار الصورة الأدنى باستخدام تطبيق Gemstone Imager">
+  <video controls className="w-full aspect-video" src="/videos/gem-imager-select-minimal.mp4"></video>
+</Frame>
+
+1. مثل الصور الأخرى، جميع مشغّلات العتاد موجودة، أي يمكن استخدام عتاد مثل المنفذ التسلسلي و CanBUS و Ethernet وغيرها.
+2. مناسبة للمشاريع التي لا تتطلب رسوميات مثل إنترنت الأشياء والمركبات غير المأهولة والأتمتة.

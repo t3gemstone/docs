@@ -1,0 +1,82 @@
+---
+title: 'MATHLIB'
+description: 'استخدام الدوال الرياضية مع شرائح التسريع'
+---
+
+import SnippetMcuBuild from '/snippets/ai/advanced/mcu-build.mdx';
+import SnippetDemo from '/snippets/ai/advanced/mathlib/demo.mdx';
+import SnippetPathCpp from '/snippets/ai/advanced/mathlib/path-cpp.mdx';
+import SnippetIncludesCommon from '/snippets/ai/advanced/mathlib/path-includes-common.mdx';
+import SnippetCflagsCommon from '/snippets/ai/advanced/cflags-common.mdx';
+import SnippetLibsPath from '/snippets/ai/advanced/mathlib/libs-path.mdx';
+import SnippetLibsCommon from '/snippets/ai/advanced/mathlib/libs-common.mdx';
+import SnippetObjsDeps from '/snippets/ai/advanced/objs-deps.mdx';
+import SnippetInclude from '/snippets/ai/advanced/mathlib/include.mdx';
+
+<Tip>تعمل مشاريع MCU المستندة إلى C7 التي تستخدم مكتبة MATHLIB بالاستفادة من وحدة مسرّع AI (C7x DSP / MMA)
+الموجودة في المعالج. وبهذه الطريقة تُنفَّذ العمليات الرياضية والحسابات المتجهة والدوال التي تتطلب حسابات مكثفة
+عبر تسريع عتادي، ما يرفع أداء التطبيق بشكل ملحوظ.</Tip>
+
+## مشروع نموذجي
+
+يُقدَّم مشروع نموذجي يعمل ويمكنك مراجعته بالاستناد إلى دمج مكتبة MATHLIB، ضمن مجلد `MCU` الموجود في مستودع
+`examples` على GitHub الخاص بـ T3 Gemstone.
+
+داخل مستودع Examples وأثناء وجودك في `devbox shell`، يجب عليك تشغيل الأمر التالي.
+
+<SnippetMcuBuild />
+
+أصبح ملف `mathlib_demo.out` الموجود في `examples/mcu/mathlib_demo/j722s-evm/c75ss0-0_freertos/ti-c7000` و
+`examples/mcu/mathlib_demo/j722s-evm/c75ss1-0_freertos/ti-c7000` قابلاً للتشغيل الآن على نوى C7.
+
+لتشغيله على لوحة التطوير، يمكنك اتباع الخطوات الواردة في قسم [تشغيل المشروع المُجمَّع في مرحلة U-Boot](/ar/boards/o1/peripherals/mcu#2-8-تشغيل-المشروع-المجمع-في-مرحلة-u-boot).
+
+تُنقل المخرجات الناتجة في هذا المشروع النموذجي عبر واجهة UART1.
+(يمكنك الوصول إلى توصيلات الأطراف ذات الصلة من [توثيق Pinout](/ar/boards/o1/peripherals/introduction#1-مخطط-الأطراف).)
+
+صورة طرفية (terminal) لمخرجات مشروع MATHLIB النموذجي كما يلي.
+
+<SnippetDemo />
+
+## الدمج في مشروع MCU الحالي عبر MakeFile
+
+لدمج مكتبة Mathlib في مشروع MCU الحالي لديك، يجب عليك تحديد مسار الدليل الجذري الخاص بـ SDK وملف `.cpp`
+الذي ستستخدمه.
+
+<SnippetPathCpp />
+
+بعد ذلك، يجب عليك إضافة مجلد `src` الخاص بـ MATHLIB إلى قائمة المجلدات المضمّنة (المتغير `INCLUDES_common`) كما يلي.
+
+<SnippetIncludesCommon />
+
+يجب عليك إضافة التعريفات التالية إلى معاملات FLAGS الخاصة بالمجمِّع (المتغير `CFLAGS_common`) لضمان ترجمة
+المكتبة بشكل صحيح.
+
+<SnippetCflagsCommon />
+
+يجب عليك إضافة دليل المكتبة المُجمَّعة الخاص بـ MATHLIB إلى تعريفات مسار المكتبة (المتغير `LIBS_PATH_common`).
+
+<SnippetLibsPath />
+
+يجب عليك إضافة اسم مكتبة mathlib إلى قائمة ملفات المكتبات المضمّنة (المتغير `LIBS_common`) كما يلي.
+
+<SnippetLibsCommon />
+
+لكي تتمكن من ترجمة ملفات .cpp في المشروع، يجب إجراء الإضافات التالية مباشرة بعد السطر الذي تُعرَّف فيه `OBJS`
+و `DEPS`.
+
+<SnippetObjsDeps />
+
+بعد إتمام هذه الخطوات، ستكون مكتبة MATHLIB قد دُمجت بنجاح في المشروع عبر Makefile.
+
+## دمج MATHLIB في ملف CPP الحالي
+
+بعد إتمام التهيئات اللازمة عبر Makefile، يجب عليك إضافة ملف الـ header المعني إلى ملف .cpp الموجود في مشروعك
+حتى تتمكن من استخدام مكتبة MATHLIB. بعد هذه الخطوة، يمكنك استخدام دوال MATHLIB وتعريفاتها مباشرة داخل مشروعك
+الحالي.
+
+يمكنك الوصول إلى جميع الوحدات الموجودة في مكتبة MATHLIB [عبر هذا الرابط](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/latest/exports/docs/mathlib/docs/user_guide/modules.html).
+
+<SnippetInclude />
+
+بهذه العملية يكتمل دمج MATHLIB.

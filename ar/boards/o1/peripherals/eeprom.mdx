@@ -1,0 +1,77 @@
+---
+title: 'EEPROM'
+description: 'ذاكرة للقراءة فقط قابلة للمسح والبرمجة كهربائيًا'
+---
+
+import SnippetAt24 from '/snippets/boards/o1/eeprom/at24.mdx';
+import Snippet20051 from '/snippets/boards/o1/eeprom/at24-20051.mdx';
+import SnippetDTB from '/snippets/boards/o1/eeprom/dtb.mdx';
+import SnippetTerminal from '/snippets/boards/o1/eeprom/terminal.mdx';
+import SnippetUsage from '/snippets/boards/o1/eeprom/usage.mdx';
+import SnippetWrite from '/snippets/boards/o1/eeprom/write.mdx';
+import SnippetRead from '/snippets/boards/o1/eeprom/read.mdx';
+
+<Tip>
+في نهاية القسم ستكتسب خبرة في المواضيع التالية.
+
+- المواصفات التقنية وأمثلة الاستخدام الخاصة بـEEPROM الموجود على Gemstone
+</Tip>
+
+تُستخدم ذاكرات EEPROM عمومًا لتخزين المعلمات العتادية أو البرمجية القابلة للضبط على اللوحة، والمعلومات الخاصة
+باللوحة (نوع المنتج، الرقم التسلسلي للمنتج، إلخ)، أو البرامج الثابتة (مثل BIOS)، وذلك لأسباب منها أنها لا تحتوي
+على نظام ملفات، وقابليتها للوصول السريع أثناء الإقلاع، وقدرتها على الاحتفاظ بالبيانات المكتوبة دون تلف لفترة
+طويلة جدًا.
+
+<Note>
+بينما تحتفظ بطاقات SD وذواكر USB Flash بالبيانات المخزنة دون تلف حتى 10 سنوات، فإن طراز EEPROM من نوع
+AT24C512C يمكنه الاحتفاظ بها دون تلف لمدة 40 عامًا.
+</Note>
+
+## استخدام EEPROM
+
+يوجد على اللوحة EEPROM من طراز AT24C512C بسعة 512-Kbit (64KiB) متصل بـSOC عبر خط I2C. المشغلات اللازمة
+لاستخدامه على Linux مثبتة مسبقًا، وهو معرّف في [Device Tree](/ar/faq#ما-هو-device-tree) كما يلي.
+
+<SnippetDTB />
+
+بعد الاتصال بطرفية اللوحة، عند تشغيل الأمر التالي يجب أن يظهر مجلد باسم `2-0051`.
+
+<SnippetAt24 />
+
+<Note>
+الرقم `2` في اسم المجلد يشير إلى أن EEPROM على خط i2c رقم 2 (أي wkup_i2c0)، أما `0051` فيشير إلى أن
+عنوان i2c هو 0x51.
+</Note>
+
+الملف المسمى `eeprom` الوارد في المثال التالي يُنشئه المشغّل `at24` ويتيح الوصول إلى EEPROM
+كملف من Linux مع إمكانية القراءة والكتابة.
+
+<Snippet20051 />
+
+### استخدام EEPROM عبر الطرفية
+
+بالأمر التالي تُمسح ذاكرة EEPROM بالكامل.
+
+<Note>
+نظرًا لأن الـeeprom المستخدم في لوحة T3-GEM-O1 بسعة 512 كيلوبت (64KiB)، فقد حُددت قيمة count
+(عدد البايتات المراد كتابتها) بـ65536 (64 × 1024).
+</Note>
+
+<SnippetTerminal />
+
+<Note>
+كما يظهر من ناتج `dd`، تبلغ سرعة كتابة eeprom `0.2 kB/s` أي يمكننا كتابة 200 بايت في الثانية.
+من عيوب ذواكر eeprom انخفاض سرعة كتابتها بشدة.
+</Note>
+
+بالأمر التالي يمكن كتابة البيانات إلى EEPROM.
+
+<SnippetWrite />
+
+لعملية القراءة، يمكن تشغيل الأمر التالي.
+
+<SnippetRead />
+
+لعمليات القراءة والكتابة على EEPROM، اطلع على أمثلة الاستخدام بلغة Python وC التالية.
+
+<SnippetUsage />

@@ -1,0 +1,51 @@
+---
+title: 'المعالج الدقيق'
+description: 'Texas Instruments AM67A'
+---
+
+تستخدم لوحة Gemstone O1 المعالج الدقيق AM67A من Texas Instruments.
+تحتوي هذه الرقاقة، المسماة System On Chip (SoC)، على معالج ARM Cortex®-A53 رباعي النواة
+ونواتين من نوع Cortex®-R5 مدمجتين بداخلها. وهذا يعني إمكانية تشغيل أنظمة تشغيل مثل Linux على نوى A53،
+وإمكانية تشغيل مشاريع MCU (Baremetal وFreeRTOS وZephyr RTOS) على Cortex®-R5.
+
+<Tip>
+على سبيل المثال، يمكنك على A53 كتابة مشاريع ROS2 وOpenVC وC++ وPython باستخدام Gemstone Linux،
+وعلى نوى R5 كتابة تطبيقات MCU التي تتحكم في سلامة النظام وتوفرها.
+</Tip>
+
+يوجد في طراز AM67A رقاقة خارجية ثنائية النواة تُدعى C7x DSP، وتُستخدم كمسرّع عتادي للتعلم العميق.
+توضح الصورة أدناه بعض خصائص SoC.
+
+<Frame caption="Texas AM67A">
+  <img height="400" width="600" src="/images/ti-am67a/soc.svg" />
+</Frame>
+
+لتطوير برمجيات MCU التي ستعمل على نوى Cortex®-R5، يُستخدم CCS Code Composer Studio المقدم من Texas.
+في الجدول أدناه قائمة بالمصادر الأكثر استخدامًا لهذا المعالج الدقيق.
+
+<Accordion title="المصادر">
+
+| الموقع الإلكتروني | الوصف |
+| :--------- | :------- |
+| https://www.ti.com/product/AM67A | صفحة منتج Texas AM67A |
+| https://www.ti.com/tool/PROCESSOR-SDK-AM67 | SDK الخاص بـTexas AM67A |
+| https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/latest/exports/docs/devices/J7_Family/linux/index.html | توثيق SDK |
+| https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j722s/11_00_00_06/exports/docs/psdk_rtos/docs/user_guide/index.html | توثيق طراز Jacinto الذي يتضمن AM67A |
+| https://github.com/TexasInstruments/edgeai | مستودع Edge-AI الرئيسي على GitHub |
+| https://github.com/TexasInstruments/edgeai-tidl-tools | الأدوات المستخدمة في أعمال الذكاء الاصطناعي Edge-AI |
+| https://github.com/TexasInstruments/edgeai-robotics-sdk | Edge-AI Robotics SDK |
+| https://software-dl.ti.com/jacinto7/esd/edgeai-sdk-j721e/latest/exports/docs/index.html | وثائق Edge-AI |
+
+<Warning>بعض الإمكانيات والخصائص المذكورة في موقع الشركة لـAM67A ليست قابلة للاستخدام بعد. 
+وبسبب نقص التوثيق والدعم، يقوم المستخدمون بحل هذه النواقص بأنفسهم عبر البحث والتجربة والخطأ. 
+على سبيل المثال، ذُكر أن AM67A يدعم Network Bootmode لكن لم تُنشر أي وثيقة أو كود مثال حول كيفية القيام بذلك.</Warning>
+
+<Check>لتعويض النواقص المذكورة أعلاه، يقوم مجتمع مؤسسة T3 Gemstone بأعمال خاصة بلوحة تطوير Gemstone 
+ورفعها إلى مستودعات GitHub.</Check>
+
+</Accordion>
+
+نظرًا لأن Texas Instruments لم تنشر بعد SDK ووثائق MCU مستقرة لهذا الطراز، غالبًا ما تتم الأعمال عبر دراسة
+المنتج المسمى Jacinto. كيفية تجميع تطبيق MCU وتشغيله على لوحات Gemstone موضحة في قسم
+[المكوّنات](./peripherals/mcu). لمشاركة آرائكم واقتراحاتكم يمكنكم استخدام
+[منتديات مجتمع Gemstone](https://community.t3gemstone.org/).

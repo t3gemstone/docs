@@ -1,0 +1,85 @@
+---
+title: 'الشاشة'
+description: 'شاشة اللمس/Touchscreen'
+---
+
+import SnippetExamplesSerial from '/snippets/boards/o1/examples/serial.mdx';
+import SnippetExamplesSerialScript from '/snippets/boards/o1/examples/serial-script.mdx';
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-ar.mdx';
+import SnippetTouchscreenListOverlays from '/snippets/boards/o1/touchscreen/listoverlays.mdx';
+
+<Tip>
+في نهاية القسم ستكتسب خبرة في المواضيع التالية
+
+- كيف يمكنك توصيل شاشة DSI بلوحة تطوير Gemstone O1.
+- إضافة overlay.
+</Tip>
+
+### ما هو DSI؟
+
+DSI (Display Serial Interface) هو ناقل بيانات تسلسلي يُستخدم في الأجهزة المحمولة والأنظمة المدمجة، وصُمم
+للشاشات عالية الدقة. طُوّرت هذه الواجهة من قبل تحالف MIPI (Mobile Industry Processor Interface)، وتوفر نقل
+البيانات بسرعة عالية مع استهلاك طاقة منخفض. وهي مثالية لتأسيس الاتصال بين المعالجات ولوحات LCD وOLED
+المستخدمة خصوصًا في الهواتف الذكية والأجهزة اللوحية والأجهزة المحمولة.
+
+### الخطوات
+
+<Steps>
+  <Step title="توصيل الكابل">
+   يجب توصيل الكابل بين الشاشة ولوحة تطوير Gemstone O1 بشكل صحيح.
+  </Step>
+  <Step title="إضافة Overlay">
+  لكي تعمل شاشة DSI، يجب إضافة الـoverlay المعني إلى ملف uEnv.txt الموجود في boot partition.
+  </Step>
+  <Step title="إعادة تشغيل اللوحة">
+  بعد إتمام جميع هذه الخطوات، سيكفي إعادة تشغيل لوحة التطوير.
+  </Step>
+</Steps>
+
+### 1\. توصيل الكابل
+
+لتوصيل الكابل بين الشاشة ولوحة تطوير Gemstone O1 بشكل صحيح، عليك توصيله بالموصل DSI0 (الموصل القريب من
+مقبس الإيثرنت) كما في الصورة أدناه.
+<Tip>
+يجب أن يواجه الجزء الذي يحتوي على المسارات النحاسية في الكابل الجزء الأبيض من المقبس.
+</Tip>
+
+<Frame caption="توصيل كابل DSI باللوحة">
+  <img className="rounded-lg" noZoom src="/images/o1-board/08-screen.png" />
+</Frame>
+
+### 2\. إضافة Overlay
+
+من واجهة الطرفية، افتح ملف `uEnv.txt` الموجود في مجلد boot باستخدام محرر النصوص المسمى `nano`.
+
+```bash
+sudo nano /boot/uEnv.txt
+```
+<Tip>
+بما أننا نستخدم الأمر مع sudo، سيطلب كلمة المرور. إذا لم تغيّرها، يجب استخدام كلمة المرور التي حددتها عند كتابة
+الصورة باستخدام Gem-Imager.
+</Tip>
+
+ستجد داخل ملف `uEnv.txt` تعريفات من هذا النوع.
+
+<SnippetUEnv />
+
+يمكنك رؤية الـoverlays الخاصة بالشاشات المدعومة باستخدام الأمر التالي.
+
+<SnippetTouchscreenListOverlays />
+
+أضف اسم الـoverlay المناسب لشاشتك إلى نهاية سطر `overlays=` مع ترك مسافة.
+
+الشكل النهائي لملف `uEnv.txt` سيكون هكذا. يجب وضع اسم الملف المناسب في الجزء `<dosya-adi>`.
+
+<SnippetUEnvEdit />
+
+
+### 3\. إعادة تشغيل لوحة التطوير
+
+يجب إعادة تشغيل لوحة التطوير باستخدام الأمر `reboot`.
+
+```bash
+sudo reboot
+```

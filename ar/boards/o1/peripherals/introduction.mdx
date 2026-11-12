@@ -1,0 +1,179 @@
+---
+title: 'مقدمة'
+description: 'المكوّنات والأجهزة الطرفية وأمثلة الاستخدام'
+---
+
+import SnippetDeviceTreeOverlays from '/snippets/boards/o1/dt-overlays.mdx';
+import SnippetPinout from '/snippets/boards/o1/pinout.mdx';
+import SnippetPicocomUart from '/snippets/boards/o1/picocom-uart.mdx';
+import SnippetI2cDetect from '/snippets/boards/o1/i2c/detect.mdx';
+import SnippetSPIHelloWorld from '/snippets/boards/o1/spi-helloworld.mdx';
+import SnippetPWM1B from '/snippets/boards/o1/pwm/pwm-1b.mdx';
+import SnippetPWMEcap0 from '/snippets/boards/o1/pwm/pwm-ecap0.mdx';
+import SnippetCheckDTBS from '/snippets/boards/o1/check-dtbs.mdx';
+
+في هذا القسم، سنعرض أمثلة حول استخدام المستشعرات وخطوط البيانات الموجودة على اللوحة.
+بما أن جميع الأمثلة ستُنفذ عبر Terminal/Console بعد إنشاء اتصال المنفذ التسلسلي، يُفترض أنك قرأت
+الشرح المتعلق باستخدام Terminal في قسم [البدء السريع](../../../quickstart). يمكنك اختيار إحدى طرق الاتصال المذكورة
+هناك: الاتصال بصورة Desktop عبر المتصفح، أو الاتصال عبر SSH/Ethernet، أو الاتصال بالكونسول عبر المنفذ التسلسلي.
+
+## توصيل الطاقة
+
+  <Columns cols={2}>
+  <Frame caption="عبر USB-C">
+    <img className="rounded-lg" src="/images/o1-board/31-usb-connection.jpg" />
+  </Frame>
+  <Frame caption="عبر مصدر طاقة خارجي">
+    <img className="rounded-lg" src="/images/o1-board/28-power-with-battery.jpg" />
+  </Frame>
+</Columns>
+
+صُمم مدخل الطاقة الخارجي للوحة تطوير Gemstone O1 ليعمل في نطاق 5V–12V / 5A. يمكن توصيل أي مصدر طاقة خارجي
+مناسب ضمن هذا النطاق. أما في جهة USB، فتم ضبط دائرة USB PD (توصيل الطاقة) على 9V. إذا كان الجهاز المتصل
+يدعم 9V، تُغذى لوحة التطوير بـ9V / 3A؛ وإذا لم يكن مناسبًا، تستمر اللوحة بالعمل على 5V / 3A.
+
+<Tip>
+عند توصيل USB أثناء وجود البطارية متصلة، ينتقل مصدر الطاقة تلقائيًا إلى USB وتُعطل البطارية. وعند فصل USB،
+تدخل البطارية تلقائيًا في الخدمة وتستمر بتزويد لوحة التطوير بالطاقة.
+</Tip>
+
+<Danger>
+عند عدم وجود اتصال USB، تمتلك لوحة التطوير حماية ضد توصيل بطارية 12V بقطبية معكوسة. لكن هذه الحماية
+لا توفر ضمانًا كاملًا، لذا يجب على المستخدم توخي الحذر عند التوصيل.
+</Danger>
+
+<Danger>
+إذا وُصلت بطارية 12V بشكل معكوس أثناء توصيل USB، فقد تتعرض لوحة التطوير لأضرار جسيمة بل وخطر الاحتراق.
+لذلك، عند وجود اتصال طاقة عبر USB، يجب التحقق من القطبية حتمًا قبل توصيل البطارية.
+</Danger>
+
+## 1\. مخطط الأطراف {#1-مخطط-الأطراف}
+
+<Frame caption="صورة توضح أطراف GPIO في اللوحة">
+  <img className="rounded-lg" src="/images/o1-board/32-gpio.png" />
+</Frame>
+
+تُوفر أطراف الإدخال/الإخراج (I/O) الموجودة على اللوحة، المسماة **40-pin expansion header**، واجهات مثل
+UART (المنفذ التسلسلي) وI2C وSPI وPWM وPCM. سنتطرق إلى أغراض استخدام منافذ الإدخال/الإخراج ذات الـ40 طرفًا
+والواجهات المخصصة لها في التكوين الافتراضي، وفي القسم التالي سنشرح كيف يمكن فتح الأطراف لاستخدامات مختلفة
+عبر ملفات [Device Tree Overlay](/ar/faq#ما-هو-device-tree-overlay).
+
+على سبيل المثال، الطرف المسمى `GPIO-7` محدد في التكوين الافتراضي كـ`SPI-MCU0 CS2`،
+ويمكن تحويله إلى وظيفة `UART-WKUP0 RX` عبر تفعيل الملف المسمى [Device Tree Overlay](/ar/faq#ما-هو-device-tree-overlay).
+وبالمثل، في مشروع [Gemstone VTOL](../../../projects/vtol)، ونظرًا لعدم الحاجة إلى Bluetooth، تم تعطيل الأطراف
+المعنية وتحويلها إلى `UART-MAIN6`.
+
+<SnippetPinout func="الوظيفة" pins="الأطراف" />
+
+#### 1\.1\. UART-MAIN1
+
+يمكن الوصول إلى واجهة UART هذه عبر الجهاز `/dev/ttyS3` الموجود على لوحة Gemstone.
+
+لاختبار خط UART من سطر الأوامر، يمكنك استخدام برنامج `picocom`.
+`picocom` هو تطبيق طرفية تسلسلية يرسل الأحرف المضغوطة على لوحة المفاتيح فورًا إلى المنفذ التسلسلي المحدد،
+ويعرض البيانات القادمة من الطرف الآخر على الشاشة. بعد توصيل طرفي `TX` و`RX` ببعضهما باستخدام سلك توصيل (jumper)،
+يمكنك تشغيل الأمر التالي. إذا كانت التوصيلات سليمة، يجب أن ترى الأحرف التي تضغطها على لوحة المفاتيح
+فورًا على شاشتك.
+
+<SnippetPicocomUart />
+
+#### 1\.2\. I2C-MCU0
+
+يمكن الوصول إلى واجهة I2C هذه عبر الجهاز `/dev/i2c-1` الموجود على لوحة Gemstone.
+
+لعرض الأجهزة الطرفية المتصلة بالخط، يمكنك استخدام الأمر `i2cdetect`.
+فيما يلي مثال على الناتج. الأجهزة الطرفية على العناوين المشار إليها بـ`UU` (`0x30`) متصلة بخط I2C لكنها
+مستخدمة من قبل Linux kernel، أما الأجهزة الطرفية التي يظهر عنوانها رقمًا مباشرًا (`0x6b`) فتعني أنها متصلة
+بخط I2C وفي حالة خمول.
+
+<SnippetI2cDetect />
+
+#### 1\.3\. I2C-WKUP0
+
+<Warning>
+تُستخدم واجهة I2C هذه لتعريف أجهزة **Hardware Attached on Top (HAT)** المتصلة باللوحة عبر **40-pin expansion header**.
+أثناء الإقلاع، يُستعلم EEPROM الموجود على HAT وتُقرأ معلومات الجهاز.
+إذا لن يُوصل HAT باللوحة، يجب ترك هذه الأطراف بدون استخدام.
+</Warning>
+
+#### 1\.4\. SPI-MCU0
+
+يمكن الوصول إلى واجهة SPI هذه عبر الجهازين `/dev/spidev0.0` و`/dev/spidev0.2` الموجودين على لوحة Gemstone.
+الجهاز `/dev/spidev0.0` يقابل SPI-MCU0 CS0، والجهاز `/dev/spidev0.2` يقابل SPI-MCU0 CS2.
+
+لاختبار خط SPI من سطر الأوامر، يمكنك استخدام برنامج `spi-pipe`.
+برنامج `spi-pipe` يضخ البيانات القادمة من stdin إلى خط SPI المحدد بإعداد `--device`، ويضخ البيانات القادمة
+من الخط إلى stdout. بعد توصيل طرفي `MOSI` و`MISO` ببعضهما باستخدام سلك توصيل (jumper)، يمكنك تشغيل
+الأمر التالي. إذا كانت التوصيلات سليمة، يجب أن ترى عبارة "Hello World" على الشاشة.
+
+<SnippetSPIHelloWorld />
+
+#### 1\.5\. PWM-1B
+
+يمكن الوصول إلى واجهة PWM هذه عبر الجهاز `/sys/class/pwm/pwmchip5/pwm1` الموجود على لوحة Gemstone.
+
+لتكوين هذا الجهاز، يجب أولًا تشغيل أمر `export`.
+ثم بعد ضبط قيمتي `period` و`duty_cycle` بالنانوثانية على القيم المطلوبة كما هو موضح في المثال التالي،
+وإعطاء أمر `enable` للجهاز، يمكن الحصول على مخرج PWM.
+
+<SnippetPWM1B />
+
+#### 1\.6\. PWM-ECAP0
+
+يمكن الوصول إلى واجهة PWM هذه عبر الجهاز `/sys/class/pwm/pwmchip0/pwm0` الموجود على لوحة Gemstone.
+
+<SnippetPWMEcap0 />
+
+#### 1\.7\. PCM-McASP0
+
+يمكن استخدام Pulse-code Modulation (PCM)، أو كما يُسمى في SoCs الخاصة بـTexas Instruments
+بـMultichannel Audio Serial Port (McASP)، في تطبيقات معالجة الصوت في الزمن الحقيقي التي تتطلب تدفق صوت رقمي
+عالي الجودة وذو زمن انتقال منخفض. يوفر طرف `FS` إشارة frame-sync لجهاز صوت خارجي مثل DAC، بينما يوفر طرف `CLK`
+إشارة الساعة (clock) بالمثل. عبر طرف `DIN` يمكن إدخال البيانات من جهاز صوت رقمي مثل ميكروفون I2S، وعبر طرف `DOUT`
+يمكن إخراج البيانات إلى جهاز صوت رقمي مثل DAC.
+
+## 2\. Device Tree {#2-device-tree}
+
+التكوينات التي يمكن استخدام منافذ الإدخال/الإخراج ذات الـ40 طرفًا بها على اللوحة (UART وPWM وI2C وGPIO، ...)
+معرّفة في ملفات تسمى [Device Tree Overlay](/ar/faq#ما-هو-device-tree-overlay). لتفعيل التكوين أو التكوينات المطلوبة،
+يجب إيجاد ملفات overlay المعنية وتقديمها إلى bootloader كقائمة.
+
+بالنسبة لـSoCs المعتمدة على ARM64 من Texas Instruments، توجد أكواد المصدر لجميع ملفات overlay
+داخل مشروع [t3gemstone/linux](https://github.com/t3gemstone/linux) تحت المجلد `arch/arm64/boot/dts/ti`.
+أما الخاصة بلوحة T3-GEM-O1 فمسماة بالصيغة `k3-am67a-t3-gem-o1-<overlay_adi>.dtso`.
+في بداية كل ملف overlay توجد معلومات حول الغرض الذي أُنشئ من أجله.
+
+### 2\.1\. مثال: توجيه إشارات UART6 إلى HAT ذي الـ40 طرفًا
+
+يوجد على HAT ذي الـ40 طرفًا في T3-GEM-O1 منفذ تسلسلي واحد فقط بشكل افتراضي. بالنسبة للمشاريع التي تحتاج
+إلى أكثر من منفذ تسلسلي، يجب تحويل أطراف أخرى على HAT ذي الـ40 طرفًا إلى منفذ تسلسلي.
+
+#### 2\.1\.1\. فحص مخطط الأطراف
+
+عند فحص مخطط الأطراف (pinout) في T3-GEM-O1، يتبين أن الطرفين رقمي 7 و11 على HAT يمكن استخدامهما
+كـUART6_RX وUART6_TX.
+
+#### 2\.1\.2\. إيجاد ملف Overlay المعني
+
+في المرحلة التالية، يجب تحديد أي ملف [Device Tree Overlay](/ar/faq#ما-هو-device-tree-overlay) ينفذ التكوين المطلوب،
+وجميع هذه الملفات موجودة في مجلد `/boot/overlays` داخل لوحة التطوير.
+يمكن سردها جميعًا بتشغيل الأمر `ls /boot/overlays`.
+
+<SnippetDeviceTreeOverlays />
+
+#### 2\.1\.3\. تحديث ملف uEnv.txt
+
+في هذا المثال، سيُستخدم ملف overlay المسمى `k3-am67a-t3-gem-o1-uart-ttys6.dtbo`. لكي يتمكن bootloader من
+تحميل هذا الملف قبل بدء نظام التشغيل، يجب إضافته إلى جزء `overlays` في ملف `/boot/uEnv.txt` كما يلي.
+تتم الإضافة مع ترك مسافة بين أسماء ملفات overlay.
+
+<code>overlays=k3-am67a-t3-gem-o1-spidev0-2cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo <span style={{ background: 'rgb(var(--primary-light)/.2)' }}>k3-am67a-t3-gem-o1-uart-ttys6.dtbo</span></code>
+
+#### 2\.1\.4\. التحقق
+
+بعد حفظ التغييرات، يجب إعادة تشغيل اللوحة باستخدام الأمر `reboot`.
+ثم يجب التحقق من إضافة الـoverlay المعني باستخدام الأمر `ls /proc/device-tree/chosen/overlays`.
+
+<SnippetCheckDTBS />
+
+بعد إتمام الخطوات أعلاه بنجاح، سيتكون الجهاز `/dev/ttyS6`.

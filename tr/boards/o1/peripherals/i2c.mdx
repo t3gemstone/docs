@@ -12,7 +12,7 @@ import SnippetWrite from '/snippets/boards/o1/i2c/write.mdx';
 [I2C (Inter-Integrated Circuit)](https://kureansiklopedi.com/tr/detay/i2c-inter-integrated-circuit-8c241)
 protokolü, mikrodenetleyiciler ve diğer entegre devreler arasında veri iletimi için kullanılan yaygın bir iletişim
 protokolüdür. Düşük hızlı veri iletimi gerektiren uygulamalarda, özellikle sensörler, bellek modülleri ve diğer
-çevresel birimlerle iletişimde tercih edilmektedir. 
+çevresel birimlerle iletişimde tercih edilmektedir.
 
 Gemstone geliştirme kartında 40 pin header pinlerinde 1 adet I2C (I2C1) çıkışı bulunmaktadır. Harici olarak
 kullanılmak istenen I2C cihazları bu pinler aracılığıyla bağlanılabilir. Ayrıca Gemstone üzerinde i2c ile haberleşen
@@ -24,14 +24,14 @@ ICM-20948 9 eksen MEMS sensörü ve  HDC2010 sıcaklık ve nem sensörü bulunma
 
 ### I2C Kullanımı
 
-Gemstone işletim sistemine bağlandıktan sonra I2C adreslerine veri yazabilmek ve veri okuyabilmek 
+Gemstone işletim sistemine bağlandıktan sonra I2C adreslerine veri yazabilmek ve veri okuyabilmek
 için `i2c-tools` paketinin kurulumunu yapınız.
 
 <SnippetInstallTools />
 
 Bulunan I2C hatlarını görüntülemek için `ls /dev/i2c-*` komutunu çalıştırınız.
 
-<SnippetI2CDevices />
+<SnippetDevices />
 
 `i2c-2` hattına bağlı olan cihazların bağlı olduğu adresleri görüntülemek için aşağıdaki komutu çalıştırınız.
 
@@ -54,7 +54,7 @@ komutu çalıştırınız.
 <SnippetWrite />
 
 <Warning>
-Verilen örnekteki I2C adresleri (0x40, 0x00 ve 0x07 gibi) örnekleme amacıyla kullanılmıştır. Yapacağınız uygulamalarda 
-I2C cihazlarının adresleri farklılık gösterebilir. Kullanılan cihazların dökümanlarına başvurarak doğru adreslerin 
+Verilen örnekteki I2C adresleri (0x40, 0x00 ve 0x07 gibi) örnekleme amacıyla kullanılmıştır. Yapacağınız uygulamalarda
+I2C cihazlarının adresleri farklılık gösterebilir. Kullanılan cihazların dökümanlarına başvurarak doğru adreslerin
 belirlenmesi önemlidir.
 </Warning>

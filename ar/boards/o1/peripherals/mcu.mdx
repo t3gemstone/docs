@@ -1,0 +1,340 @@
+---
+title: 'MCU'
+description: 'Texas AM67 Cortex-R5, C7x (DSP)'
+---
+
+import SnippetBootflow from '/snippets/boards/o1/bootflow.mdx';
+import SnippetClone from '/snippets/boards/o1/mcu/clone.mdx';
+import SnippetInstallDeps from '/snippets/boards/o1/mcu/install-deps.mdx';
+import SnippetTargets from '/snippets/boards/o1/mcu/targets.mdx';
+import SnippetSysconfig from '/snippets/boards/o1/mcu/sysconfig.mdx';
+import SnippetBuild from '/snippets/boards/o1/mcu/build.mdx';
+import SnippetUpload from '/snippets/boards/o1/mcu/upload.mdx';
+import SnippetHelloWorld from '/snippets/boards/o1/mcu/helloworld.mdx';
+import SnippetFirmwares from '/snippets/boards/o1/mcu/firmwares.mdx';
+import SnippetRemoteproc from '/snippets/boards/o1/mcu/remoteproc.mdx';
+import SnippetResources from '/snippets/boards/o1/mcu/resource-table-ar.mdx';
+
+<Tip>
+في نهاية القسم ستكتسب معرفة وخبرة في المواضيع التالية.
+
+* تجميع برمجيات Texas AM67 MCU وتشغيلها على Gemstone O1
+* معرفة المراحل التي يبدأ بها النظام عند إمداد لوحة التطوير بالطاقة لأول مرة
+* إدراك إمكانية تشغيل البرمجيات في آن واحد على المعماريتين المختلفتين Cortex-A (Linux) وCortex-R (MCU) الموجودتين على لوحة التطوير
+</Tip>
+
+بالرغم من أن نقطة التركيز الأساسية للوحة تطوير **T3-GEM-O1** هي Linux، فإنه يتم الاستفادة أيضًا من قوة نوى R5 وC7x
+التي يضمها المعالج الدقيق Texas AM67 الموجود عليها. على سبيل المثال، يمكن إجراء عمليات معالجة صور مختلفة على
+Linux (Cortex-A) ونقلها إلى برمجيات MCU (Cortex-R5) لتمكين سيناريوهات مثل تحريك مختلف المحركات المؤازرة (servo)
+وقراءة المستشعرات. في هذا القسم ستُناقش مواضيع مثل كيفية تجميع البرمجيات لنوى R5 وكيفية تصحيح الأخطاء وما إلى ذلك.
+
+## 1\. مخطط الإقلاع {#1-مخطط-الإقلاع}
+
+مخطط التدفق أدناه خاص بلوحة تطوير Gemstone O1، لكن يوجد هيكل مشابه في كثير من لوحات تطوير Linux المدمجة ذات
+معمارية ARM.
+
+<SnippetBootflow/>
+
+### 1\.1\. ROM Bootloader (RBL)
+
+الغرض الأساسي من RBL (Room Bootloader)، الذي يوزّعه المصنّعون غالبًا كبرنامج مُجمَّع فقط دون توفير الأكواد
+المصدرية، هو القيام بفحوصات سلامة العتاد والتهيئة وغيرها عند إمداد اللوحة بالطاقة لأول مرة، ثم الانتقال إلى
+برنامج إقلاع ثانٍ يسمى SBL (Secondary Bootloader) يمكن تعديل أكواده المصدرية. أما من أين يُقرأ SBL ويُشغَّل،
+فيُحدده RBL عبر مفاتيح Bootmode.
+
+### 1\.2\. Secondary Bootloader (SBL)
+
+الغرض من استخدام Secondary Boot Loader في لوحات تطوير _T3-GEM-O1_ هو تشغيل برنامج إقلاع أكثر تطورًا يسمى
+U-Boot، وتمكين [كتابة الصور إلى eMMC](https://github.com/t3gemstone/texas-am67-sbl-gemboot/blob/main/main.c#L319)
+عبر التطبيق المسمى Gemstone Imager.
+
+في اللوحات المدمجة التي تحتوي على Linux Kernel، يُفضَّل U-Boot في الغالب. بينما تستطيع المحمّلات الأولية مثل SBL
+إجراء عمليات تهيئة على مستوى أكثر أساسية، يمتلك U-Boot ميزات أكثر تطورًا بكثير. على سبيل المثال، يمتلك U-Boot
+واجهة Terminal/Console خاصة به والعديد من المشغلات غير الممكنة في SBL، لذا يتيح تخصيصات أكثر تقدمًا.
+
+### 1\.3\. U-Boot
+
+U-Boot، الذي يتولى التحكم بلوحة التطوير بعد SBL، يفعّل مشغلات العتاد المعنية وفقًا للتكوينات المعرّفة في
+[Device Tree](/ar/faq#ما-هو-device-tree)، ويشغّل مجموعة أوامر معرّفة مسبقًا لتحميل مكونات مثل Linux Kernel وInitrd
+إلى RAM ثم يسلم التحكم إلى Linux Kernel.
+
+#### 1\.3\.1\. تمارين كونسول U-Boot
+
+<Tip>
+في هذا الجزء يُعرض استخدام كونسول U-Boot بالاتصال بلوحة تطوير Gemstone عبر TTL. يمكنك إلقاء نظرة سريعة على
+الوثائق أدناه.
+
+- https://cm.e-ale.org/2018/u-boot/u-boot.pdf
+- [https://software-dl.ti.com/jacinto7/esd...](https://software-dl.ti.com/jacinto7/esd/processor-sdk-linux-am67/09_02_00_04/exports/docs/linux/Foundational_Components/U-Boot/UG-General-Info.html)
+
+</Tip>
+
+<Frame caption="كونسول U-Boot">
+  <img className="rounded-lg" noZoom src="/images/tabby-uboot-console.png" />
+</Frame>
+
+### 1\.4\. Linux Kernel
+
+يحمّل مشغلات العتاد المعرّفة في [Device Tree](/ar/faq#ما-هو-device-tree). ثم يبدأ initrd/initramfs إن وجد، ويشغّل
+برنامج `init` الموجود في rootfs.
+
+<Tip>
+  ملفات [Device Tree](/ar/faq#ما-هو-device-tree) الخاصة بـU-Boot وLinux kernel مختلفة عن بعضها. في device tree الخاص
+  بـU-Boot، يُفعَّل عادةً فقط ما يكفي من العتاد لتحميل kernel و initramfs من أجهزة التخزين المختلفة (MMC و SSD
+  و SPI flash، ...) إلى RAM. أما عمليات تفعيل العتاد الفعلية فينفذها الـkernel.
+</Tip>
+
+### 1\.5\. Initial RAM Disk (Initrd)
+
+هو نظام ملفات مؤقت موجود على RAM يتيح تنفيذ عمليات وسيطة مثل تحميل وحدات kernel المختلفة وفك تشفير القرص
+وإجراء تحديث البرمجيات قبل بدء rootfs.
+
+<Tip>
+  إذا كان rootfs محفوظًا على القرص بشكل مشفَّر، فلن يستطيع الـkernel تشغيل برنامج `init` مباشرة. يجب أولًا
+  فك تشفير القرص بواسطة initramfs.
+</Tip>
+
+### 1\.6\. Root Filesystem (Rootfs)
+
+بعد أن ينهي Initrd عملياته، يربط نظام الملفات المسمى rootfs، الذي يحتوي على برامج النظام والمستخدم والمكتبات
+وملفات الإعداد المختلفة، بالمجلد `/`. ثم يشغّل الـkernel برنامج `init` الموجود في `/init` أو `/sbin/init` أو مجلد
+مشابه داخل rootfs. يحمّل هذا البرنامج مشغلات بعض العتاد (وحدات kernel)، ويشغّل خدمات النظام (خدمات مثل الاتصال
+بالشبكة ومزامنة الساعة وتحديث الحزم وbluetooth) وبيئة سطح المكتب (gnome وkde وxfce).
+
+## 2\. تطوير برمجيات MCU
+
+<Tip>
+  في هذا القسم يُشرح مسار تطوير برمجيات Bare-metal لنوى Cortex-R5 وC7x. البرمجيات التي ستعمل على المعماريات
+  المعنية تُجمَّع بأدوات وSDK الخاصين بـTexas ثم تُحمَّل على لوحة التطوير.
+</Tip>
+
+الأدوات اللازمة لتجميع مشاريع MCU مذكورة أدناه.
+
+1. Texas Instruments Processor SDK RTOS J722S
+2. Texas Instruments Sysconfig
+3. Texas Instruments Code Generation Tools C7000
+4. Texas Instruments Code Generation Tools ARM LLVM
+
+<Tip>
+نظرًا لأن تنزيل هذه الأدوات وتثبيتها واحدًا تلو الآخر من موقع Texas Instruments أمر مرهق، فقد أُنشئت بنية تحتية
+في مستودع [t3gemstone/examples](https://github.com/t3gemstone/examples) لتنزيل جميع الأدوات اللازمة وتجميع مشاريع
+MCU. وعند استنساخ المشروع تُثبَّت تلقائيًا.
+</Tip>
+
+### 2\.1\. تنزيل مشاريع الأمثلة عبر عملية Git clone
+
+<SnippetClone />
+
+### 2\.2\. تثبيت الأدوات والمكتبات اللازمة للتجميع
+
+<SnippetInstallDeps />
+
+### 2\.3\. إنشاء مشروع مسودة
+
+في مشروع `mcu` الموجود في مستودع [t3gemstone/examples](https://github.com/t3gemstone/examples) توجد مشاريع أمثلة
+تعمل على نواتي R5F للزمن الحقيقي ونواتي DSP من نوع C7x. توجد أمثلة مشابهة لها في المجلد
+`build/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/examples`. يُنصح بالعثور على
+مشروع مثال مناسب لغرضك ونسخه إلى مجلد مشروع `mcu` وإجراء التطوير عليه.
+
+يوجد تحت كل مشروع مثال مجلدات فرعية للنوى المختلفة. على سبيل المثال، في مشروع `hello_world` توجد المجلدات التالية.
+
+<SnippetHelloWorld />
+
+يجب إجراء التطوير في المجلد الخاص بالنواة التي تريد تشغيل الأكواد المكتوبة عليها من بين هذه النوى الأربع،
+واستخدام النواتج المجمّعة في ذلك المجلد.
+
+تُعرَّف مشاريع MCU المراد تجميعها كمتغير `MCU_TARGETS` في ملف `.env`. أضف المسار المطلق أو النسبي لمجلد
+`makefile` الخاص بالمشروع الذي تريد تجميعه إلى متغير `MCU_TARGETS`. فيما يلي مثال لنواة `mcu-r5fss0-0_freertos`
+من مشروع `hello_world`.
+
+<SnippetTargets />
+
+### 2\.4\. تهيئة الأجهزة الطرفية باستخدام SysConfig
+
+SysConfig هي أداة تهيئة (configuration tool) طوّرتها Texas Instruments (TI). تُستخدم في بيئات التطوير المعتمدة
+على المتحكمات الدقيقة (MCU) والمعالجات الخاصة بـTI. هدفها الأساسي تمكين تهيئة إعدادات العتاد والبرمجيات بشكل
+مرئي. أي أنها تتيح تهيئة النظام بالنقر على الخيارات عبر واجهة GUI بدلًا من كتابة أكواد بدء تشغيل معقدة مباشرة.
+
+**أبرز ميزاتها:**
+
+- Pin Muxing (توجيه الأطراف): يحدد أي طرف سيتولى أي وظيفة (UART وSPI وGPIO وغيرها).
+- إعدادات الأجهزة الطرفية: يضبط تهيئة العتاد مثل UART وI2C وTimer وADC.
+- تهيئة المشغلات وRTOS: يفعّل مكونات TI-Drivers أو FreeRTOS.
+- توليد الكود تلقائيًا: ينشئ ملفات المصدر C (.c و.h) الخاصة بالإعدادات التي تمت تلقائيًا.
+- منع الأخطاء: يكتشف التركيبات غير المناسبة للأطراف أو الوحدات ويحذّر منها.
+
+الأجهزة الطرفية التي يستخدمها المشروع (GPIO وI2C وUART وغيرها) وتهيئتها معرّفة في ملف `.syscfg`. لإضافة أجهزة
+طرفية جديدة أو تغيير إعدادات Pin Mux الموجودة، تُستخدم أداة SysConfig GUI.
+
+<Warning>
+قبل استخدام أداة SysConfig GUI، اقرأ قسم
+[مشاركة الموارد بين النوى](/ar/boards/o1/peripherals/mcu#3-مشاركة-الموارد-بين-النوى)
+لتوزيع الموارد بشكل صحيح وتجنب مواجهة أخطاء غير متوقعة.
+</Warning>
+
+لبدء SysConfig في مشروع MCU:
+
+- غيّر متغير `SYSCONFIG_TARGET` إلى المشروع المطلوب.
+    - يمكنك تعديل هذا المتغير داخل ملف `.env` أو
+    - تمريره كمتغير بيئة إلى برنامج `task`.
+
+<SnippetSysconfig />
+
+بعد حفظ تغييراتك بمفتاح الاختصار `Ctrl + S`، يمكنك إغلاق واجهة SysConfig.
+
+<Warning>
+لتمكين تحميل البرمجيات عن بعد من طرف Linux إلى نوى R5F وC7x، تُستخدم بنية remoteproc. لكي يمكن تحميل ملف `.out`
+المجمَّع لمشروع عبر remoteproc، يجب إجراء بعض الإعدادات من واجهة SysConfig. بعد نسخ مشروع جديد، يجب اتباع
+الخطوات التالية.
+
+1. يُفتح تبويب `IPC` الموجود تحت `TI DRIVERS`.
+2. يُنقر على زر `ADD`.
+3. يُتأكد من تفعيل إعداد `Linux A53 IPC RP Message`.
+4. يُحفظ ملف `.syscfg` بمفتاح الاختصار `Ctrl + S` ثم يُخرج.
+</Warning>
+
+### 2\.5\. تجميع المشروع
+
+<SnippetBuild />
+
+### 2\.6\. تحميل المشروع المجمَّع إلى لوحة التطوير
+
+<SnippetUpload />
+
+### 2\.7\. تشغيل المشروع المجمَّع
+
+يجب نسخ ملفات `.out` التي ستُحمَّل إلى النوى عبر remoteproc تحت المجلد `/lib/firmware` بأسماء معرّفة مسبقًا.
+يوضح الجدول التالي اسم firmware لكل نواة.
+
+<SnippetFirmwares />
+
+يمكن الوصول إلى أسماء الـfirmware وأي نواة تقابل أي جهاز remoteproc باستخدام الأمر
+`head /sys/class/remoteproc/remoteproc*/firmware`. بما أن النوى قد تقابل أجهزة remoteproc مختلفة بعد كل إقلاع،
+يجب التحقق من ذلك.
+
+<SnippetRemoteproc />
+
+<Warning>
+الإجراء أعلاه يضمن إيقاف النوى البعيدة وإعادة تشغيلها دون مشاكل. في بعض الحالات قد تفشل عملية الإيقاف السلس.
+في هذه الحالة نوصي بالخطوات التالية:
+
+1. ضع ملفات الـfirmware الجديدة في المجلد `/lib/firmware`.
+2. أعد تشغيل اللوحة.
+
+عند بدء النظام، ستحمّل آلية remoteproc البرامج الثابتة تلقائيًا إلى النوى المعنية.
+
+**ملاحظة:** هذا الأسلوب مفيد خاصة في الحالات التالية:
+
+- عند حدوث انهيارات في النوى
+- عند انقطاع اتصال IPC
+- عند ملاحظة سلوكيات غير متوقعة أثناء التحميل الديناميكي
+</Warning>
+
+### 2\.8\. تشغيل المشروع المجمَّع في مرحلة U-Boot {#2-8-تشغيل-المشروع-المجمع-في-مرحلة-u-boot}
+
+كما هو موضح في قسم [مخطط الإقلاع](/ar/boards/o1/peripherals/mcu#1-مخطط-الإقلاع)، عند استخدام طريقة التشغيل
+المشروحة في القسم السابق، يجب أن يُكمل Linux عملية بدء التشغيل ثم يحمّل برمجيات النوى ويشغّلها حتى يعمل تطبيق
+MCU. قد تسبب هذه العملية تأخيرات غير مرغوبة في بعض التطبيقات. يمكن منع هذا التأخير بتشغيل النوى البعيدة في
+مرحلة bootloader (U-Boot).
+
+1. أولًا، يُنسخ التطبيق المجمَّع إلى المجلد `/boot/mcu-fw/`.
+2. في ملف `/boot/uEnv.txt`، يُعرَّف المعامل اللازم باستخدام الجدول التالي وفقًا للنواة التي ينتمي إليها التطبيق
+   المجمَّع.
+
+| النواة          | اسم المتغير             |
+|----------------|------------------------|
+| main-r5fss0-0  | main_r5f_firmware_name |
+| mcu-r5fss0-0   | mcu_r5f_firmware_name  |
+| wkup-r5fss0-0  | wkup_r5f_firmware_name |
+| c7xss0-0       | c7x0_dsp_firmware_name |
+| c7xss1-0       | c7x1_dsp_firmware_name |
+
+على سبيل المثال، عند الرغبة في تشغيل تطبيق باسم `blink_main_r5` على نواة main-r5fss0-0 في مرحلة U-Boot، يُنسخ
+التطبيق أولًا إلى المجلد `/boot/mcu-fw` كما هو موضح أدناه.
+
+```sh
+gemstone@t3-gem-o1:~$ ls /boot/mcu-fw/
+total 102K
+drwxr-xr-x 2 root root  512 Jan  1  2000 ./
+drwxr-xr-x 4 root root 1.0K Jan  1  1970 ../
+-rwxr-xr-x 1 root root 101K Jan  1  2000 blink_main_r5*
+```
+
+ثم يُضاف السطر التالي إلى ملف `/boot/uEnv.txt`.
+
+```txt
+main_r5f_firmware_name=blink_main_r5
+```
+
+الآن سيُشغَّل تطبيق `blink_main_r5` مباشرة في مرحلة bootloader بدلًا من انتظار بدء Linux.
+
+## 3\. مشاركة الموارد بين النوى {#3-مشاركة-الموارد-بين-النوى}
+
+نظرًا لأن AM67 معالج متعدد النوى، يجب مشاركة الموارد التي يمتلكها بين هذه النوى. على سبيل المثال، لا يمكن
+استخدام الجهاز الطرفي `main_uart1` من نوع uart في الوقت نفسه من قبل كل من Linux (نوى A53) ونواة main-r5fss0-0.
+إذا كان هذا الجهاز الطرفي UART سيستخدمه الـMCU، فيجب الإشارة من جهة Linux إلى أن هذه الوحدة غير مستخدمة.
+
+### 3\.1\. جدول توزيع الموارد الافتراضي
+
+في الجدول أدناه يمكن إيجاد معلومات مثل أي أطراف في SOC تقابل الأطراف الخارجة إلى HAT، وأي جهاز طرفي يمكن
+استخدامها كأيّ وظيفة (Pinmux)، وهل يستخدمها Linux افتراضيًا أم لا، وإذا كان يستخدمها فلأي غرض، وكيف يمكن تعطيل ذلك.
+
+<SnippetResources />
+
+يُرجَع إلى العمود المسمى `كيفية التعطيل` في الجدول للطرف المراد تعطيله. الملفات المدرجة في هذا العمود بصيغة
+k3-am67a-t3-gem-o1-xxxxxx.dtbo، المسماة device-tree overlay، هي ملفات إعداد تخبر Linux بكيفية استخدام الجهاز
+الطرفي المحدد.
+
+لتعطيل الإعدادات المعنية، يكفي فتح ملف `/boot/uEnv.txt` وحذف هذا الملف من المتغير المسمى `overlays`. في عمود
+`كيفية التعطيل` لبعض الأطراف توجد تعليمات شبيهة بـ`يجب تعطيله عبر Device-tree. (mcu_spi0)` إلى جانب الـoverlays.
+لتعطيل هذه:
+
+- يُستنسخ مستودع https://github.com/t3gemstone/devicetrees.
+- يُفتح الملف `src/arm64/ti/k3-am67a-t3-gem-o1.dts` وتُضاف الشيفرة التالية مع إجراء التعديلات اللازمة.
+  ```c
+  &mcu_spi0 {
+    status = "disabled";
+  };
+  ```
+- يُجمَّع الـdevice-tree بتشغيل الأمر `make` في مجلد المستودع.
+- يُؤخذ نسخة احتياطية من الـdevice-tree القديم باستخدام الأمر `$ sudo mv /boot/k3-am67a-t3-gem-o1.dtb /boot/k3-am67a-t3-gem-o1.dtb.bak`.
+- يُنسخ الملف `src/arm64/ti/k3-am67a-t3-gem-o1.dtb` الناتج عن التجميع إلى `/boot/`.
+- تُعاد إعادة تشغيل اللوحة ويُختبر عملها.
+
+<Note>
+إذا نشأ وضع غير مرغوب نتيجة العمليات أعلاه، يمكن استعادة الـdevice-tree الاحتياطي باستخدام الأمر
+`$ sudo cp /boot/k3-am67a-t3-gem-o1.dtb.bak /boot/k3-am67a-t3-gem-o1.dtb`.
+</Note>
+
+نتيجة للعمليات أعلاه، سيصبح `mcu_spi0` قابلًا للاستخدام من نوى mcu. لكن ذُكر في قسم `الغرض من الاستخدام في Linux`
+في الجدول أنه مستخدم لأجل `مستشعر الضغط LPS22DFTR وICM20948 imu spi`. وبالتالي سيُغلق الوصول إلى هذه الأجهزة
+الطرفية من Linux وسيلزم قيادتها من قبل MCU.
+
+### 3\.2\. سيناريو مثال: تحريك محرك مؤازر (Servo) من MCU بواسطة PWM
+
+في سيناريو نحتاج فيه إلى تحريك محرك مؤازر من طراز SG90 من نواة MCU، يجب أولًا اختيار طرف PWM من أطراف HAT.
+لنفترض مثلًا أننا اخترنا طرف `GPIO-12`. عند النظر إلى الجدول نجد أن هذا الطرف مستخدم من قبل Linux. لتعطيل هذا
+الطرف في Linux، ننظر إلى عمود `كيفية التعطيل` فنجد ملف overlay واحدًا فقط. للإغلاق، نفتح ملف `/boot/uEnv.txt`
+ونتحقق من المتغير `overlays`.
+
+```txt
+overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
+```
+
+هنا يمكننا رؤية اسم الملف `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` المذكور في الجدول. نحذفه فيصبح المتغير
+overlays بالشكل التالي.
+
+```txt
+overlays=k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-spidev0-2cs.dtbo
+```
+
+عند إعادة تشغيل اللوحة، يمكن التحكم بهذا الطرف من قبل MCU.
+
+## 4\. الخاتمة
+
+<Tip>
+فيما يلي بعض الأمثلة لمقالات حول عملية الإقلاع.
+
+- [عملية إقلاع Linux على BeagleBone Black](https://serbayozkan.medium.com/embedded-linux-boot-s%C3%BCreci-beagle-bone-black-ba9d378bd3bd)
+- [Booting Embedded Linux On BeagleBone](https://medium.com/@kshitijvaze/booting-embedded-linux-on-beaglebone-black-a-look-beyond-the-code-20854568fb66)
+</Tip>
