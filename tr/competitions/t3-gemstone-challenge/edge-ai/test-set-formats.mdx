@@ -1,0 +1,112 @@
+---
+title: 'Test Seti Biçimleri'
+description: 'Görev türlerine göre standart test seti biçimleri'
+---
+
+Jüri Heyeti, modeli takımın repoya yüklediği test verisiyle çalıştırır. Projelerin aynı şekilde kurulup test
+edilebilmesi için bu verinin, görev türüne göre aşağıdaki biçimlerden birinde hazırlanması önerilir.
+
+## Ortak kurallar
+
+- Her set, kök klasöründe bir `siniflar.txt` dosyası içerir: her satırda bir sınıf adı, modelin sınıf sırasıyla. Sınıf numaraları bu sıraya göre **0'dan başlar**. Sınıf olmayan görevlerde (görüntü iyileştirme, regresyon) bu dosya bulunmaz.
+- Dosya adlarında yalnızca küçük harf, rakam, tire ve alt çizgi kullanılır.
+- Görüntüler `.jpg` ya da `.png` olabilir. Maske, girdi ve hedef dosyaları kayıpsız olduğu için `.png`'dir.
+- Eşleşen dosyalar uzantı dışında aynı adı taşır (`ornek_001.jpg` ↔ `ornek_001.txt`).
+- Metin dosyaları UTF-8'dir; ondalık ayırıcı noktadır.
+- Bir setin en fazla 500 örnek içermesi önerilir.
+
+## Sınıflandırma
+
+```text
+test-seti/
+├── siniflar.txt
+└── goruntuler/
+    ├── saglikli/
+    │   ├── ornek_001.jpg
+    │   └── ...
+    └── pas_hastaligi/
+        └── ...
+```
+
+Her sınıf için `goruntuler/` altında, adı `siniflar.txt`'deki sınıf adıyla aynı olan bir klasör bulunur.
+
+## Nesne tespiti
+
+```text
+test-seti/
+├── siniflar.txt
+├── goruntuler/
+│   ├── ornek_001.jpg
+│   └── ...
+└── etiketler/
+    ├── ornek_001.txt
+    └── ...
+```
+
+Etiketler YOLO biçimindedir. Her satır bir nesnedir:
+
+```text
+sinif_no x_merkez y_merkez genislik yukseklik
+0 0.512 0.430 0.120 0.085
+```
+
+Koordinatlar görüntü genişliğine ve yüksekliğine bölünmüş, 0 ile 1 arasındaki değerlerdir. Nesne bulunmayan
+görüntünün etiket dosyası boştur.
+
+## Segmentasyon
+
+```text
+test-seti/
+├── siniflar.txt
+├── goruntuler/
+│   ├── ornek_001.jpg
+│   └── ...
+└── maskeler/
+    ├── ornek_001.png
+    └── ...
+```
+
+Maske, görüntüyle aynı boyutta, tek kanallı 8 bit PNG'dir. Her pikselin değeri sınıf numarasıdır. Arka plan bir
+sınıf olarak değerlendirilecekse `siniflar.txt`'nin ilk satırında yer alır (0).
+
+<Note>
+  255 değeri "yok sayılan" piksel anlamına gelir ve metriğe katılmaz.
+</Note>
+
+## Görüntü iyileştirme
+
+```text
+test-seti/
+├── girdi/
+│   ├── ornek_001.png
+│   └── ...
+└── hedef/
+    ├── ornek_001.png
+    └── ...
+```
+
+Girdi ve hedef aynı boyuttadır.
+
+## Regresyon
+
+```text
+test-seti/
+├── ornekler/
+│   ├── ornek_001.<uzanti>
+│   └── ...
+└── etiketler.csv
+```
+
+`etiketler.csv` başlık satırıyla başlar ve her örnek için bir satır içerir:
+
+```csv
+dosya_adi,deger
+ornek_001.csv,23.5
+```
+
+Girdi dosyasının türü (görüntü, sensör kaydı vb.) ve değerin birimi repodaki README'de belirtilir.
+
+## Diğer
+
+Bu biçimlerin hiçbirine uymayan konularda (ör. ses ya da metin üretimi) takım, test verisinin biçimini repodaki
+README'de açıklar.

@@ -1,0 +1,74 @@
+---
+title: 'Başlangıç Rehberi'
+description: 'O1 üzerinde ilk Edge AI uygulamasını çalıştırmak için gereken kaynaklar'
+---
+
+Bu rehber, O1 üzerinde ilk Edge AI uygulamasını çalıştırmak için gereken kaynakları sırasıyla göstermektedir.
+
+<Info>
+  Projeler, [referans repo](/tr/competitions/t3-gemstone-challenge/edge-ai/task#referans-github-reposu) fork
+  edilerek geliştirilir. Bu repo fork edilerek geliştirilmeyen projeler değerlendirilmez.
+</Info>
+
+<Steps>
+
+  <Step title="Kartı hazırlama">
+    - Kartın özellikleri: [Kart Özellikleri](/tr/boards/o1/introduction)
+    - İlk açılış, seri port, SSH: [Hızlı Başlangıç](/tr/quickstart)
+    - İmajı yazma (Gem-Imager): [İmaj Yazma Uygulaması](/tr/imager/introduction) ve [eMMC Kullanımı](/tr/imager/emmc)
+    - İmajlar: [Minimal](/tr/distros/minimal) (referans ortam) ve [Desktop](/tr/distros/desktop)
+
+    <Warning>
+      Jüri ölçümü Minimal v2026.1 (Ubuntu 22.04) imajıyla yapılacaktır; kodunuzu teslimden önce bu imajda
+      denemeniz beklenmektedir.
+    </Warning>
+
+    <Tip>
+      Kartınız yoksa geliştirme ve test için
+      [uzaktan erişim](/tr/competitions/t3-gemstone-challenge/edge-ai/remote-access) talep edebilirsiniz.
+    </Tip>
+  </Step>
+
+  <Step title="Edge AI paketini kurma">
+    Referans ortamın adım adım kurulumu (`t3-gem-o1-edgeai` paketi, `/boot/uEnv.txt` overlay ayarı, kurulumun
+    doğrulanması ve değerlendirme betiği): [Referans ortam](/tr/competitions/t3-gemstone-challenge/edge-ai/task#referans-ortam)
+
+    Paketin ayrıntıları: [Edge AI Kurulum](/tr/boards/o1/ai/installation)
+
+    <Note>
+      Referans ortamdaki paket sürümü **t3-gem-o1-edgeai 11.0**'dır.
+    </Note>
+  </Step>
+
+  <Step title="Örnek uygulamaları çalıştırma">
+    - Hızlandırıcıyla gerçek zamanlı nesne tespiti (kamera, GStreamer, tarayıcıya görüntü akışı): [t3gemstone/examples/camera](https://github.com/t3gemstone/examples/tree/main/camera)
+    - Diğer örnekler (barkod okuma, akıllı kasa, kişi takibi vb.): [Örnekler](/tr/boards/o1/ai/examples)
+    - Kamera bağlantısı: [Kamera](/tr/boards/o1/peripherals/camera)
+    - Kart üstü sensörler: [IMU](/tr/boards/o1/peripherals/imu) ve diğer [çevre birimleri](/tr/boards/o1/peripherals/introduction)
+  </Step>
+
+  <Step title="Modeli hızlandırıcı için hazırlama">
+    - Ekosisteme genel bakış: [Edge AI Giriş](/tr/boards/o1/ai/introduction) ve [Ekosistem](/tr/boards/o1/ai/ecosystem)
+    - Eğitim ve derleme (EdgeAI-ModelMaker): [Model Hazırlama](/tr/boards/o1/ai/process) ve [Edge-AI TensorLab](/tr/boards/o1/ai/edgeai-tensorlab)
+    - Derlenmiş modeli kullanma: [Model Kullanma](/tr/boards/o1/ai/usage)
+    - Veri etiketleme: [Veri Etiketleme](/tr/boards/o1/ai/data-labeling)
+
+    Hızlandırıcıda çalıştırılacak model, Edge AI paketinin desteklediği biçimlerden herhangi birinde (ör. ONNX,
+    TFLite) olabilir; desteklenen biçimler için [Ekosistem](/tr/boards/o1/ai/ecosystem) sayfasına bakın.
+
+    <Note>
+      Modelin hızlandırıcıda çalışan kısmı ve CPU'da kalan katmanlar repodaki README'de belirtilmelidir.
+      Hızlandırıcının kullanılma durumu ve yöntemi Jüri Heyeti tarafından değerlendirilir.
+    </Note>
+  </Step>
+
+</Steps>
+
+## Sorular
+
+Takıldığınız noktaları forumdaki **T3 Gemstone Challenge** kategorisi altındaki **Edge AI** alt kategorisinden
+sorabilirsiniz.
+
+<Card title="T3 Gemstone Forum" icon="discourse" href="https://community.t3gemstone.org">
+  community.t3gemstone.org
+</Card>
