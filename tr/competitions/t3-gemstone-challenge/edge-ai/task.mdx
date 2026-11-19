@@ -1,0 +1,178 @@
+---
+title: 'Görev Tanımı'
+description: 'Proje kapsamı, eğitim ve model seçimi, değerlendirme ortamı ve referans ortam kurulumu'
+---
+
+Takımlardan, T3 Gemstone O1 üzerinde çalışan, bir çevre birimden ya da kart üzerindeki sensörden aldığı veriyi
+yapay zekâ algoritmasıyla işleyen ve sonucu üreten uçtan uca bir çözüm geliştirmeleri beklenir. Temanın odağı
+algoritmadır; donanım entegrasyonu ikinci plandadır, çevre birimi yalnızca algoritmaya veri sağlamak için kullanılır.
+
+Fikir vermesi amacıyla örnek proje alanları:
+
+- İHA görüntüsünde araç ya da insan tespiti
+- Tarımda bitki hastalığı sınıflandırma
+- Şerit ve yol segmentasyonu
+- Poz tahmini
+- Su altı görüntü iyileştirme
+- IMU verisinden anomali tespiti
+
+## Proje kapsamı
+
+- Proje, T3 Gemstone O1'e bağlı en az bir çevre birimden (kamera, mikrofon, sensör vb.) veya kart üzerindeki
+  sensörden veri alır. MIPI CSI ya da USB kamera ve her türlü sensör ve veri kaynağı serbesttir.
+- Alınan veri, seçilen yapay zekâ algoritması ile T3-GEM-O1 üzerinde işlenir ve anlamlı bir çıktıya dönüştürülür
+  (sınıflandırma, tespit, metin üretimi, tahmin vb.).
+- Takım; makine öğrenmesi, derin öğrenme, dil modelleri veya bilgisayarlı görü gibi alanlardan kendi yetkinliğine
+  uygun olanı seçer.
+- Seçilen algoritma, T3-GEM-O1'in kaynak sınırları (işlemci, bellek, güç) içinde çıkarım yapabilecek şekilde
+  hazırlanır. Bu amaçla model eğitilebilir, ince ayar (fine-tuning) yapılabilir veya optimize edilebilir.
+- Geliştirilen projeye ait çıkarım kodu, gerçek zamanlı olarak gerçek çevre koşullarında çalıştırılabilmelidir.
+
+## Eğitim ve model seçimi
+
+- Takımlar, diledikleri veri setini ve yapay zekâ modelini (temel (foundational), önceden eğitilmiş (pre-trained)
+  ya da damıtılmış (distilled) modeller dahil) eğitim ve geliştirme sürecinde kullanabilir.
+- Model eğitimi ve ince ayar işlemleri için istenen donanım (kişisel bilgisayar, GPU, bulut vb.) kullanılabilir.
+  Önceden eğitilmiş modeller lisanslarına uygun olarak kullanılmalıdır; kaynakların belirtilmesi gerekir.
+- Eğitim yapılan veri setinin açık kaynak olarak paylaşılması zorunlu değildir. Ancak veri setinin niteliği
+  (kaynağı, boyutu, içeriği, etiketleme biçimi vb.) belirtilmelidir.
+- Modelin kart üzerindeki hızlandırıcıda çalışan kısmı ve CPU'da kalan katmanlar belirtilmelidir. Hızlandırıcının
+  kullanılma durumu ve yöntemi Jüri Heyeti tarafından değerlendirilecektir.
+
+<Tip>
+  Katılım için model eğitimi şart değildir; ancak model eğitmek Jüri Heyeti değerlendirmesinde puan kazandırır.
+</Tip>
+
+<Note>
+  Eğitilen model repo dışında bir kaynakta barındırılacaksa bu kaynak **HuggingFace** veya **Kaggle**
+  platformlarından biri olmalıdır.
+</Note>
+
+## Değerlendirme ortamı
+
+- Çıkarım (inference) işlemlerinin tamamı yalnızca T3-GEM-O1 üzerinde yapılır.
+- Harici yapay zekâ hızlandırıcısı, uzak sunucu, bulut servisi veya başka bir bilgisayardan işlem desteği alınamaz.
+  Model eğitimi başka bir kaynakta gerçekleşse bile eğitilmiş model kart üzerinde barındırılabilmeli ve çıkarım kodu
+  çalıştırılabilmelidir.
+- Yazılımın kurulumu kartta tamamlandıktan sonra internet bağlantısı olmadan çalışabilmelidir. Çalışma sırasında
+  internet veya T3-GEM-O1 dışındaki herhangi bir kaynağa ihtiyaç duyulmamalıdır.
+
+## Referans GitHub reposu
+
+Proje geliştirilirken temel alınacak repo:
+
+<Card title="t3gemstone/challenge-01" icon="github" href="https://github.com/t3gemstone/challenge-01">
+  github.com/t3gemstone/challenge-01
+</Card>
+
+<Warning>
+  Takımlar bu repoyu fork ederek çalışır. Bu repo fork edilerek geliştirilmeyen hiçbir proje değerlendirilmez.
+</Warning>
+
+## Referans ortam
+
+Jüri Heyeti ölçümü referans ortamda yapılacaktır: O1'in eMMC belleğine yazılmış
+**T3 Gemstone OS Minimal v2026.1 (Ubuntu 22.04)** imajı ve **t3-gem-o1-edgeai 11.0** paketi. Bu sürümler
+20 Aralık'a kadar değiştirilmeyecektir. Geliştirme Desktop imajında da yapılabilecektir; ancak takımların kodlarını
+teslimden önce referans ortamda denemeleri beklenmektedir.
+
+Referans ortam aşağıdaki adımlarla kurulur. Jüri Heyeti değerlendirmede aynı adımlarla kurulmuş bir kart
+kullanır; takımların projelerini teslimden önce bu adımlarla kurdukları bir kartta denemeleri beklenmektedir.
+
+<Steps>
+
+  <Step title="İmajı yazın">
+    T3 Gemstone OS Minimal v2026.1 (Ubuntu 22.04) imajını Gem-Imager ile O1'in eMMC belleğine yazın
+    ([eMMC Kullanımı](/tr/imager/emmc)). Kartı açın, seri port ya da SSH ile bağlanın
+    ([Hızlı Başlangıç](/tr/quickstart)) ve internete bağlayın.
+  </Step>
+
+  <Step title="Edge AI paketini ve git'i kurun">
+    `git`, yarışma reposunu karta almak için kurulur.
+
+    ```bash
+    sudo apt update
+    sudo apt install t3-gem-o1-edgeai git
+    ```
+  </Step>
+
+  <Step title="Edge AI overlay'ini etkinleştirin">
+    `/boot/uEnv.txt` dosyasındaki `overlays=` satırının sonuna, bir boşluk bırakarak
+    `k3-am67a-t3-gem-o1-edgeai-apps.dtbo` ekleyin ve kartı yeniden başlatın.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    sudo reboot
+    ```
+  </Step>
+
+  <Step title="Kurulumu doğrulayın">
+    Yapay zekâ hızlandırıcısı root yetkisi ister; Edge AI ortam değişkenleri `/opt/t3-edgeai-env` dosyasıyla
+    yüklenir.
+
+    ```bash
+    sudo su
+    source /opt/t3-edgeai-env
+    python3 -c "import onnxruntime as ort; print(ort.get_available_providers())"
+    ```
+
+    `source` komutu `SDK: 11_00_00` bilgisini, son komut ise `TIDLExecutionProvider` içeren bir liste
+    yazdırmalıdır.
+  </Step>
+
+  <Step title="Repoyu karta alın">
+    Takımınızın fork'unu klonlayın. Takımlar projelerini repodaki `takimlar/<takim-adi>/` klasöründe, `sablon/`
+    klasörünün yapısıyla geliştirir.
+
+    ```bash
+    git clone https://github.com/<kullanici-adi>/<fork-adi>.git
+    cd <fork-adi>
+    ```
+  </Step>
+
+  <Step title="Takım klasörünü denetleyin">
+    `olcum/kontrol.py`, klasörün şablona ve bu şartnameye uygunluğunu modeli çalıştırmadan denetler. Aynı denetim
+    her commit'te GitHub Actions'ta da çalışır.
+
+    ```bash
+    python3 olcum/kontrol.py --takim <takim-adi>
+    ```
+  </Step>
+
+  <Step title="Değerlendirme betiğini çalıştırın">
+    Jüri Heyeti her takımı `olcum/calistir.py` betiğiyle değerlendirir; takımlar aynı betiği kendi kartlarında
+    çalıştırarak projelerinin Jüri Heyeti'nin kartında nasıl çalışacağını görebilir. Betik root olarak
+    çalıştırılır ve Edge AI ortam değişkenlerini kendisi yükler.
+
+    ```bash
+    sudo python3 olcum/calistir.py --takim <takim-adi>
+    ```
+
+    Betik her takım için sırasıyla şunları yapar:
+
+    1. Takım klasörünün bir kopyasını alır; repodaki dosyalar değişmez.
+    2. Kurulum aşamasında (internet açık) `requirements.txt`'deki paketleri takıma özel bir Python sanal ortamına
+       kurar, `apt.txt`'deki paketlerin kurulu olduğunu denetler, `model/indir.txt`'deki dosyaları HuggingFace ya
+       da Kaggle'dan indirip SHA256 özetlerini doğrular ve varsa `kurulum.sh` betiğini çalıştırır.
+    3. Takımın `degerlendir.sh` betiğini internet bağlantısı olmadan ve süre sınırıyla çalıştırır. Bu betik modeli
+       `test-seti/` klasöründeki veriyle çalıştırır ve sonuçları `sonuc.json` dosyasına yazar: başarım metriğinin
+       adı ve değeri zorunlu; FPS ve gecikme isteğe bağlıdır.
+    4. `sonuc.json` dosyasını doğrular.
+  </Step>
+
+  <Step title="Sonuçları inceleyin">
+    Sonuçlar `sonuclar/<tarih-saat>/` klasörüne yazılır: `ozet.csv` sonuçların özetini,
+    `<takim-adi>/kurulum.log` ve `<takim-adi>/calistirma.log` ayrıntıları içerir.
+
+    <Warning>
+      Betik `basarili` dışında bir durum bildirirse (`kurulum_hatasi`, `calistirma_hatasi`, `zaman_asimi`,
+      `sonuc_gecersiz` vb.) proje Jüri Heyeti'nin kartında da çalışmayacaktır.
+    </Warning>
+  </Step>
+
+</Steps>
+
+<Tip>
+  Kartınız yoksa geliştirme ve test için [uzaktan erişim](/tr/competitions/t3-gemstone-challenge/edge-ai/remote-access)
+  talep edebilirsiniz.
+</Tip>

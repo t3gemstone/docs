@@ -230,6 +230,31 @@
             ]
           },
           {
+            "group": "Yarışmalar",
+            "icon": "trophy",
+            "pages": [
+              {
+                "group": "T3 Gemstone Challenge",
+                "pages": [
+                  {
+                    "group": "Edge AI",
+                    "pages": [
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/overview",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/participation",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/task",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/evaluation",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/final",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/ethics",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/getting-started",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/remote-access",
+                      "tr/competitions/t3-gemstone-challenge/edge-ai/test-set-formats"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
             "group": "Diğer",
             "pages": [
               "tr/faq",
