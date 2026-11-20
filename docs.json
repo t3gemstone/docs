@@ -196,6 +196,19 @@
                 ]
               },
               {
+                "group": "UGV ROS",
+                "pages": [
+                  "tr/projects/ugv-ros/overview",
+                  "tr/projects/ugv-ros/installation",
+                  "tr/projects/ugv-ros/hardware",
+                  "tr/projects/ugv-ros/safety",
+                  "tr/projects/ugv-ros/field-test",
+                  "tr/projects/ugv-ros/usage",
+                  "tr/projects/ugv-ros/network",
+                  "tr/projects/ugv-ros/architecture"
+                ]
+              },
+              {
                 "group": "Teknofest",
                 "pages": [
                   "tr/projects/teknofest-suv",
@@ -415,6 +428,19 @@
                   "en/projects/mesh-network/overview",
                   "en/projects/mesh-network/setup",
                   "en/projects/mesh-network/verification"
+                ]
+              },
+              {
+                "group": "UGV ROS",
+                "pages": [
+                  "en/projects/ugv-ros/overview",
+                  "en/projects/ugv-ros/installation",
+                  "en/projects/ugv-ros/hardware",
+                  "en/projects/ugv-ros/safety",
+                  "en/projects/ugv-ros/field-test",
+                  "en/projects/ugv-ros/usage",
+                  "en/projects/ugv-ros/network",
+                  "en/projects/ugv-ros/architecture"
                 ]
               },
               {

@@ -1,0 +1,137 @@
+---
+title: 'Network Connection'
+description: 'Connecting the UGV robot to a new Wi-Fi network and finding the robot IP address'
+---
+
+On T3 Gemstone O1, Wi-Fi connections are managed by NetworkManager (`nmcli`). Once you connect to a network, its password is
+saved and the robot connects to that network automatically on subsequent boots. In a new environment such as a
+competition venue, school or home, the robot's network must be added once.
+
+## 1. Connecting to the Board Without a Network
+
+Since the robot is not yet connected to the new network, it cannot be reached over Wi-Fi. Connect to the board using
+one of the following methods.
+
+<Tabs>
+  <Tab title="USB Type-C (recommended)">
+    Connect T3 Gemstone O1 to your computer with a USB Type-C cable. When the board boots (about 1 minute), a USB network
+    interface appears on the computer and the board becomes reachable at `192.168.7.2`.
+
+    ```bash
+    ssh gemstone@192.168.7.2
+    ```
+
+    The user name is the one you set when writing the image. On the first connection, answer `yes` to the "host key"
+    question. If the board was re-imaged, you will get a "REMOTE HOST IDENTIFICATION HAS CHANGED" warning; in that case
+    remove the old entry.
+
+    ```bash
+    ssh-keygen -R 192.168.7.2
+    ```
+  </Tab>
+  <Tab title="Serial console">
+    The same Type-C cable also appears on the computer as `/dev/ttyACM0` (`COMx` on Windows). On Linux you can connect
+    with the following command; to exit, press `Ctrl-A` followed by `k`.
+
+    ```bash
+    sudo screen /dev/ttyACM0 115200
+    ```
+
+    For more information, refer to the [Serial Port](/en/boards/o1/peripherals/serial) page.
+  </Tab>
+  <Tab title="Monitor and keyboard">
+    You can log in directly by connecting an HDMI monitor and a USB keyboard to the board.
+  </Tab>
+</Tabs>
+
+## 2. Adding a Network
+
+Scan for and list nearby networks.
+
+```bash
+sudo nmcli dev wifi rescan
+sudo nmcli dev wifi list
+```
+
+Connect to the network. If the network name contains spaces, write it in quotes.
+
+```bash
+sudo nmcli dev wifi connect "NETWORK_NAME" password "PASSWORD"
+```
+
+If the command reports `successfully activated`, the connection has been saved.
+
+<AccordionGroup>
+  <Accordion title="Hidden network (not broadcasting its SSID)">
+    ```bash
+    sudo nmcli dev wifi connect "NETWORK_NAME" password "PASSWORD" hidden yes
+    ```
+  </Accordion>
+  <Accordion title="Enterprise network (WPA2-Enterprise / eduroam)">
+    For networks that require a user name and password:
+
+    ```bash
+    sudo nmcli connection add type wifi ifname wlan0 con-name "NETWORK_NAME" ssid "NETWORK_NAME" \
+      wifi-sec.key-mgmt wpa-eap 802-1x.eap peap 802-1x.phase2-auth mschapv2 \
+      802-1x.identity "USERNAME" 802-1x.password "PASSWORD"
+    sudo nmcli connection up "NETWORK_NAME"
+    ```
+
+    `peap`/`mschapv2` is the most common setting; if the network administrator specifies a different method, use that
+    instead.
+  </Accordion>
+  <Accordion title="Phone hotspot">
+    A phone hotspot is added like any other network. If there is no network at the track, this is the easiest method.
+    The robot and the computer that will open the interface must be connected to the same hotspot.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+Typing the password into the `nmcli` command saves it in the shell history. On a shared board, run `history -c`
+afterwards, or instead of typing the password on the command line, use the `--ask` option and enter it when prompted:
+`sudo nmcli --ask dev wifi connect "NETWORK_NAME"`
+</Tip>
+
+## 3. Finding the Robot's IP Address
+
+The network assigns an address to the robot via DHCP, and the address is different on every network.
+
+```bash
+ip -4 -br addr show wlan0
+```
+
+The output looks like `wlan0  UP  10.0.10.91/23`. The web interface is reached at `http://<this-address>:8000`. The
+computer that will open the interface must be on the same network as the robot.
+
+<Note>
+Some enterprise and guest networks prevent devices from seeing each other (client isolation). If the interface does
+not open, try a phone hotspot.
+</Note>
+
+## 4. Managing Saved Networks
+
+```bash
+nmcli -t -f NAME,TYPE connection show                                          # saved networks
+sudo nmcli connection delete "NETWORK_NAME"                                    # forget a network
+sudo nmcli connection modify "NETWORK_NAME" connection.autoconnect-priority 10  # set priority
+```
+
+If more than one saved network is visible at the same time, the robot connects to the one with the higher priority.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Secrets were required, but not provided">
+    The password is wrong, or the network is an enterprise network. For enterprise networks, use the enterprise network
+    command above.
+  </Accordion>
+  <Accordion title="No network with SSID ... found">
+    The network may be broadcasting on the 5 GHz band and the board does not see it, or the board is out of range.
+    Check the `nmcli dev wifi list` output.
+  </Accordion>
+  <Accordion title="Connected, but the interface does not open">
+    - Is the robot software running? If the service is installed, check with `systemctl status ugv`.
+    - Is the computer on the same network as the robot?
+    - Does the network isolate devices from each other (client isolation)?
+  </Accordion>
+</AccordionGroup>

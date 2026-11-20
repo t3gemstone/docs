@@ -1,0 +1,134 @@
+---
+title: 'Ağ Bağlantısı'
+description: 'UGV robotunu yeni bir Wi-Fi ağına bağlama ve robotun IP adresini bulma'
+---
+
+T3 Gemstone O1'de Wi-Fi bağlantıları NetworkManager (`nmcli`) tarafından yönetilir. Bir ağa bir kez bağlanıldığında parolası
+kaydedilir ve robot sonraki açılışlarda bu ağa kendiliğinden bağlanır. Yarışma alanı, okul veya ev gibi yeni bir
+ortamda robotun ağı bir kez tanıtılmalıdır.
+
+## 1. Karta Ağ Olmadan Bağlanma
+
+Robot henüz yeni ağa bağlı olmadığı için Wi-Fi üzerinden robota ulaşılamaz. Aşağıdaki yöntemlerden biriyle karta
+bağlanın.
+
+<Tabs>
+  <Tab title="USB Type-C (önerilen)">
+    T3 Gemstone O1'i USB Type-C kablosuyla bilgisayara bağlayın. Kart açıldığında (yaklaşık 1 dakika) bilgisayarda bir USB
+    ağ arayüzü oluşur ve kart `192.168.7.2` adresinden erişilebilir hâle gelir.
+
+    ```bash
+    ssh gemstone@192.168.7.2
+    ```
+
+    Kullanıcı adı, imajı yazarken belirlediğiniz addır. İlk bağlantıda "host key" sorusuna `yes` yanıtını verin. Kart
+    yeniden imajlandıysa "REMOTE HOST IDENTIFICATION HAS CHANGED" uyarısı alırsınız; bu durumda eski kaydı silin.
+
+    ```bash
+    ssh-keygen -R 192.168.7.2
+    ```
+  </Tab>
+  <Tab title="Seri konsol">
+    Aynı Type-C kablosu bilgisayarda `/dev/ttyACM0` (Windows'ta `COMx`) olarak da görünür. Linux'ta aşağıdaki komutla
+    bağlanabilirsiniz; çıkmak için `Ctrl-A` ardından `k` tuşlarına basın.
+
+    ```bash
+    sudo screen /dev/ttyACM0 115200
+    ```
+
+    Ayrıntılı bilgi için [Seri Port](/tr/boards/o1/peripherals/serial) sayfasına bakınız.
+  </Tab>
+  <Tab title="Ekran ve klavye">
+    Karta HDMI ekran ve USB klavye bağlayarak doğrudan oturum açabilirsiniz.
+  </Tab>
+</Tabs>
+
+## 2. Ağı Tanıtma
+
+Çevredeki ağları tarayın ve listeleyin.
+
+```bash
+sudo nmcli dev wifi rescan
+sudo nmcli dev wifi list
+```
+
+Ağa bağlanın. Ağ adında boşluk varsa tırnak içinde yazın.
+
+```bash
+sudo nmcli dev wifi connect "AĞ_ADI" password "ŞİFRE"
+```
+
+Komut `successfully activated` mesajını verirse bağlantı kaydedilmiştir.
+
+<AccordionGroup>
+  <Accordion title="Gizli ağ (SSID yayınlamayan)">
+    ```bash
+    sudo nmcli dev wifi connect "AĞ_ADI" password "ŞİFRE" hidden yes
+    ```
+  </Accordion>
+  <Accordion title="Kurumsal ağ (WPA2-Enterprise / eduroam)">
+    Kullanıcı adı ve parola isteyen ağlar için:
+
+    ```bash
+    sudo nmcli connection add type wifi ifname wlan0 con-name "AĞ_ADI" ssid "AĞ_ADI" \
+      wifi-sec.key-mgmt wpa-eap 802-1x.eap peap 802-1x.phase2-auth mschapv2 \
+      802-1x.identity "KULLANICI" 802-1x.password "ŞİFRE"
+    sudo nmcli connection up "AĞ_ADI"
+    ```
+
+    `peap`/`mschapv2` en yaygın ayardır; ağ yöneticisi farklı bir yöntem belirtirse onu kullanın.
+  </Accordion>
+  <Accordion title="Telefon hotspot'u">
+    Telefon hotspot'u da sıradan bir ağ gibi eklenir. Pist başında ağ yoksa en kolay yöntem budur. Robot ve arayüzü
+    açacak bilgisayar aynı hotspot'a bağlanmalıdır.
+  </Accordion>
+</AccordionGroup>
+
+<Tip>
+Parolayı `nmcli` komutuna yazmak onu kabuk geçmişine kaydeder. Paylaşılan bir kartta işlem sonrası `history -c`
+komutunu çalıştırın ya da parolayı komut satırına yazmak yerine `--ask` seçeneğiyle sorulduğunda girin:
+`sudo nmcli --ask dev wifi connect "AĞ_ADI"`
+</Tip>
+
+## 3. Robotun IP Adresini Bulma
+
+Ağ, robota DHCP ile adres verir ve adres her ağda farklıdır.
+
+```bash
+ip -4 -br addr show wlan0
+```
+
+Çıktı `wlan0  UP  10.0.10.91/23` biçimindedir. Web arayüzüne `http://<bu-adres>:8000` adresinden erişilir. Arayüzü
+açacak bilgisayar robotla aynı ağda olmalıdır.
+
+<Note>
+Bazı kurumsal ve misafir ağlar cihazların birbirini görmesini engeller (client isolation). Arayüz açılmıyorsa telefon
+hotspot'u deneyin.
+</Note>
+
+## 4. Kayıtlı Ağları Yönetme
+
+```bash
+nmcli -t -f NAME,TYPE connection show                                   # kayıtlı ağlar
+sudo nmcli connection delete "AĞ_ADI"                                   # bir ağı unutma
+sudo nmcli connection modify "AĞ_ADI" connection.autoconnect-priority 10  # öncelik verme
+```
+
+Birden fazla kayıtlı ağ aynı anda görünüyorsa robot önceliği yüksek olan ağa bağlanır.
+
+## Sorun Giderme
+
+<AccordionGroup>
+  <Accordion title="Secrets were required, but not provided">
+    Parola yanlıştır ya da ağ kurumsal bir ağdır. Kurumsal ağlar için yukarıdaki kurumsal ağ komutunu kullanın.
+  </Accordion>
+  <Accordion title="No network with SSID ... found">
+    Ağ 5 GHz bandında yayın yapıyor ve kart görmüyor olabilir ya da kart menzil dışındadır. `nmcli dev wifi list`
+    çıktısını kontrol edin.
+  </Accordion>
+  <Accordion title="Bağlantı kuruldu ancak arayüz açılmıyor">
+    - Robot yazılımı çalışıyor mu? Servis kuruluysa `systemctl status ugv` ile kontrol edin.
+    - Bilgisayar robotla aynı ağda mı?
+    - Ağ, cihazları birbirinden yalıtıyor mu (client isolation)?
+  </Accordion>
+</AccordionGroup>

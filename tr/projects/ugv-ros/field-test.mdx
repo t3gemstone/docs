@@ -1,0 +1,261 @@
+---
+title: 'Saha Testi'
+description: 'UGV robotunun IMU, motor, enkoder, lidar ve çizgi sensörü kontrolleri'
+---
+
+Saha testi, robotun donanımını ilk çalıştırmadan önce adım adım doğrulamak için hazırlanmıştır. Her adım bir
+öncekine dayanır; sırayı atlamayın.
+
+<Warning>
+Motor adımlarında robotu **tekerlekleri havada kalacak şekilde** bir kutunun üzerine koyun. Testlere başlamadan önce
+[Pil ve Kullanım Güvenliği](/tr/projects/ugv-ros/safety) sayfasını okuyun.
+</Warning>
+
+## Test Ortamının Hazırlanması
+
+GPIO ve PWM erişimi için test komutları root kabuğunda çalıştırılır. Kurulum türünüze göre ilgili sekmedeki
+komutları uygulayın.
+
+<Tabs>
+  <Tab title="Doğrudan kurulum">
+    Robot servisi kuruluysa önce durdurun ve root kabuğuna geçin.
+
+    ```bash
+    sudo systemctl stop ugv
+    sudo -i
+    ```
+
+    ROS ortamını ve libgpiod v2 Python yolunu yükleyin, donanım dosyasının yolunu `HW` değişkenine atayın.
+
+    ```bash
+    source /opt/ros/jazzy/setup.bash
+    source /home/gemstone/ugv-ros/install/setup.bash
+    export PYTHONPATH=/home/gemstone/ugv-gpio-venv/lib/python3.12/site-packages:$PYTHONPATH
+    HW=/home/gemstone/ugv-ros/src/ugv_bringup/config/hardware.yaml
+    ```
+
+    Testler bittiğinde root kabuğundan `exit` ile çıkıp servisi yeniden başlatın.
+
+    ```bash
+    sudo systemctl start ugv
+    ```
+  </Tab>
+  <Tab title="Docker">
+    İmajı oluşturun ve test kabuğunu açın. İlk derleme 15–20 dakika sürebilir.
+
+    ```bash
+    cd ~/ugv-ros
+    docker compose build
+    docker compose run --rm ugv bash
+    ```
+
+    Konteyner içinde donanım dosyasının yolunu `HW` değişkenine atayın.
+
+    ```bash
+    HW=/ugv_ws/src/ugv/ugv_bringup/config/hardware.yaml
+    ```
+
+    `./src` dizini konteynere bağlı olduğu için `hardware.yaml` dosyasını T3 Gemstone O1 üzerinde düzenlediğinizde
+    değişiklik hemen geçerli olur. Yeni bir Python dosyası eklediğinizde veya C++ kodunu değiştirdiğinizde konteynerde
+    `colcon build --symlink-install` komutunu çalıştırın.
+  </Tab>
+</Tabs>
+
+<Note>
+Bazı adımlarda ikinci bir terminal gerekir. Her yeni terminalde yukarıdaki ortam komutlarını tekrar çalıştırın.
+</Note>
+
+## 1. Hazırlık
+
+- `/boot/uEnv.txt` dosyasında PWM overlay'leri etkin, çakışan overlay'ler kapalı
+  ([PWM ve UART ayarları](/tr/projects/ugv-ros/installation#4-pwm-ve-uart-ayarları-overlay))
+- Enkoderler ve çizgi sensörü **3,3 V** ile besleniyor (sensörde "3.3V" köprüsü lehimli), L298N üzerindeki
+  ENA/ENB jumper'ları çıkarılmış
+- Pinler çözülüyor ve çakışma yok
+
+```bash
+ros2 run ugv_base hw_check pins --config $HW
+```
+
+Çıktıda her `GPIOxx` bir `gpiochipN:line` hattına, her PWM kanalı bir `pwmchipN` çipine çözülmelidir. "not found"
+hatası alırsanız `gpioinfo | grep -i gpio` komutuyla karttaki hat adını bulun ve `hardware.yaml` dosyasına bu adı ya
+da `gpiochipN:line` biçimini yazın.
+
+## 2. IMU
+
+```bash
+ros2 run ugv_imu ugv_imu_node --ros-args --params-file $HW
+```
+
+İkinci bir terminalde açısal hızı izleyin.
+
+```bash
+ros2 topic echo /imu/data_raw --field angular_velocity
+```
+
+- Açılışta "gyro bias" satırı görünüyor (robot bu sırada hareketsiz olmalı)
+- Robot dururken `z` ≈ 0 (±0,01 rad/s)
+- Robotu yukarıdan bakıldığında **saat yönünün tersine** çevirince `z` **pozitif** oluyor
+
+<Note>
+`z` negatifse kart ters takılmıştır. Bu durumda
+[`ugv_description/config/robot.yaml`](https://github.com/t3gemstone/ugv-ros/blob/main/src/ugv_description/config/robot.yaml)
+dosyasında `imu.roll: 3.14159` olarak ayarlayın (kitte bu şekildedir). Düzeltme TF üzerinde yapıldığı için ham
+`/imu/data_raw` yine negatif görünür. Doğrulamayı tam robotta yapın: robot yerinde sola dönerken hem `/wheel/odom` hem
+de `/odometry/filtered` konusundaki `angular.z` pozitif olmalıdır. Ters ise harita ayna görüntüsü gibi çıkar.
+</Note>
+
+## 3. Motor Yönleri
+
+```bash
+ros2 run ugv_base hw_check motors --config $HW --duty 50
+```
+
+Robotun arkasında durup öne (çizgi sensörüne) doğru bakın. Komut önce `left`, sonra `right` tekerini döndürür.
+
+- Önce **sol**, sonra **sağ** teker dönüyor. Ters sırayla dönüyorsa `hardware.yaml` dosyasında `left` ve `right`
+  bloklarını (yön ayarlarıyla birlikte) yer değiştirin; aksi hâlde robot ileri gider ancak sağ/sol dönüşler ters
+  olur
+- Her teker robotu ileri götürecek yönde dönüyor. Dönmüyorsa komutun önerdiği `invert` düzeltmesini yapın
+- Teker hiç dönmüyorsa IN pinlerini, PWM kanalını, EN jumper'ını ve motor beslemesini kontrol edin
+
+## 4. Enkoderler
+
+```bash
+ros2 run ugv_base hw_check encoders --config $HW
+```
+
+- Tekeri elle tam bir tur **ileri** çevirince sayım pozitif ve yaklaşık 2184 (x4: 546 × 4)
+- Gösterilen `ppr≈` değeri 546'dan çok farklıysa motor farklı redüktörlüdür; `encoder.ppr` değerini düzeltin
+- `hata` sayacı 0 kalıyor. `hw_check sweep` sırasında yüksek duty değerlerinde artıyorsa olaylar kaçıyor demektir;
+  `hw_check pins` çıktısında `libgpiod python API: v2` yazdığını doğrulayın (v1'in olay tamponu bu motor için
+  küçüktür)
+- Sayım yönü ters ise `enc_invert: true` ayarlayın (`hw_check motors` de bunu önerir)
+
+## 5. Hız Aralığı
+
+```bash
+ros2 run ugv_base hw_check sweep --config $HW
+```
+
+Ölçümü **pil doluyken** (3S: 12,0–12,6 V) yapın. Zayıf pilde motorlar aynı duty değerinde çok daha yavaş döner ve yük
+altında gerilim çöküp iki teker birden durabilir; bu ölçümle ayarlanan değerler pil dolduğunda yanlış olur. 3S Li-Po
+pili 10,5 V'un altına indirmeyin.
+
+- `pid.min_duty` ← tekerin dönmeye başladığı duty değeri
+- `max_wheel_speed` ← %100 duty'de **iki tekerden yavaş olanının** hızı
+
+## 6. Kapalı Çevrim Sürüş
+
+```bash
+ros2 launch ugv_bringup robot.launch.py lidar:=false line:=false slam:=false
+```
+
+Bilgisayarın tarayıcısından `http://<gemstone-ip>:8000` adresini açın, **Manual** moda geçip robotu sürün. İkinci bir
+terminalde teker hızlarını izleyin.
+
+```bash
+ros2 topic echo /ugv_base_node/wheels
+```
+
+Dizideki değerler sırasıyla `[hedef_sol, ölçülen_sol, duty_sol, hedef_sağ, ölçülen_sağ, duty_sağ]` şeklindedir.
+
+- Ölçülen hızlar hedefe oturuyor ve salınım yok. Salınım varsa `pid.kp` değerini düşürün, hız hedefin altında
+  kalıyorsa `pid.ki` değerini artırın
+- Robot düz giderken sapmıyor (iki teker aynı hızda)
+- Acil durdurma (**Boşluk** tuşu) motorları anında kesiyor
+
+## 7. Odometri Kalibrasyonu
+
+- **Düz 1 m:** Arayüzden düz sürün, `/wheel/odom` konusundaki x değerini şerit metreyle karşılaştırın →
+  `robot.yaml` içindeki `wheel_radius` × (gerçek / ölçülen)
+- **Yerinde 5 tur:** `/wheel/odom` açısını gerçek açıyla karşılaştırın → `wheel_separation` × (ölçülen / gerçek)
+- 5 turdan sonra EKF'nin (`/odometry/filtered`) yaw değeri gerçeğe teker odometrisinden daha yakın
+
+## 8. Lidar
+
+```bash
+ros2 launch ugv_bringup robot.launch.py line:=false slam:=false
+```
+
+Lidar bağlantısı arayüzdeki **Lidar** panelinden seçilir (varsayılan USB). Panel portu ve tarama hızını gösterir;
+seçim robotta saklanır.
+
+- Lidar başlığı dönüyor ve panelde yaklaşık 5–8 Hz görünüyor (ya da `ros2 topic hz /scan`)
+- **USB:** Panel "no lidar port" diyorsa `ls /dev/serial/by-id/` çıktısı boş olabilir; minimal imajda CP210x
+  sürücüsü eksiktir (`lsmod | grep cp210x`).
+  [CP210x sürücüsü](/tr/projects/ugv-ros/installation#2-4-usb-lidar-sürücüsünü-cp210x-kurun)
+- **GPIO:** "operation timeout" hatası alıyorsanız TX/RX hatlarının çapraz bağlandığını (lidar TX → pin 26),
+  `dmesg` çıktısında `2b300000.serial: ttyS0` satırının bulunduğunu ve `ugv-bt-off`, `uart-ttys0`, `ecap2`
+  overlay'lerinin etkin olduğunu kontrol edin. Sorun sürerse `gpio.duty_percent` değerini 75'e düşürün (motor
+  gürültüsü UART'ı bozabilir)
+- Lidarın açısı doğru. Robotun tam önüne (çizgi sensörü tarafına, ortalı, 30–40 cm uzağa) lidar yüksekliğinden
+  uzun bir kutu koyun; 1 m içinde başka bir cisim olmasın. Kutunun `/scan` içindeki açısı `a` ise `robot.yaml` →
+  `lidar.yaw = -a` (radyan) olarak ayarlayın. Kitte lidar 180° dönük takılıdır: kutu yaklaşık ±180°'de görünür ve
+  `yaw` ≈ 3,14 olur. Açı yanlışsa harita sürüş sırasında kayar ve dönüşlerde dağılır
+- Lidar freni (varsayılan olarak açık, `control.yaml` → `safety.enabled`): robot öndeki kutuya yaklaşık 0,10 m
+  kala duruyor, yanından geçtiği duvar nedeniyle yavaşlamıyor
+
+## 9. Çizgi Sensörü ve İzleme
+
+<Tabs>
+  <Tab title="Deneyap Mini v2 (varsayılan)">
+    Robot `line:=true` ile çalışırken ham ölçümleri izleyin.
+
+    ```bash
+    ros2 topic echo /line/state --field raw
+    ```
+
+    - D1 … D8 değerleri (mV) akıyor. Akmıyorsa Deneyap TX → pin 10, RX → pin 8 bağlantılarını, ortak GND'yi ve
+      yazılımın yüklü olduğunu kontrol edin; günlükte "no data from the Deneyap" uyarısı aranabilir
+    - Sensör 3–6 mm yükseklikte ve beyaz ile siyah arasında her kanalda yüzlerce mV fark var (fark 100 mV
+      civarındaysa sensör çok yüksektedir)
+    - [Kalibrasyon](/tr/projects/ugv-ros/usage#3-çizgi-sensörü-kalibrasyonu) başarıyla tamamlanıyor
+    - Web panelinde başlat → beyaz → siyah sırası çalışıyor; robot **Idle** modunda kalıyor ve sürüş engelleniyor. Kayıtlı mV
+      tablosu doluyor ve yeniden açılıştan sonra korunuyor
+    - Aynı yüzeyi iki kez ölçmek hata veriyor ve önceki kayıt değişmiyor. Bağlantı kesildiğinde veya mod
+      değiştiğinde işlem kapanıyor
+    - `ros2 topic echo /line/state --field sensors` çıktısında beyazda tüm kanallar `false`, siyahta `true`
+    - Siyah bant sensörün altında soldan sağa kaydırıldığında `true` değeri soldan sağa ilerliyor. Ters ilerliyorsa
+      A0…A7 kabloları ters takılmıştır
+  </Tab>
+  <Tab title="Doğrudan GPIO">
+    ```bash
+    ros2 run ugv_line line_check --config $HW
+    ```
+
+    - Sensör beyaz zeminin 3–5 mm üzerindeyken 8 kanal **0**, siyah bandın üzerindeyken **1**
+    - Tüm kanallar sürekli 1 ise sensör VCC'sinin pin 17'de olduğunu, GND'nin bağlı olduğunu, "3.3V" köprüsünün
+      lehimli olduğunu ve D kablolarının takılı olduğunu kontrol edin
+      ([Çizgi sensörü](/tr/projects/ugv-ros/hardware#5-çizgi-sensörü))
+    - Siyah bant sensörün altında soldan sağa kaydırıldığında 1 değeri soldan sağa ilerliyor. Ters ilerliyorsa
+      `pins` listesini ters çevirin
+  </Tab>
+</Tabs>
+
+Her iki bağlantı türünde:
+
+- Robot çalışırken `/line/state` konusunda çizgi soldayken `position` değeri **pozitif**
+- Pistte arayüzden **Line follow** modunu deneyin. Önce `speed: 0.10` ile başlayın, ardından
+  [`control.yaml`](https://github.com/t3gemstone/ugv-ros/blob/main/src/ugv_bringup/config/control.yaml) içindeki
+  `kp`, `kd` ve `speed` değerlerini ayarlayın
+
+## 10. Haritalama
+
+```bash
+ros2 launch ugv_bringup robot.launch.py
+```
+
+- Arayüzden yavaşça sürerken harita oluşuyor ve duvarlar çift görünmüyor
+- **Save map** ile `~/ugv_maps/<isim>.{pgm,yaml,posegraph,data}` dosyaları oluşuyor
+
+## 11. Kayıtlı Haritada Hedefe Gitme
+
+Robotu haritalamaya **başladığınız noktaya ve aynı yöne bakacak şekilde** yerleştirin.
+
+```bash
+ros2 launch ugv_bringup robot.launch.py slam_mode:=localization map:=~/ugv_maps/<isim> nav:=true
+```
+
+- Arayüzde **Click → goal** seçeneği açıkken haritaya tıklandığında robot o noktaya gidiyor (mod: NAV)
+- Yol sırasında bir sürüş tuşuna basıldığında robot manuel moda geçip durur

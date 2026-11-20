@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1012" viewBox="0 0 1000 1012" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<rect width="1000" height="1012" fill="#ffffff"/>
+<text x="24" y="34" font-size="20" font-weight="700" fill="#1b1f24">UGV · T3 Gemstone O1 40-pin connection map</text>
+<text x="24" y="58" font-size="12.5" fill="#5d6673">Top view. Physical pin 1 is at the top left. Right and left are as seen from behind the robot, looking toward its front.</text>
+<text x="24" y="76" font-size="12.5" fill="#5d6673">Dashed ring: depends on the selected option. The default setup is the Deneyap Mini v2 and the lidar on its USB adapter.</text>
+<rect x="466.0" y="86" width="68" height="812" rx="8" fill="#1d4a3a"/>
+<circle cx="484.0" cy="112.0" r="13" fill="#e07a1f" fill-opacity="1"/>
+<text x="484.0" y="116.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+<text x="458.0" y="110.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Motor 1 encoder VCC</text>
+<text x="458.0" y="125.0" font-size="10.5" fill="#6b7480" text-anchor="end">3.3 V</text>
+<circle cx="516.0" cy="112.0" r="13" fill="#d13b3b"/>
+<text x="516.0" y="116.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+<text x="542.0" y="110.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Deneyap Mini v2 5V</text>
+<text x="542.0" y="125.0" font-size="10.5" fill="#6b7480" text-anchor="start">5 V · shared supply rail for the direct lidar</text>
+<circle cx="484.0" cy="152.0" r="13" fill="#fff"/>
+<circle cx="484.0" cy="152.0" r="13" fill="#d98b00"/>
+<circle cx="484.0" cy="152.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="484.0" y="156.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+<text x="458.0" y="150.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Line D4</text>
+<text x="458.0" y="165.0" font-size="10.5" fill="#5d6673" text-anchor="end">GPIO2 · digital sensor or QTR-8RC</text>
+<circle cx="516.0" cy="152.0" r="13" fill="#ffffff"/>
+<circle cx="516.0" cy="152.0" r="13" fill="#d13b3b" fill-opacity="0.6"/>
+<circle cx="516.0" cy="152.0" r="15.5" fill="none" stroke="#d13b3b" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="156.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+<text x="542.0" y="150.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Lidar VMOTO</text>
+<text x="542.0" y="165.0" font-size="10.5" fill="#6b7480" text-anchor="start">5 V  ·  Direct lidar only</text>
+<circle cx="484.0" cy="192.0" r="13" fill="#fff"/>
+<circle cx="484.0" cy="192.0" r="13" fill="#d98b00"/>
+<circle cx="484.0" cy="192.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="484.0" y="196.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+<text x="458.0" y="190.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Line D8</text>
+<text x="458.0" y="205.0" font-size="10.5" fill="#5d6673" text-anchor="end">GPIO3 · digital sensor or QTR-8RC</text>
+<circle cx="516.0" cy="192.0" r="13" fill="#3b3f45" fill-opacity="1"/>
+<text x="516.0" y="196.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+<text x="542.0" y="190.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Common GND, Deneyap GND</text>
+<text x="542.0" y="205.0" font-size="10.5" fill="#6b7480" text-anchor="start">GND</text>
+<circle cx="484.0" cy="232.0" r="13" fill="#2563c9" fill-opacity="1"/>
+<text x="484.0" y="236.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">7</text>
+<text x="458.0" y="230.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Right encoder C1</text>
+<text x="458.0" y="245.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO4 · AUDIO REFCLK2  ·  right.enc_a</text>
+<circle cx="516.0" cy="232.0" r="13" fill="#7a3fc4"/>
+<text x="516.0" y="236.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">8</text>
+<text x="542.0" y="230.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Mini v2 RX (D0)</text>
+<text x="542.0" y="245.0" font-size="10.5" fill="#5d6673" text-anchor="start">GPIO14 · UART TX · /dev/ttyS3</text>
+<circle cx="484.0" cy="272.0" r="13" fill="#3b3f45" fill-opacity="1"/>
+<text x="484.0" y="276.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">9</text>
+<text x="458.0" y="270.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="end">—</text>
+<text x="458.0" y="285.0" font-size="10.5" fill="#6b7480" text-anchor="end">GND</text>
+<circle cx="516.0" cy="272.0" r="13" fill="#7a3fc4"/>
+<text x="516.0" y="276.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">10</text>
+<text x="542.0" y="270.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Mini v2 TX (D1)</text>
+<text x="542.0" y="285.0" font-size="10.5" fill="#5d6673" text-anchor="start">GPIO15 · UART RX · /dev/ttyS3</text>
+<circle cx="484.0" cy="312.0" r="13" fill="#2563c9" fill-opacity="1"/>
+<text x="484.0" y="316.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">11</text>
+<text x="458.0" y="310.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">L298N IN2 (right)</text>
+<text x="458.0" y="325.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO17 · UART-MAIN1 RTS  ·  right.in2</text>
+<circle cx="516.0" cy="312.0" r="13" fill="#ffffff"/>
+<circle cx="516.0" cy="312.0" r="13" fill="#b05cc7" fill-opacity="0.6"/>
+<circle cx="516.0" cy="312.0" r="15.5" fill="none" stroke="#b05cc7" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="316.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">12</text>
+<text x="542.0" y="310.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Lidar MOTOCTL</text>
+<text x="542.0" y="325.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO18 · PCM-McASP0 CLK  ·  gpio.pwm: ecap2 · Direct lidar only</text>
+<circle cx="484.0" cy="352.0" r="13" fill="#1f8a4c" fill-opacity="1"/>
+<text x="484.0" y="356.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">13</text>
+<text x="458.0" y="350.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Left encoder C1</text>
+<text x="458.0" y="365.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO27  ·  left.enc_a</text>
+<circle cx="516.0" cy="352.0" r="13" fill="#3b3f45" fill-opacity="1"/>
+<text x="516.0" y="356.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">14</text>
+<text x="542.0" y="350.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="start">—</text>
+<text x="542.0" y="365.0" font-size="10.5" fill="#6b7480" text-anchor="start">GND</text>
+<circle cx="484.0" cy="392.0" r="13" fill="#2563c9" fill-opacity="1"/>
+<text x="484.0" y="396.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">15</text>
+<text x="458.0" y="390.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">L298N IN1 (right)</text>
+<text x="458.0" y="405.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO22  ·  right.in1</text>
+<circle cx="516.0" cy="392.0" r="13" fill="#1f8a4c" fill-opacity="1"/>
+<text x="516.0" y="396.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">16</text>
+<text x="542.0" y="390.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Left encoder C2</text>
+<text x="542.0" y="405.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO23  ·  left.enc_b</text>
+<circle cx="484.0" cy="432.0" r="13" fill="#e07a1f" fill-opacity="1"/>
+<text x="484.0" y="436.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">17</text>
+<text x="458.0" y="430.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Motor 2 encoder VCC</text>
+<text x="458.0" y="445.0" font-size="10.5" fill="#6b7480" text-anchor="end">3.3 V  ·  + line VCC (direct line sensor)</text>
+<circle cx="516.0" cy="432.0" r="13" fill="#fff"/>
+<circle cx="516.0" cy="432.0" r="13" fill="#b05cc7"/>
+<circle cx="516.0" cy="432.0" r="15.5" fill="none" stroke="#b05cc7" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="436.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">18</text>
+<text x="542.0" y="430.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Lidar RX</text>
+<text x="542.0" y="445.0" font-size="10.5" fill="#5d6673" text-anchor="start">GPIO24 · UART TX · /dev/ttyS0</text>
+<circle cx="484.0" cy="472.0" r="13" fill="#c9ced6" fill-opacity="1"/>
+<text x="484.0" y="476.0" font-size="11" font-weight="700" fill="#333" text-anchor="middle">19</text>
+<text x="458.0" y="470.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="end">unused</text>
+<text x="458.0" y="485.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO10 · SPI-MCU0 MOSI</text>
+<circle cx="516.0" cy="472.0" r="13" fill="#3b3f45" fill-opacity="1"/>
+<text x="516.0" y="476.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">20</text>
+<text x="542.0" y="470.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="start">—</text>
+<text x="542.0" y="485.0" font-size="10.5" fill="#6b7480" text-anchor="start">GND</text>
+<circle cx="484.0" cy="512.0" r="13" fill="#c9ced6" fill-opacity="1"/>
+<text x="484.0" y="516.0" font-size="11" font-weight="700" fill="#333" text-anchor="middle">21</text>
+<text x="458.0" y="510.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="end">unused</text>
+<text x="458.0" y="525.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO9 · SPI-MCU0 MISO</text>
+<circle cx="516.0" cy="512.0" r="13" fill="#1f8a4c" fill-opacity="1"/>
+<text x="516.0" y="516.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">22</text>
+<text x="542.0" y="510.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">L298N IN4 (left)</text>
+<text x="542.0" y="525.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO25  ·  left.in2</text>
+<circle cx="484.0" cy="552.0" r="13" fill="#c9ced6" fill-opacity="1"/>
+<text x="484.0" y="556.0" font-size="11" font-weight="700" fill="#333" text-anchor="middle">23</text>
+<text x="458.0" y="550.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="end">unused</text>
+<text x="458.0" y="565.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO11 · SPI-MCU0 SCLK</text>
+<circle cx="516.0" cy="552.0" r="13" fill="#ffffff"/>
+<circle cx="516.0" cy="552.0" r="13" fill="#d98b00" fill-opacity="0.6"/>
+<circle cx="516.0" cy="552.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="556.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">24</text>
+<text x="542.0" y="550.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Line D7</text>
+<text x="542.0" y="565.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO8 · SPI-MCU0 CS0  · direct line sensor</text>
+<circle cx="484.0" cy="592.0" r="13" fill="#3b3f45" fill-opacity="1"/>
+<text x="484.0" y="596.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">25</text>
+<text x="458.0" y="590.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="end">—</text>
+<text x="458.0" y="605.0" font-size="10.5" fill="#6b7480" text-anchor="end">GND</text>
+<circle cx="516.0" cy="592.0" r="13" fill="#fff"/>
+<circle cx="516.0" cy="592.0" r="13" fill="#b05cc7"/>
+<circle cx="516.0" cy="592.0" r="15.5" fill="none" stroke="#b05cc7" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="596.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">26</text>
+<text x="542.0" y="590.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Lidar TX</text>
+<text x="542.0" y="605.0" font-size="10.5" fill="#5d6673" text-anchor="start">GPIO7 · UART RX · /dev/ttyS0</text>
+<circle cx="484.0" cy="632.0" r="13" fill="#c9ced6" fill-opacity="1"/>
+<text x="484.0" y="636.0" font-size="11" font-weight="700" fill="#333" text-anchor="middle">27</text>
+<text x="458.0" y="630.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="end">unused</text>
+<text x="458.0" y="645.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO0 · I2C-WKUP0 SDA</text>
+<circle cx="516.0" cy="632.0" r="13" fill="#c9ced6" fill-opacity="1"/>
+<text x="516.0" y="636.0" font-size="11" font-weight="700" fill="#333" text-anchor="middle">28</text>
+<text x="542.0" y="630.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="start">unused</text>
+<text x="542.0" y="645.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO1 · I2C-WKUP0 SCL</text>
+<circle cx="484.0" cy="672.0" r="13" fill="#2563c9" fill-opacity="1"/>
+<text x="484.0" y="676.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">29</text>
+<text x="458.0" y="670.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Right encoder C2</text>
+<text x="458.0" y="685.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO5 · PWM-0A  ·  right.enc_b</text>
+<circle cx="516.0" cy="672.0" r="13" fill="#3b3f45" fill-opacity="1"/>
+<text x="516.0" y="676.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">30</text>
+<text x="542.0" y="670.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="start">—</text>
+<text x="542.0" y="685.0" font-size="10.5" fill="#6b7480" text-anchor="start">GND</text>
+<circle cx="484.0" cy="712.0" r="13" fill="#ffffff"/>
+<circle cx="484.0" cy="712.0" r="13" fill="#d98b00" fill-opacity="0.6"/>
+<circle cx="484.0" cy="712.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="484.0" y="716.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">31</text>
+<text x="458.0" y="710.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Line D2</text>
+<text x="458.0" y="725.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO6 · PWM-1A  · direct line sensor</text>
+<circle cx="516.0" cy="712.0" r="13" fill="#2563c9" fill-opacity="1"/>
+<text x="516.0" y="716.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">32</text>
+<text x="542.0" y="710.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">L298N ENA (right)</text>
+<text x="542.0" y="725.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO12 · PWM-0B  ·  right.pwm: ecap0</text>
+<circle cx="484.0" cy="752.0" r="13" fill="#1f8a4c" fill-opacity="1"/>
+<text x="484.0" y="756.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">33</text>
+<text x="458.0" y="750.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">L298N ENB (left)</text>
+<text x="458.0" y="765.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO13 · PWM-1B  ·  left.pwm: epwm1:1</text>
+<circle cx="516.0" cy="752.0" r="13" fill="#3b3f45" fill-opacity="1"/>
+<text x="516.0" y="756.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">34</text>
+<text x="542.0" y="750.0" font-size="13" font-weight="600" fill="#9aa1ab" text-anchor="start">—</text>
+<text x="542.0" y="765.0" font-size="10.5" fill="#6b7480" text-anchor="start">GND</text>
+<circle cx="484.0" cy="792.0" r="13" fill="#ffffff"/>
+<circle cx="484.0" cy="792.0" r="13" fill="#d98b00" fill-opacity="0.6"/>
+<circle cx="484.0" cy="792.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="484.0" y="796.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">35</text>
+<text x="458.0" y="790.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Line D3</text>
+<text x="458.0" y="805.0" font-size="10.5" fill="#6b7480" text-anchor="end">GPIO19 · PCM-McASP0 FS  · direct line sensor</text>
+<circle cx="516.0" cy="792.0" r="13" fill="#ffffff"/>
+<circle cx="516.0" cy="792.0" r="13" fill="#d98b00" fill-opacity="0.6"/>
+<circle cx="516.0" cy="792.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="796.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">36</text>
+<text x="542.0" y="790.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Line D5</text>
+<text x="542.0" y="805.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO16 · UART-MAIN1 CTS  · direct line sensor</text>
+<circle cx="484.0" cy="832.0" r="13" fill="#1f8a4c"/>
+<text x="484.0" y="836.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">37</text>
+<text x="458.0" y="830.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">L298N IN3 (left)</text>
+<text x="458.0" y="845.0" font-size="10.5" fill="#5d6673" text-anchor="end">GPIO26 · left.in1</text>
+<circle cx="516.0" cy="832.0" r="13" fill="#ffffff"/>
+<circle cx="516.0" cy="832.0" r="13" fill="#d98b00" fill-opacity="0.6"/>
+<circle cx="516.0" cy="832.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="836.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">38</text>
+<text x="542.0" y="830.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Line D6</text>
+<text x="542.0" y="845.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO20 · PCM-McASP0 DATA0  · direct line sensor</text>
+<circle cx="484.0" cy="872.0" r="13" fill="#ffffff"/>
+<circle cx="484.0" cy="872.0" r="13" fill="#3b3f45" fill-opacity="0.6"/>
+<circle cx="484.0" cy="872.0" r="15.5" fill="none" stroke="#3b3f45" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="484.0" y="876.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">39</text>
+<text x="458.0" y="870.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="end">Line sensor GND</text>
+<text x="458.0" y="885.0" font-size="10.5" fill="#6b7480" text-anchor="end">GND  ·  direct line sensor</text>
+<circle cx="516.0" cy="872.0" r="13" fill="#ffffff"/>
+<circle cx="516.0" cy="872.0" r="13" fill="#d98b00" fill-opacity="0.6"/>
+<circle cx="516.0" cy="872.0" r="15.5" fill="none" stroke="#d98b00" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+<text x="516.0" y="876.0" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">40</text>
+<text x="542.0" y="870.0" font-size="13" font-weight="600" fill="#1b1f24" text-anchor="start">Line D1</text>
+<text x="542.0" y="885.0" font-size="10.5" fill="#6b7480" text-anchor="start">GPIO21 · PCM-McASP0 DATA1  · direct line sensor</text>
+<circle cx="31" cy="932" r="7" fill="#e07a1f"/><text x="44" y="936" font-size="12.5" fill="#1b1f24">3.3 V</text>
+<circle cx="100.0" cy="932" r="7" fill="#d13b3b"/><text x="113.0" y="936" font-size="12.5" fill="#1b1f24">5 V</text>
+<circle cx="155.8" cy="932" r="7" fill="#3b3f45"/><text x="168.8" y="936" font-size="12.5" fill="#1b1f24">GND</text>
+<circle cx="211.60000000000002" cy="932" r="7" fill="#2563c9"/><text x="224.60000000000002" y="936" font-size="12.5" fill="#1b1f24">Right wheel (Motor 1)</text>
+<circle cx="373.0" cy="932" r="7" fill="#1f8a4c"/><text x="386.0" y="936" font-size="12.5" fill="#1b1f24">Left wheel (Motor 2)</text>
+<circle cx="534.4" cy="932" r="7" fill="#7a3fc4"/><text x="547.4" y="936" font-size="12.5" fill="#1b1f24">Deneyap UART</text>
+<circle cx="742.0" cy="932" r="7" fill="#b05cc7"/><text x="755.0" y="936" font-size="12.5" fill="#1b1f24">Direct lidar</text>
+<circle cx="31" cy="958" r="7" fill="#d98b00"/><text x="44" y="962" font-size="12.5" fill="#1b1f24">Direct line sensor</text>
+<circle cx="218.79999999999998" cy="958" r="7" fill="#c9ced6"/><text x="231.79999999999998" y="962" font-size="12.5" fill="#1b1f24">Unused</text>
+<text x="24" y="994" font-size="12" fill="#b42318">Deneyap: pins 8/10 (/dev/ttyS3). Direct lidar: pins 18/26 (/dev/ttyS0). TX and RX lines are cross-connected.</text>
+</svg>

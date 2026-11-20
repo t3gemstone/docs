@@ -1,0 +1,340 @@
+---
+title: 'Kurulum'
+description: 'T3 Gemstone O1 üzerine Ubuntu 24.04, ROS 2 Jazzy ve UGV yazılımının kurulumu'
+---
+
+Bu bölümde ROS 2 Jazzy doğrudan T3 Gemstone O1'e kurulur ve UGV çalışma alanı kart üzerinde derlenir. Ardından çizgi
+sensörünü okuyan Deneyap Mini v2 programlanır ve motor PWM hatları için gerekli overlay'ler etkinleştirilir.
+
+Kurulum için gerekenler:
+
+- En az 32 GB kapasiteli microSD kart veya kartın dahili eMMC belleği
+- İnternet bağlantısı (Ethernet veya Wi-Fi)
+- `sudo` yetkili bir kullanıcı
+
+<Note>
+Bu sayfadaki komutlar, Gem Imager'da kullanıcı adı olarak `gemstone` seçildiği varsayılarak yazılmıştır. Farklı bir
+kullanıcı adı seçtiyseniz `/home/gemstone` ifadelerini kendi kullanıcı dizininizle değiştirin.
+</Note>
+
+## 1. İşletim Sistemi Kurulumu
+
+<Steps>
+  <Step title="İmajı yazın">
+    Bilgisayarınıza [Gem Imager](https://t3gemstone.org/tr/software)'ı kurun ve microSD kartı okuyucuyla bilgisayara
+    takın. Gem Imager'da **T3-GEM-O1** modelini, **Ubuntu 24.04 (Noble) Minimal** imajını ve hedef olarak microSD kartı
+    seçin. Özelleştirme ekranında kullanıcı parolasını belirleyin, uzaktan bağlanacaksanız SSH'ı etkinleştirin ve
+    isterseniz Wi-Fi bilgilerini girin. Ardından imajı yazın.
+
+    Ayrıntılı anlatım için [Hızlı Başlangıç](/tr/quickstart) ve [İmaj Yazma Uygulaması](/tr/imager/introduction)
+    sayfalarına bakınız.
+  </Step>
+  <Step title="Kartı başlatın">
+    T3 Gemstone O1 kapalıyken microSD kartı takın ve açılış anahtarlarını **SD card** konumuna getirin. Ardından kartı
+    çalıştırın. Dahili eMMC kullanacaksanız [eMMC'ye imaj yazma](/tr/imager/emmc) adımlarını izleyin.
+  </Step>
+  <Step title="Karta bağlanın">
+    T3 Gemstone O1'i Ethernet veya Wi-Fi üzerinden internete bağlayın. Aynı ağdaki bilgisayardan SSH ile ya da T3 Gemstone O1'e
+    bağlı ekran ve klavyeyle oturum açın. Kartı USB Type-C ile bilgisayara bağladıysanız aşağıdaki komutu
+    kullanabilirsiniz.
+
+    ```bash
+    ssh gemstone@192.168.7.2
+    ```
+
+    Wi-Fi ağı tanıtma ve robotun IP adresini bulma adımları için [Ağ Bağlantısı](/tr/projects/ugv-ros/network)
+    sayfasına bakınız.
+  </Step>
+</Steps>
+
+## 2. UGV Yazılımının Kurulumu
+
+Aşağıdaki komutları T3 Gemstone O1'de, `sudo` yetkili normal kullanıcınızla (root olmadan) sırasıyla çalıştırın. `sudo`
+gerektiren komutlar parolanızı soracaktır.
+
+### 2.1. Depoyu indirin
+
+```bash
+sudo apt update
+sudo apt install -y git curl
+git clone https://github.com/t3gemstone/ugv-ros.git ~/ugv-ros
+```
+
+<Tip>
+Depodaki `scripts/install-native.sh` betiği 2.2–2.6 adımlarını tek seferde uygular. Kullanmak için depoyu indirdikten
+sonra `cd ~/ugv-ros && bash scripts/install-native.sh` komutunu çalıştırın ve
+[Deneyap Mini v2 Yazılımının Yüklenmesi](#3-deneyap-mini-v2-yazılımının-yüklenmesi) adımıyla devam edin.
+</Tip>
+
+### 2.2. ROS 2 apt kaynağını ekleyin
+
+ROS 2 paketleri, ROS'un kendi apt deposundan kurulur. Depoyu tanıtan `ros2-apt-source` paketinin son sürümünü
+indirip kurun.
+
+```bash
+export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F'"' '{print $4}')
+curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.noble_all.deb"
+sudo dpkg -i /tmp/ros2-apt-source.deb
+```
+
+### 2.3. ROS 2 Jazzy ve geliştirme araçlarını kurun
+
+```bash
+sudo apt update
+sudo apt install -y --no-install-recommends ros-jazzy-ros-base python3-rosdep \
+  python3-vcstool python3-colcon-common-extensions python3-venv python3-pip \
+  build-essential cmake git curl
+```
+
+### 2.4. USB lidar sürücüsünü (CP210x) kurun
+
+Lidarın USB adaptörü **CP210x** USB-seri sürücüsünü kullanır. Minimal imajda bu modül bulunmayabilir; bu durumda
+adaptör `lsusb` çıktısında görünür ancak `/dev/ttyUSB0` oluşmaz. Önce modülün yüklü olup olmadığını kontrol edin.
+
+```bash
+modinfo cp210x
+```
+
+Komut modül bilgilerini yazdırıyorsa sonraki adıma geçebilirsiniz. `Module cp210x not found` hatası alırsanız
+sürücüyü T3 apt deposundan kurun. Bu paket yalnızca sürücü modülünü ekler, çekirdeği değiştirmez.
+
+```bash
+sudo apt install -y --no-install-recommends kernel-module-cp210x-$(uname -r)
+sudo depmod -a
+```
+
+Son olarak modülü yükleyin.
+
+```bash
+sudo modprobe cp210x
+```
+
+<Note>
+Çalışan çekirdek sürümüne uygun `kernel-module-cp210x` paketi bulunamazsa USB lidar bağlantısı çalışmaz. Lidarı
+doğrudan T3 Gemstone O1'in GPIO pinlerine bağlayarak kullanmaya devam edebilirsiniz.
+[Lidar bağlantısı](/tr/projects/ugv-ros/hardware#4-lidar-bağlantısı)
+</Note>
+
+### 2.5. libgpiod v2 Python ortamını oluşturun
+
+Enkoderlerin yüksek devirde sayım kaçırmadan okunabilmesi için **libgpiod v2** Python bağlaması gerekir. Ubuntu 24.04
+apt deposunda yalnızca v1.6 sürümü bulunduğundan v2, sistem Python'una dokunmadan ayrı bir sanal ortama kurulur.
+
+```bash
+python3 -m venv --system-site-packages ~/ugv-gpio-venv
+~/ugv-gpio-venv/bin/pip install 'gpiod>=2.2,<3'
+```
+
+### 2.6. Bağımlılıkları kurun ve çalışma alanını derleyin
+
+Kaynaktan derlenen lidar sürücüsünü (`sllidar_ros2`) indirin.
+
+```bash
+cd ~/ugv-ros
+vcs import src < repos.yml
+```
+
+`rosdep` aracını başlatın ve paket listesini güncelleyin. `rosdep init` yalnızca ilk kurulumda gereklidir;
+`default sources list file already exists` hatası alırsanız bu komutu atlayabilirsiniz.
+
+```bash
+sudo rosdep init
+rosdep update --rosdistro jazzy
+```
+
+Tüm ROS bağımlılıklarını (slam_toolbox, Nav2, robot_localization, rosbridge vb.) kurun.
+
+```bash
+rosdep install --from-paths src --ignore-src --rosdistro jazzy -y
+```
+
+Çalışma alanını derleyin. Kartın belleğini aşmamak için paketlerin sırayla ve en fazla iki iş parçacığıyla derlenmesi önerilir.
+
+```bash
+source /opt/ros/jazzy/setup.bash
+MAKEFLAGS=-j2 colcon build --symlink-install --executor sequential \
+  --cmake-args -DBUILD_TESTING=OFF
+```
+
+<Info>
+Bağımlılıkların kurulumu ve derleme, internet hızına bağlı olarak 20–40 dakika sürebilir.
+</Info>
+
+## 3. Deneyap Mini v2 Yazılımının Yüklenmesi
+
+[`deneyap_line.ino`](https://github.com/t3gemstone/ugv-ros/blob/main/firmware/deneyap_line/deneyap_line.ino) yazılımı
+çizgi sensörünün sekiz analog çıkışını A0–A7 üzerinden okur ve milivolt değerlerini saniyede yaklaşık 50 kez UART
+üzerinden T3 Gemstone O1'e gönderir. Aynı JSON satırları USB seri monitörde de görülür. Motor kontrolü yapmaz; siyah/beyaz
+kalibrasyonu T3 Gemstone O1'de saklanır.
+
+<Warning>
+Mini v2'nin 5V pini USB besleme hattına bağlıdır. Mini v2'yi bilgisayara USB ile bağlamadan önce T3 Gemstone O1'den gelen
+5 V, TX ve RX kablolarını mutlaka ayırın.
+</Warning>
+
+<Steps>
+  <Step title="Deneyap Kart IDE'yi kurun">
+    Bilgisayarınıza **Deneyap Kart IDE**'yi kurun. İlk açılışta **Geliştirme Ortamı Hazırlanıyor** ekranındaki
+    indirmelerin tamamlanmasını bekleyin.
+    [Deneyap Kart IDE kurulum kılavuzu](https://docs.deneyapkart.org/tr/IDE/Deneyap-Kart-IDE-Setup)
+  </Step>
+  <Step title="Kartı bilgisayara bağlayın">
+    Gücü kapatıp T3 Gemstone O1'den gelen 5 V, TX ve RX kablolarını ayırın. Mini v2'yi veri aktarabilen bir USB kabloyla
+    bilgisayara bağlayın.
+  </Step>
+  <Step title="Yazılımı açın ve kartı seçin">
+    Depodaki `firmware/deneyap_line/deneyap_line.ino` dosyasını **Ayarlar → Dosya Aç** ile açın. Üst araç çubuğunda
+    **Deneyap Mini v2** kartını seçin.
+  </Step>
+  <Step title="Derleyin ve yükleyin">
+    **Araçlar** menüsünde **Upload Mode** ayarını **Internal USB**, **USB CDC On Boot** ayarını **Enabled** yapın.
+    Mini v2'nin portunu seçin ve **Derle ve Yükle**'ye tıklayın.
+    [Deneyap Kart IDE arayüz kılavuzu](https://docs.deneyapkart.org/tr/IDE/Deneyap-Kart-IDE-Introduction)
+
+    Port görünmüyorsa **BUT** tuşunu basılı tutarken **RES** tuşuna basıp bırakın, ardından **BUT** tuşunu bırakın.
+    **Portları Yenile** düğmesine tıklayın, yükleme modunda görünen portu seçip yeniden deneyin.
+    [Deneyap Mini v2 sorun giderme kılavuzu](https://deneyapkart.org/docs/sorun-giderme-dymv2)
+  </Step>
+  <Step title="Çıktıyı kontrol edin">
+    Yükleme tamamlanınca **Seri Monitör** sekmesinde kartın portunu ve **115200 baud** hızını seçip **Bağlan**'a
+    tıklayın. Aşağıdakine benzer JSON satırları görmelisiniz. Yükleme sonrası yazılım başlamazsa **RES** tuşuna bir kez
+    basın.
+
+    ```json
+    {"ugv_adc":1,"seq":123,"mv":[1200,1210,1220,1230,1240,1250,1260,1270]}
+    ```
+
+    Örnekteki değerler temsilidir; sensör siyah ve beyaz yüzeyler üzerinde gezdirildiğinde değerler değişmelidir.
+  </Step>
+</Steps>
+
+<Accordion title="Arduino CLI ile derleme">
+  Mini v2 için doğrulanmış derleme hedefi aşağıdaki gibidir. Komutu depo dizininde çalıştırın.
+
+  ```bash
+  arduino-cli compile --fqbn deneyap:esp32:deneyapminiv2:CDCOnBoot=cdc,UploadMode=default firmware/deneyap_line
+  ```
+
+  Aynı kaynak kod Deneyap Kart 1A v2 için de kullanılabilir. Bu durumda **Deneyap Kart 1A v2** seçilerek yeniden
+  derlenmeli ve o kartın A0–A7/TX/RX etiketlerine göre bağlanmalıdır. Pin tanımları kart paketinden gelir; GPIO
+  numaralarını kaynak kodda elle değiştirmeyin.
+</Accordion>
+
+## 4. PWM ve UART Ayarları (Overlay)
+
+Motor sürücüsünün ENA/ENB hatları için kullanılan PWM kanalları, `/boot/uEnv.txt` dosyasındaki `overlays=` satırına
+eklenen overlay'lerle etkinleştirilir. Overlay'ler hakkında ayrıntılı bilgi için [PWM](/tr/boards/o1/peripherals/pwm) ve
+[Device Tree](/tr/boards/o1/peripherals/introduction#3-device-tree) sayfalarına bakınız.
+
+Lidarın bağlantı şekline göre ilgili sekmedeki adımları izleyin. Bağlantı seçenekleri
+[Lidar bağlantısı](/tr/projects/ugv-ros/hardware#4-lidar-bağlantısı) bölümünde açıklanmıştır.
+
+<Tabs>
+  <Tab title="USB lidar (varsayılan)">
+    `/boot/uEnv.txt` dosyasını açın.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    `overlays=` satırında `spidev0-2cs` yerine `spidev0-1cs` yazın ve diğer overlay'leri silmeden satırın sonuna
+    boşluk bırakarak ENA ve ENB için PWM overlay'lerini ekleyin. Satır aşağıdakine benzer görünmelidir.
+
+    ```
+    overlays=k3-am67a-t3-gem-o1-spidev0-1cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo
+    ```
+
+    | Overlay | Görev |
+    | --- | --- |
+    | `k3-am67a-t3-gem-o1-spidev0-1cs.dtbo` | `spidev0-2cs` yerine; pin 26'yı GPIO lidar için boş bırakır |
+    | `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` | ENA (sağ teker), pin 32 |
+    | `k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo` | ENB (sol teker), pin 33 |
+  </Tab>
+  <Tab title="GPIO lidar">
+    Lidar doğrudan 40 pinli konnektöre bağlanacaksa ikinci bir UART (`/dev/ttyS0`, pin 18/26) ve lidar motoru için ek
+    bir PWM kanalı gerekir. `uart-ttys0` overlay'i tek başına çalışmaz: kart üstündeki Bluetooth'un UART'ı aynı pinleri
+    tuttuğu için açılışta `pin PIN10 already requested by 2860000.serial` hatası oluşur ve `/dev/ttyS0` görünse de
+    çalışmaz. Bu nedenle önce Bluetooth UART'ını kapatan overlay derlenip kurulur. Wi-Fi aynı çipte olmasına rağmen
+    SDIO üzerinden bağlı olduğu için etkilenmez.
+
+    Device tree derleyicisini kurun ve depodaki overlay'i derleyip `/boot/overlays` dizinine kopyalayın.
+
+    ```bash
+    sudo apt install -y device-tree-compiler
+    cd ~/ugv-ros
+    dtc -@ -I dts -O dtb -o /tmp/k3-am67a-t3-gem-o1-ugv-bt-off.dtbo \
+        boards/t3-gem-o1/k3-am67a-t3-gem-o1-ugv-bt-off.dts
+    sudo cp /tmp/k3-am67a-t3-gem-o1-ugv-bt-off.dtbo /boot/overlays/
+    ```
+
+    `/boot/uEnv.txt` dosyasını açın.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    `overlays=` satırında `spidev0-2cs` yerine `spidev0-1cs` yazın ve aşağıdaki overlay'leri ekleyin. `ugv-bt-off`,
+    `uart-ttys0`'dan önce yazılmalıdır.
+
+    ```
+    overlays=k3-am67a-t3-gem-o1-spidev0-1cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo k3-am67a-t3-gem-o1-ugv-bt-off.dtbo k3-am67a-t3-gem-o1-uart-ttys0.dtbo
+    ```
+
+    | Overlay | Görev |
+    | --- | --- |
+    | `k3-am67a-t3-gem-o1-spidev0-1cs.dtbo` | `spidev0-2cs` yerine; pin 26'yı lidara bırakır |
+    | `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` | ENA (sağ teker), pin 32 |
+    | `k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo` | ENB (sol teker), pin 33 |
+    | `k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo` | Lidar motoru (MOTOCTL), pin 12 |
+    | `k3-am67a-t3-gem-o1-ugv-bt-off.dtbo` | Bluetooth UART'ını kapatır |
+    | `k3-am67a-t3-gem-o1-uart-ttys0.dtbo` | Lidar UART'ı (`/dev/ttyS0`), pin 18/26 |
+
+    <Note>
+    Pin 26 kartta aynı zamanda SPI CS2'ye bağlıdır. `spidev0-2cs` açıkken CS2 bu hattı sürer ve lidarın TX hattıyla
+    çakışır. `spidev0-1cs` aynı overlay'in yalnızca CS2'yi bırakan sürümüdür.
+    </Note>
+  </Tab>
+</Tabs>
+
+Dosyayı kaydedip kartı yeniden başlatın.
+
+```bash
+sudo reboot
+```
+
+Kart açıldıktan sonra PWM çiplerinin ve UART aygıtlarının oluştuğunu kontrol edin.
+
+```bash
+ls -l /sys/class/pwm/
+ls /dev/ttyS0 /dev/ttyS3
+```
+
+`/dev/ttyS3` Deneyap Mini v2'nin, `/dev/ttyS0` ise GPIO lidarın UART'ıdır. USB lidar kullanıyorsanız `/dev/ttyS0`
+bulunmaması normaldir. GPIO lidar kullanıyorsanız `dmesg | grep ttyS0` çıktısında `2b300000.serial: ttyS0` satırı
+görünmelidir.
+
+<Tip>
+`pwmchipN` numaraları yüklü overlay sayısına göre değişir. Bu nedenle UGV yapılandırmasında PWM kanalları numara ile
+değil modül adı ile (`ecap0`, `epwm1:1`) belirtilir. Hangi çipin hangi modüle karşılık geldiği
+[Saha Testi](/tr/projects/ugv-ros/field-test#1-hazırlık) sırasında `hw_check pins` komutuyla listelenir.
+</Tip>
+
+### Etkinleştirilmemesi gereken overlay'ler
+
+Aşağıdaki overlay'ler UGV'nın kullandığı GPIO pinlerini başka işlevlere atadığı için etkinleştirilmemelidir.
+
+| Overlay | Çakışma |
+| --- | --- |
+| `uart-ttys6` | GPIO4 (enkoder), GPIO17 (IN2); ayrıca Bluetooth'u kapatır |
+| `spidev0-2cs` | GPIO7 (pin 26, lidar UART RX). Yerine `spidev0-1cs` kullanın |
+| `pwm-epwm0-gpio5`, `pwm-epwm0-gpio5-gpio14` | GPIO5 (enkoder); ikincisi Deneyap UART TX hattını (pin 8) da kapatır |
+| `pwm-ecap1-gpio16` | GPIO16 (çizgi sensörü D5, yalnızca doğrudan GPIO bağlantısında) |
+| `pwm-epwm1-gpio6`, `pwm-epwm1-gpio6-gpio13` | GPIO6 (çizgi sensörü D2, yalnızca doğrudan GPIO bağlantısında) |
+
+<Note>
+Aynı epwm modülünün iki kanalı (GPIO6 ve GPIO13) aynı periyodu paylaşmak zorundadır. GPIO6 PWM olarak
+açılmadığından ENB istediği periyodu alabilir. Çakışma olursa sürücü kardeş kanalın periyoduna uyar ve günlüğe uyarı
+yazar.
+</Note>
+
+Kurulum tamamlandıktan sonra [Donanım ve Kablolama](/tr/projects/ugv-ros/hardware) sayfasındaki bağlantıları yapın.
