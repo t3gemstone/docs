@@ -1,0 +1,125 @@
+---
+title: 'Pil ve Kullanım Güvenliği'
+description: 'Li-Po pil kullanımı, şarj, taşıma ve robotla güvenli çalışma kuralları'
+---
+
+Robot 3S Li-Po pil (11,1 V nominal, dolu 12,6 V, 4200 mAh, 40C) ile çalışır. Li-Po piller hafif ve güçlüdür ancak
+yanlış kullanıldığında şişebilir, alev alabilir ve söndürülmeleri zordur. Bu sayfadaki kurallar robotla çalışan
+herkes içindir.
+
+## 1. Pil: Zorunlu Kurallar
+
+<Warning>
+Robotun yazılımı pil gerilimini ölçmez. Pili aşırı deşarjdan koruyan tek önlem düşük gerilim alarmıdır.
+</Warning>
+
+- **Her pile düşük gerilim alarmı (low battery alarm / Li-Po checker) takın.** Alarm pilin balans soketine takılır,
+  her hücreyi ayrı izler ve ayarlanan eşiğin altında öter. Eşiği **3,5 V/hücre** (3S için yaklaşık 10,5 V) olarak
+  ayarlayın. Alarm ötünce robotu hemen durdurun ve pili çıkarın. Li-Po 3,0 V/hücrenin altına indiğinde kalıcı hasar
+  görür ve bir sonraki şarjda şişebilir.
+- **Li-Po pili taşırken ve şarj ederken Li-Po güvenlik çantasında (safe bag) tutun.** Çanta yangını durdurmaz ancak
+  alevi içinde tutar ve çevreye yayılmasını geciktirir. Çantaya tek pil koyun ve fermuarını kapatın.
+- **Pili, kullandığınız pilin üreticisinin dokümantasyonuna (etiket, veri sayfası, kullanım kılavuzu) uygun şekilde
+  şarj edin.** Şarj akımı, şarj gerilimi, sıcaklık aralığı ve saklama koşulları pilden pile değişir; üreticinin
+  değerleri bu sayfadaki genel değerlerden önce gelir. Şarj cihazının kılavuzundaki talimatlara da uyun.
+- **Yalnızca balanslı Li-Po şarj cihazıyla şarj edin** (balans soketi takılı, "LiPo Balance" modu, hücre sayısı 3S).
+  Şarj akımı en fazla 1C, yani 4200 mAh pil için **4,2 A** olmalıdır; daha düşük akım (ör. 2 A) pil ömrü için daha
+  iyidir. Pilin üzerindeki **40C** değeri deşarj değeridir (en fazla yaklaşık 168 A çekilebilir), şarj akımı
+  değildir.
+- **Şarjı hiçbir zaman gözetimsiz bırakmayın** ve gece boyu şarjda bırakmayın. Yanmaz bir zeminde (seramik, beton,
+  metal tepsi) ve yanıcı malzemelerden uzakta şarj edin.
+- **Şişmiş, ezilmiş, delinmiş, kablosu soyulmuş ya da ısınan pili kullanmayın ve şarj etmeyin.** Pili güvenlik
+  çantasına koyup dışarıda, yanmaz bir yerde bekletin ve pil geri dönüşüm noktasına teslim edin.
+
+## 2. Pil: Günlük Kullanım
+
+| Durum | Hücre başına | 3S toplam |
+| --- | --- | --- |
+| Tam dolu | 4,20 V | 12,6 V |
+| Saklama | 3,80–3,85 V | 11,4–11,6 V |
+| Alarm eşiği (önerilen) | 3,50 V | 10,5 V |
+| Kesinlikle altına inmeyin | 3,00 V | 9,0 V |
+
+- Pili bir haftadan uzun süre kullanmayacaksanız şarj cihazının **Storage** moduyla saklama gerilimine getirin. Pili
+  tam dolu ya da boş saklamak ömrünü kısaltır.
+- Sürüşten hemen sonra pil ılıktır; soğumadan şarj etmeyin.
+- Hücreler arasında 0,1 V'tan fazla fark varsa balanslı şarjla eşitleyin. Fark sürekli büyüyorsa pil yaşlanmıştır.
+- Saha ayarlarını (`min_duty`, `max_wheel_speed`) **dolu pille** yapın; zayıf pilde motorlar aynı duty değerinde daha
+  yavaş döner. [Saha Testi](/tr/projects/ugv-ros/field-test#5-hız-aralığı)
+- Soğukta (0 °C altı) pil kapasitesi düşer ve alarm erken öter. Soğuk pili şarj etmeyin.
+
+## 3. Taşıma
+
+- Pili robottan **çıkararak** ve güvenlik çantası içinde taşıyın. Robotun içinde taşınan pilin konnektörü kısa devre
+  yapabilir.
+- Konnektörü (XT60 vb.) açıkta bırakmayın; uç kapağı takın ya da bantlayın. Pili anahtar, bozuk para ve aletlerle aynı
+  cebe koymayın.
+- **Uçakta** Li-Po pil yalnızca kabin bagajında taşınabilir, bagaja verilemez. 100 Wh altındaki piller için genellikle
+  izin gerekmez (bu pil: 11,1 V × 4,2 Ah ≈ 47 Wh). Her pil ayrı güvenlik çantasında ve uçları yalıtılmış olmalıdır;
+  havayolunun kurallarını kontrol edin.
+- Pili güneş altında kalan araçta bırakmayın.
+
+## 4. Yangın Durumunda
+
+- Pili ve robotu yanıcı malzemelerden uzaklaştırabiliyorsanız uzaklaştırın. Dumanı solumayın; Li-Po dumanı
+  zehirlidir.
+- Küçük Li-Po yangınlarında en etkili yöntem **bol suyla soğutmak** ya da kumla boğmaktır; tozlu (ABC) yangın
+  söndürücü de kullanılabilir. Yangın söndükten sonra pil yeniden alev alabilir; pili saatlerce açık havada, bir kova
+  içinde bekletin.
+
+## 5. Robotu Kullanırken
+
+- **Pili takmadan önce** kabloları kontrol edin: kutuplar (kırmızı +, siyah −), gevşek ya da açıkta kalan uçlar,
+  L298N vida klemenslerinde taşan tel uçları. Ters bağlanan pil L298N'i ve T3 Gemstone O1'i yakar.
+- **Kablo değiştirirken pili çıkarın.** Pil takılıyken pin değiştirmek GPIO'lara zarar verebilir.
+- Pil hattında bir **ana anahtar ve sigorta** (ör. 10 A bıçak sigorta) bulunması önerilir. 40C pil kısa devrede
+  150 A'in üzerinde akım verebilir; sigorta, kablo ve L298N yanmadan önce atar.
+- **T3 Gemstone O1'in güç besleme girişini 5–12 V aralığında besleyin.** Tam dolu 3S pil 12,6 V'a ulaşır. T3 Gemstone O1'i bu pilden
+  beslemek için güç besleme girişine, kartın akım ihtiyacını karşılayan uygun bir DC regülatör üzerinden girin.
+  [T3 Gemstone O1 teknik özellikleri](/tr/boards/o1/introduction)
+- **Pili Type-C girişine asla bağlamayın.** Type-C girişi 5–9 V içindir; bu hattaki eFuse yaklaşık 10,2 V'ta keser.
+- Pil takılıyken Type-C de bağlanabilir. Kart iki eFuse ile öncelikli güç seçici olarak tasarlanmıştır; Type-C'de
+  geçerli güç varsa pil yolunu kendisi kapatır. Bu durumda kart USB'den, motorlar pilden beslenir.
+- Pil girişinin düşük gerilim kesmesi yaklaşık 4,0 V'ta açar, 3,6 V'ta kapatır; yani kart **pili aşırı deşarjdan
+  korumaz**. 3S pili 10,5 V altına indirmemek düşük gerilim alarmının görevidir.
+- Pilden T3 Gemstone O1'e ve L298N'e **ayrı kablolarla** gidin (yıldız bağlantı); birinin klemensinden diğerine köprü
+  yapmayın. L298N besleme girişine 470–1000 µF elektrolitik kondansatör ekleyin; bu kondansatör motorların ani
+  durmasında besleme hattına dönen gerilimi bastırır. Batarya, L298N, T3 Gemstone O1 ve enkoder **GND'leri ortaktır**.
+- İlk testleri **tekerlekler havada** (robotu bir kutunun üzerine koyarak) yapın. Böylece yazılım ayarı yanlış olsa
+  bile robot masadan düşmez.
+- Robot hareket ederken ellerinizi tekerleklerden uzak tutun ve web arayüzündeki **EMERGENCY STOP** düğmesinin yerini
+  bilin. Arayüz bağlantısı koparsa robot `/cmd_vel` zaman aşımıyla kendiliğinden durur; ancak buna güvenip robotu
+  masa kenarında sürmeyin.
+- Lidar freni (`safety.enabled`) yalnızca lidarın gördüğü yükseklikteki engelleri algılar; alçak cisimleri, merdiven
+  boşluklarını ve masa kenarlarını görmez.
+- L298N yük altında ısınır; soğutucusuna dokunmayın ve havalandırmasını kapatmayın.
+- Lidarın lazeri Class 1'dir (göze zararsız kabul edilir), yine de dönen kafaya uzun süre yakından bakmayın.
+- Robotu suya, ıslak zemine, tozlu ve metal talaşlı yüzeylere sokmayın.
+
+## 6. Kapatma
+
+Pili ya da USB-C kablosunu doğrudan çekmek dosya sistemini bozabilir. Önce işletim sistemini kapatın.
+
+```bash
+ssh -t gemstone@<robot-ip> sudo poweroff
+```
+
+Kartın ışıkları söndükten sonra (yaklaşık 15 saniye) pili çıkarın. Kart pilden beslendiği için `poweroff` komutundan
+sonra bile pilden akım çekmeye devam eder. Pili robotta takılı bırakmayın; birkaç saat içinde 3,0 V/hücrenin altına
+inip kalıcı hasar görebilir.
+
+## 7. Kontrol Listesi
+
+Her çalışmadan önce:
+
+- Pil şişmemiş, kablosu sağlam ve gerilimi 11,4 V'un üzerinde
+- Düşük gerilim alarmı balans soketine takılı ve eşiği 3,5 V
+- Kablolar ve kutuplar kontrol edildi, pil en son takıldı
+- Acil durdurma düğmesi ekranda açık
+- İlk hareket tekerlekler havadayken denendi
+
+Çalışma bittikten sonra:
+
+- `sudo poweroff` çalıştırıldı, ışıklar söndükten sonra pil çıkarıldı
+- Pil soğuduktan sonra güvenlik çantası içinde, üreticinin talimatlarına göre şarj edildi ya da saklama
+  gerilimine getirildi

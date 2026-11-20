@@ -1,0 +1,131 @@
+---
+title: 'Battery and Operating Safety'
+description: 'Rules for Li-Po battery use, charging, transport and safe operation of the robot'
+---
+
+The robot runs on a 3S Li-Po battery (11.1 V nominal, 12.6 V fully charged, 4200 mAh, 40C). Li-Po batteries are light
+and powerful, but when mishandled they can swell, catch fire and are hard to extinguish. The rules on this page apply
+to everyone who works with the robot.
+
+## 1. Battery: Mandatory Rules
+
+<Warning>
+The robot's software does not measure the battery voltage. The only protection against over-discharging the battery is
+the low-voltage alarm.
+</Warning>
+
+- **Attach a low-voltage alarm (low battery alarm / Li-Po checker) to every battery.** The alarm plugs into the
+  battery's balance connector, monitors each cell separately and beeps below the configured threshold. Set the
+  threshold to **3.5 V/cell** (about 10.5 V for 3S). When the alarm beeps, stop the robot immediately and remove the
+  battery. A Li-Po cell is permanently damaged below 3.0 V and may swell on the next charge.
+- **Keep the Li-Po battery in a Li-Po safety bag (safe bag) while transporting and charging it.** The bag does not stop
+  a fire, but it contains the flames and slows their spread. Put only one battery in the bag and close the zipper.
+- **Charge the battery according to the documentation of its manufacturer (label, datasheet, user manual).** Charge
+  current, charge voltage, temperature range and storage conditions vary between batteries; the manufacturer's values
+  take precedence over the general values on this page. Also follow the instructions in the charger's manual.
+- **Charge only with a balancing Li-Po charger** (balance connector attached, "LiPo Balance" mode, cell count 3S). The
+  charge current must be at most 1C, i.e. **4.2 A** for a 4200 mAh battery; a lower current (e.g. 2 A) is better for
+  battery life. The **40C** rating on the battery is the discharge rating (up to about 168 A can be drawn), not the
+  charge current.
+- **Never leave charging unattended** and never leave a battery charging overnight. Charge on a non-flammable surface
+  (ceramic, concrete, metal tray) and away from flammable materials.
+- **Do not use or charge a battery that is swollen, crushed, punctured, has damaged wires or is getting hot.** Put it
+  in a safety bag, leave it outdoors in a non-flammable place and take it to a battery recycling point.
+
+## 2. Battery: Daily Use
+
+| State | Per cell | 3S total |
+| --- | --- | --- |
+| Fully charged | 4.20 V | 12.6 V |
+| Storage | 3.80–3.85 V | 11.4–11.6 V |
+| Alarm threshold (recommended) | 3.50 V | 10.5 V |
+| Never go below | 3.00 V | 9.0 V |
+
+- If you will not use the battery for more than a week, bring it to storage voltage with the charger's **Storage**
+  mode. Storing a battery fully charged or empty shortens its life.
+- The battery is warm right after driving; do not charge it before it cools down.
+- If there is more than 0.1 V difference between cells, equalize them with a balance charge. If the difference keeps
+  growing, the battery is aging.
+- Make field adjustments (`min_duty`, `max_wheel_speed`) with a **fully charged battery**; with a weak battery the motors
+  turn slower at the same duty value. [Field Test](/en/projects/ugv-ros/field-test#5-speed-range)
+- In the cold (below 0 °C) battery capacity drops and the alarm goes off early. Do not charge a cold battery.
+
+## 3. Transport
+
+- Transport the battery **removed** from the robot and inside a safety bag. A battery carried inside the robot may
+  short-circuit at its connector.
+- Do not leave the connector (XT60, etc.) exposed; fit an end cap or tape it. Do not put the battery in the same pocket
+  as keys, coins or tools.
+- **On airplanes**, Li-Po batteries may only be carried in cabin baggage, not in checked baggage. Batteries below 100 Wh
+  usually do not require approval (this battery: 11.1 V × 4.2 Ah ≈ 47 Wh). Each battery must be in a separate safety
+  bag with its terminals insulated; check the airline's rules.
+- Do not leave the battery in a vehicle parked in the sun.
+
+## 4. In Case of Fire
+
+- If you can, move the battery and the robot away from flammable materials. Do not inhale the smoke; Li-Po smoke is
+  toxic.
+- For small Li-Po fires, the most effective method is **cooling with plenty of water** or smothering with sand; a
+  dry-powder (ABC) fire extinguisher can also be used. The battery may reignite after the fire is out; leave it outdoors
+  in a bucket for several hours.
+
+## 5. While Operating the Robot
+
+- **Before connecting the battery**, check the wiring: polarity (red +, black −), loose or exposed ends, stray wire
+  strands at the L298N screw terminals. A battery connected in reverse will burn the L298N and T3 Gemstone O1.
+- **Remove the battery when changing wires.** Changing pins while the battery is connected can damage the GPIOs.
+- A **main switch and fuse** (e.g. a 10 A blade fuse) on the battery line is recommended. A 40C battery can deliver more
+  than 150 A in a short circuit; the fuse blows before the wiring and the L298N burn.
+- **Supply T3 Gemstone O1's DC power input within the 5–12 V range.** A fully charged 3S battery reaches 12.6 V. To power
+  T3 Gemstone O1 from this battery, feed the power input through a suitable DC regulator that can supply the board's current requirement.
+  [T3 Gemstone O1 specifications](/en/boards/o1/introduction)
+- **Never connect the battery to the Type-C input.** The Type-C input is for 5–9 V; the eFuse on this line cuts off at
+  about 10.2 V.
+- The Type-C input can be connected while the battery is attached. The board is designed as a priority power selector
+  with two eFuses; if valid power is present on Type-C, it disables the battery path by itself. In this case the board
+  is powered from USB and the motors from the battery.
+- The battery input's undervoltage cutoff turns on at about 4.0 V and off at 3.6 V; in other words, the board **does not
+  protect the battery from over-discharge**. Keeping the 3S battery above 10.5 V is the job of the low-voltage alarm.
+- Run **separate wires** from the battery to T3 Gemstone O1 and to the L298N (star connection); do not bridge from one
+  terminal to the other. Add a 470–1000 µF electrolytic capacitor at the L298N supply input; it suppresses the voltage
+  fed back into the supply line when the motors stop suddenly. The battery, L298N, T3 Gemstone O1 and encoder **GNDs are
+  common**.
+- Run the first tests with the **wheels in the air** (by placing the robot on a box). This way, even if a software
+  setting is wrong, the robot will not fall off the table.
+- Keep your hands away from the wheels while the robot is moving, and know where the **EMERGENCY STOP**
+  button is in the web interface. If the interface connection drops, the robot stops by itself due to the `/cmd_vel`
+  timeout; however, do not rely on this to drive the robot near the edge of a table.
+- The lidar brake (`safety.enabled`) only detects obstacles at the height the lidar sees; it does not see low objects,
+  stairwells or table edges.
+- The L298N heats up under load; do not touch its heat sink or block its ventilation.
+- The lidar's laser is Class 1 (considered eye-safe), but still do not stare at the spinning head from close up for a
+  long time.
+- Do not drive the robot into water, onto wet floors, or over dusty surfaces or surfaces with metal shavings.
+
+## 6. Shutting Down
+
+Pulling the battery or the USB-C cable directly can corrupt the file system. Shut down the operating system first.
+
+```bash
+ssh -t gemstone@<robot-ip> sudo poweroff
+```
+
+Remove the battery after the board's lights go off (about 15 seconds). Since the board is powered from the battery, it
+keeps drawing current from the battery even after `poweroff`. Do not leave the battery connected to the robot; within a
+few hours it can drop below 3.0 V/cell and be permanently damaged.
+
+## 7. Checklist
+
+Before each session:
+
+- Battery is not swollen, its wires are intact and its voltage is above 11.4 V
+- Low-voltage alarm is attached to the balance connector and its threshold is 3.5 V
+- Wiring and polarity checked, battery connected last
+- Emergency stop button is open on the screen
+- First movement tested with the wheels in the air
+
+After the session:
+
+- `sudo poweroff` executed, battery removed after the lights went off
+- After cooling down, battery charged in a safety bag according to the manufacturer's instructions, or brought to
+  storage voltage

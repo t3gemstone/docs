@@ -1,0 +1,322 @@
+---
+title: 'Kullanım'
+description: 'UGV robotunun başlatılması, web arayüzü, kalibrasyon, haritalama ve otomatik başlatma'
+---
+
+<Note>
+Bu sayfadaki komutlar, Gem Imager'da kullanıcı adı olarak `gemstone` seçildiği varsayılarak yazılmıştır. Farklı bir
+kullanıcı adı seçtiyseniz `/home/gemstone` ifadelerini kendi kullanıcı dizininizle değiştirin.
+</Note>
+
+## 1. Robotu Başlatma
+
+Robot yazılımı GPIO ve PWM erişimi için root yetkisiyle çalıştırılır. T3 Gemstone O1'de root kabuğuna geçin.
+
+```bash
+sudo -i
+```
+
+ROS ortamını ve libgpiod v2 Python yolunu yükleyin.
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source /home/gemstone/ugv-ros/install/setup.bash
+export PYTHONPATH=/home/gemstone/ugv-gpio-venv/lib/python3.12/site-packages:$PYTHONPATH
+```
+
+Robotun `ROS_DOMAIN_ID` değerini belirleyin. Aynı ağdaki her robota farklı bir değer verin.
+
+```bash
+export ROS_DOMAIN_ID=1
+```
+
+Robotu başlatın. Robotu durdurmak için `Ctrl+C` tuşlarını kullanın.
+
+```bash
+ros2 launch ugv_bringup robot.launch.py
+```
+
+<Warning>
+[Otomatik başlatma servisi](#5-açılışta-otomatik-başlatma) kuruluysa robotu elle başlatmadan önce
+`sudo systemctl stop ugv` komutuyla servisi durdurun. Servis çalışırken ikinci bir `ros2 launch` başlatmayın.
+</Warning>
+
+### 1.1. Başlatma argümanları
+
+Varsayılan başlatma tam robotu haritalama modunda çalıştırır. Bileşenleri açıp kapatmak için komutun sonuna
+`argüman:=değer` biçiminde argümanlar eklenebilir.
+
+| Argüman | Değerler | Açıklama |
+| --- | --- | --- |
+| `backend` | `gpiod` \| `mock` | `mock`: motor ve enkoderleri benzetir; IMU ve lidar kapalıdır |
+| `hardware` | `<yaml>` | Pin ve donanım dosyası (varsayılan `config/hardware.yaml`) |
+| `imu` | `true` \| `false` | ICM-20948 IMU |
+| `fusion` | `true` \| `false` | EKF (teker + IMU) odometri TF'ini yayınlar; `false` ise TF'i `ugv_base_node` yayınlar |
+| `lidar` | `true` \| `false` | RPLIDAR A1 |
+| `lidar_source` | boş \| `usb` \| `gpio` | Boşsa arayüzde seçilip kaydedilen, o da yoksa `hardware.yaml`'daki (USB) bağlantı kullanılır |
+| `lidar_port` | boş | Lidar seri portunu elle verir (ör. `/dev/ttyUSB1`) |
+| `line` | `true` \| `false` | Çizgi sensörü ve çizgi izleme |
+| `slam` | `true` \| `false` | slam_toolbox ve harita kaydetme servisi |
+| `slam_mode` | `mapping` \| `localization` | Haritalama veya kayıtlı haritada konumlandırma |
+| `map` | `<yol>` | `localization` için uzantısız harita yolu |
+| `nav` | `true` \| `false` | Nav2 (varsayılan kapalı) |
+| `gcs` | `true` \| `false` | rosbridge ve web arayüzü |
+
+Örneğin çizgi sensörü olmadan başlatmak için:
+
+```bash
+ros2 launch ugv_bringup robot.launch.py line:=false
+```
+
+## 2. Web Arayüzüne Bağlanma
+
+<Steps>
+  <Step title="Robotun IP adresini öğrenin">
+    T3 Gemstone O1 terminalinde robotun yerel ağdaki IP adresini öğrenin.
+
+    ```bash
+    hostname -I
+    ```
+  </Step>
+  <Step title="Arayüzü açın">
+    Aynı ağa bağlı bilgisayarda tarayıcıyı açın ve `http://<robot-ip>:8000` adresine gidin. Örneğin robotun IP adresi
+    `192.168.1.42` ise adres `http://192.168.1.42:8000` olur.
+  </Step>
+  <Step title="Bağlantıyı kontrol edin">
+    Sağ üstteki bağlantı göstergesi yeşile döndüğünde arayüz hazırdır. Gösterge kırmızı kalırsa **robot address**
+    alanına T3 Gemstone O1'in IP adresini yazıp **Connect** düğmesine tıklayın. Sayfa `8000`, ROS bağlantısı ise `9090` portunu
+    kullanır.
+  </Step>
+</Steps>
+
+Bağlantı sorunu sürerse [Ağ Bağlantısı](/tr/projects/ugv-ros/network#sorun-giderme) sayfasındaki kontrolleri
+uygulayın. Arayüzdeki panellerin açıklamaları için [Genel Bakış](/tr/projects/ugv-ros/overview#3-web-arayüzü)
+sayfasına bakınız.
+
+<Tip>
+Sürüşü durdurmak için **EMERGENCY STOP** düğmesini veya **Boşluk** tuşunu kullanın.
+</Tip>
+
+## 3. Çizgi Sensörü Kalibrasyonu
+
+Çizgi izleme için her kanalın eşiği, beyaz ve siyah ölçümlerin ortası olarak belirlenir. Kalibrasyon yapılmadan hiçbir
+kanal çizgiyi algılamaz. Kalibrasyon robot çalışırken ve robot **Idle** modundayken yapılır.
+
+<Tabs>
+  <Tab title="Web arayüzü">
+    <Steps>
+      <Step title="Kalibrasyonu başlatın">
+        **Line sensor calibration** panelinde **Start calibration** seçeneğine tıklayın. Robot **Idle** moduna
+        alınır; klavye, gamepad, ekran sürüşü ve harita hedefi işlem tamamlanana kadar bu sekmede engellenir.
+      </Step>
+      <Step title="Beyaz yüzeyi ölçün">
+        Sensörü çalışma yüksekliğinde sabit tutup sekiz gözün tamamının altına beyaz yüzey yerleştirin ve
+        **White ready — measure** seçeneğine tıklayın. Tıklamadan sonra yaklaşık 1,2 saniye sabit tutun.
+      </Step>
+      <Step title="Siyah yüzeyi ölçün ve kaydedin">
+        Yüksekliği değiştirmeden mat siyah bir yüzey yerleştirin ve **Black ready — measure and save** seçeneğine
+        tıklayın. Tıklamadan sonra yaklaşık 1,2 saniye sabit tutun.
+      </Step>
+    </Steps>
+
+    Panel son kayıtlı beyaz/siyah değerleri, eşikleri ve kanal başına ayrım payını mV olarak gösterir; 200 mV'un
+    altındaki dar paylar vurgulanır. Yeni ölçüm başarısız olursa veya işlem kapatılırsa önceki kayıt korunur. Kayıtlı
+    ayarlar her açılışta otomatik yüklenir; sensör yüksekliği, zemin veya ışık değiştiğinde kalibrasyonu tekrarlayın.
+
+    <Note>
+    Bu panel yalnızca Deneyap Mini v2 bağlantısında (`type: serial`) kullanılabilir. `qtr_rc` veya `digital`
+    tiplerinde ya da sensör kapalıyken panel pasiftir.
+    </Note>
+  </Tab>
+  <Tab title="Terminal">
+    Aynı işlem ROS servisleriyle de yapılabilir. Robot **Idle** modunda, `/cmd_vel` sıfır ve canlı olmalı; son bir
+    saniyede en az 10 ölçüm alınmış olmalıdır. Beyaz referans 15 dakika geçerlidir; hareket, **Idle** modundan çıkış veya
+    veri kesilmesi referansı iptal eder.
+
+    Sensör beyaz zeminin 3–6 mm üzerinde, yaklaşık 1 saniye sabitken:
+
+    ```bash
+    ros2 service call /line/calibrate_white std_srvs/srv/Trigger
+    ```
+
+    Sensör siyah bandın üzerinde, yaklaşık 1 saniye sabitken:
+
+    ```bash
+    ros2 service call /line/calibrate_black std_srvs/srv/Trigger
+    ```
+
+    Her kanalda beyaz/siyah farkı en az 100 mV olmalı ve ölçümler örtüşmemelidir; aksi hâlde yanıtta hangi kanalın
+    ayrışmadığı yazılır ve eski kalibrasyon korunur.
+
+    Canlı ham değerleri (mV) izlemek için:
+
+    ```bash
+    ros2 topic echo /line/state --field raw
+    ```
+
+    Kalibrasyon durumu `/line/calibration_status` konusunda (`std_msgs/String`, JSON, 2 Hz) yayınlanır. Mesaj
+    `supported`, `ready`, `calibrated`, `white_ready`, `samples` alanlarını ve kayıt varsa `white_mv`, `black_mv`,
+    `threshold_mv` alanlarını içerir.
+  </Tab>
+</Tabs>
+
+Kalibrasyon sonucu robotta `~/.ugv/line_calibration.json` dosyasına yazılır. Robot root olarak çalıştığı için dosya
+`/root/.ugv/` dizinindedir. Dosya yalnızca başarılı siyah ölçümünden sonra atomik olarak değiştirilir.
+
+Kalibrasyon tamamlandıktan sonra arayüzden **Line follow** modunu deneyin.
+
+## 4. Haritalama ve Navigasyon
+
+### 4.1. Harita çıkarma
+
+Haritalama varsayılan olarak açıktır. Robotu varsayılan argümanlarla başlatın, arayüzden **Manual** modda yavaşça
+gezdirin ve harita tamamlandığında **Save map** panelinden bir isim vererek kaydedin. Harita
+`~/ugv_maps/<isim>.{pgm,yaml,posegraph,data}` dosyalarına yazılır; robot root olarak çalıştığı için dizin
+`/root/ugv_maps` olur.
+
+### 4.2. Kayıtlı haritada hedefe gitme
+
+Robotu haritalamaya **başladığınız noktaya ve aynı yöne bakacak şekilde** yerleştirin. Ardından robotu konumlandırma
+modunda, uzantısız harita yolu ve Nav2 etkin olarak başlatın.
+
+```bash
+ros2 launch ugv_bringup robot.launch.py slam_mode:=localization map:=~/ugv_maps/<isim> nav:=true
+```
+
+Arayüzde **Click → goal** seçeneğini açıp haritaya tıklayın; robot **NAV** moduna geçerek hedefe gider. Yol sırasında
+herhangi bir sürüş tuşuna basıldığında robot manuel moda geçer ve durur.
+
+## 5. Açılışta Otomatik Başlatma
+
+Robotun her açılışta kendiliğinden başlaması için bir systemd servisi tanımlanır. Elle başlattığınız oturum açıksa
+önce `Ctrl+C` ile durdurun ve root kabuğundan `exit` ile çıkın.
+
+<Tip>
+`sudo bash ~/ugv-ros/scripts/install-service.sh 1` komutu aşağıdaki üç adımı tek seferde uygular; argüman robotun
+`ROS_DOMAIN_ID` değeridir. Betiğin kurduğu servis robotu `scripts/start-native.sh` üzerinden başlatır ve aynı
+`/etc/default/ugv` dosyasını okur.
+</Tip>
+
+<Steps>
+  <Step title="Robot ayar dosyasını oluşturun">
+    Robot ayarları `/etc/default/ugv` dosyasında tutulur. `ROS_DOMAIN_ID` değerini robotun numarasına göre ayarlayın.
+
+    ```bash
+    sudo tee /etc/default/ugv > /dev/null <<'EOF'
+    # UGV robot ayarları
+    # Aynı ağdaki her robotun ROS_DOMAIN_ID değeri farklı olmalıdır.
+    ROS_DOMAIN_ID=1
+    # Ek başlatma argümanları, ör.: UGV_ARGS="line:=false" veya
+    # UGV_ARGS="slam_mode:=localization map:=~/ugv_maps/salon nav:=true"
+    UGV_ARGS=""
+    EOF
+    ```
+  </Step>
+  <Step title="Servis dosyasını oluşturun">
+    ```bash
+    sudo tee /etc/systemd/system/ugv.service > /dev/null <<'EOF'
+    [Unit]
+    Description=UGV ROS 2 robot ve web arayüzü
+    Wants=network-online.target
+    After=network-online.target
+
+    [Service]
+    Type=simple
+    EnvironmentFile=/etc/default/ugv
+    Environment=ROS_LOG_DIR=/var/log/ugv
+    Environment=PYTHONPATH=/home/gemstone/ugv-gpio-venv/lib/python3.12/site-packages
+    LogsDirectory=ugv
+    ExecStart=/bin/bash -c 'source /opt/ros/jazzy/setup.bash && \
+      source /home/gemstone/ugv-ros/install/setup.bash && \
+      exec ros2 launch ugv_bringup robot.launch.py $$UGV_ARGS'
+    Restart=on-failure
+    RestartSec=5
+    KillSignal=SIGINT
+    TimeoutStopSec=20
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    ```
+
+    `$$UGV_ARGS` ifadesi systemd tarafından `$UGV_ARGS` olarak bash'e aktarılır; böylece `/etc/default/ugv`
+    dosyasındaki argümanlar başlatma komutuna eklenir.
+  </Step>
+  <Step title="Servisi etkinleştirin">
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now ugv.service
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+**Aynı ağdaki her robota farklı bir `ROS_DOMAIN_ID` verin.** Aynı numaraya sahip iki robotun ROS düğümleri birbirini
+görür ve bir robotun arayüzünden verilen sürüş komutu diğer robotu da sürer. Arayüz her robotun kendi IP adresinden
+açıldığı için bu numara arayüzü etkilemez.
+</Warning>
+
+`/etc/default/ugv` dosyasını değiştirdikten sonra servisi yeniden başlatın. Servisi yönetmek için kullanılan
+komutlar şunlardır:
+
+```bash
+systemctl status ugv                 # servis durumu
+sudo systemctl restart ugv           # yeniden başlatma
+sudo systemctl stop ugv              # durdurma (elle başlatmadan önce)
+journalctl -u ugv -f                 # canlı günlük
+```
+
+Servis root olarak çalıştığı için kaydedilen haritalar `/root/ugv_maps`, lidar seçimi `/root/.ugv/lidar_source`, ROS
+günlükleri ise `/var/log/ugv` altındadır.
+
+## 6. Güncelleme
+
+Depodaki son değişiklikleri alıp çalışma alanını yeniden derleyin.
+
+```bash
+cd ~/ugv-ros
+git pull
+source /opt/ros/jazzy/setup.bash
+MAKEFLAGS=-j2 colcon build --symlink-install --executor sequential \
+  --cmake-args -DBUILD_TESTING=OFF
+sudo systemctl restart ugv
+```
+
+Güncellemeyle yeni bir bağımlılık eklendiyse derlemeden önce bağımlılıkları kurun.
+
+```bash
+rosdep install --from-paths src --ignore-src --rosdistro jazzy -y
+```
+
+## 7. Birden Fazla Robot
+
+Her kartta aynı kurulum adımlarını uygulayın; yalnızca `/etc/default/ugv` dosyasındaki `ROS_DOMAIN_ID` değeri farklı
+olmalıdır (ör. 1 ve 2). Kartları ağda ayırt edebilmek için hostname'lerini de değiştirin.
+
+```bash
+sudo hostnamectl set-hostname ugv1
+```
+
+## 8. Docker ile Çalıştırma
+
+Docker ve Docker Compose kurulu bir Linux sisteminde robot konteyner içinde de çalıştırılabilir. Depo dizininde
+aşağıdaki komutlarla imajı oluşturup robotu başlatın ve günlükleri izleyin.
+
+```bash
+cd ~/ugv-ros
+ROS_DOMAIN_ID=1 docker compose up --build -d
+docker compose logs -f
+```
+
+Konteyner GPIO, SPI, PWM ve seri portlara erişebilmek için `privileged` modda ve host ağında çalışır. Kaydedilen
+haritalar `~/ugv_maps`, arayüzde seçilen ayarlar ise `~/.ugv` dizininde saklanır.
+
+<Accordion title="Donanımsız arayüz denemesi">
+  Arayüzü robot donanımı olmadan denemek için imajı oluşturup aşağıdaki komutu çalıştırın. `backend:=mock` motor ve
+  enkoderleri benzetir. Ardından tarayıcıda `http://localhost:8000` adresini açın.
+
+  ```bash
+  docker compose build
+  docker run --rm -p 8000:8000 -p 9090:9090 ugv-ros:jazzy ros2 launch ugv_bringup robot.launch.py backend:=mock fusion:=false line:=false slam:=false
+  ```
+</Accordion>

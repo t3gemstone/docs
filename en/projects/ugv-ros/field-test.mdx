@@ -1,0 +1,269 @@
+---
+title: 'Field Test'
+description: 'IMU, motor, encoder, lidar and line sensor checks for the UGV robot'
+---
+
+The field test verifies the robot's hardware step by step before the first run. Each step builds on the previous one;
+do not skip any.
+
+<Warning>
+During the motor steps, place the robot on a box so that **the wheels stay in the air**. Read the
+[Battery and Operating Safety](/en/projects/ugv-ros/safety) page before starting the tests.
+</Warning>
+
+## Preparing the Test Environment
+
+The test commands run in a root shell for GPIO and PWM access. Follow the commands in the tab that matches your
+installation type.
+
+<Tabs>
+  <Tab title="Direct installation">
+    If the robot service is installed, stop it first and switch to a root shell.
+
+    ```bash
+    sudo systemctl stop ugv
+    sudo -i
+    ```
+
+    Load the ROS environment and the libgpiod v2 Python path, and assign the hardware file path to the `HW` variable.
+
+    ```bash
+    source /opt/ros/jazzy/setup.bash
+    source /home/gemstone/ugv-ros/install/setup.bash
+    export PYTHONPATH=/home/gemstone/ugv-gpio-venv/lib/python3.12/site-packages:$PYTHONPATH
+    HW=/home/gemstone/ugv-ros/src/ugv_bringup/config/hardware.yaml
+    ```
+
+    When the tests are finished, leave the root shell with `exit` and start the service again.
+
+    ```bash
+    sudo systemctl start ugv
+    ```
+  </Tab>
+  <Tab title="Docker">
+    Build the image and open the test shell. The first build may take 15–20 minutes.
+
+    ```bash
+    cd ~/ugv-ros
+    docker compose build
+    docker compose run --rm ugv bash
+    ```
+
+    Inside the container, assign the hardware file path to the `HW` variable.
+
+    ```bash
+    HW=/ugv_ws/src/ugv/ugv_bringup/config/hardware.yaml
+    ```
+
+    Since the `./src` directory is mounted into the container, changes to `hardware.yaml` made on T3 Gemstone O1 take effect
+    immediately. When you add a new Python file or change C++ code, run `colcon build --symlink-install` in the
+    container.
+  </Tab>
+</Tabs>
+
+<Note>
+Some steps require a second terminal. Run the environment commands above again in every new terminal.
+</Note>
+
+## 1. Preparation
+
+- PWM overlays are enabled in `/boot/uEnv.txt` and conflicting overlays are disabled
+  ([PWM and UART settings](/en/projects/ugv-ros/installation#4-pwm-and-uart-settings-overlay))
+- Encoders and line sensor are powered with **3.3 V** (the "3.3V" bridge on the sensor is soldered), and the
+  ENA/ENB jumpers on the L298N are removed
+- Pins resolve and there are no conflicts
+
+```bash
+ros2 run ugv_base hw_check pins --config $HW
+```
+
+In the output, every `GPIOxx` should resolve to a `gpiochipN:line` and every PWM channel to a `pwmchipN`. If you get a
+"not found" error, find the line name on the board with `gpioinfo | grep -i gpio` and write that name or
+the `gpiochipN:line` form into `hardware.yaml`.
+
+## 2. IMU
+
+```bash
+ros2 run ugv_imu ugv_imu_node --ros-args --params-file $HW
+```
+
+Watch the angular velocity in a second terminal.
+
+```bash
+ros2 topic echo /imu/data_raw --field angular_velocity
+```
+
+- The "gyro bias" line appears at startup (the robot must be stationary at this time)
+- While the robot is still, `z` ≈ 0 (±0.01 rad/s)
+- When the robot is rotated **counterclockwise** viewed from above, `z` becomes **positive**
+
+<Note>
+If `z` is negative, the board is mounted upside down. In that case set `imu.roll: 3.14159` in
+[`ugv_description/config/robot.yaml`](https://github.com/t3gemstone/ugv-ros/blob/main/src/ugv_description/config/robot.yaml)
+(this is how it is in the kit). Since the correction is applied in the TF, the raw `/imu/data_raw` still appears
+negative. Verify on the complete robot: while the robot turns left in place, `angular.z` on both `/wheel/odom` and
+`/odometry/filtered` must be positive. If it is reversed, the map comes out mirrored.
+</Note>
+
+## 3. Motor Directions
+
+```bash
+ros2 run ugv_base hw_check motors --config $HW --duty 50
+```
+
+Stand behind the robot and look toward the front (the line sensor). The command spins the `left` wheel first, then the
+`right` wheel.
+
+- The **left** wheel turns first, then the **right** wheel. If they turn in the reverse order, swap the `left` and
+  `right` blocks (together with their direction settings) in `hardware.yaml`; otherwise the robot drives forward
+  but left/right turns are reversed
+- Each wheel turns in the direction that moves the robot forward. If not, apply the `invert` fix suggested by the
+  command
+- If a wheel does not turn at all, check the IN pins, the PWM channel, the EN jumper and the motor supply
+
+## 4. Encoders
+
+```bash
+ros2 run ugv_base hw_check encoders --config $HW
+```
+
+- When the wheel is turned one full revolution **forward** by hand, the count is positive and about 2184
+  (x4: 546 × 4)
+- If the displayed `ppr≈` value is very different from 546, the motor has a different gearbox; correct
+  `encoder.ppr`
+- The `hata` (error) counter stays at 0. If it increases at high duty values during `hw_check sweep`, events are
+  being missed; verify that the `hw_check pins` output shows `libgpiod python API: v2` (the v1 event buffer is too
+  small for this motor)
+- If the count direction is reversed, set `enc_invert: true` (`hw_check motors` also suggests this)
+
+## 5. Speed Range
+
+```bash
+ros2 run ugv_base hw_check sweep --config $HW
+```
+
+Take the measurement **with a fully charged battery** (3S: 12.0–12.6 V). With a weak battery, the motors turn much
+slower at the same duty value, and under load the voltage may collapse and stop both wheels; values tuned with such a
+measurement will be wrong once the battery is full. Do not discharge the 3S Li-Po battery below 10.5 V.
+
+- `pid.min_duty` ← the duty value at which the wheel starts turning
+- `max_wheel_speed` ← the speed of the **slower of the two wheels** at 100% duty
+
+## 6. Closed-Loop Driving
+
+```bash
+ros2 launch ugv_bringup robot.launch.py lidar:=false line:=false slam:=false
+```
+
+Open `http://<gemstone-ip>:8000` in the computer's browser, switch to **Manual** mode and drive the robot.
+Watch the wheel speeds in a second terminal.
+
+```bash
+ros2 topic echo /ugv_base_node/wheels
+```
+
+The values in the array are, in order, `[target_left, measured_left, duty_left, target_right, measured_right, duty_right]`.
+
+- The measured speeds settle on the target without oscillation. If there is oscillation, lower `pid.kp`; if the
+  speed stays below the target, increase `pid.ki`
+- The robot does not drift when driving straight (both wheels at the same speed)
+- The emergency stop (**Space** key) cuts the motors immediately
+
+## 7. Odometry Calibration
+
+- **Straight 1 m:** Drive straight from the interface and compare the x value on `/wheel/odom` with a tape
+  measure → `wheel_radius` in `robot.yaml` × (actual / measured)
+- **5 turns in place:** Compare the `/wheel/odom` angle with the actual angle → `wheel_separation` ×
+  (measured / actual)
+- After 5 turns, the EKF (`/odometry/filtered`) yaw is closer to reality than the wheel odometry
+
+## 8. Lidar
+
+```bash
+ros2 launch ugv_bringup robot.launch.py line:=false slam:=false
+```
+
+The lidar connection is selected from the **Lidar** panel in the interface (USB by default). The panel shows the port
+and scan rate; the selection is stored on the robot.
+
+- The lidar head is spinning and the panel shows about 5–8 Hz (or `ros2 topic hz /scan`)
+- **USB:** If the panel says "no lidar port", the `ls /dev/serial/by-id/` output may be empty;
+  the CP210x driver is missing from the minimal image (`lsmod | grep cp210x`).
+  [CP210x driver](/en/projects/ugv-ros/installation#2-4-install-the-usb-lidar-driver-cp210x)
+- **GPIO:** If you get an "operation timeout" error, check that the TX/RX lines are crossed (lidar TX → pin 26),
+  that the `dmesg` output contains the `2b300000.serial: ttyS0` line, and that the `ugv-bt-off`, `uart-ttys0` and
+  `ecap2` overlays are enabled. If the problem persists, lower `gpio.duty_percent` to 75 (motor noise can corrupt
+  the UART)
+- The lidar angle is correct. Place a box taller than the lidar height directly in front of the robot (on the line
+  sensor side, centered, 30–40 cm away), with no other objects within 1 m. If the box's angle in `/scan` is `a`,
+  set `robot.yaml` → `lidar.yaw = -a` (radians). In the kit the lidar is mounted rotated by 180°: the box appears
+  at about ±180° and `yaw` ≈ 3.14. If the angle is wrong, the map slides while driving and smears during turns
+- Lidar brake (on by default, `control.yaml` → `safety.enabled`): the robot stops about 0.10 m before a box
+  in front of it and does not slow down because of a wall it passes alongside
+
+## 9. Line Sensor and Line Following
+
+<Tabs>
+  <Tab title="Deneyap Mini v2 (default)">
+    While the robot is running with `line:=true`, watch the raw readings.
+
+    ```bash
+    ros2 topic echo /line/state --field raw
+    ```
+
+    - D1 … D8 values (mV) are streaming. If not, check the Deneyap TX → pin 10 and RX → pin 8 connections, the
+      common GND and that the firmware is uploaded; look for the "no data from the Deneyap"
+      warning in the log
+    - The sensor is at 3–6 mm height and there is a difference of several hundred mV between white and black on
+      every channel (if the difference is around 100 mV, the sensor is too high)
+    - [Calibration](/en/projects/ugv-ros/usage#3-line-sensor-calibration) completes successfully
+    - The start → white → black sequence works in the web panel; the robot stays in **Idle** and driving is
+      blocked. The saved mV table is filled and persists after a restart
+    - Measuring the same surface twice gives an error and the previous record does not change. The process closes
+      when the connection drops or the mode changes
+    - In the `ros2 topic echo /line/state --field sensors` output, all channels are `false` on white and `true` on
+      black
+    - When a black strip is moved under the sensor from left to right, the `true` value moves from left to right.
+      If it moves in the opposite direction, the A0…A7 wires are connected in reverse
+  </Tab>
+  <Tab title="Direct GPIO">
+    ```bash
+    ros2 run ugv_line line_check --config $HW
+    ```
+
+    - With the sensor 3–5 mm above a white surface all 8 channels read **0**, and over a black strip **1**
+    - If all channels read 1 constantly, check that the sensor VCC is on pin 17, GND is connected, the "3.3V"
+      bridge is soldered and the D wires are connected ([Line sensor](/en/projects/ugv-ros/hardware#5-line-sensor))
+    - When a black strip is moved under the sensor from left to right, the 1 value moves from left to right. If it
+      moves in the opposite direction, reverse the `pins` list
+  </Tab>
+</Tabs>
+
+For both connection types:
+
+- While the robot is running, the `position` value on the `/line/state` topic is **positive** when the line is on
+  the left
+- Try **Line follow** mode from the interface on the track. Start with `speed: 0.10`, then tune the
+  `kp`, `kd` and `speed` values in
+  [`control.yaml`](https://github.com/t3gemstone/ugv-ros/blob/main/src/ugv_bringup/config/control.yaml)
+
+## 10. Mapping
+
+```bash
+ros2 launch ugv_bringup robot.launch.py
+```
+
+- While driving slowly from the interface, the map is built and walls do not appear doubled
+- **Save map** creates the `~/ugv_maps/<name>.{pgm,yaml,posegraph,data}` files
+
+## 11. Navigating to a Goal on a Saved Map
+
+Place the robot **at the point where you started mapping, facing the same direction**.
+
+```bash
+ros2 launch ugv_bringup robot.launch.py slam_mode:=localization map:=~/ugv_maps/<name> nav:=true
+```
+
+- With the **Click → goal** option enabled in the interface, clicking on the map makes the robot
+  drive to that point (mode: NAV)
+- Pressing a driving key along the way switches the robot to manual mode and stops it

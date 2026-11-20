@@ -1,0 +1,350 @@
+---
+title: 'Installation'
+description: 'Installing Ubuntu 24.04, ROS 2 Jazzy and the UGV software on T3 Gemstone O1'
+---
+
+In this section ROS 2 Jazzy is installed directly on T3 Gemstone O1 and the UGV workspace is built on the board. Then the
+Deneyap Mini v2 that reads the line sensor is programmed, and the overlays required for the motor PWM lines are
+enabled.
+
+Requirements:
+
+- A microSD card of at least 32 GB, or the board's internal eMMC
+- An internet connection (Ethernet or Wi-Fi)
+- A user with `sudo` privileges
+
+<Note>
+The commands on this page assume that `gemstone` was chosen as the user name in Gem Imager. If you chose a different
+user name, replace `/home/gemstone` with your own home directory.
+</Note>
+
+## 1. Operating System Installation
+
+<Steps>
+  <Step title="Write the image">
+    Install [Gem Imager](https://t3gemstone.org/en/software) on your computer and insert the microSD card using a card
+    reader. In Gem Imager, select the **T3-GEM-O1** model, the **Ubuntu 24.04 (Noble) Minimal** image and the microSD
+    card as the target. On the customization screen, set the user password, enable SSH if you will connect remotely,
+    and optionally enter your Wi-Fi credentials. Then write the image.
+
+    For details, refer to the [Quickstart](/en/quickstart) and [Image Writer](/en/imager/introduction) pages.
+  </Step>
+  <Step title="Boot the board">
+    With T3 Gemstone O1 powered off, insert the microSD card and set the boot switches to the **SD card** position. Then
+    power on the board. If you will use the internal eMMC, follow the [writing an image to eMMC](/en/imager/emmc)
+    steps.
+  </Step>
+  <Step title="Connect to the board">
+    Connect T3 Gemstone O1 to the internet over Ethernet or Wi-Fi. Log in via SSH from a computer on the same network, or
+    with a monitor and keyboard attached to T3 Gemstone O1. If the board is connected to your computer with a USB Type-C
+    cable, you can use the following command.
+
+    ```bash
+    ssh gemstone@192.168.7.2
+    ```
+
+    For adding a Wi-Fi network and finding the robot's IP address, refer to the
+    [Network Connection](/en/projects/ugv-ros/network) page.
+  </Step>
+</Steps>
+
+## 2. Installing the UGV Software
+
+Run the following commands in order on T3 Gemstone O1 as your regular user with `sudo` privileges (not as root). Commands
+that require `sudo` will ask for your password.
+
+### 2.1. Download the repository
+
+```bash
+sudo apt update
+sudo apt install -y git curl
+git clone https://github.com/t3gemstone/ugv-ros.git ~/ugv-ros
+```
+
+<Tip>
+The repository's `scripts/install-native.sh` script runs steps 2.2–2.6 in one go. To use it, run
+`cd ~/ugv-ros && bash scripts/install-native.sh` after downloading the repository and continue with
+[Uploading the Deneyap Mini v2 Firmware](#3-uploading-the-deneyap-mini-v2-firmware).
+</Tip>
+
+### 2.2. Add the ROS 2 apt source
+
+ROS 2 packages are installed from ROS's own apt repository. Download and install the latest version of the
+`ros2-apt-source` package, which registers the repository.
+
+```bash
+export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F'"' '{print $4}')
+curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.noble_all.deb"
+sudo dpkg -i /tmp/ros2-apt-source.deb
+```
+
+### 2.3. Install ROS 2 Jazzy and development tools
+
+```bash
+sudo apt update
+sudo apt install -y --no-install-recommends ros-jazzy-ros-base python3-rosdep \
+  python3-vcstool python3-colcon-common-extensions python3-venv python3-pip \
+  build-essential cmake git curl
+```
+
+### 2.4. Install the USB lidar driver (CP210x)
+
+The lidar's USB adapter uses the **CP210x** USB-serial driver. This module may be missing from the minimal image; in
+that case the adapter shows up in the `lsusb` output but `/dev/ttyUSB0` is not created. First check whether the module
+is available.
+
+```bash
+modinfo cp210x
+```
+
+If the command prints the module information, you can move on to the next step. If you get a
+`Module cp210x not found` error, install the driver from the T3 apt repository. This package only adds the driver
+module; it does not change the kernel.
+
+```bash
+sudo apt install -y --no-install-recommends kernel-module-cp210x-$(uname -r)
+sudo depmod -a
+```
+
+Finally, load the module.
+
+```bash
+sudo modprobe cp210x
+```
+
+<Note>
+If no `kernel-module-cp210x` package matching the running kernel version can be found, the USB lidar connection will
+not work. You can still use the lidar by connecting it directly to T3 Gemstone O1's GPIO pins.
+[Lidar connection](/en/projects/ugv-ros/hardware#4-lidar-connection)
+</Note>
+
+### 2.5. Create the libgpiod v2 Python environment
+
+The **libgpiod v2** Python binding is required to read the encoders at high speed without missing counts. Since the
+Ubuntu 24.04 apt repository only provides version 1.6, v2 is installed into a separate virtual environment without
+touching the system Python.
+
+```bash
+python3 -m venv --system-site-packages ~/ugv-gpio-venv
+~/ugv-gpio-venv/bin/pip install 'gpiod>=2.2,<3'
+```
+
+### 2.6. Install dependencies and build the workspace
+
+Download the lidar driver (`sllidar_ros2`), which is built from source.
+
+```bash
+cd ~/ugv-ros
+vcs import src < repos.yml
+```
+
+Initialize the `rosdep` tool and update its package list. `rosdep init` is only needed on the first installation; if
+you get a `default sources list file already exists` error, you can skip this command.
+
+```bash
+sudo rosdep init
+rosdep update --rosdistro jazzy
+```
+
+Install all ROS dependencies (slam_toolbox, Nav2, robot_localization, rosbridge, etc.).
+
+```bash
+rosdep install --from-paths src --ignore-src --rosdistro jazzy -y
+```
+
+Build the workspace. To avoid running out of memory on the board, it is recommended to build the packages sequentially with at
+most two jobs.
+
+```bash
+source /opt/ros/jazzy/setup.bash
+MAKEFLAGS=-j2 colcon build --symlink-install --executor sequential \
+  --cmake-args -DBUILD_TESTING=OFF
+```
+
+<Info>
+Installing the dependencies and building may take 20–40 minutes depending on your internet speed.
+</Info>
+
+## 3. Uploading the Deneyap Mini v2 Firmware
+
+The [`deneyap_line.ino`](https://github.com/t3gemstone/ugv-ros/blob/main/firmware/deneyap_line/deneyap_line.ino)
+firmware reads the eight analog outputs of the line sensor through A0–A7 and sends the millivolt values to T3 Gemstone O1
+over UART about 50 times per second. The same JSON lines are also visible on the USB serial monitor. It does not
+control the motors; the black/white calibration is stored on T3 Gemstone O1.
+
+<Warning>
+The Mini v2's 5V pin is connected to the USB supply line. Before connecting the Mini v2 to a computer over USB, always
+disconnect the 5 V, TX and RX wires coming from T3 Gemstone O1.
+</Warning>
+
+<Steps>
+  <Step title="Install Deneyap Kart IDE">
+    Install **Deneyap Kart IDE** on your computer. On first launch, wait for the downloads on the
+    **Geliştirme Ortamı Hazırlanıyor** (preparing the development environment) screen to finish.
+    [Deneyap Kart IDE setup guide](https://docs.deneyapkart.org/tr/IDE/Deneyap-Kart-IDE-Setup)
+  </Step>
+  <Step title="Connect the board to your computer">
+    Turn off the power and disconnect the 5 V, TX and RX wires coming from T3 Gemstone O1. Connect the Mini v2 to your
+    computer with a USB cable that supports data transfer.
+  </Step>
+  <Step title="Open the firmware and select the board">
+    Open the `firmware/deneyap_line/deneyap_line.ino` file from the repository using **Ayarlar → Dosya Aç**
+    (Settings → Open File). Select the **Deneyap Mini v2** board in the top toolbar.
+  </Step>
+  <Step title="Compile and upload">
+    In the **Araçlar** (Tools) menu, set **Upload Mode** to **Internal USB** and **USB CDC On Boot** to **Enabled**.
+    Select the Mini v2's port and click **Derle ve Yükle** (compile and upload).
+    [Deneyap Kart IDE interface guide](https://docs.deneyapkart.org/tr/IDE/Deneyap-Kart-IDE-Introduction)
+
+    If the port does not appear, hold the **BUT** button, press and release the **RES** button, then release
+    **BUT**. Click the **Portları Yenile** (refresh ports) button, select the port that appears in upload mode and try
+    again. [Deneyap Mini v2 troubleshooting guide](https://deneyapkart.org/docs/sorun-giderme-dymv2)
+  </Step>
+  <Step title="Check the output">
+    When the upload is complete, open the **Seri Monitör** (serial monitor) tab, select the board's port and a baud
+    rate of **115200**, and click **Bağlan** (connect). You should see JSON lines similar to the one below. If the
+    firmware does not start after uploading, press the **RES** button once.
+
+    ```json
+    {"ugv_adc":1,"seq":123,"mv":[1200,1210,1220,1230,1240,1250,1260,1270]}
+    ```
+
+    The values in the example are illustrative; they should change when the sensor is moved over black and white
+    surfaces.
+  </Step>
+</Steps>
+
+<Accordion title="Compiling with Arduino CLI">
+  The verified build target for the Mini v2 is shown below. Run the command in the repository directory.
+
+  ```bash
+  arduino-cli compile --fqbn deneyap:esp32:deneyapminiv2:CDCOnBoot=cdc,UploadMode=default firmware/deneyap_line
+  ```
+
+  The same source code can also be used for the Deneyap Kart 1A v2. In that case, recompile it with
+  **Deneyap Kart 1A v2** selected and wire it according to that board's A0–A7/TX/RX labels. The pin definitions come
+  from the board package; do not change the GPIO numbers in the source code manually.
+</Accordion>
+
+## 4. PWM and UART Settings (Overlay)
+
+The PWM channels used for the motor driver's ENA/ENB lines are enabled with overlays added to the `overlays=` line in
+the `/boot/uEnv.txt` file. For detailed information about overlays, refer to the [PWM](/en/boards/o1/peripherals/pwm)
+and [Device Tree](/en/boards/o1/peripherals/introduction#3-device-tree) pages.
+
+Follow the steps in the tab that matches how your lidar is connected. The connection options are explained in the
+[Lidar connection](/en/projects/ugv-ros/hardware#4-lidar-connection) section.
+
+<Tabs>
+  <Tab title="USB lidar (default)">
+    Open the `/boot/uEnv.txt` file.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    On the `overlays=` line, replace `spidev0-2cs` with `spidev0-1cs` and, without removing the other overlays, add
+    the PWM overlays for ENA and ENB to the end of the line separated by spaces. The line should look similar to the
+    following.
+
+    ```
+    overlays=k3-am67a-t3-gem-o1-spidev0-1cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo
+    ```
+
+    | Overlay | Purpose |
+    | --- | --- |
+    | `k3-am67a-t3-gem-o1-spidev0-1cs.dtbo` | Replaces `spidev0-2cs`; leaves pin 26 free for the GPIO lidar |
+    | `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` | ENA (right wheel), pin 32 |
+    | `k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo` | ENB (left wheel), pin 33 |
+  </Tab>
+  <Tab title="GPIO lidar">
+    If the lidar is connected directly to the 40-pin header, a second UART (`/dev/ttyS0`, pins 18/26) and an extra PWM
+    channel for the lidar motor are required. The `uart-ttys0` overlay does not work on its own: the onboard
+    Bluetooth UART holds the same pins, so at boot the error `pin PIN10 already requested by 2860000.serial` occurs and
+    `/dev/ttyS0` does not work even though it appears. For this reason, the overlay that disables the Bluetooth UART is
+    compiled and installed first. Wi-Fi is not affected, because although it is on the same chip it is connected over
+    SDIO.
+
+    Install the device tree compiler, compile the overlay from the repository and copy it to the `/boot/overlays`
+    directory.
+
+    ```bash
+    sudo apt install -y device-tree-compiler
+    cd ~/ugv-ros
+    dtc -@ -I dts -O dtb -o /tmp/k3-am67a-t3-gem-o1-ugv-bt-off.dtbo \
+        boards/t3-gem-o1/k3-am67a-t3-gem-o1-ugv-bt-off.dts
+    sudo cp /tmp/k3-am67a-t3-gem-o1-ugv-bt-off.dtbo /boot/overlays/
+    ```
+
+    Open the `/boot/uEnv.txt` file.
+
+    ```bash
+    sudo nano /boot/uEnv.txt
+    ```
+
+    On the `overlays=` line, replace `spidev0-2cs` with `spidev0-1cs` and add the overlays below. `ugv-bt-off` must
+    be listed before `uart-ttys0`.
+
+    ```
+    overlays=k3-am67a-t3-gem-o1-spidev0-1cs.dtbo k3-am67a-t3-gem-o1-i2c1-400000.dtbo k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo k3-am67a-t3-gem-o1-ugv-bt-off.dtbo k3-am67a-t3-gem-o1-uart-ttys0.dtbo
+    ```
+
+    | Overlay | Purpose |
+    | --- | --- |
+    | `k3-am67a-t3-gem-o1-spidev0-1cs.dtbo` | Replaces `spidev0-2cs`; leaves pin 26 to the lidar |
+    | `k3-am67a-t3-gem-o1-pwm-ecap0-gpio12.dtbo` | ENA (right wheel), pin 32 |
+    | `k3-am67a-t3-gem-o1-pwm-epwm1-gpio13.dtbo` | ENB (left wheel), pin 33 |
+    | `k3-am67a-t3-gem-o1-pwm-ecap2-gpio18.dtbo` | Lidar motor (MOTOCTL), pin 12 |
+    | `k3-am67a-t3-gem-o1-ugv-bt-off.dtbo` | Disables the Bluetooth UART |
+    | `k3-am67a-t3-gem-o1-uart-ttys0.dtbo` | Lidar UART (`/dev/ttyS0`), pins 18/26 |
+
+    <Note>
+    Pin 26 is also connected to SPI CS2 on the board. When `spidev0-2cs` is enabled, CS2 drives this line and
+    conflicts with the lidar's TX line. `spidev0-1cs` is the same overlay but leaves CS2 free.
+    </Note>
+  </Tab>
+</Tabs>
+
+Save the file and reboot the board.
+
+```bash
+sudo reboot
+```
+
+After the board boots, check that the PWM chips and UART devices have been created.
+
+```bash
+ls -l /sys/class/pwm/
+ls /dev/ttyS0 /dev/ttyS3
+```
+
+`/dev/ttyS3` is the Deneyap Mini v2's UART and `/dev/ttyS0` is the GPIO lidar's UART. If you are using the USB lidar,
+it is normal that `/dev/ttyS0` does not exist. If you are using the GPIO lidar, the `dmesg | grep ttyS0` output should
+contain the line `2b300000.serial: ttyS0`.
+
+<Tip>
+`pwmchipN` numbers change depending on how many overlays are loaded. For this reason, the UGV configuration specifies
+PWM channels by module name (`ecap0`, `epwm1:1`) rather than by number. Which chip corresponds to which module is
+listed by the `hw_check pins` command during the [Field Test](/en/projects/ugv-ros/field-test#1-preparation).
+</Tip>
+
+### Overlays that must not be enabled
+
+The following overlays must not be enabled because they assign GPIO pins used by UGV to other functions.
+
+| Overlay | Conflict |
+| --- | --- |
+| `uart-ttys6` | GPIO4 (encoder), GPIO17 (IN2); also disables Bluetooth |
+| `spidev0-2cs` | GPIO7 (pin 26, lidar UART RX). Use `spidev0-1cs` instead |
+| `pwm-epwm0-gpio5`, `pwm-epwm0-gpio5-gpio14` | GPIO5 (encoder); the second one also disables the Deneyap UART TX line (pin 8) |
+| `pwm-ecap1-gpio16` | GPIO16 (line sensor D5, only with the direct GPIO connection) |
+| `pwm-epwm1-gpio6`, `pwm-epwm1-gpio6-gpio13` | GPIO6 (line sensor D2, only with the direct GPIO connection) |
+
+<Note>
+The two channels of the same epwm module (GPIO6 and GPIO13) must share the same period. Since GPIO6 is not enabled as
+PWM, ENB can use any period it needs. If a conflict occurs, the driver adopts the sibling channel's period and writes a
+warning to the log.
+</Note>
+
+After the installation is complete, make the connections described on the
+[Hardware and Wiring](/en/projects/ugv-ros/hardware) page.

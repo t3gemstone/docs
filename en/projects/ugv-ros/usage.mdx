@@ -1,0 +1,326 @@
+---
+title: 'Usage'
+description: 'Starting the UGV robot, web interface, calibration, mapping and automatic startup'
+---
+
+<Note>
+The commands on this page assume that `gemstone` was chosen as the user name in Gem Imager. If you chose a different
+user name, replace `/home/gemstone` with your own home directory.
+</Note>
+
+## 1. Starting the Robot
+
+The robot software runs with root privileges for GPIO and PWM access. Switch to a root shell on T3 Gemstone O1.
+
+```bash
+sudo -i
+```
+
+Load the ROS environment and the libgpiod v2 Python path.
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source /home/gemstone/ugv-ros/install/setup.bash
+export PYTHONPATH=/home/gemstone/ugv-gpio-venv/lib/python3.12/site-packages:$PYTHONPATH
+```
+
+Set the robot's `ROS_DOMAIN_ID`. Give each robot on the same network a different value.
+
+```bash
+export ROS_DOMAIN_ID=1
+```
+
+Start the robot. To stop it, press `Ctrl+C`.
+
+```bash
+ros2 launch ugv_bringup robot.launch.py
+```
+
+<Warning>
+If the [automatic startup service](#5-starting-automatically-at-boot) is installed, stop it with
+`sudo systemctl stop ugv` before starting the robot manually. Do not start a second `ros2 launch` while the service is
+running.
+</Warning>
+
+### 1.1. Launch arguments
+
+The default launch runs the complete robot in mapping mode. To enable or disable components, add arguments in the form
+`argument:=value` to the end of the command.
+
+| Argument | Values | Description |
+| --- | --- | --- |
+| `backend` | `gpiod` \| `mock` | `mock`: simulates the motors and encoders; IMU and lidar are disabled |
+| `hardware` | `<yaml>` | Pin and hardware file (default `config/hardware.yaml`) |
+| `imu` | `true` \| `false` | ICM-20948 IMU |
+| `fusion` | `true` \| `false` | EKF (wheel + IMU) publishes the odometry TF; if `false`, `ugv_base_node` publishes it |
+| `lidar` | `true` \| `false` | RPLIDAR A1 |
+| `lidar_source` | empty \| `usb` \| `gpio` | If empty, the connection selected and saved in the interface is used; if there is none, the one in `hardware.yaml` (USB) |
+| `lidar_port` | empty | Sets the lidar serial port manually (e.g. `/dev/ttyUSB1`) |
+| `line` | `true` \| `false` | Line sensor and line following |
+| `slam` | `true` \| `false` | slam_toolbox and the map saving service |
+| `slam_mode` | `mapping` \| `localization` | Mapping or localization on a saved map |
+| `map` | `<path>` | Map path without extension for `localization` |
+| `nav` | `true` \| `false` | Nav2 (disabled by default) |
+| `gcs` | `true` \| `false` | rosbridge and the web interface |
+
+For example, to start without the line sensor:
+
+```bash
+ros2 launch ugv_bringup robot.launch.py line:=false
+```
+
+## 2. Connecting to the Web Interface
+
+<Steps>
+  <Step title="Find the robot's IP address">
+    Find the robot's IP address on the local network in the T3 Gemstone O1 terminal.
+
+    ```bash
+    hostname -I
+    ```
+  </Step>
+  <Step title="Open the interface">
+    Open a browser on a computer connected to the same network and go to `http://<robot-ip>:8000`. For example, if the
+    robot's IP address is `192.168.1.42`, the address is `http://192.168.1.42:8000`.
+  </Step>
+  <Step title="Check the connection">
+    When the connection indicator at the top right turns green, the interface is ready. If the indicator stays red,
+    enter T3 Gemstone O1's IP address in the **robot address** field and click **Connect**. The page uses port
+    `8000` and the ROS connection uses port `9090`.
+  </Step>
+</Steps>
+
+If the connection problem persists, follow the checks on the
+[Network Connection](/en/projects/ugv-ros/network#troubleshooting) page. For a description of the panels in the
+interface, refer to the [Overview](/en/projects/ugv-ros/overview#3-web-interface) page.
+
+<Tip>
+To stop driving, use the **EMERGENCY STOP** button or the **Space** key.
+</Tip>
+
+## 3. Line Sensor Calibration
+
+For line following, each channel's threshold is set to the midpoint between the white and black readings. Without
+calibration, no channel detects the line. Calibration is done while the robot is running and in **Idle** mode.
+
+<Tabs>
+  <Tab title="Web interface">
+    <Steps>
+      <Step title="Start the calibration">
+        In the **Line sensor calibration** panel, click **Start calibration**. The robot is
+        switched to **Idle** mode; keyboard, gamepad, on-screen driving and map goals are blocked
+        in this tab until the process is complete.
+      </Step>
+      <Step title="Measure the white surface">
+        Hold the sensor steady at its working height, place a white surface under all eight sensors and click
+        **White ready — measure**. Keep it steady for about 1.2 seconds after clicking.
+      </Step>
+      <Step title="Measure the black surface and save">
+        Without changing the height, place a matte black surface and click **Black ready — measure and save**.
+        Keep it steady for about 1.2 seconds after clicking.
+      </Step>
+    </Steps>
+
+    The panel shows the last saved white/black values, thresholds and per-channel margin in mV; narrow margins below
+    200 mV are highlighted. If a new measurement fails or the process is closed, the previous record is kept. The saved
+    settings are loaded automatically at every startup; repeat the calibration when the sensor height, surface or
+    lighting changes.
+
+    <Note>
+    This panel is only available with the Deneyap Mini v2 connection (`type: serial`). With the `qtr_rc` or `digital`
+    types, or when the sensor is disabled, the panel is inactive.
+    </Note>
+  </Tab>
+  <Tab title="Terminal">
+    The same process can also be done with ROS services. The robot must be in idle mode, `/cmd_vel` must be zero and
+    alive, and at least 10 readings must have been received in the last second. The white reference is valid for 15
+    minutes; movement, leaving idle mode or a data interruption cancels the reference.
+
+    With the sensor 3–6 mm above a white surface and held steady for about 1 second:
+
+    ```bash
+    ros2 service call /line/calibrate_white std_srvs/srv/Trigger
+    ```
+
+    With the sensor over the black strip and held steady for about 1 second:
+
+    ```bash
+    ros2 service call /line/calibrate_black std_srvs/srv/Trigger
+    ```
+
+    On every channel, the white/black difference must be at least 100 mV and the readings must not overlap; otherwise
+    the response states which channel is not separated and the old calibration is kept.
+
+    To watch the live raw values (mV):
+
+    ```bash
+    ros2 topic echo /line/state --field raw
+    ```
+
+    The calibration status is published on the `/line/calibration_status` topic (`std_msgs/String`, JSON, 2 Hz). The
+    message contains the `supported`, `ready`, `calibrated`, `white_ready` and `samples` fields and, if a record
+    exists, the `white_mv`, `black_mv` and `threshold_mv` fields.
+  </Tab>
+</Tabs>
+
+The calibration result is written to the `~/.ugv/line_calibration.json` file on the robot. Since the robot runs as
+root, the file is in the `/root/.ugv/` directory. The file is replaced atomically only after a successful black
+measurement.
+
+After calibration is complete, try **Line follow** mode from the interface.
+
+## 4. Mapping and Navigation
+
+### 4.1. Creating a map
+
+Mapping is enabled by default. Start the robot with the default arguments, drive it slowly in **Manual** mode
+from the interface, and when the map is complete, save it with a name from the **Save map** panel. The
+map is written to the `~/ugv_maps/<name>.{pgm,yaml,posegraph,data}` files; since the robot runs as root, the directory
+is `/root/ugv_maps`.
+
+### 4.2. Navigating to a goal on a saved map
+
+Place the robot **at the point where you started mapping, facing the same direction**. Then start the robot in
+localization mode with the map path without extension and Nav2 enabled.
+
+```bash
+ros2 launch ugv_bringup robot.launch.py slam_mode:=localization map:=~/ugv_maps/<name> nav:=true
+```
+
+Enable the **Click → goal** option in the interface and click on the map; the robot switches to
+**NAV** mode and drives to the goal. Pressing any driving key along the way switches the robot to manual mode and
+stops it.
+
+## 5. Starting Automatically at Boot
+
+A systemd service is defined so that the robot starts automatically at every boot. If a manually started session is
+running, first stop it with `Ctrl+C` and leave the root shell with `exit`.
+
+<Tip>
+`sudo bash ~/ugv-ros/scripts/install-service.sh 1` performs the three steps below in one command; the argument is the
+robot's `ROS_DOMAIN_ID`. The service it installs starts the robot through `scripts/start-native.sh`, which reads the
+same `/etc/default/ugv` file.
+</Tip>
+
+<Steps>
+  <Step title="Create the robot settings file">
+    The robot settings are kept in the `/etc/default/ugv` file. Set `ROS_DOMAIN_ID` according to the robot's number.
+
+    ```bash
+    sudo tee /etc/default/ugv > /dev/null <<'EOF'
+    # UGV robot settings
+    # Each robot on the same network must have a different ROS_DOMAIN_ID.
+    ROS_DOMAIN_ID=1
+    # Additional launch arguments, e.g.: UGV_ARGS="line:=false" or
+    # UGV_ARGS="slam_mode:=localization map:=~/ugv_maps/salon nav:=true"
+    UGV_ARGS=""
+    EOF
+    ```
+  </Step>
+  <Step title="Create the service file">
+    ```bash
+    sudo tee /etc/systemd/system/ugv.service > /dev/null <<'EOF'
+    [Unit]
+    Description=UGV ROS 2 robot and web interface
+    Wants=network-online.target
+    After=network-online.target
+
+    [Service]
+    Type=simple
+    EnvironmentFile=/etc/default/ugv
+    Environment=ROS_LOG_DIR=/var/log/ugv
+    Environment=PYTHONPATH=/home/gemstone/ugv-gpio-venv/lib/python3.12/site-packages
+    LogsDirectory=ugv
+    ExecStart=/bin/bash -c 'source /opt/ros/jazzy/setup.bash && \
+      source /home/gemstone/ugv-ros/install/setup.bash && \
+      exec ros2 launch ugv_bringup robot.launch.py $$UGV_ARGS'
+    Restart=on-failure
+    RestartSec=5
+    KillSignal=SIGINT
+    TimeoutStopSec=20
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    ```
+
+    systemd passes the `$$UGV_ARGS` expression to bash as `$UGV_ARGS`; this way the arguments in the
+    `/etc/default/ugv` file are appended to the launch command.
+  </Step>
+  <Step title="Enable the service">
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now ugv.service
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+**Give each robot on the same network a different `ROS_DOMAIN_ID`.** The ROS nodes of two robots with the same number
+see each other, and a driving command sent from one robot's interface also drives the other robot. Since the interface
+is opened from each robot's own IP address, this number does not affect the interface.
+</Warning>
+
+Restart the service after changing the `/etc/default/ugv` file. The commands used to manage the service are:
+
+```bash
+systemctl status ugv                 # service status
+sudo systemctl restart ugv           # restart
+sudo systemctl stop ugv              # stop (before starting manually)
+journalctl -u ugv -f                 # live log
+```
+
+Since the service runs as root, saved maps are under `/root/ugv_maps`, the lidar selection under
+`/root/.ugv/lidar_source`, and ROS logs under `/var/log/ugv`.
+
+## 6. Updating
+
+Pull the latest changes from the repository and rebuild the workspace.
+
+```bash
+cd ~/ugv-ros
+git pull
+source /opt/ros/jazzy/setup.bash
+MAKEFLAGS=-j2 colcon build --symlink-install --executor sequential \
+  --cmake-args -DBUILD_TESTING=OFF
+sudo systemctl restart ugv
+```
+
+If the update adds a new dependency, install the dependencies before building.
+
+```bash
+rosdep install --from-paths src --ignore-src --rosdistro jazzy -y
+```
+
+## 7. Multiple Robots
+
+Apply the same installation steps on each board; only the `ROS_DOMAIN_ID` value in the `/etc/default/ugv` file must be
+different (e.g. 1 and 2). Also change the hostnames so that the boards can be told apart on the network.
+
+```bash
+sudo hostnamectl set-hostname ugv1
+```
+
+## 8. Running with Docker
+
+The robot can also run inside a container on a Linux system with Docker and Docker Compose installed. In the repository
+directory, build the image, start the robot and follow the logs with the commands below.
+
+```bash
+cd ~/ugv-ros
+ROS_DOMAIN_ID=1 docker compose up --build -d
+docker compose logs -f
+```
+
+The container runs in `privileged` mode on the host network so that it can access GPIO, SPI, PWM and serial ports.
+Saved maps are stored in `~/ugv_maps` and the settings selected in the interface in the `~/.ugv` directory.
+
+<Accordion title="Trying the interface without hardware">
+  To try the interface without the robot hardware, build the image and run the command below. `backend:=mock` simulates
+  the motors and encoders. Then open `http://localhost:8000` in a browser.
+
+  ```bash
+  docker compose build
+  docker run --rm -p 8000:8000 -p 9090:9090 ugv-ros:jazzy ros2 launch ugv_bringup robot.launch.py backend:=mock fusion:=false line:=false slam:=false
+  ```
+</Accordion>
