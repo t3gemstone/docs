@@ -204,6 +204,7 @@
                   "tr/projects/ugv-ros/safety",
                   "tr/projects/ugv-ros/field-test",
                   "tr/projects/ugv-ros/usage",
+                  "tr/projects/ugv-ros/simulation",
                   "tr/projects/ugv-ros/network",
                   "tr/projects/ugv-ros/architecture"
                 ]
@@ -439,6 +440,7 @@
                   "en/projects/ugv-ros/safety",
                   "en/projects/ugv-ros/field-test",
                   "en/projects/ugv-ros/usage",
+                  "en/projects/ugv-ros/simulation",
                   "en/projects/ugv-ros/network",
                   "en/projects/ugv-ros/architecture"
                 ]

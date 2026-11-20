@@ -17,6 +17,7 @@ description: 'UGV ROS 2 packages, data flow, driving modes, TF tree, topics and 
 | `ugv_navigation` | config + Python | slam_toolbox, Nav2, map saving service |
 | `ugv_gcs` | web + Python | Browser interface, rosbridge, robot pose publisher |
 | `ugv_bringup` | launch + config | Single launch file; all pins in the `config/hardware.yaml` file |
+| `ugv_simulation` | Gazebo + Python | [Simulation](/en/projects/ugv-ros/simulation) on the development computer: office world, robot model, `line_sensor_sim` |
 
 Hardware-independent logic (kinematics, PID, encoder decoding, line position, multiplexer, brake) lives in ROS-free
 modules and is tested with `pytest`.
