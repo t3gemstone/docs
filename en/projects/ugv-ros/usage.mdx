@@ -49,7 +49,7 @@ The default launch runs the complete robot in mapping mode. To enable or disable
 
 | Argument | Values | Description |
 | --- | --- | --- |
-| `backend` | `gpiod` \| `mock` | `mock`: simulates the motors and encoders; IMU and lidar are disabled |
+| `backend` | `gpiod` \| `mock` \| `sim` | `mock`: simulates the motors and encoders; IMU and lidar are disabled. `sim`: used by the [Simulation](/en/projects/ugv-ros/simulation) |
 | `hardware` | `<yaml>` | Pin and hardware file (default `config/hardware.yaml`) |
 | `imu` | `true` \| `false` | ICM-20948 IMU |
 | `fusion` | `true` \| `false` | EKF (wheel + IMU) publishes the odometry TF; if `false`, `ugv_base_node` publishes it |

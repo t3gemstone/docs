@@ -48,7 +48,7 @@ Varsayılan başlatma tam robotu haritalama modunda çalıştırır. Bileşenler
 
 | Argüman | Değerler | Açıklama |
 | --- | --- | --- |
-| `backend` | `gpiod` \| `mock` | `mock`: motor ve enkoderleri benzetir; IMU ve lidar kapalıdır |
+| `backend` | `gpiod` \| `mock` \| `sim` | `mock`: motor ve enkoderleri benzetir; IMU ve lidar kapalıdır. `sim`: [Simülasyon](/tr/projects/ugv-ros/simulation) kullanır |
 | `hardware` | `<yaml>` | Pin ve donanım dosyası (varsayılan `config/hardware.yaml`) |
 | `imu` | `true` \| `false` | ICM-20948 IMU |
 | `fusion` | `true` \| `false` | EKF (teker + IMU) odometri TF'ini yayınlar; `false` ise TF'i `ugv_base_node` yayınlar |

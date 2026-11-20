@@ -17,6 +17,7 @@ description: 'UGV ROS 2 paketleri, veri akışı, sürüş modları, TF ağacı,
 | `ugv_navigation` | config + Python | slam_toolbox, Nav2, harita kaydetme servisi |
 | `ugv_gcs` | web + Python | Tarayıcı arayüzü, rosbridge, robot konumu yayını |
 | `ugv_bringup` | launch + config | Tek başlatma dosyası; tüm pinler `config/hardware.yaml` dosyasında |
+| `ugv_simulation` | Gazebo + Python | Geliştirme bilgisayarında [Simülasyon](/tr/projects/ugv-ros/simulation): ofis dünyası, robot modeli, `line_sensor_sim` |
 
 Donanımdan bağımsız mantık (kinematik, PID, enkoder çözümleme, çizgi konumu, çoklayıcı, fren) ROS'tan bağımsız
 modüllerde yer alır ve `pytest` ile test edilir.
