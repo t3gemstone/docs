@@ -1,0 +1,163 @@
+---
+title: 'Yeni Sensör Ekleme'
+description: 'Yeni bir RAW Bayer kamera sensörünün Kamera ISP SDK ile devreye alınması'
+---
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
+
+* Bir sensörün kart için uygun olup olmadığını değerlendirmek
+* `camera-isp-sdk new` ile sensör iskeleti oluşturmak, overlay parçasını ve tanımlayıcıyı doldurmak
+* Sensörü kart üzerinde katman katman devreye almak
+</Tip>
+
+Bu bölümdeki örnek, depodaki `sensors/ov5647` dizininin nasıl eklendiğini anlatır; her adımın sonucunu
+depodaki dosyalarla karşılaştırabilirsiniz. Kendi sensörünüz için adları değiştirebilirsiniz.
+
+<Steps>
+  <Step title="Uygunluğun Denetlenmesi">
+    Sensörün çıkışı, bit derinliği ve bağlantı hızı kartın sınırları içinde olmalıdır.
+  </Step>
+  <Step title="Çekirdek Sürücüsü">
+    Sensörün pozlama ve kazanç kontrolleri olan bir V4L2 sürücüsü bulunmalıdır.
+  </Step>
+  <Step title="İskeletin Oluşturulması">
+    `camera-isp-sdk new` tanımlayıcıyı, overlay parçasını ve DCC kaynaklarını oluşturur.
+  </Step>
+  <Step title="Overlay ve Tanımlayıcının Doldurulması">
+    Sensöre özgü değerler sürücünün DT bağlamasından ve veri sayfasından alınır.
+  </Step>
+  <Step title="Derleme, Kurulum ve Devreye Alma">
+    Paket derlenip karta kurulur ve sensör adım adım test edilir.
+  </Step>
+</Steps>
+
+## 1. Uygunluğun Denetlenmesi
+
+* Sensör RAW Bayer, 8, 10 veya 12 bit veri vermeli ve MIPI CSI-2 D-PHY üzerinden en fazla 2 veri hattı
+  kullanmalıdır (kartın iki konnektörü de 2 hatlıdır). YUV çıkışlı sensörler ISP gerektirmez.
+* Mod genişliği RAW10/RAW12 için 8'in, RAW8 için 16'nın katı olmalıdır. Değilse sürücünün kırpma yapması
+  gerekir (IMX477 sürücüsünde olduğu gibi).
+* Piksel hızı bağlantıya sığmalıdır: genişlik × yükseklik × fps × bit, hat sayısı × 2 × bağlantı frekansından
+  küçük olmalıdır.
+
+## 2. Çekirdek Sürücüsü
+
+ISP yolunun ihtiyaç duyduğu kontroller şunlardır:
+
+| Kontrol | Neden |
+|---------|-------|
+| `V4L2_CID_EXPOSURE` | Otomatik pozlama tarafından yazılır |
+| `V4L2_CID_ANALOGUE_GAIN` | Otomatik pozlama tarafından yazılır |
+| `V4L2_CID_PIXEL_RATE`, `V4L2_CID_HBLANK` | Pozlama dönüşümü için; yoksa tanımlayıcıda `line-time-ns` verilir |
+
+* **T3 Gemstone çekirdeğinde varsa** (`grep VIDEO_<SENSÖR> t3_gem_o1_defconfig`): ek işlem gerekmez. Modül imajda yoksa
+  T3 Gemstone paket deposunda `kernel-module-<ad>-6.12.24-ti` paketi olarak bulunabilir (OV5647'de olduğu gibi).
+* **Mainline veya Raspberry Pi çekirdeğinde varsa**: sürücüyü `sensors/<id>/driver/` dizinine bir `Kbuild`
+  dosyasıyla (`obj-m += <id>.o`) birlikte kopyalayıp tanımlayıcıda `driver=driver` ayarlamanız gerekir.
+  Raspberry Pi sürücülerindeki gömülü veri pad'leri TI çekirdeğinde bulunmayan `MEDIA_BUS_FMT_SENSOR_DATA`
+  biçimini kullandığından kaldırılmalıdır. Sürücüyü `task drivers SENSORS=<id> KDIR=...` ile derleyebilirsiniz
+  ([Sensör Sürücülerinin Derlenmesi](/tr/boards/o1/isp/build#6-sensör-sürücülerinin-derlenmesi)); paket
+  sürücüyü içerir.
+
+## 3. İskeletin Oluşturulması
+
+```bash
+./camera-isp-sdk new ov5647 --name "OmniVision OV5647 (Raspberry Pi Camera v1.3)" \
+    --width 1920 --height 1080 --code SBGGR10_1X10 --fps 30 \
+    --dcc-id 5647 --dcc-from imx230
+```
+
+Komut `sensors/ov5647/` altında bir tanımlayıcı, overlay parçası, README kontrol listesi ve `imx230`'dan
+kopyalanmış DCC kaynakları oluşturur. Kaynaklarda kamera modül kimliği 5647'ye, AE/AWB istatistik ızgarası
+1920x1080'e ayarlanır ve demozaik katsayıları `--code` ile verilen BGGR sırasına taşınır.
+
+<Warning>
+- DCC kimliği başka bir sensör tarafından kullanılmayan bir sayı olmalıdır; sensörün parça numarası genellikle
+  uygundur.
+- `--dcc-from` aynı bit derinliğinde bir sensör olmalıdır: `imx230` 10 bit, `imx477` 12 bittir. Araç farklı bit
+  derinliğinde uyarı verir ([ISP Ayarı](/tr/boards/o1/isp/tuning)).
+</Warning>
+
+## 4. Overlay ve Tanımlayıcının Doldurulması
+
+### 4.1 Overlay Parçası
+
+`sensors/ov5647/overlay.dtsi` her iki port için bir kez, aşağıdaki makrolarla yazılır.
+
+| Makro | Anlamı |
+|-------|--------|
+| `CAM_I2C` | Konnektörün I2C hattı |
+| `CAM_GPIO_CTRL`, `CAM_GPIO`, `CAM_GPIO_PINCTRL` | Konnektörün CAM_GPIO pini (Raspberry Pi modüllerinde besleme etkinleştirme) |
+| `CAM_LABEL(x)` | Porta özgü etiket, örneğin `x_csi0` |
+| `CAM_SENSOR_EP`, `CAM_RX_EP` | Birbirine bağlanacak iki uç nokta |
+
+Parça `CAM_DATA_LANES` makrosunu tanımlamalıdır; sensör kesintili saat kullanıyorsa `CAM_CLOCK_NONCONTINUOUS`
+makrosu da tanımlanır. `compatible` değeri, I2C adresi, saat ve beslemeler sürücünün DT bağlamasından alınır.
+
+```bash
+./camera-isp-sdk overlay build ov5647
+task check-overlays SENSORS=ov5647 BASE_DTB=/path/to/k3-am67a-t3-gem-o1.dtb
+```
+
+### 4.2 Tanımlayıcı
+
+`sensors/ov5647/sensor.conf` dosyasındaki `TODO` işaretli alanlar doldurulur.
+
+| Bölüm | İçerik |
+|-------|--------|
+| `[sensor]` | `module` ve `entity`: sürücü modülünün adı ve `media-ctl -p` çıktısındaki varlık adının ön eki |
+| `[mode]` | Genişlik, yükseklik, media bus kodu (Bayer sırası ve bit derinliği) ve fps |
+| `[csi]` | Hat sayısı ve overlaydeki ile aynı bağlantı frekansı |
+| `[isp]` | DCC kimliği ve DCC dosyalarının karttaki yeri |
+| `[ae]` | `range0`: kare süresine kadar pozlama, sensörün sınırına kadar analog kazanç |
+| `[exposure]` | Pozlama kontrolünün birimi: `lines` veya `time` |
+| `[gain]` | Analog kazanç kontrolünün kazanca dönüşümü |
+
+`[gain]` modelleri:
+
+| `model` | Kod | Örnek sensörler |
+|---------|-----|-----------------|
+| `linear` | `offset + scale × kazanç` | Çoğu OmniVision sensörü (OV5647: `scale=16`) |
+| `inverse` | `k − k / kazanç` | Sony IMX219 (`k=256`), IMX477 (`k=1024`) |
+| `db` | `20 log10(kazanç) / step-db` | Sony IMX290/IMX327/IMX462 (`step-db=0.3`) |
+| `table` | Tablodaki en yakın değer | Diğerleri |
+
+Formül sensörün veri sayfasında veya libcamera'daki `cam_helper_<sensör>.cpp` dosyasında bulunur.
+
+```bash
+./camera-isp-sdk validate ov5647
+```
+
+## 5. Derleme, Kurulum ve Devreye Alma
+
+Paketi derleyip [Kurulum](/tr/boards/o1/isp/installation) bölümündeki gibi karta kurabilirsiniz.
+
+```bash
+task package SENSORS=ov5647
+```
+
+Kartta aşağıdaki komutları `root` kullanıcısıyla ve Edge AI ortam değişkenleri yüklenmiş olarak
+([Kurulum](/tr/boards/o1/isp/installation#1-edge-ai-paketlerinin-kurulması)) sırasıyla çalıştırabilirsiniz. Her adım
+bir katmanı ayrı ayrı test eder.
+
+```bash
+# Sürücü yüklendi ve sensör medya grafiğinde
+media-ctl -p | grep -A3 ov5647
+
+# Mod hat boyunca ayarlandı, /dev bağlantıları oluşturuldu
+camera-isp-sdk setup -v ov5647
+
+# Ham kareler geliyor (henüz ISP yok)
+v4l2-ctl -d /dev/video-ov5647-cam0 --stream-mmap --stream-count=30
+
+# ISP üzerinden, kare hızını ölçerek
+camera-isp-sdk pipeline ov5647 --sink fake --run
+
+# Bir fotoğraf
+camera-isp-sdk pipeline ov5647 --sink jpeg --output ov5647.jpg --run
+```
+
+Sorunlar için [Kullanım](/tr/boards/o1/isp/usage#5-sorun-giderme) bölümündeki tabloya bakabilirsiniz. Sensör kartta
+doğrulandıktan sonra tanımlayıcıda `status=supported` ayarlanır ve ISP ayarı yapılır
+([ISP Ayarı](/tr/boards/o1/isp/tuning)).

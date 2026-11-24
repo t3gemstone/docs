@@ -1,0 +1,161 @@
+---
+title: 'Building'
+description: 'Building the Camera ISP SDK package on the host computer'
+---
+
+import SnippetIspClone from '/snippets/boards/o1/isp/clone.mdx';
+import SnippetIspTaskList from '/snippets/boards/o1/isp/task-list.mdx';
+import SnippetIspValidate from '/snippets/boards/o1/isp/validate.mdx';
+
+<Tip>
+By the end of this section, you will have learned about the following topics.
+
+* Setting up the build environment with Devbox and Distrobox
+* Producing the DCC files, overlays and the installation package with Task
+* Cross-building the drivers of sensors whose driver is not in the kernel
+</Tip>
+
+The build produces the package to install on the board: the sensor descriptors are checked, the ISP tuning (DCC)
+files and device tree overlays are compiled, and everything is packed into a single `.tar.gz` file. TI's
+GStreamer plugin is built on the board itself; that step is described in [Installation](/en/boards/o1/isp/installation).
+
+## 1. Getting the Source Code
+
+<SnippetIspClone />
+
+## 2. Setting Up the Build Environment
+
+As in the [SDK](/en/sdk/introduction), every tool the build needs comes with a ready-made build environment.
+Your computer only needs Docker and Devbox.
+
+<Steps>
+  <Step title="Installing the Requirements">
+    The `setup.sh` script installs Docker and Devbox.
+
+    ```bash
+    ./setup.sh
+    ```
+
+    <Warning>
+    If Docker is installed for the first time, you need to log out and log back in.
+    </Warning>
+  </Step>
+  <Step title="Activating the Devbox Shell">
+    Devbox installs Distrobox and Task.
+
+    ```bash
+    devbox shell
+    ```
+  </Step>
+  <Step title="Entering the Build Environment">
+    On its first run `task box` builds the Docker image, then enters the Distrobox environment.
+
+    ```bash
+    task box
+    ```
+
+    On the first entry, `⚠️  First time user password setup ⚠️` asks you to set a password for the environment.
+    Once you see the `🚀 distrobox:workdir>` prompt, you are ready to build.
+  </Step>
+</Steps>
+
+<Note>
+- In the environment the repository is `/home/workdir`; other directories of your computer are under `/run/host`.
+- The environment's home directory is the repository's `.distrobox/` folder; the TI tools it downloads are kept there.
+- `task destroy` removes the environment and its Docker image.
+</Note>
+
+## 3. Tasks
+
+All commands below run inside the build environment (`task box`). `task` without arguments lists all tasks and
+the current settings.
+
+<SnippetIspTaskList />
+
+Settings follow the task name as `VARIABLE=value`.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SENSORS` | (all) | Sensors the task works on, e.g. `SENSORS="imx477 ov5647"` |
+| `BOARD` | `t3-gem-o1` | Board description under `boards/` |
+| `BUILD_DIR` | `build` | Output directory |
+| `DCC_TOOLS_FROM` | | A `dcc_gen_linux` downloaded by hand |
+| `KDIR`, `ARCH`, `CROSS_COMPILE` | `arm64`, `aarch64-linux-gnu-` | For building the sensor drivers (`task drivers`) |
+
+## 4. Building the Package
+
+```bash
+task build      # check the descriptors, build the DCC files and overlays
+task package    # -> build/camera-isp-sdk-0.1.0-t3-gem-o1.tar.gz
+```
+
+You can use the `SENSORS` variable to put only some sensors into the package.
+
+```bash
+task package SENSORS=ov5647
+```
+
+<Note>
+You need to build the drivers of sensors whose driver is not in the kernel first
+([Building Sensor Drivers](/en/boards/o1/isp/build#6-building-sensor-drivers)): the package carries the built
+drivers and leaves out a driver that was not built.
+</Note>
+
+`task build` runs the `validate`, `dcc` and `overlays` tasks in that order. The outputs are under `build/`:
+
+| Directory | Contents |
+|-----------|----------|
+| `build/dcc/<sensor>/` | `dcc_viss.bin`, `dcc_2a.bin` and `dcc_ldc.bin` if the sensor has one |
+| `build/overlays/` | `k3-am67a-t3-gem-o1-<port>-<sensor>.dtbo` for every sensor and port |
+| `build/camera-isp-sdk-<version>-t3-gem-o1.tar.gz` | The package to install on the board |
+
+## 5. TI's DCC Tools
+
+The ISP tuning files are compiled from XML sources with TI's `dcc_gen_linux`. On its first run, `task dcc`
+downloads it from the pinned `REL.IMAGING.11.00.00.00` tag of TI's imaging repository and checks its SHA-256.
+The tool is not added to the repository; it is kept in `~/.cache/camera-isp-sdk/dcc-tools/`.
+
+<Warning>
+git.ti.com is sometimes unavailable for a while (HTTP 502/503). The download is retried; if it still fails,
+you can download the file with a browser and install it by hand. The checksum is checked either way.
+
+```bash
+task dcc DCC_TOOLS_FROM=~/Downloads/dcc_gen_linux
+```
+
+`DCC_TOOLS_FROM` can also point to an imaging checkout or a Processor SDK RTOS directory.
+</Warning>
+
+## 6. Building Sensor Drivers
+
+A sensor whose driver is not in the T3 Gemstone kernel (IMX477 today) carries it in `sensors/<sensor>/driver/`: the driver
+sources and a `Kbuild` file. `task drivers` cross-builds the drivers of all such sensors, or of the sensors in
+`SENSORS`, against a kernel build directory configured for the board's kernel. Sensors whose driver is in the
+kernel are skipped. Building the kernel is described in [Kernel](/en/sdk/kernel). A kernel directory outside the
+repository shows up under `/run/host` in the environment.
+
+```bash
+task drivers KDIR=/run/host/path/to/kernel-build
+```
+
+The modules (`.ko`) are built next to their sources. `task package` puts them into the package, which installs
+them under `/lib/modules/<kernel>/updates/` on the board.
+
+## 7. Tests and Checks
+
+`camera-isp-sdk validate` catches, before the build, problems that would otherwise only show up on the board and
+often without any error message:
+
+* Image widths the capture DMA cannot take
+* DCC files whose ID the ISP ignores
+* An AE statistics grid outside the frame
+* Tuning files made for another bit depth or Bayer order
+* Link rates the D-PHY cannot carry
+
+<SnippetIspValidate />
+
+| Task | Description |
+|------|-------------|
+| `task test` | Unit tests of the Python tool and the GStreamer descriptor parser |
+| `task check-overlays BASE_DTB=<dtb>` | Applies the overlays to the board's base DTB with `fdtoverlay` |
+| `task gst:check-patch` | Checks that the plugin patch applies to TI's pinned commit |

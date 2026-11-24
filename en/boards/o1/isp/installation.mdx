@@ -1,0 +1,176 @@
+---
+title: 'Installation'
+description: 'Installing the Camera ISP SDK package on the T3 Gemstone O1'
+---
+
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-en.mdx';
+import SnippetIspDoctor from '/snippets/boards/o1/isp/doctor.mdx';
+import SnippetIspSetup from '/snippets/boards/o1/isp/setup.mdx';
+
+<Tip>
+By the end of this section, you will have learned about the following topics.
+
+* Installing the Camera ISP SDK package on the board and patching TI's `tiovx` plugin
+* Enabling the sensor driver and the camera overlay
+* Checking the installation with `camera-isp-sdk doctor`
+</Tip>
+
+<Steps>
+  <Step title="Installing the Edge AI Packages">
+    The hardware ISP is reached through TI's Edge AI stack.
+  </Step>
+  <Step title="Installing the Package">
+    The package built on the computer is unpacked into the board's root directory.
+  </Step>
+  <Step title="Building the tiovx Plugin">
+    TI's GStreamer plugin is rebuilt once with descriptor support.
+  </Step>
+  <Step title="Installing the Sensor Driver">
+    The camera's kernel driver is installed if the image does not have it.
+  </Step>
+  <Step title="Adding the Overlay and Rebooting">
+    The overlay of the camera's port is added to `uEnv.txt`.
+  </Step>
+  <Step title="Checking the Installation">
+    The camera is configured with `camera-isp-sdk setup` and the installation is checked with `camera-isp-sdk doctor`.
+  </Step>
+</Steps>
+
+## 1. Installing the Edge AI Packages
+
+The `tiovxisp` element and TIOVX, the software that drives the hardware accelerators (VPAC ISP, MSC, LDC), come
+with the `t3-edgeai-dev` package. You can install it and enable the `k3-am67a-t3-gem-o1-edgeai-apps.dtbo` overlay
+as described in [AI Installation](/en/boards/o1/ai/installation).
+
+```bash
+sudo apt install t3-edgeai-dev
+```
+
+The Camera ISP SDK commands on the board are run as `root` with the Edge AI environment loaded:
+
+```bash
+sudo su
+source /opt/t3-edgeai-env
+```
+
+<Warning>
+You need to load the environment in every new shell, before `build.sh`, `camera-isp-sdk doctor`, `camera-isp-sdk setup` and
+`camera-isp-sdk pipeline`. Without the `t3-edgeai-dev` package and `/opt/t3-edgeai-env`, the hardware accelerators do not
+work.
+</Warning>
+
+## 2. Installing the Package
+
+You can copy the package built in [Building](/en/boards/o1/isp/build) to the board as shown below.
+
+```bash
+scp build/camera-isp-sdk-0.1.0-t3-gem-o1.tar.gz gemstone@<board-ip-address>:
+```
+
+Then you can unpack it into the root directory on the board.
+
+```bash
+sudo tar -C / -xzf camera-isp-sdk-0.1.0-t3-gem-o1.tar.gz
+```
+
+| Location | Contents |
+|----------|----------|
+| `/usr/bin/camera-isp-sdk` | Command line tool |
+| `/usr/share/camera-isp-sdk/sensors/` | Sensor descriptors (read by `tiovxisp`) |
+| `/usr/share/camera-isp-sdk/gst/` | Plugin patch, its sources and `build.sh` |
+| `/opt/imaging/<sensor>/linear/` | ISP tuning (DCC) files |
+| `/boot/overlays/` | Camera overlays |
+| `/lib/modules/<kernel>/updates/` | Sensor drivers built with `task drivers` |
+
+## 3. Building the tiovx Plugin
+
+TI's `tiovxisp`/`tiovxldc` plugin is rebuilt once on the board with descriptor support. The script fetches TI's
+`edgeai-gst-plugins` at the pinned commit, applies the patch, builds it and installs it, keeping a backup of the
+stock plugin. You can run it as shown below, in the shell where the Edge AI environment is loaded
+([1. Installing the Edge AI Packages](/en/boards/o1/isp/installation#1-installing-the-edge-ai-packages)).
+
+```bash
+/usr/share/camera-isp-sdk/gst/build.sh
+```
+
+<Note>
+The build needs `git`, `meson`, `ninja` and an internet connection on the board. To go back to the stock plugin,
+you can run `/usr/share/camera-isp-sdk/gst/build.sh --restore`. Adding a sensor later does not need this step again; a
+package with a new plugin patch does, and `camera-isp-sdk doctor` reports it.
+</Note>
+
+## 4. Installing the Sensor Driver
+
+| Sensor | Driver |
+|--------|--------|
+| `imx219` | On the image, nothing to do. |
+| `ov5647` | Enabled in the kernel but not on the image: `sudo apt install kernel-module-ov5647-6.12.24-ti` |
+| `imx477` | Ships with the Camera ISP SDK. |
+| `imx230` | On the image (`arducam-pivariety`), nothing to do. |
+
+The drivers built in [Building Sensor Drivers](/en/boards/o1/isp/build#6-building-sensor-drivers) are installed
+by the package under `/lib/modules/<kernel>/updates/`. You can register them with the kernel as shown below.
+
+```bash
+sudo depmod -a
+```
+
+## 5. Adding the Overlay and Rebooting
+
+Every sensor has two overlays: `k3-am67a-t3-gem-o1-csi0-<sensor>.dtbo` and `k3-am67a-t3-gem-o1-csi1-<sensor>.dtbo`.
+You need to pick the one of the port the camera is connected to.
+
+<Note>
+- The connector farther from the Ethernet jack is CSI0, the closer one is CSI1.
+- CSI1 shares its lanes with DSI0; a camera on CSI1 cannot be used together with a DSI0 panel overlay.
+- If another camera overlay of the same port is enabled (for example the kernel's own `csi0-imx219` overlay), you
+  need to remove it.
+</Note>
+
+```bash
+sudo nano /boot/uEnv.txt
+```
+
+The `uEnv.txt` file contains definitions like these.
+
+<SnippetUEnv />
+
+You can add the overlay file name to the end of the `overlays=` line, separated by a space. For an OV5647 on the
+CSI0 connector, for example, you can use `k3-am67a-t3-gem-o1-csi0-ov5647.dtbo`.
+
+<SnippetUEnvEdit />
+
+Then you need to reboot the board.
+
+```bash
+sudo reboot
+```
+
+## 6. Checking the Installation
+
+<Warning>
+`tiovxisp` and TIOVX need access to `/dev/mem`, so `doctor`, `setup` and every command that uses the ISP must be
+run as `root`, in a shell where the Edge AI environment is loaded:
+
+```bash
+sudo su
+source /opt/t3-edgeai-env
+```
+</Warning>
+
+`camera-isp-sdk setup` finds the cameras on the board, sets the descriptor's mode along sensor → CSI-2 bridge →
+receiver, and creates the `/dev/video-<sensor>-cam0` and `/dev/v4l-<sensor>-subdev0` links.
+
+<SnippetIspSetup />
+
+<Note>
+The links under `/dev` have to be created again after every boot. If you run the camera from a service, you can add
+`camera-isp-sdk setup` to its `ExecStartPre` line.
+</Note>
+
+`camera-isp-sdk doctor` checks the overlay, the driver, the patched plugin and the IDs in the DCC files.
+
+<SnippetIspDoctor />
+
+Once the installation is complete, you can run the camera with the commands in [Usage](/en/boards/o1/isp/usage).

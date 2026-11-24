@@ -1,0 +1,36 @@
+<CodeGroup>
+
+  ```bash Terminal
+  task
+  ```
+
+  ```bash Output
+  task: Available tasks for this project:
+  * box:                   Enter Distrobox's Ubuntu 22.04 image that has the build tools
+  * build:                 Validate sensors, build DCC binaries and overlays
+  * check-overlays:        Apply the overlays to BASE_DTB=<dtb> with fdtoverlay
+  * clean:                 Remove the build directory
+  * dcc:                   Build DCC binaries (downloads TI's dcc_gen_linux once, or DCC_TOOLS_FROM=<file> installs one downloaded by hand)
+  * default:
+  * destroy:               Destroy the Distrobox container and the Docker image of the build environment
+  * drivers:               Cross-build the drivers the kernel lacks (sensors/<id>/driver) against KDIR=<kernel build dir>
+  * overlays:              Build device tree overlays
+  * package:               Build, then pack the tarball to unpack over / on the board (build/camera-isp-sdk-<version>-<board>.tar.gz)
+  * test:                  Unit tests (Python tool and GStreamer descriptor parser)
+  * validate:              Check descriptors and DCC sources against the board
+  * gst:check-patch:       Check that the plugin patch applies to TI's tree at the pinned commit
+  * gst:test:              Descriptor parser unit tests, loading every shipped sensor
+  * tools:test:            Unit tests of the camera-isp-sdk tool
+
+  Environment:
+
+    BOARD          = 't3-gem-o1'
+    SENSORS        = ''
+    BUILD_DIR      = 'build'
+    DCC_TOOLS_FROM = ''
+    KDIR           = ''
+    ARCH           = 'arm64'
+    CROSS_COMPILE  = 'aarch64-linux-gnu-'
+  ```
+
+</CodeGroup>

@@ -1,0 +1,94 @@
+---
+title: 'Desteklenen Sensörler'
+description: 'Kamera ISP SDK ile gelen kamera sensörleri ve sensörlere özgü notlar'
+---
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
+
+* Kamera ISP SDK ile gelen her sensörün sürücüsü, overlayi ve ISP ayarının durumu
+* Sensörlere özgü kurulum adımları ve kart üzerinde ölçülen değerler
+</Tip>
+
+| Kimlik | Modül | Overlay (CSI0) | Mod |
+|--------|-------|----------------|-----|
+| `imx219` | Raspberry Pi Camera v2 | `k3-am67a-t3-gem-o1-csi0-imx219.dtbo` | 1920x1080@30 `SRGGB10_1X10` |
+| `imx230` | Arducam Pivariety IMX230 | `k3-am67a-t3-gem-o1-csi0-imx230.dtbo` | 1920x1080@30 `SRGGB10_1X10` |
+| `imx477` | Raspberry Pi HQ Camera | `k3-am67a-t3-gem-o1-csi0-imx477.dtbo` | 1920x1080@50 `SRGGB12_1X12` |
+| `ov5647` | Raspberry Pi Camera v1.3 | `k3-am67a-t3-gem-o1-csi0-ov5647.dtbo` | 1920x1080@30 `SBGGR10_1X10` |
+
+CSI1 için overlay adlarındaki `csi0` yerine `csi1` kullanılır. Kurulu sensörleri kartta `camera-isp-sdk list`
+komutuyla listeleyebilirsiniz.
+
+## IMX219
+
+Raspberry Pi Camera v2. TI bu sensörü desteklediği için tanımlayıcı TI'nin imajla gelen
+`/opt/imaging/imx219/linear/` ayar dosyalarını kullanır ve DCC derlemez. Sürücü imajda bulunur.
+
+Bu tanımlayıcının amacı, yamalı eklentiyi bilinen iyi bir ayarla karşılaştırmaktır: aynı modül
+`sensor-name=imx219` ile Kamera ISP SDK yolundan, `sensor-name=SENSOR_SONY_IMX219_RPI` ile TI'nin yolundan
+çalıştırıldığında renkler aynı olmalıdır.
+
+<Note>
+TI'nin 11.0 sürümü IMX219 pozlamasını yaklaşık 1000 kat büyük hesapladığı için TI yolunda pozlama sürekli
+maksimumda kalır ve yalnızca kazanç değişir. Kamera ISP SDK yolunda satır süresi sürücünün `PIXEL_RATE` ve `HBLANK`
+değerlerinden hesaplanır.
+</Note>
+
+## IMX230
+
+Arducam Pivariety adaptörü üzerindeki IMX230. Adaptör sensörü kendisi sürer; çekirdek tarafında T3 Gemstone çekirdeğindeki
+`arducam-pivariety` sürücüsü kullanılır. Varlık adı sürücüye göre `arducam-pivariety` olduğu için karttaki
+herhangi bir Pivariety modülü bu tanımlayıcıyla eşleşir.
+
+Kart üzerinde ölçülen değerler:
+
+* Bayer sırası `SRGGB10_1X10`; siyah seviyesi 64.
+* Pozlama satır cinsindendir, satır süresi 15,47 µs. Yazılım pozlamayı en az 1074 satıra (~16,6 ms) çeker ve
+  kare uzunluğunun yaklaşık 100 satır altında sınırlar.
+* Analog kazanç doğrusal; 100 = 1x, aralık 100..800.
+* `tiovxisp` ile 29,25 fps; yakalama ve ISP yaklaşık 0,1 çekirdek, LDC ile birlikte 0,2 çekirdek kullanır.
+
+## IMX477
+
+Raspberry Pi HQ Camera. Sürücü, Raspberry Pi çekirdeğindeki sürücünün T3 Gemstone çekirdeğine uyarlanmış hâlidir ve
+`sensors/imx477/driver/` dizininde bulunur ([Kurulum](/tr/boards/o1/isp/installation#4-sensör-sürücüsünün-kurulması)).
+Uyarlamada gömülü veri (embedded data) pad'i kaldırılmış, yakalama DMA'sının alamadığı genişlikler sensörün
+dijital kırpmasıyla 1920x1080, 2016x1520 ve 1328x990'a indirilmiştir.
+
+ISP ayarı başlangıç düzeyindedir: 12 bite bağlı bileşenler TI'nin IMX390 ayarından, renk matrisi, gamma ve AWB
+ayarı `imx230` tanımlayıcısından alınmıştır; siyah seviyesi 256'dır. Pozlama ve parlaklık doğru, renkler ise
+sensör ayarlanana kadar yaklaşıktır.
+
+## OV5647
+
+Raspberry Pi Camera v1.3 ve uyumlu modüller. Modülün 15 pinli konnektörü için 15-22 pin dönüştürücü kablo
+gerekir. Sensör I2C üzerinde 0x36 adresindedir; modülün beslemesi konnektördeki CAM_GPIO pini ile açılır.
+
+<Steps>
+  <Step title="Sürücünün Kurulması">
+    Sürücü T3 Gemstone çekirdeğinde etkindir ancak imajda bulunmaz; T3 Gemstone paket deposundan kurulur.
+
+    ```bash
+    sudo apt install kernel-module-ov5647-6.12.24-ti
+    ```
+  </Step>
+  <Step title="Overlayin Eklenmesi">
+    `uEnv.txt` dosyasına `k3-am67a-t3-gem-o1-csi0-ov5647.dtbo` eklenir ve kart yeniden başlatılır.
+  </Step>
+  <Step title="Kameranın Yapılandırılması">
+    ```bash
+    sudo su
+    source /opt/t3-edgeai-env
+    camera-isp-sdk setup ov5647
+    ```
+  </Step>
+</Steps>
+
+Kart üzerinde ölçülen değerler (CSI0):
+
+* Sensör `ov5647 5-0036` olarak görünür. Bayer sırası `SBGGR10_1X10`; sensörün renk çubuğu test deseniyle
+  (`v4l2-ctl -c test_pattern=1`) hem ham karede hem ISP çıkışında doğrulanmıştır.
+* `tiovxisp` ile 29,4 fps, kare kaybı yok; yakalama ve ISP yaklaşık 0,1 çekirdek kullanır.
+* Otomatik pozlama 4 satırdan 32,5 ms sınırına, ardından kazancı 8x'e çıkarır. Analog kazanç kodu 16 × kazançtır.
+* Siyah seviyesi 16 (Raspberry Pi ayarındaki 16 bitlik 1024 değeri).

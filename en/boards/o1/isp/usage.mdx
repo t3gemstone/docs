@@ -1,0 +1,112 @@
+---
+title: 'Usage'
+description: 'Using the camera through the hardware ISP'
+---
+
+import SnippetIspPipeline from '/snippets/boards/o1/isp/pipeline.mdx';
+
+<Tip>
+By the end of this section, you will have learned about the following topics.
+
+* Sending the camera through the hardware ISP to a display, a JPEG or an H.264 file
+* Using the `tiovxisp` element in your own GStreamer pipelines
+* Watching auto exposure and capturing raw frames without the ISP
+</Tip>
+
+<Warning>
+The commands below need the steps in [Installation](/en/boards/o1/isp/installation) to be complete and
+`camera-isp-sdk setup` to have run after boot. Commands that use the ISP are run as `root` with the Edge AI environment
+loaded; without it the hardware accelerators do not work.
+
+```bash
+sudo su
+source /opt/t3-edgeai-env
+```
+</Warning>
+
+## 1. Ready-Made Pipelines
+
+`camera-isp-sdk pipeline` builds the camera → ISP → output pipeline from the sensor's descriptor. `--run` starts it.
+
+```bash Display (HDMI/DSI)
+camera-isp-sdk pipeline ov5647 --run
+```
+
+```bash Photo
+camera-isp-sdk pipeline ov5647 --sink jpeg --output photo.jpg --run
+```
+
+```bash Video (300 frames, H.264)
+camera-isp-sdk pipeline ov5647 --sink h264 --frames 300 --output video.mp4 --run
+```
+
+```bash Frame rate measurement
+camera-isp-sdk pipeline ov5647 --sink fake --run
+```
+
+| Option | Description |
+|--------|-------------|
+| `--sink display\|jpeg\|h264\|fake` | Output: display, last frame as JPEG, MP4 file, frame rate measurement |
+| `--output FILE` | JPEG/H.264 output file |
+| `--frames N` | Stops after N frames (90 by default for JPEG, giving auto exposure time to settle) |
+| `--scale WIDTHxHEIGHT` | Scales in hardware with `tiovxmultiscaler` |
+| `--ldc` | Adds lens distortion correction (sensors with LDC tuning only, e.g. `imx230`) |
+| `--cam N` | Camera number when there is more than one of the same sensor |
+
+## 2. Your Own GStreamer Pipeline
+
+Without `--run` the command prints the pipeline as a `gst-launch-1.0` command. You can use it as a starting point
+for your own pipeline.
+
+<SnippetIspPipeline />
+
+The Camera ISP SDK specific part of the pipeline is the parameters of `tiovxisp`:
+
+* `sensor-name`: the descriptor's ID (`ov5647`). The element reads the descriptor from
+  `/usr/share/camera-isp-sdk/sensors/`, or from the directories in `CAMERA_ISP_SDK_SENSOR_PATH` if it is set.
+* `dcc-isp-file` and `sink_0::dcc-2a-file`: the sensor's DCC files.
+* `sink_0::device`: the sensor subdev that auto exposure writes exposure and gain to.
+* `format` in the caps (such as `bggr10`): the sensor's Bayer order and bit depth.
+
+The NV12 output of `tiovxisp` can go straight into TI elements such as `tiovxmultiscaler` and `tiovxdlpreproc`,
+and from there into your [Edge AI](/en/boards/o1/ai/usage) applications.
+
+## 3. Watching Auto Exposure
+
+Auto exposure and white balance run inside `tiovxisp`. Exposure and gain should settle within a few seconds.
+The command below shows the values the 2A produces and what is written to the sensor.
+
+```bash
+GST_DEBUG=tiovxisp:6 camera-isp-sdk pipeline ov5647 --sink fake --run 2>&1 | grep -i "sensor specific"
+```
+
+The sensor's current values can also be read from the subdev.
+
+```bash
+v4l2-ctl -d /dev/v4l-ov5647-subdev0 -C exposure,analogue_gain
+```
+
+## 4. Capturing Raw Frames Without the ISP
+
+For sensor tuning or debugging, you can capture raw frames without the ISP. Frames are 16 bits per pixel, little-endian,
+`width × height × 2` bytes.
+
+```bash
+v4l2-ctl -d /dev/video-ov5647-cam0 --stream-mmap --stream-skip=30 --stream-count=1 --stream-to=frame.raw
+```
+
+## 5. Troubleshooting
+
+| Symptom | Likely cause |
+|---------|--------------|
+| No sensor in `media-ctl -p` | Overlay not loaded (`ls /proc/device-tree/chosen/overlays`), driver not installed (`camera-isp-sdk doctor` reports it), wrong port |
+| `setup`: "driver chose ..." | The driver does not support the descriptor's mode or Bayer order |
+| `v4l2-ctl` receives no frames | Wrong link frequency or lane count; you can check `dmesg` for CSI-2 errors |
+| `Broken pipe` | `camera-isp-sdk setup` not run, or a width the capture DMA cannot take |
+| Image pink/green or very dark | Wrong Bayer order or DCC ID mismatch (`camera-isp-sdk dcc inspect`) |
+| Red and blue swapped | Demosaic tuning made for another Bayer order ([ISP Tuning](/en/boards/o1/isp/tuning#3-bayer-order)) |
+| Image saturated or flat grey | DCC made for another bit depth, or wrong `format-msb` |
+| Brightness oscillates | Wrong `[gain]` or `[exposure]` model in the descriptor |
+| "[SENSOR-MODULE] Invalid sensor name", `tiovxisp` does not start | `sensor-name` is not a TI sensor and has no descriptor; you can check the name and `/usr/share/camera-isp-sdk/sensors/<sensor>/sensor.conf` |
+| `doctor`: "built from another version of the patch" | The installed package has a new plugin patch; you need to run `/usr/share/camera-isp-sdk/gst/build.sh` |
+| "works on the camera-isp-sdk source tree" | `validate`, `dcc`, `overlay`, `driver` and `package` run on the computer ([Building](/en/boards/o1/isp/build)); the board has only the installed data |

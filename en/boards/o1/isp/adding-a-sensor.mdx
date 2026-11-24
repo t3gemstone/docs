@@ -1,0 +1,159 @@
+---
+title: 'Adding a Sensor'
+description: 'Bringing a new RAW Bayer camera sensor up with the Camera ISP SDK'
+---
+
+<Tip>
+By the end of this section, you will have learned about the following topics.
+
+* Checking whether a sensor fits the board
+* Scaffolding a sensor with `camera-isp-sdk new` and filling in the overlay fragment and the descriptor
+* Bringing the sensor up on the board one layer at a time
+</Tip>
+
+The example in this section is how `sensors/ov5647` was added to the repository, so each step can be compared
+with the files there. You can replace the names with your sensor's.
+
+<Steps>
+  <Step title="Checking the Sensor Fits">
+    The sensor's output, bit depth and link rate must be within the board's limits.
+  </Step>
+  <Step title="Kernel Driver">
+    The sensor needs a V4L2 driver with exposure and gain controls.
+  </Step>
+  <Step title="Scaffolding">
+    `camera-isp-sdk new` creates the descriptor, the overlay fragment and the DCC sources.
+  </Step>
+  <Step title="Filling in the Overlay and the Descriptor">
+    Sensor specific values come from the driver's DT binding and the datasheet.
+  </Step>
+  <Step title="Building, Installing and Bring-up">
+    The package is built, installed on the board and the sensor is tested step by step.
+  </Step>
+</Steps>
+
+## 1. Checking the Sensor Fits
+
+* The sensor must deliver RAW Bayer at 8, 10 or 12 bits over MIPI CSI-2 D-PHY with at most 2 data lanes (both
+  connectors of the board are 2-lane). YUV sensors do not need the ISP.
+* The mode width must be a multiple of 8 for RAW10/RAW12 and of 16 for RAW8. If it is not, the driver has to crop
+  (as the IMX477 driver does).
+* The pixel rate must fit the link: width × height × fps × bits below lanes × 2 × link frequency.
+
+## 2. Kernel Driver
+
+The ISP path needs these controls:
+
+| Control | Why |
+|---------|-----|
+| `V4L2_CID_EXPOSURE` | Written by auto exposure |
+| `V4L2_CID_ANALOGUE_GAIN` | Written by auto exposure |
+| `V4L2_CID_PIXEL_RATE`, `V4L2_CID_HBLANK` | For the exposure conversion; otherwise give `line-time-ns` in the descriptor |
+
+* **In the T3 Gemstone kernel already** (`grep VIDEO_<SENSOR> t3_gem_o1_defconfig`): nothing to do. If the module is not on
+  the image, the T3 Gemstone package repository may have it as `kernel-module-<name>-6.12.24-ti` (as for the OV5647).
+* **In the mainline or Raspberry Pi kernel**: you need to copy the driver to `sensors/<id>/driver/` with a
+  `Kbuild` (`obj-m += <id>.o`) and set `driver=driver` in the descriptor. Embedded data pads of Raspberry Pi drivers
+  use `MEDIA_BUS_FMT_SENSOR_DATA`, which the TI kernel does not have, and must be removed. You can build it
+  with `task drivers SENSORS=<id> KDIR=...` ([Building Sensor Drivers](/en/boards/o1/isp/build#6-building-sensor-drivers));
+  the package then carries it.
+
+## 3. Scaffolding
+
+```bash
+./camera-isp-sdk new ov5647 --name "OmniVision OV5647 (Raspberry Pi Camera v1.3)" \
+    --width 1920 --height 1080 --code SBGGR10_1X10 --fps 30 \
+    --dcc-id 5647 --dcc-from imx230
+```
+
+This creates `sensors/ov5647/` with a descriptor, an overlay fragment, a README checklist and DCC sources copied
+from `imx230`. In the sources the camera module ID is set to 5647, the AE/AWB statistics grid is fitted to
+1920x1080 and the demosaic coefficients are moved to the BGGR order of `--code`.
+
+<Warning>
+- The DCC ID must be one no other sensor uses; the sensor's part number usually works.
+- `--dcc-from` must name a sensor with the same bit depth: `imx230` is 10-bit, `imx477` 12-bit. The tool warns
+  otherwise ([ISP Tuning](/en/boards/o1/isp/tuning)).
+</Warning>
+
+## 4. Filling in the Overlay and the Descriptor
+
+### 4.1 Overlay Fragment
+
+`sensors/ov5647/overlay.dtsi` is written once for both ports with these macros.
+
+| Macro | Meaning |
+|-------|---------|
+| `CAM_I2C` | I2C bus of the connector |
+| `CAM_GPIO_CTRL`, `CAM_GPIO`, `CAM_GPIO_PINCTRL` | The connector's CAM_GPIO pin (power enable on Raspberry Pi modules) |
+| `CAM_LABEL(x)` | Label unique per port, e.g. `x_csi0` |
+| `CAM_SENSOR_EP`, `CAM_RX_EP` | The two endpoints to link |
+
+The fragment must define `CAM_DATA_LANES`, and `CAM_CLOCK_NONCONTINUOUS` if the sensor uses a non-continuous
+clock. The `compatible` string, I2C address, clock and supplies are taken from the driver's DT binding.
+
+```bash
+./camera-isp-sdk overlay build ov5647
+task check-overlays SENSORS=ov5647 BASE_DTB=/path/to/k3-am67a-t3-gem-o1.dtb
+```
+
+### 4.2 Descriptor
+
+The fields marked `TODO` in `sensors/ov5647/sensor.conf` are filled in.
+
+| Section | Contents |
+|---------|----------|
+| `[sensor]` | `module` and `entity`: the driver module name and the entity name prefix shown by `media-ctl -p` |
+| `[mode]` | Width, height, media bus code (Bayer order and bit depth) and fps |
+| `[csi]` | Lane count and the same link frequency as the overlay |
+| `[isp]` | DCC ID and where the DCC files are on the board |
+| `[ae]` | `range0`: exposure up to the frame time, analogue gain up to the sensor's maximum |
+| `[exposure]` | Unit of the exposure control: `lines` or `time` |
+| `[gain]` | How the analogue gain control maps to a gain |
+
+`[gain]` models:
+
+| `model` | Code | Example sensors |
+|---------|------|-----------------|
+| `linear` | `offset + scale × gain` | Many OmniVision sensors (OV5647: `scale=16`) |
+| `inverse` | `k − k / gain` | Sony IMX219 (`k=256`), IMX477 (`k=1024`) |
+| `db` | `20 log10(gain) / step-db` | Sony IMX290/IMX327/IMX462 (`step-db=0.3`) |
+| `table` | Closest entry of a table | Anything else |
+
+The formula is in the sensor's datasheet or in libcamera's `cam_helper_<sensor>.cpp`.
+
+```bash
+./camera-isp-sdk validate ov5647
+```
+
+## 5. Building, Installing and Bring-up
+
+You can build the package and install it on the board as in [Installation](/en/boards/o1/isp/installation).
+
+```bash
+task package SENSORS=ov5647
+```
+
+On the board, you can run the commands below in order, as `root` with the Edge AI environment loaded
+([Installation](/en/boards/o1/isp/installation#1-installing-the-edge-ai-packages)). Each step isolates one layer.
+
+```bash
+# The driver probed and the sensor is in the media graph
+media-ctl -p | grep -A3 ov5647
+
+# Mode set along the pipeline, /dev links created
+camera-isp-sdk setup -v ov5647
+
+# Raw frames arrive (no ISP yet)
+v4l2-ctl -d /dev/video-ov5647-cam0 --stream-mmap --stream-count=30
+
+# Through the ISP, measuring the frame rate
+camera-isp-sdk pipeline ov5647 --sink fake --run
+
+# A picture
+camera-isp-sdk pipeline ov5647 --sink jpeg --output ov5647.jpg --run
+```
+
+For problems, you can refer to the table in [Usage](/en/boards/o1/isp/usage#5-troubleshooting). Once the sensor has been
+verified on a board, `status=supported` is set in the descriptor and the ISP is tuned
+([ISP Tuning](/en/boards/o1/isp/tuning)).

@@ -1,0 +1,16 @@
+<CodeGroup>
+
+  ```bash Terminal
+  camera-isp-sdk pipeline ov5647
+  ```
+
+  ```bash Output
+  gst-launch-1.0 -e v4l2src device=/dev/video-ov5647-cam0 io-mode=dmabuf-import ! \
+      queue leaky=2 ! \
+      video/x-bayer,width=1920,height=1080,format=bggr10,framerate=30/1 ! \
+      tiovxisp sensor-name=ov5647 dcc-isp-file=/opt/imaging/ov5647/linear/dcc_viss.bin format-msb=9 sink_0::dcc-2a-file=/opt/imaging/ov5647/linear/dcc_2a.bin sink_0::device=/dev/v4l-ov5647-subdev0 ! \
+      video/x-raw,format=NV12 ! \
+      kmssink driver-name=tidss sync=false
+  ```
+
+</CodeGroup>

@@ -1,0 +1,110 @@
+---
+title: 'ISP Tuning (DCC)'
+description: 'Building the VISS and 2A tuning files and adapting them to a sensor'
+---
+
+<Tip>
+By the end of this section, you will have learned about the following topics.
+
+* What the DCC files contain and what each component depends on
+* How the starting tuning of a new sensor is made
+* How the Bayer order affects the demosaic tuning
+</Tip>
+
+## 1. DCC Files
+
+The VISS and the 2A algorithms are configured by DCC (Dynamic Camera Configuration) files, compiled from XML
+sources with TI's `dcc_gen_linux`. Every sensor has two files in `/opt/imaging/<sensor>/linear/`, plus
+`dcc_ldc.bin` for sensors with a lens distortion tuning.
+
+| File | Used by | Contents |
+|------|---------|----------|
+| `dcc_viss.bin` | `tiovxisp dcc-isp-file` | Every VISS block below |
+| `dcc_2a.bin` | `tiovxisp sink_0::dcc-2a-file` | AWB tuning and the H3A grid |
+| `dcc_ldc.bin` | `tiovxldc dcc-file` | Lens distortion mesh (optional, lens specific) |
+
+| Component | Depends on | Notes |
+|-----------|------------|-------|
+| `VISS_BLC` black level | Sensor, **bit depth** | −black level in input units: IMX219 −64 (10-bit), OV5647 −16 (10-bit), IMX477 −256 (12-bit) |
+| `VISS_RAWFE_DECOMPAND` | **Bit depth** | TI's 10-bit tuning expands the data to 16 bits through a LUT; its 12-bit linear tuning disables the block |
+| `VISS_H3A_MUX_LUTS_CFG` | **Bit depth** | Maps the data to the 10-bit H3A input |
+| `VISS_CFA` | **Bit depth**, **Bayer order** | Demosaic coefficients: a 6x6 kernel for each phase of the 2x2 Bayer cell |
+| `VISS_NSF4` | Sensor noise, **bit depth** | Noise thresholds |
+| `VISS_H3A_AEWB_CFG` | **Frame size** | Statistics windows in pixels |
+| `VISS_RGB2RGB` | Sensor colour response | Colour correction matrix, from a colour chart |
+| `VISS_GAMMA` | Taste | Output tone curve |
+| `AWB_ALG_TI3_TUNING` | Sensor colour response | AWB reference illuminants, from grey card captures |
+| `LDC_MESH` | Lens | Fixed lenses only |
+
+<Warning>
+`camera_module_id` in the header of every component must equal `[isp] dcc-id` in the descriptor. On a mismatch
+TI's parser stops at that component, prints "Invalid Camera Id" and the ISP runs on defaults. The pipeline keeps
+running, so the only symptom is a bad image. `camera-isp-sdk validate` catches this before the build.
+</Warning>
+
+```bash
+task dcc SENSORS=ov5647
+./camera-isp-sdk dcc inspect build/dcc/ov5647/dcc_viss.bin --dcc-id 5647
+```
+
+## 2. Starting Tuning for a New Sensor
+
+`camera-isp-sdk new --dcc-from <sensor>` copies another sensor's sources, rewrites the module ID, fits the H3A grid to
+the frame size and moves the demosaic coefficients to the new sensor's Bayer order. That gives a first image.
+Beyond these adjustments, only the **bit-depth dependent** components can be right, and only if the template has
+the same bit depth:
+
+* 10-bit sensors: `imx230` (TI's IMX219 10-bit pipeline)
+* 12-bit sensors: `imx477` (TI's IMX390 12-bit linear tuning)
+
+LDC is not copied: the mesh belongs to the template's lens. Then the black level is set for the sensor, from the
+datasheet or from the `black_level` of the libcamera tuning file divided down to the sensor's bit depth. Colours
+and white balance stay the template's until the sensor is tuned.
+
+## 3. Bayer Order
+
+The VISS demosaic does not learn the Bayer order from the image. The CFA component holds a separate kernel for
+each phase of the 2x2 cell, made for one Bayer order: RGGB in TI's IMX219 and IMX390 tunings, GRBG in its AR0233
+and AR0820 ones. `tiovxisp` passes the Bayer order of the caps to the 2A only (H3A statistics, white balance
+gains). Coefficients made for another order take colours from the wrong pixels.
+
+<Frame caption="The OV5647 colour bar test pattern at the ISP output. Top: BGGR coefficients; bottom: RGGB coefficients copied from imx230, which swap yellow with cyan and red with blue.">
+  <img className="rounded-lg" noZoom src="/images/isp/ov5647-colour-bars.png" />
+</Frame>
+
+The four Bayer orders are the same mosaic shifted by one pixel horizontally and/or vertically, so every pixel
+keeps its neighbourhood, and its kernel, at another phase. `camera-isp-sdk dcc fit-cfa` therefore only moves the kernels
+to their new phases. You need to run it after changing `[mode] code`; `camera-isp-sdk validate` fails when the coefficients and the
+descriptor disagree.
+
+```bash
+./camera-isp-sdk dcc fit-cfa ov5647
+```
+
+After changing the sensor mode, you need to fit the statistics grid to the new frame size.
+
+```bash
+./camera-isp-sdk dcc fit-h3a ov5647
+```
+
+## 4. Tuning a Sensor
+
+TI's DCC Tuning Tool (available from TI on request) generates every XML file above from captures.
+
+1. You can capture raw frames on the board without the ISP, setting exposure and gain by hand for each scene.
+
+   ```bash
+   sudo su
+   source /opt/t3-edgeai-env
+   camera-isp-sdk setup ov5647
+   v4l2-ctl -d /dev/v4l-ov5647-subdev0 -c exposure=1000,analogue_gain=16
+   v4l2-ctl -d /dev/video-ov5647-cam0 --stream-mmap --stream-skip=30 \
+       --stream-count=1 --stream-to=frame.raw
+   ```
+
+2. You can capture what the tool asks for: dark frames (black level, noise), a Macbeth chart under several illuminants
+   (colour matrix, AWB) and a flat field if lens shading is used.
+3. You need to set `camera_module_id` in the generated XML files to the descriptor's `dcc-id`; then you can
+   replace the files in `sensors/<sensor>/dcc/linear/`.
+4. You can check the sources with `./camera-isp-sdk validate`, rebuild with `task dcc` and compare the result on
+   the board.
