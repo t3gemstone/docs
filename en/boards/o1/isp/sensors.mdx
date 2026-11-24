@@ -1,0 +1,95 @@
+---
+title: 'Supported Sensors'
+description: 'Camera sensors shipped with the Camera ISP SDK and notes for each'
+---
+
+<Tip>
+By the end of this section, you will have learned about the following topics.
+
+* The driver, overlay and tuning status of every sensor shipped with the Camera ISP SDK
+* Sensor specific installation steps and the values measured on a board
+</Tip>
+
+| ID | Module | Overlay (CSI0) | Mode |
+|----|--------|----------------|------|
+| `imx219` | Raspberry Pi Camera v2 | `k3-am67a-t3-gem-o1-csi0-imx219.dtbo` | 1920x1080@30 `SRGGB10_1X10` |
+| `imx230` | Arducam Pivariety IMX230 | `k3-am67a-t3-gem-o1-csi0-imx230.dtbo` | 1920x1080@30 `SRGGB10_1X10` |
+| `imx477` | Raspberry Pi HQ Camera | `k3-am67a-t3-gem-o1-csi0-imx477.dtbo` | 1920x1080@50 `SRGGB12_1X12` |
+| `ov5647` | Raspberry Pi Camera v1.3 | `k3-am67a-t3-gem-o1-csi0-ov5647.dtbo` | 1920x1080@30 `SBGGR10_1X10` |
+
+For CSI1, `csi1` is used instead of `csi0` in the overlay names. `camera-isp-sdk list` lists the installed sensors on the
+board.
+
+## IMX219
+
+Raspberry Pi Camera v2. Since TI supports this sensor, the descriptor uses TI's tuning files from
+`/opt/imaging/imx219/linear/` on the image and builds no DCC. The driver is on the image.
+
+The purpose of this descriptor is to compare the patched plugin against a known-good tuning: the same module run
+through the Camera ISP SDK path with `sensor-name=imx219` and through TI's path with `sensor-name=SENSOR_SONY_IMX219_RPI`
+should give the same colours.
+
+<Note>
+TI's 11.0 release computes the IMX219 exposure about 1000 times too large, so on TI's path the exposure stays at
+the maximum and only the gain moves. The Camera ISP SDK path derives the line time from the driver's `PIXEL_RATE` and
+`HBLANK`.
+</Note>
+
+## IMX230
+
+The IMX230 on an Arducam Pivariety adapter. The adapter runs the sensor itself; on the kernel side the
+`arducam-pivariety` driver of the T3 Gemstone kernel is used. The entity is named after the driver, so any Pivariety module
+on the board matches this descriptor.
+
+Measured on a board:
+
+* Bayer order `SRGGB10_1X10`; black level 64.
+* Exposure in lines, 15.47 µs per line. The firmware raises exposures to at least 1074 lines (~16.6 ms) and caps
+  them about 100 lines below the frame length.
+* Analogue gain is linear; 100 = 1x, range 100..800.
+* 29.25 fps through `tiovxisp`; capture and ISP take about 0.1 core, 0.2 core with LDC.
+
+## IMX477
+
+Raspberry Pi HQ Camera. The driver is the Raspberry Pi kernel's driver ported to the T3 Gemstone kernel, in
+`sensors/imx477/driver/` ([Installation](/en/boards/o1/isp/installation#4-installing-the-sensor-driver)). The port
+removes the embedded data pad and crops the widths the capture DMA cannot take to 1920x1080, 2016x1520 and
+1328x990 with the sensor's digital crop.
+
+The tuning is bootstrapped: the 12-bit dependent components come from TI's IMX390 tuning, the colour matrix,
+gamma and AWB tuning from the `imx230` descriptor; the black level is 256. Exposure and brightness are right,
+colours are approximate until the sensor is tuned.
+
+## OV5647
+
+Raspberry Pi Camera v1.3 and compatible modules. The module's 15-pin connector needs a 15-to-22-pin cable. The
+sensor is at I2C address 0x36; the module's supply is switched on by the connector's CAM_GPIO pin.
+
+<Steps>
+  <Step title="Installing the Driver">
+    The driver is enabled in the T3 Gemstone kernel but not on the image; it is installed from the T3 Gemstone package repository.
+
+    ```bash
+    sudo apt install kernel-module-ov5647-6.12.24-ti
+    ```
+  </Step>
+  <Step title="Adding the Overlay">
+    `k3-am67a-t3-gem-o1-csi0-ov5647.dtbo` is added to `uEnv.txt` and the board is rebooted.
+  </Step>
+  <Step title="Configuring the Camera">
+    ```bash
+    sudo su
+    source /opt/t3-edgeai-env
+    camera-isp-sdk setup ov5647
+    ```
+  </Step>
+</Steps>
+
+Measured on a board (CSI0):
+
+* The sensor shows up as `ov5647 5-0036`. Bayer order `SBGGR10_1X10`, checked with the sensor's colour bar test
+  pattern (`v4l2-ctl -c test_pattern=1`) both in the raw frame and at the ISP output.
+* 29.4 fps through `tiovxisp`, no drops; capture and ISP take about 0.1 core.
+* Auto exposure raises the exposure from 4 lines to the 32.5 ms limit, then the gain to 8x. The analogue gain
+  code is 16 × gain.
+* Black level 16 (1024 in 16 bits in the Raspberry Pi tuning).

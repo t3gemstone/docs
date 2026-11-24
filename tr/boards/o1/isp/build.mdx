@@ -1,0 +1,163 @@
+---
+title: 'Derleme'
+description: 'Kamera ISP SDK paketinin bilgisayarda derlenmesi'
+---
+
+import SnippetIspClone from '/snippets/boards/o1/isp/clone.mdx';
+import SnippetIspTaskList from '/snippets/boards/o1/isp/task-list.mdx';
+import SnippetIspValidate from '/snippets/boards/o1/isp/validate.mdx';
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
+
+* Derleme ortamının Devbox ve Distrobox ile kurulması
+* Task görevleriyle DCC dosyalarının, overlaylerin ve kurulum paketinin üretilmesi
+* Sürücüsü çekirdekte bulunmayan sensörlerin sürücülerinin çapraz derlenmesi
+</Tip>
+
+Derleme, karta kurulacak paketi bilgisayarda üretir: sensör tanımlayıcıları denetlenir, ISP ayar (DCC)
+dosyaları ve device tree overlayleri derlenir, hepsi tek bir `.tar.gz` dosyasında toplanır. TI'nin GStreamer
+eklentisi ise kartın üzerinde derlenir; bu adım [Kurulum](/tr/boards/o1/isp/installation) bölümünde anlatılmaktadır.
+
+## 1. Kaynak Kodun İndirilmesi
+
+<SnippetIspClone />
+
+## 2. Derleme Ortamının Kurulması
+
+Derleme için gereken bütün araçlar, [SDK](/tr/sdk/introduction)'da olduğu gibi hazır bir derleme ortamıyla
+gelir. Bilgisayarınızda yalnızca Docker ve Devbox bulunması yeterlidir.
+
+<Steps>
+  <Step title="Gereksinimlerin Kurulması">
+    `setup.sh` betiği Docker ve Devbox'ı kurar.
+
+    ```bash
+    ./setup.sh
+    ```
+
+    <Warning>
+    Docker ilk kez kuruluyorsa kullanıcı oturumunu kapatıp yeniden giriş yapmanız gerekir.
+    </Warning>
+  </Step>
+  <Step title="Devbox Konsolunun Aktifleştirilmesi">
+    Devbox, Distrobox ve Task araçlarını kurar.
+
+    ```bash
+    devbox shell
+    ```
+  </Step>
+  <Step title="Derleme Ortamına Girilmesi">
+    `task box` ilk çalıştırmada Docker imajını oluşturur, ardından Distrobox ortamına girer.
+
+    ```bash
+    task box
+    ```
+
+    İlk girişte sizden `⚠️  First time user password setup ⚠️` ile ortam için bir parola belirlemeniz istenir.
+    `🚀 distrobox:workdir>` satırını gördüğünüzde derlemeye hazırsınız.
+  </Step>
+</Steps>
+
+<Note>
+- Depo, ortamın içinde `/home/workdir` dizinindedir; bilgisayarınızdaki diğer dizinlere `/run/host` altından
+  erişebilirsiniz.
+- Ortamın ev dizini depodaki `.distrobox/` klasörüdür; indirilen TI araçları da orada saklanır.
+- `task destroy` komutu ortamı ve Docker imajını siler.
+</Note>
+
+## 3. Görevler
+
+Aşağıdaki komutların hepsi derleme ortamının içinde (`task box`) çalıştırılır. Parametresiz çalıştırılan `task`
+komutu tüm görevleri ve geçerli ayarları listeler.
+
+<SnippetIspTaskList />
+
+Ayarlar görev adının ardından `DEĞİŞKEN=değer` biçiminde verilir.
+
+| Değişken | Varsayılan | Açıklama |
+|----------|------------|----------|
+| `SENSORS` | (tümü) | Görevin işleyeceği sensörler, örneğin `SENSORS="imx477 ov5647"` |
+| `BOARD` | `t3-gem-o1` | `boards/` altındaki kart tanımı |
+| `BUILD_DIR` | `build` | Çıktı dizini |
+| `DCC_TOOLS_FROM` | | Elle indirilmiş `dcc_gen_linux` dosyası |
+| `KDIR`, `ARCH`, `CROSS_COMPILE` | `arm64`, `aarch64-linux-gnu-` | Sensör sürücülerinin derlenmesi için (`task drivers`) |
+
+## 4. Paketin Derlenmesi
+
+```bash
+task build      # tanımlayıcıları denetle, DCC dosyalarını ve overlayleri derle
+task package    # -> build/camera-isp-sdk-0.1.0-t3-gem-o1.tar.gz
+```
+
+Pakete yalnızca bazı sensörleri koymak için `SENSORS` değişkenini kullanabilirsiniz.
+
+```bash
+task package SENSORS=ov5647
+```
+
+<Note>
+Sürücüsü çekirdekte bulunmayan sensörlerin sürücülerini önce derlemeniz gerekir
+([Sensör Sürücülerinin Derlenmesi](/tr/boards/o1/isp/build#6-sensör-sürücülerinin-derlenmesi)): paket derlenmiş
+sürücüleri içerir, derlenmemiş bir sürücü pakete eklenmez.
+</Note>
+
+`task build` sırasıyla `validate`, `dcc` ve `overlays` görevlerini çalıştırır. Üretilen dosyalar
+`build/` altında yer alır:
+
+| Dizin | İçerik |
+|-------|--------|
+| `build/dcc/<sensör>/` | `dcc_viss.bin`, `dcc_2a.bin` ve varsa `dcc_ldc.bin` |
+| `build/overlays/` | Her sensör ve port için `k3-am67a-t3-gem-o1-<port>-<sensör>.dtbo` |
+| `build/camera-isp-sdk-<sürüm>-t3-gem-o1.tar.gz` | Karta kurulacak paket |
+
+## 5. TI DCC Araçları
+
+ISP ayar dosyaları TI'nin `dcc_gen_linux` aracıyla XML kaynaklarından derlenir. `task dcc` bu aracı ilk
+çalıştırmada TI'nin imaging deposundaki sabitlenmiş `REL.IMAGING.11.00.00.00` etiketinden indirir ve SHA-256
+özetini doğrular. Araç depoya eklenmez, `~/.cache/camera-isp-sdk/dcc-tools/` altında saklanır.
+
+<Warning>
+git.ti.com zaman zaman bir süreliğine erişilemez olabilir (HTTP 502/503). İndirme birkaç kez yeniden denenir;
+yine başarısız olursa dosyayı tarayıcıyla indirip elle kurabilirsiniz. Özet her iki durumda da denetlenir.
+
+```bash
+task dcc DCC_TOOLS_FROM=~/Downloads/dcc_gen_linux
+```
+
+`DCC_TOOLS_FROM` bir imaging deposunu veya Processor SDK RTOS dizinini de gösterebilir.
+</Warning>
+
+## 6. Sensör Sürücülerinin Derlenmesi
+
+Sürücüsü T3 Gemstone çekirdeğinde bulunmayan bir sensör (şu an IMX477), sürücüsünü `sensors/<sensör>/driver/` dizininde
+taşır: sürücü kaynakları ve bir `Kbuild` dosyası. `task drivers` bu sensörlerin tümünün ya da `SENSORS`
+değişkeninde verilenlerin sürücülerini kartın çekirdeğine göre yapılandırılmış bir çekirdek derleme dizinine karşı
+çapraz derler. Sürücüsü çekirdekte bulunan sensörler atlanır. Çekirdeğin derlenmesi [Kernel](/tr/sdk/kernel)
+bölümünde anlatılmaktadır. Depo dışındaki bir çekirdek dizini ortamın içinde `/run/host` altında görünür.
+
+```bash
+task drivers KDIR=/run/host/path/to/kernel-build
+```
+
+Modüller (`.ko`) kaynaklarının yanında derlenir. `task package` bunları pakete ekler; paket de kartta
+`/lib/modules/<çekirdek>/updates/` altına kurar.
+
+## 7. Testler ve Kontroller
+
+`camera-isp-sdk validate`, normalde ancak kartta fark edilen ve çoğu zaman hiçbir hata mesajı vermeyen sorunları
+derlemeden önce yakalar. Bu sorunlar şunlardır:
+
+* Yakalama DMA'sının alamayacağı görüntü genişlikleri
+* ISP'nin yok sayacağı DCC kimlikleri
+* Kare dışına taşan AE istatistik ızgarası
+* Başka bir bit derinliği veya Bayer sırası için hazırlanmış ayar dosyaları
+* D-PHY'nin taşıyamayacağı bağlantı hızları
+
+<SnippetIspValidate />
+
+| Görev | Açıklama |
+|-------|----------|
+| `task test` | Python aracının ve GStreamer tanımlayıcı ayrıştırıcısının birim testleri |
+| `task check-overlays BASE_DTB=<dtb>` | Overlayleri kartın temel DTB dosyasına `fdtoverlay` ile uygular |
+| `task gst:check-patch` | Eklenti yamasının TI'nin sabitlenmiş commit'ine uygulanabildiğini denetler |

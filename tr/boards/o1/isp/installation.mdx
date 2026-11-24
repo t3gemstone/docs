@@ -1,0 +1,181 @@
+---
+title: 'Kurulum'
+description: 'Kamera ISP SDK paketinin T3 Gemstone O1 kartına kurulması'
+---
+
+import SnippetUEnv from '/snippets/boards/o1/uenv.mdx';
+import SnippetUEnvEdit from '/snippets/boards/o1/uenv-overlay-edit-tr.mdx';
+import SnippetIspDoctor from '/snippets/boards/o1/isp/doctor.mdx';
+import SnippetIspSetup from '/snippets/boards/o1/isp/setup.mdx';
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
+
+* Kamera ISP SDK paketinin karta kurulması ve TI'nin `tiovx` eklentisinin yamalanması
+* Sensör sürücüsünün ve kamera overlayinin etkinleştirilmesi
+* Kurulumun `camera-isp-sdk doctor` ile denetlenmesi
+</Tip>
+
+<Steps>
+  <Step title="Edge AI Paketlerinin Kurulması">
+    Donanım ISP'sine TI'nin Edge AI yığını üzerinden erişilir.
+  </Step>
+  <Step title="Paketin Karta Kurulması">
+    Bilgisayarda derlenen paket kartın kök dizinine açılır.
+  </Step>
+  <Step title="tiovx Eklentisinin Derlenmesi">
+    TI'nin GStreamer eklentisi tanımlayıcı desteğiyle bir kez yeniden derlenir.
+  </Step>
+  <Step title="Sensör Sürücüsünün Kurulması">
+    Kameranın çekirdek sürücüsü imajda yoksa kurulur.
+  </Step>
+  <Step title="Overlay Eklenmesi ve Yeniden Başlatma">
+    Kameranın bağlı olduğu portun overlayi `uEnv.txt` dosyasına eklenir.
+  </Step>
+  <Step title="Kurulumun Denetlenmesi">
+    Kamera `camera-isp-sdk setup` ile yapılandırılır, kurulum `camera-isp-sdk doctor` ile denetlenir.
+  </Step>
+</Steps>
+
+## 1. Edge AI Paketlerinin Kurulması
+
+`tiovxisp` elemanı ve donanım hızlandırıcılarını (VPAC ISP, MSC, LDC) süren TIOVX yazılımı `t3-edgeai-dev`
+paketiyle gelir. [Yapay Zeka Kurulum](/tr/boards/o1/ai/installation) bölümündeki adımlarla paketi kurup
+`k3-am67a-t3-gem-o1-edgeai-apps.dtbo` overlayini etkinleştirebilirsiniz.
+
+```bash
+sudo apt install t3-edgeai-dev
+```
+
+Kartta Kamera ISP SDK komutları `root` kullanıcısıyla ve Edge AI ortam değişkenleri yüklenmiş olarak çalıştırılır:
+
+```bash
+sudo su
+source /opt/t3-edgeai-env
+```
+
+<Warning>
+Ortam değişkenlerini her yeni kabukta, `build.sh`, `camera-isp-sdk doctor`, `camera-isp-sdk setup` ve `camera-isp-sdk pipeline`
+komutlarından önce yüklemeniz gerekir. `t3-edgeai-dev` paketi kurulmadan ve `/opt/t3-edgeai-env` yüklenmeden donanım
+hızlandırıcıları çalışmaz.
+</Warning>
+
+## 2. Paketin Karta Kurulması
+
+[Derleme](/tr/boards/o1/isp/build) bölümünde üretilen paketi aşağıdaki gibi karta kopyalayabilirsiniz.
+
+```bash
+scp build/camera-isp-sdk-0.1.0-t3-gem-o1.tar.gz gemstone@<kart-ip-adresi>:
+```
+
+Ardından paketi kartta kök dizine açabilirsiniz.
+
+```bash
+sudo tar -C / -xzf camera-isp-sdk-0.1.0-t3-gem-o1.tar.gz
+```
+
+| Konum | İçerik |
+|-------|--------|
+| `/usr/bin/camera-isp-sdk` | Komut satırı aracı |
+| `/usr/share/camera-isp-sdk/sensors/` | Sensör tanımlayıcıları (`tiovxisp` bunları okur) |
+| `/usr/share/camera-isp-sdk/gst/` | Eklenti yaması, kaynakları ve `build.sh` |
+| `/opt/imaging/<sensör>/linear/` | ISP ayar (DCC) dosyaları |
+| `/boot/overlays/` | Kamera overlayleri |
+| `/lib/modules/<çekirdek>/updates/` | `task drivers` ile derlenen sensör sürücüleri |
+
+## 3. tiovx Eklentisinin Derlenmesi
+
+TI'nin `tiovxisp`/`tiovxldc` eklentisi tanımlayıcı desteğiyle kartın üzerinde bir kez yeniden derlenir.
+Betik TI'nin `edgeai-gst-plugins` deposunu sabitlenmiş commit'ten indirir, yamayı uygular, derler ve
+mevcut eklentinin yedeğini alarak kurar.
+
+Betiği, Edge AI ortam değişkenlerinin yüklendiği kabukta
+([1. Edge AI Paketlerinin Kurulması](/tr/boards/o1/isp/installation#1-edge-ai-paketlerinin-kurulması)) aşağıdaki
+gibi çalıştırabilirsiniz.
+
+```bash
+/usr/share/camera-isp-sdk/gst/build.sh
+```
+
+<Note>
+Derleme için kartta `git`, `meson`, `ninja` ve internet bağlantısı gereklidir. Orijinal eklentiye geri dönmek
+için `/usr/share/camera-isp-sdk/gst/build.sh --restore` komutunu kullanabilirsiniz. Yeni bir sensör eklemek için
+bu adımın tekrarlanması gerekmez; eklenti yaması değişmiş bir paket kurulduğunda gerekir ve `camera-isp-sdk doctor`
+bunu bildirir.
+</Note>
+
+## 4. Sensör Sürücüsünün Kurulması
+
+| Sensör | Sürücü |
+|--------|--------|
+| `imx219` | İmajda bulunur, ek işlem gerekmez. |
+| `ov5647` | Çekirdekte etkin, ancak imajda bulunmaz: `sudo apt install kernel-module-ov5647-6.12.24-ti` |
+| `imx477` | Kamera ISP SDK ile gelir |
+| `imx230` | İmajda bulunur (`arducam-pivariety`), ek işlem gerekmez. |
+
+[Sensör Sürücülerinin Derlenmesi](/tr/boards/o1/isp/build#6-sensör-sürücülerinin-derlenmesi) bölümünde derlenen
+sürücüler paketle birlikte `/lib/modules/<çekirdek>/updates/` altına kurulur. Aşağıdaki gibi sürücüleri çekirdeğe tanıtabilirsiniz.
+
+```bash
+sudo depmod -a
+```
+
+## 5. Overlay Eklenmesi ve Yeniden Başlatma
+
+Her sensör için iki overlay bulunur: `k3-am67a-t3-gem-o1-csi0-<sensör>.dtbo` ve
+`k3-am67a-t3-gem-o1-csi1-<sensör>.dtbo`. Kameranın bağlı olduğu portun overlayini seçmeniz gerekir.
+
+<Note>
+- Ethernet soketine uzak olan konnektör CSI0, yakın olan konnektör ise CSI1'dir.
+- CSI1, hatlarını DSI0 ile paylaşır; CSI1'deki bir kamera DSI0 ekran overlayiyle birlikte kullanılamaz.
+- Aynı porta ait başka bir kamera overlayi (örneğin çekirdeğin kendi `csi0-imx219` overlayi) etkinse kaldırmanız gerekir.
+</Note>
+
+```bash
+sudo nano /boot/uEnv.txt
+```
+
+`uEnv.txt` dosyasının içinde bu tarz tanımlamalar bulunacaktır.
+
+<SnippetUEnv />
+
+Overlay dosya adını `overlays=` satırının sonuna boşluk bırakarak ekleyebilirsiniz. Örneğin CSI0 konnektörüne bağlı bir
+OV5647 için `k3-am67a-t3-gem-o1-csi0-ov5647.dtbo` dosya adını kullanabilirsiniz.
+
+<SnippetUEnvEdit />
+
+Ardından kartı yeniden başlatmanız gerekir.
+
+```bash
+sudo reboot
+```
+
+## 6. Kurulumun Denetlenmesi
+
+<Warning>
+`tiovxisp` ve TIOVX `/dev/mem` erişimi gerektirdiğinden `doctor`, `setup` ve ISP kullanan tüm komutlar `root`
+kullanıcısıyla, Edge AI ortam değişkenlerinin yüklendiği bir kabukta çalıştırılmalıdır:
+
+```bash
+sudo su
+source /opt/t3-edgeai-env
+```
+</Warning>
+
+`camera-isp-sdk setup` komutu karta bağlı kameraları bulur, tanımlayıcıdaki modu sensör → CSI-2 köprüsü → alıcı hattı
+boyunca ayarlar ve `/dev/video-<sensör>-cam0`, `/dev/v4l-<sensör>-subdev0` bağlantılarını oluşturur.
+
+<SnippetIspSetup />
+
+<Note>
+`/dev` altındaki bağlantılar her açılışta yeniden oluşturulmalıdır. Kamerayı bir servisle kullanıyorsanız
+`camera-isp-sdk setup` komutunu servisin `ExecStartPre` satırına ekleyebilirsiniz.
+</Note>
+
+`camera-isp-sdk doctor` komutu overlayin, sürücünün, yamalı eklentinin ve DCC dosyalarındaki kimliklerin doğru olup
+olmadığını denetler.
+
+<SnippetIspDoctor />
+
+Kurulum tamamlandıktan sonra kamerayı [Kullanım](/tr/boards/o1/isp/usage) bölümündeki komutlarla
+çalıştırabilirsiniz.

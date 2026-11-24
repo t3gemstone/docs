@@ -1,0 +1,114 @@
+---
+title: 'Kullanım'
+description: "Kameranın donanım ISP'si üzerinden kullanılması"
+---
+
+import SnippetIspPipeline from '/snippets/boards/o1/isp/pipeline.mdx';
+
+<Tip>
+Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
+
+* Kamera görüntüsünü donanım ISP'si üzerinden ekrana, JPEG veya H.264 dosyasına aktarmak
+* `tiovxisp` elemanını kendi GStreamer hatlarınızda kullanmak
+* Otomatik pozlamayı izlemek ve ISP'siz ham kare yakalamak
+</Tip>
+
+<Warning>
+Aşağıdaki komutların çalışabilmesi için [Kurulum](/tr/boards/o1/isp/installation) bölümündeki adımların
+tamamlanmış ve `camera-isp-sdk setup` komutunun açılıştan sonra çalıştırılmış olması gerekir. ISP kullanan komutlar
+`root` kullanıcısıyla ve Edge AI ortam değişkenleri yüklenmiş olarak çalıştırılır; aksi halde donanım
+hızlandırıcıları çalışmaz.
+
+```bash
+sudo su
+source /opt/t3-edgeai-env
+```
+</Warning>
+
+## 1. Hazır Hatlar
+
+`camera-isp-sdk pipeline` komutu kamera → ISP → çıkış hattını sensörün tanımlayıcısına göre oluşturur. `--run`
+seçeneğiyle hattı çalıştırır.
+
+```bash Ekran (HDMI/DSI)
+camera-isp-sdk pipeline ov5647 --run
+```
+
+```bash Fotoğraf
+camera-isp-sdk pipeline ov5647 --sink jpeg --output foto.jpg --run
+```
+
+```bash Video (300 kare, H.264)
+camera-isp-sdk pipeline ov5647 --sink h264 --frames 300 --output video.mp4 --run
+```
+
+```bash Kare hızı ölçümü
+camera-isp-sdk pipeline ov5647 --sink fake --run
+```
+
+| Seçenek | Açıklama |
+|---------|----------|
+| `--sink display\|jpeg\|h264\|fake` | Çıkış: ekran, son kareyi JPEG olarak kaydetme, MP4 dosyası, kare hızı ölçümü |
+| `--output DOSYA` | JPEG/H.264 çıkış dosyası |
+| `--frames N` | N kare sonra durur (JPEG için varsayılan 90; otomatik pozlamanın oturmasına zaman tanır) |
+| `--scale GENxYÜK` | `tiovxmultiscaler` ile donanımda ölçekler |
+| `--ldc` | Lens distorsiyon düzeltmesi ekler (yalnızca LDC ayarı olan sensörler, örneğin `imx230`) |
+| `--cam N` | Aynı sensörden birden fazla varsa kamera numarası |
+
+## 2. Kendi GStreamer Hattınız
+
+`--run` olmadan çalıştırılan komut, hattı `gst-launch-1.0` komutu olarak yazdırır. Bu çıktıyı kendi hattınıza
+başlangıç noktası olarak kullanabilirsiniz.
+
+<SnippetIspPipeline />
+
+Hattın Kamera ISP SDK'ye özgü kısmı `tiovxisp` elemanının parametreleridir:
+
+* `sensor-name`: tanımlayıcının kimliğidir (`ov5647`). Eleman tanımlayıcıyı `/usr/share/camera-isp-sdk/sensors/`
+  altından, ayarlanmışsa `CAMERA_ISP_SDK_SENSOR_PATH` dizinlerinden okur.
+* `dcc-isp-file` ve `sink_0::dcc-2a-file`: sensörün DCC dosyalarıdır.
+* `sink_0::device`: otomatik pozlamanın pozlama ve kazancı yazdığı sensör subdev'idir.
+* Caps içindeki `format` (`bggr10` gibi) sensörün Bayer sırası ve bit derinliğidir.
+
+`tiovxisp` çıkışındaki NV12 görüntüyü `tiovxmultiscaler`, `tiovxdlpreproc` gibi TI elemanlarıyla doğrudan
+[Edge AI](/tr/boards/o1/ai/usage) uygulamalarınıza aktarabilirsiniz.
+
+## 3. Otomatik Pozlamanın İzlenmesi
+
+Otomatik pozlama ve beyaz dengesi `tiovxisp` içinde çalışır. Pozlama ve kazancın birkaç saniye içinde oturması
+gerekir. 2A'nın ürettiği değerleri ve sensöre yazılan karşılıklarını aşağıdaki komutla izleyebilirsiniz.
+
+```bash
+GST_DEBUG=tiovxisp:6 camera-isp-sdk pipeline ov5647 --sink fake --run 2>&1 | grep -i "sensor specific"
+```
+
+Sensörün o anki değerleri subdev üzerinden de okunabilir.
+
+```bash
+v4l2-ctl -d /dev/v4l-ov5647-subdev0 -C exposure,analogue_gain
+```
+
+## 4. ISP'siz Ham Kare Yakalama
+
+Sensör ayarı veya hata ayıklama için ham kareleri ISP'ye uğramadan yakalayabilirsiniz. Kareler piksel başına
+16 bit, little-endian olarak `genişlik × yükseklik × 2` bayt büyüklüğündedir.
+
+```bash
+v4l2-ctl -d /dev/video-ov5647-cam0 --stream-mmap --stream-skip=30 --stream-count=1 --stream-to=kare.raw
+```
+
+## 5. Sorun Giderme
+
+| Belirti | Olası neden |
+|---------|-------------|
+| `media-ctl -p` çıktısında sensör yok | Overlay yüklenmemiş (`ls /proc/device-tree/chosen/overlays`), sürücü kurulu değil (`camera-isp-sdk doctor` bildirir), yanlış port |
+| `setup`: "driver chose ..." | Sürücü tanımlayıcıdaki modu veya Bayer sırasını desteklemiyor |
+| `v4l2-ctl` hiç kare almıyor | Bağlantı hızı veya hat sayısı yanlış; `dmesg` çıktısında CSI-2 hatalarına bakabilirsiniz |
+| `Broken pipe` hatası | `camera-isp-sdk setup` çalıştırılmamış veya genişlik yakalama DMA'sına uygun değil |
+| Görüntü pembe/yeşil veya çok karanlık | Bayer sırası yanlış veya DCC kimliği uyuşmuyor (`camera-isp-sdk dcc inspect`) |
+| Kırmızı ve mavi yer değiştirmiş | Demozaik ayarı başka bir Bayer sırası için ([ISP Ayarı](/tr/boards/o1/isp/tuning#3-bayer-sırası)) |
+| Görüntü doygun veya düz gri | DCC başka bir bit derinliği için yapılmış ya da `format-msb` yanlış |
+| Parlaklık salınıyor | Tanımlayıcıdaki `[gain]` veya `[exposure]` modeli yanlış |
+| "[SENSOR-MODULE] Invalid sensor name", `tiovxisp` başlamıyor | `sensor-name` bir TI sensörü değil ve tanımlayıcısı yok; adı ve `/usr/share/camera-isp-sdk/sensors/<sensör>/sensor.conf` dosyasını kontrol edebilirsiniz |
+| `doctor`: "built from another version of the patch" | Kurulan paket yeni bir eklenti yaması içeriyor; `/usr/share/camera-isp-sdk/gst/build.sh` komutunu çalıştırmanız gerekir |
+| "works on the camera-isp-sdk source tree" | `validate`, `dcc`, `overlay`, `driver` ve `package` bilgisayarda çalışır ([Derleme](/tr/boards/o1/isp/build)); kartta yalnızca kurulu veriler bulunur |

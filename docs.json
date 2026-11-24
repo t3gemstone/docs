@@ -111,6 +111,18 @@
                     ]
                   },
                   {
+                    "group": "Kamera ISP SDK",
+                    "pages": [
+                      "tr/boards/o1/isp/introduction",
+                      "tr/boards/o1/isp/build",
+                      "tr/boards/o1/isp/installation",
+                      "tr/boards/o1/isp/usage",
+                      "tr/boards/o1/isp/sensors",
+                      "tr/boards/o1/isp/adding-a-sensor",
+                      "tr/boards/o1/isp/tuning"
+                    ]
+                  },
+                  {
                     "group": "Yapay Zeka",
                     "pages": [
                       "tr/boards/o1/ai/introduction",
@@ -344,6 +356,18 @@
                       "en/boards/o1/peripherals/rtc",
                       "en/boards/o1/peripherals/jtag",
                       "en/boards/o1/peripherals/mcu"
+                    ]
+                  },
+                  {
+                    "group": "Camera ISP SDK",
+                    "pages": [
+                      "en/boards/o1/isp/introduction",
+                      "en/boards/o1/isp/build",
+                      "en/boards/o1/isp/installation",
+                      "en/boards/o1/isp/usage",
+                      "en/boards/o1/isp/sensors",
+                      "en/boards/o1/isp/adding-a-sensor",
+                      "en/boards/o1/isp/tuning"
                     ]
                   },
                   {
