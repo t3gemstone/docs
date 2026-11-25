@@ -39,12 +39,12 @@ Bölüm bitiminde aşağıdaki konularda bilgi sahibi olacaksınız.
 
 ## 1. Edge AI Paketlerinin Kurulması
 
-`tiovxisp` elemanı ve donanım hızlandırıcılarını (VPAC ISP, MSC, LDC) süren TIOVX yazılımı `t3-edgeai-dev`
+`tiovxisp` elemanı ve donanım hızlandırıcılarını (VPAC ISP, MSC, LDC) süren TIOVX yazılımı `t3-gem-o1-edgeai`
 paketiyle gelir. [Yapay Zeka Kurulum](/tr/boards/o1/ai/installation) bölümündeki adımlarla paketi kurup
 `k3-am67a-t3-gem-o1-edgeai-apps.dtbo` overlayini etkinleştirebilirsiniz.
 
 ```bash
-sudo apt install t3-edgeai-dev
+sudo apt install t3-gem-o1-edgeai
 ```
 
 Kartta Kamera ISP SDK komutları `root` kullanıcısıyla ve Edge AI ortam değişkenleri yüklenmiş olarak çalıştırılır:
@@ -56,7 +56,7 @@ source /opt/t3-edgeai-env
 
 <Warning>
 Ortam değişkenlerini her yeni kabukta, `build.sh`, `camera-isp-sdk doctor`, `camera-isp-sdk setup` ve `camera-isp-sdk pipeline`
-komutlarından önce yüklemeniz gerekir. `t3-edgeai-dev` paketi kurulmadan ve `/opt/t3-edgeai-env` yüklenmeden donanım
+komutlarından önce yüklemeniz gerekir. `t3-gem-o1-edgeai` paketi kurulmadan ve `/opt/t3-edgeai-env` yüklenmeden donanım
 hızlandırıcıları çalışmaz.
 </Warning>
 

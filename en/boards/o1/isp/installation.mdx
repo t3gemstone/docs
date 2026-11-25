@@ -40,11 +40,11 @@ By the end of this section, you will have learned about the following topics.
 ## 1. Installing the Edge AI Packages
 
 The `tiovxisp` element and TIOVX, the software that drives the hardware accelerators (VPAC ISP, MSC, LDC), come
-with the `t3-edgeai-dev` package. You can install it and enable the `k3-am67a-t3-gem-o1-edgeai-apps.dtbo` overlay
+with the `t3-gem-o1-edgeai` package. You can install it and enable the `k3-am67a-t3-gem-o1-edgeai-apps.dtbo` overlay
 as described in [AI Installation](/en/boards/o1/ai/installation).
 
 ```bash
-sudo apt install t3-edgeai-dev
+sudo apt install t3-gem-o1-edgeai
 ```
 
 The Camera ISP SDK commands on the board are run as `root` with the Edge AI environment loaded:
@@ -56,7 +56,7 @@ source /opt/t3-edgeai-env
 
 <Warning>
 You need to load the environment in every new shell, before `build.sh`, `camera-isp-sdk doctor`, `camera-isp-sdk setup` and
-`camera-isp-sdk pipeline`. Without the `t3-edgeai-dev` package and `/opt/t3-edgeai-env`, the hardware accelerators do not
+`camera-isp-sdk pipeline`. Without the `t3-gem-o1-edgeai` package and `/opt/t3-edgeai-env`, the hardware accelerators do not
 work.
 </Warning>
 
