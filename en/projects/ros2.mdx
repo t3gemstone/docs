@@ -1,0 +1,433 @@
+---
+title: 'ROS 2'
+description: 'Ubuntu 22.04 and ROS 2 Humble installation on T3 Gemstone'
+---
+
+## 1. Purpose
+
+The Ubuntu 22.04-based minimal system image used on T3 Gemstone may not
+include all package sources and system components required for ROS 2 Humble
+installation by default. In this case, ROS 2 packages may not be found by the
+system or dependency issues may occur.
+
+This document describes the installation of ROS 2 Humble `ros-base` on
+T3 Gemstone.
+
+The installation process consists of checking the system, verifying network
+connectivity and the package manager, adding the ROS 2 APT source, installing
+ROS 2 Humble, and testing the installation.
+
+## 2. System Used
+
+| Component | Information |
+|---|---|
+| Board | T3 Gemstone |
+| Architecture | AArch64 / ARM64 |
+| Operating system | Ubuntu 22.04 Jammy Jellyfish |
+| ROS distribution | ROS 2 Humble |
+| ROS installation type | `ros-base` |
+
+---
+
+## 3. Initial System Check
+
+Check the system information:
+
+```bash
+cat /etc/os-release
+uname -m
+hostnamectl
+```
+
+The basic expected information is:
+
+```text
+Ubuntu 22.04 / Jammy
+aarch64
+```
+
+---
+
+## 4. Internet and DNS Check
+
+Verify that the internet connection is working so that ROS 2 packages can be
+downloaded:
+
+```bash
+ping -c 3 8.8.8.8
+```
+
+Then verify that domain name resolution is working:
+
+```bash
+getent hosts github.com
+getent hosts packages.ros.org
+getent hosts packages.t3gemstone.org
+```
+
+If IP addresses are reachable but domain names cannot be resolved, refresh the
+DNS configuration:
+
+```bash
+IFACE=$(ip route | awk '/default/ {print $5; exit}')
+
+sudo systemctl restart systemd-resolved
+sudo resolvectl dns "$IFACE" 1.1.1.1 8.8.8.8
+sudo resolvectl flush-caches
+```
+
+Check DNS resolution again:
+
+```bash
+getent hosts packages.ros.org
+```
+
+---
+
+## 5. Repairing and Updating the Package System
+
+Complete any unfinished package operations:
+
+```bash
+sudo dpkg --configure -a
+sudo apt --fix-broken install
+sudo apt clean
+sudo rm -rf /var/lib/apt/lists/*
+sudo apt update
+sudo apt upgrade -y
+```
+
+If the Ubuntu Jammy update and security repositories are missing from the
+T3 Gemstone image, verify that the `jammy-updates` and `jammy-security`
+repositories are enabled.
+
+Check the Ubuntu Jammy sources configured on the system:
+
+```bash
+grep -R "jammy" /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null
+```
+
+---
+
+Before starting the installation, verify that the board has a working internet
+connection so that ROS 2 packages can be downloaded.
+
+## 6. Installing ROS 2 Humble
+
+ROS 2 Humble is compatible with Ubuntu 22.04 Jammy. On T3 Gemstone, the
+`ros-base` installation is preferred because it contains fewer packages and
+dependencies.
+
+Update the system package list before starting the installation:
+
+```bash
+sudo apt update
+```
+
+### 6.1. Installing the Required Tools for ROS 2
+
+Install the basic tools required to add the ROS 2 APT repository to the system:
+
+```bash
+sudo apt install -y \
+curl \
+gnupg \
+lsb-release \
+software-properties-common
+```
+
+After installation, verify that the required commands are available on the
+system:
+
+```bash
+command -v curl
+command -v add-apt-repository
+```
+
+Expected output:
+
+```text
+/usr/bin/curl
+/usr/bin/add-apt-repository
+```
+
+Example terminal output:
+
+```text
+gemstone@t3-gem-o1:~$ command -v curl
+/usr/bin/curl
+
+gemstone@t3-gem-o1:~$ command -v add-apt-repository
+/usr/bin/add-apt-repository
+```
+
+Enable the Universe repository:
+
+```bash
+sudo add-apt-repository universe
+```
+
+Update the package list again after configuring the repository:
+
+```bash
+sudo apt update
+```
+
+---
+
+### 6.2. Adding the ROS 2 APT Source
+
+The ROS APT source must be added to the system so that ROS 2 packages can be
+installed using `apt`.
+
+Retrieve the latest ROS APT source package version:
+
+```bash
+export ROS_APT_SOURCE_VERSION=$(curl -s \
+https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest \
+| grep -F "tag_name" \
+| awk -F\" '{print $4}')
+```
+
+Check the retrieved version:
+
+```bash
+echo "$ROS_APT_SOURCE_VERSION"
+```
+
+The command should display the version of the ROS APT source package.
+
+Download the appropriate ROS 2 APT source package using the Ubuntu release
+codename of the system:
+
+```bash
+curl -L \
+-o /tmp/ros2-apt-source.deb \
+"https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb"
+```
+
+Install the downloaded `.deb` package:
+
+```bash
+sudo dpkg -i /tmp/ros2-apt-source.deb
+```
+
+After adding the ROS APT source, update the package list again:
+
+```bash
+sudo apt update
+```
+
+> **Note:**  
+> The `Unable to locate package ros-humble-ros-base` output indicates that the
+> corresponding ROS 2 package cannot be found in the configured APT sources.
+> In this case, verify that the ROS 2 APT source has been added correctly and
+> that `sudo apt update` has completed successfully.
+
+---
+
+### 6.3. Installing ROS 2 Humble ROS Base
+
+Before installation, simulate the installation to verify that the package can
+be found by the system and that its dependencies can be resolved:
+
+```bash
+sudo apt install --simulate ros-humble-ros-base
+```
+
+If no package or dependency errors are reported during the simulation, install
+the ROS 2 Humble ROS Base package:
+
+```bash
+sudo apt install -y ros-humble-ros-base
+```
+
+`ros-base` contains the core components of ROS 2. Desktop and graphical
+interface tools are not included in this installation. Therefore, it provides
+a lighter ROS 2 installation for embedded systems such as T3 Gemstone.
+
+---
+
+## 7. Activating the ROS 2 Environment
+
+After installing ROS 2, the ROS environment must be loaded into the terminal
+session before ROS commands can be used.
+
+### 7.1. Activating the ROS 2 Environment for the Current Terminal
+
+Activate the ROS 2 Humble environment in the current terminal session:
+
+```bash
+source /opt/ros/humble/setup.bash
+```
+
+This command applies only to the current terminal session. It must be executed
+again when a new terminal is opened.
+
+---
+
+### 7.2. Permanently Activating the ROS 2 Environment
+
+To automatically load the ROS 2 environment whenever a new terminal is opened,
+run the following command:
+
+```bash
+grep -qxF 'source /opt/ros/humble/setup.bash' ~/.bashrc || \
+echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc
+```
+
+This command prevents the same `source` line from being added to the `.bashrc`
+file more than once.
+
+Apply the changes to the current terminal session:
+
+```bash
+source ~/.bashrc
+```
+
+---
+
+### 7.3. Verifying the ROS 2 Installation
+
+Check the active ROS distribution:
+
+```bash
+echo "$ROS_DISTRO"
+```
+
+Expected output:
+
+```text
+humble
+```
+
+Verify that the ROS 2 command-line tool is available:
+
+```bash
+ros2 --help
+```
+
+The beginning of the expected output should be similar to the following:
+
+```text
+usage: ros2 [-h] [--use-python-default-buffering]
+
+ros2 is an extensible command-line tool for ROS 2.
+
+options:
+  -h, --help
+```
+
+The available ROS 2 commands should include the following:
+
+```text
+Commands:
+  action
+  bag
+  component
+  daemon
+  doctor
+  interface
+  launch
+  lifecycle
+  multicast
+  node
+  param
+  pkg
+  plugin
+  run
+  security
+  service
+  topic
+```
+
+Finally, verify that the `ros-humble-ros-base` package is installed on the
+system:
+
+```bash
+dpkg -l | grep ros-humble-ros-base
+```
+
+A successful installation should produce output similar to the following:
+
+```text
+ii  ros-humble-ros-base  0.10.0-1jammy.20260607.150006  arm64  A package which extends 'ros_core' and includes other basic functionalities like tf2 and urdf.
+```
+
+> The package version number may change over time. During verification, it is
+> sufficient for the line to begin with `ii` and for the
+> `ros-humble-ros-base` package to be listed.
+
+---
+
+## 8. Basic Topic Communication Test
+
+### Terminal 1 — Publisher
+
+```bash
+source /opt/ros/humble/setup.bash
+
+ros2 topic pub /test_topic std_msgs/msg/String "{data: 'Hello T3 Gemstone'}"
+```
+
+### Terminal 2 — Subscriber
+
+```bash
+source /opt/ros/humble/setup.bash
+
+ros2 topic echo /test_topic
+```
+
+If the published message appears in the second terminal, basic ROS 2 topic
+communication is working correctly.
+
+---
+
+## 9. `demo_nodes_cpp` Not Found Error
+
+The `ros-humble-ros-base` package provides a lightweight ROS 2 installation,
+and demo packages may not be installed by default.
+
+If the `demo_nodes_cpp` package is required, install it using:
+
+```bash
+sudo apt install -y ros-humble-demo-nodes-cpp
+```
+
+Test the installation by running the publisher node:
+
+```bash
+ros2 run demo_nodes_cpp talker
+```
+
+Run the subscriber node in another terminal:
+
+```bash
+ros2 run demo_nodes_cpp listener
+```
+
+---
+
+## 10. Final Check
+
+Run the following commands to verify that the installation has been completed:
+
+```bash
+cat /etc/os-release
+uname -m
+printenv ROS_DISTRO
+ros2 --help
+```
+
+After installation, the following conditions should be satisfied:
+
+- Ubuntu 22.04 Jammy should be running
+- The architecture should be shown as `aarch64`
+- `ROS_DISTRO=humble` should be set
+- The `ros2` command should work
+
+## 11. Writing an Image to the Board
+
+For general information about writing an operating system image to a
+T3 Gemstone board, see the
+[T3 Gemstone Image Writer documentation](https://docs.t3gemstone.org/en/imager).
