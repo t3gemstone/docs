@@ -1,0 +1,225 @@
+---
+title: 'مواصفات اللوحة'
+description: 'T3 Gemstone O1'
+---
+
+import { SnippetCardEntry } from '/snippets/boards/o1/card-entry.mdx';
+
+<div className="text-2xl font-light mt-4 mb-8">
+لوحة تطوير عالية الأداء تعتمد على معالج Texas Instruments AM67A
+</div>
+
+<Columns cols={1}>
+  <Frame caption="الوجه الأمامي">
+    <img className="rounded-lg" src="/images/o1-board/29-front.jpg" />
+  </Frame>
+  <Frame caption="الوجه الخلفي">
+    <img className="rounded-lg" src="/images/o1-board/30-back.jpg" />
+  </Frame>
+</Columns>
+
+<CardGroup cols={3}>
+  <Card title="CPU" icon="microchip">
+    معالج ARM Cortex-A53 رباعي النواة 64-بت بتردد 1.4 جيجاهرتز، يشغّل أنظمة تشغيل متقدمة مثل Linux
+  </Card>
+
+  <Card title="MCU" icon="microchip" iconType="light">
+    معالجان أحاديا النواة ARM Cortex-R5F بتردد 800 ميجاهرتز، يشغّلان تطبيقات MCU في الزمن الحقيقي
+  </Card>
+
+  <Card title="مسرّع الذكاء الاصطناعي" icon="microchip-ai">
+    مسرّعان للتعلم العميق بقدرة 2 TOPS لكل منهما (بإجمالي 4 TOPS)، يشغّلان تطبيقات الذكاء الاصطناعي
+  </Card>
+
+  <Card title="GPU" icon="display">
+    قوة معالجة تبلغ 50 GFLOPS، ومتوافقة بالكامل مع واجهات OpenGL ES 3.2 وOpenCL 1.2 EP وVulkan 1.2
+  </Card>
+
+  <Card title="4GB RAM" icon="memory">
+    ذاكرة نظام LPDDR4
+  </Card>
+
+  <Card title="32GB eMMC" icon="hard-drive">
+    مساحة تخزين فلاش مدمجة تتيح للوحة العمل دون بطاقة microSD
+  </Card>
+</CardGroup>
+
+# منصة المعالجة الرئيسية
+
+<CardGroup cols={2}>
+  <Card title="المعالج" icon="microchip">
+    <SnippetCardEntry header="TI AM67A" link="https://www.ti.com/product/AM67A">
+      معالج ARM Cortex-A53 رباعي النواة 64-بت بتردد 1.4 جيجاهرتز، ومعالجات ARM/GPU متعددة النواة، وDSP، ومسرّعات الذكاء الاصطناعي
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="الرسوميات" icon="display">
+    <SnippetCardEntry header="IMG BXS-4-64" link="https://www.imaginationtech.com/product/img-bxs-4-64-mc1/">
+      GPU متقدّم لمعالجة الرسوميات عالية الأداء
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="ذاكرة النظام" icon="memory">
+    <SnippetCardEntry header="4GB LPDDR4" link="https://www.longsys.com/products/embedded-storage/embedded-storage/lpddr.html">
+      ذاكرة نظام عالية السرعة بعرض ناقل x32 بت
+    </SnippetCardEntry>
+  </Card>
+</CardGroup>
+
+# التخزين
+
+<CardGroup cols={2}>
+  <Card title="التخزين المدمج" icon="hard-drive">
+    <SnippetCardEntry header="32GB eMMC" link="https://www.longsys.com/products/embedded-storage/embedded-storage/automotive-industriai-wide-temperature-industriai-emmc.html">
+      تخزين فلاش مدمج
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="512Kbit EEPROM" link="https://www.microchip.com/en-us/product/AT24C512C">
+      EEPROM تسلسلي متوافق مع I2C لتخزين الإعدادات
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="التخزين القابل للتوسعة" icon="sd-card">
+    <SnippetCardEntry header="فتحة بطاقة microSD">
+      يدعم وضع SDR104 عالي السرعة
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="منفذ M.2 2280 SSD">
+      يدعم أقراص NVMe SSD عالية السعة
+    </SnippetCardEntry>
+  </Card>
+</CardGroup>
+
+# اتصالات الشبكة
+
+<CardGroup cols={2}>
+  <Card title="لاسلكي" icon="wifi">
+    <SnippetCardEntry header="Fn-Link 6222B-SRC" link="https://www.fn-link.com/6222B-SRC-Wi-Fi-Module-pd40585380.html">
+      Wi-Fi 5 (802.11a/b/g/n/ac)، واجهة SDIO 3.0<br></br>
+      Bluetooth 5.0، واجهة UART
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="سلكي" icon="network-wired">
+    <SnippetCardEntry header="جيجابت إيثرنت">
+      منفذ RJ45 جيجابت إيثرنت للاتصال السلكي عالي السرعة
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="CAN Bus" link="https://www.ti.com/product/TCAN1462-Q1">
+      محوّل CAN FD لتطبيقات السيارات
+    </SnippetCardEntry>
+  </Card>
+
+</CardGroup>
+
+# واجهات الإدخال/الإخراج
+
+<CardGroup cols={2}>
+  <Card title="منافذ USB" icon="usb">
+    <SnippetCardEntry header="2 x USB 3.0 Type-A">
+      يدعم التشغيل عالي السرعة حتى 5Gbps
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="1 x USB 2.0 Type-A">
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="1 x USB 2.0 Type-C">
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="1 x USB 2.0 Type-C (Device + PD)">
+      يدعم وضع جهاز USB وPower Delivery (PD)
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="واجهات الشاشة والكاميرا" icon="camera">
+    <SnippetCardEntry header="2 x 4-lane MIPI CSI">
+      يدعم العديد من وحدات الكاميرا، مثل Raspberry Pi Camera V2
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="1 x 4-lane MIPI DSI">
+      يدعم العديد من شاشات اللمس، مثل Raspberry Pi 7 بوصة أو شاشات Waveshare 7 و10.1 بوصة
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="1 x HDMI">
+      مخرج HDMI كامل الحجم للشاشات الخارجية
+    </SnippetCardEntry>
+
+    ---
+
+    <span className="text-xs"><sup>1</sup> أحد المنفذين مُعدّد مع إمكانية DSI، يمكنك الاختيار بين تكوين CSI مزدوج أو CSI واحد وDSI واحد</span>
+  </Card>
+
+  <Card title="واجهات التوسعة" icon="code">
+    <SnippetCardEntry header="رأس GPIO ذو 40 طرفاً">
+      تخطيط الأطراف الافتراضي متوافق مع Raspberry Pi
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="موصل JTAG">
+      موصل ARM Cortex JTAG ذو 10 أطراف لتصحيح أخطاء نوى MCU من نوع Cortex-R5
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="موصل UART">
+      موصل 3 أطراف بتباعد 2.54 مم يتيح الوصول إلى الكونسول التسلسلي لتصحيح الأخطاء وإدارة النظام
+    </SnippetCardEntry>
+  </Card>
+</CardGroup>
+
+# المستشعرات المدمجة
+
+<CardGroup cols={2}>
+  <Card title="استشعار الحركة" icon="compass">
+    <SnippetCardEntry header="InvenSense ICM-20948" link="https://invensense.tdk.com/products/motion-tracking/9-axis/icm-20948/">
+      مستشعر تتبع حركة MEMS ذو 9 محاور مع مقياس تسارع وجيروسكوب ومقياس مغناطيسية
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="القياس البيئي" icon="temperature-half">
+    <SnippetCardEntry header="STMicroelectronics LPS22DFTR" link="https://www.st.com/en/mems-and-sensors/lps22df.html">
+      مستشعر ضغط جوي 24-بت
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="TI HDC2010" link="https://www.ti.com/product/HDC2010">
+      مستشعر رطوبة وحرارة
+    </SnippetCardEntry>
+  </Card>
+</CardGroup>
+
+# الطاقة والتحكم في النظام
+
+<CardGroup cols={2}>
+  <Card title="مدخل الطاقة" icon="plug">
+    <SnippetCardEntry header="طاقة USB Type-C (5-9 فولت / 3 أمبير)">
+      مدخل الطاقة الأساسي مع دعم USB Power Delivery
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="موصل طاقة DC (5-12 فولت / 5 أمبير)">
+      مدخل طاقة بديل
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="إدارة النظام" icon="toggle-on">
+    <SnippetCardEntry header="مفتاح وضع الإقلاع">
+      مفتاح عتادي لاختيار أوضاع الإقلاع المختلفة وإعداداتها
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="زر الطاقة">
+      زر مخصص لوظيفة إعادة تشغيل اللوحة
+    </SnippetCardEntry>
+
+    <SnippetCardEntry header="مصابيح LED حمراء وخضراء">
+      مؤشرات حالة قابلة للبرمجة لمراقبة النظام وإشعار المستخدم
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="التبريد" icon="fan">
+    <SnippetCardEntry header="موصل المروحة">
+      موصل JST SH ذو 4 أطراف لحلول التبريد النشط مع تحكم PWM في المروحة
+    </SnippetCardEntry>
+  </Card>
+
+  <Card title="الساعة ذات الزمن الحقيقي" icon="clock">
+    <SnippetCardEntry header="Maxim DS1340" link="https://www.analog.com/en/products/ds1340.html">
+      وحدة RTC عبر I2C مع توصيل بطارية خارجية (JST SH ذو طرفين)
+    </SnippetCardEntry>
+  </Card>
+</CardGroup>

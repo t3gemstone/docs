@@ -1,0 +1,335 @@
+---
+title: 'Home Assistant'
+description: 'نظام إدارة مركز المنزل الذكي T3 Gemstone O1'
+---
+
+<Frame>
+    <img noZoom src="/images/homeassistant/homeassistant.png" alt="Home Assistant" />
+</Frame>
+
+<Tip>
+بنهاية هذا القسم ستكتسب المعرفة حول المواضيع التالية.
+
+* تثبيت نظام المنزل الذكي **Home Assistant** على لوحة تطوير T3 Gemstone O1
+* ربط المستشعرات وتحقيق أتمتة المنزل باستخدام Deneyap Kart في هذا المشروع وتطوير تطبيقات المنزل الذكي
+</Tip>
+
+## 1\. مقدمة
+
+أصبح التحكم في بيانات أتمتة المنزل وأمان الأجهزة الذكية أكثر أهمية من أي وقت مضى اليوم.
+قد ترغب في إدارة إضاءتك وكاميرات الأمان والمقابس الذكية والمستشعرات في نظام مركزي دون الاعتماد على مزودي
+السحابة الكبار مثل Amazon أو Google أو Xiaomi أو Tuya.
+لذلك تحتاج إلى استضافة خادم منزلك الذكي على جهازك الخاص والتحكم في أجهزتك عبر الشبكة المحلية.
+ومع ذلك، فإن تشغيل مثل هذا المركز في منزلك يجلب معه مشاكل تقنية مثل تواصل أجهزة من علامات تجارية مختلفة مع
+بعضها البعض، وعدم القدرة على توفير وصول آمن من العالم الخارجي، وإبقاء النظام يعمل باستمرار.
+تُحل هذه المشاكل في معظم الأحيان بإعدادات معقدة وعتاد عالي التكلفة.
+تتيح لوحة تطوير T3 Gemstone O1، مع تكامل Home Assistant، حل هذه المشاكل بطريقة سهلة وغير مكلفة وآمنة.
+
+
+## 2\. تثبيت Home Assistant
+
+Home Assistant هو منصة منزل ذكي وأتمتة مفتوحة المصدر. تقدم ميزات مثل مراقبة بيانات المستشعرات، والتحكم في
+الأضواء والمقابس والأجهزة الأخرى، وإنشاء سيناريوهات تلقائية، والوصول من الأجهزة المحمولة في نظام واحد.
+
+<Warning>
+يعمل تثبيت Home Assistant فقط على صور **Debian**. لا تُدعم صور التوزيعات الأخرى مثل Ubuntu لأن خدمة
+Home Assistant Supervisor لا تعمل بشكل صحيح فيها.
+لذلك عند كتابة الصورة على اللوحة تأكد من اختيار صورة Debian كما هو موضح في قسم
+[اختيار نظام التشغيل الذي سيُثبَّت على اللوحة](/ar/quickstart#1-2-4-اختر-نظام-التشغيل-الذي-سيثبت-على-اللوحة).
+</Warning>
+
+بعد إجراء [اتصال الطرفية](/ar/quickstart/#2-استكشف-gemstone) بلوحة تطوير T3 Gemstone O1، ابدأ أولاً بتثبيت
+Docker باستخدام الأمر التالي.
+
+```bash
+sudo curl -fsSL https://get.docker.com | sudo sh
+```
+
+بعد اكتمال تثبيت Docker يمكنك تثبيت **Home Assistant**.
+
+```bash
+sudo apt install homeassistant-supervised
+```
+
+بعد اكتمال التثبيت، تحتاج إلى إعادة تشغيل لوحة التطوير حتى تبدأ خدمات Home Assistant بشكل صحيح.
+
+```bash
+sudo reboot
+```
+
+بعد إعادة تشغيل اللوحة، قد يستغرق تنزيل Supervisor لجميع الخدمات وتشغيلها ما بين 5 و10 دقائق حسب سرعة الإنترنت
+لديك. يمكنك متابعة الحالة بالأمر التالي:
+
+```bash
+sudo docker logs -f hassio_supervisor
+```
+
+عندما ترى على الشاشة أن خدمتي `hassio_supervisor` و`homeassistant` في حالة `Up` (قيد التشغيل)، يمكنك الوصول إلى
+الواجهة من متصفحك:
+
+`http://gemstone.local:8123` أو `http://<gemstone-ip-adresiniz>:8123`
+
+للوصول من خارج المنزل، يمكنك استخدام شبكة [Tailscale](/ar/projects/cloud#3-الوصول-من-الخارج) التي تحتوي على
+دليل تثبيت، والاتصال بنظامك بأمان عبر عنوان IP الخاص بـ Tailscale (`http://<tailscale-ip>:8123`).
+
+
+## 3\. الوصول إلى واجهة Home Assistant والإعداد الأولي
+
+بعد تفعيل خدمات النظام، عندما تقوم بتسجيل الدخول الأول إلى الواجهة على العنوان `http://gemstone.local:8123` أو
+`http://<gemstone-ip-adresiniz>:8123` عبر متصفحك، سيستقبلك Home Assistant بمعالج إعداد.
+في هذه المرحلة يمكنك إكمال الإعداد الأساسي لمنزلك الذكي بإنشاء حساب المدير الخاص بك.
+يمكنك إنهاء إعداد الواجهة بسهولة باتباع الصور التالية:
+
+<Note>
+  إذا حصلت على خطأ أثناء الاتصال بالواجهة، يمكنك حلّه بتحويل الجزء `https://` في شريط العنوان إلى `http://`.
+</Note>
+
+<Frame caption="شاشة تحضير Home Assistant">
+  <img src="/images/homeassistant/tr/preparation.png" alt="شاشة التحضير" />
+</Frame>
+
+عند إدخال العنوان سترى شاشة تحضير Home Assistant. تُعرض على الشاشة معلومات عن الوقت المقدّر.
+
+<Frame caption="شاشة الترحيب في Home Assistant">
+  <img src="/images/homeassistant/tr/welcome.png" alt="شاشة الترحيب" />
+</Frame>
+
+إذا كنت تقوم بالإعداد لأول مرة فيمكنك الإعداد من قسم **أنشئ منزلي الذكي**.
+إذا كنت قمت بالإعداد من قبل ولديك نسخ احتياطية فيمكنك المتابعة من الخيارات الموجودة في الجزء السفلي.
+
+<Frame caption="شاشة إنشاء مستخدم في Home Assistant">
+  <img src="/images/homeassistant/tr/user-creation.png" alt="إنشاء مستخدم" />
+</Frame>
+
+بعد إدخال معلومات الاسم واسم المستخدم وكلمة المرور يمكنك إنشاء حسابك بالنقر على زر **إنشاء حساب**.
+
+<Frame caption="شاشة اختيار موقع المنزل في Home Assistant">
+  <img src="/images/homeassistant/tr/home-location.png" alt="موقع المنزل" />
+</Frame>
+
+يمكنك اختيار الموقع الذي يتواجد فيه جهازك أي **موقع المنزل**.
+
+<Frame caption="شاشة اختيار مشاركة البيانات في Home Assistant">
+  <img src="/images/homeassistant/tr/data-sharing.png" alt="مشاركة البيانات" />
+</Frame>
+
+تحتاج إلى منح الموافقة لكي يستخدم Home Assistant بياناتك. يمكنك المتابعة بإيقاف هذه الإعدادات أو تشغيلها.
+
+<Frame caption="الشاشة الرئيسية لـ Home Assistant">
+  <img src="/images/homeassistant/tr/main.png" alt="الشاشة الرئيسية" />
+</Frame>
+
+تهانينا! أكملت خطوات الإعداد بنجاح وأنت الآن في الشاشة الرئيسية لـ Home Assistant. يمكنك البدء بحرية في تهيئة
+مركز منزلك الذكي وإدارة أجهزتك عبر T3 Gemstone O1.
+
+
+## 4\. دمج المستشعرات مع Deneyap Kart
+
+في هذا القسم، ستُعرض خطوات توصيل مستشعر حركة بلوحة تطوير Deneyap Kart 1A V2 ودمج هذا المستشعر في منصة
+Home Assistant.
+
+###  4.1 تثبيت ESPHome على Home Assistant
+
+<Frame caption="الشاشة الرئيسية لـ Home Assistant">
+  <img src="/images/homeassistant/tr/main.png" alt="الشاشة الرئيسية لـ Home Assistant" />
+</Frame>
+
+بعد فتح القائمة على الجانب الأيسر، يُنقر على خيار الإعدادات.
+
+<Frame caption="قسم الإعدادات في Home Assistant">
+  <img src="/images/homeassistant/tr/settings.png" alt="قسم الإعدادات في Home Assistant" />
+</Frame>
+
+من القائمة المفتوحة يُختار خيار الإضافات.
+
+<Frame caption="قسم الإعدادات في Home Assistant">
+  <img src="/images/homeassistant/tr/settings-2.png" alt="قسم التطبيقات في Home Assistant" />
+</Frame>
+
+يُنقر على زر "تثبيت الإضافة" الموجود في الزاوية السفلية اليمنى.
+
+<Frame caption="متجر تطبيقات Home Assistant">
+  <img src="/images/homeassistant/tr/app-store.png" alt="متجر تطبيقات Home Assistant" />
+</Frame>
+
+تُكتب كلمة "esphome" في حقل البحث في القائمة المفتوحة.
+
+<Frame caption="نتيجة البحث في متجر تطبيقات Home Assistant">
+  <img src="/images/homeassistant/tr/app-store-search.png" alt="نتيجة البحث في متجر تطبيقات Home Assistant" />
+</Frame>
+
+يُنقر على خيار ESPHome المعروض في نتائج البحث.
+
+<Frame caption="Home Assistant ESPHome">
+  <img src="/images/homeassistant/tr/esphome.png" alt="Home Assistant ESPHome" />
+</Frame>
+
+في القائمة المفتوحة يُنقر على خيار التثبيت ويُنتظر اكتمال التحميل.
+
+<Frame caption="بعد تثبيت ESPHome في Home Assistant">
+  <img src="/images/homeassistant/tr/esphome-installed.png" alt="بعد تثبيت ESPHome في Home Assistant" />
+</Frame>
+
+بعد اكتمال التحميل، يُنقر على زر التشغيل في القائمة المعروضة.
+
+<Frame caption="بعد تثبيت ESPHome في Home Assistant">
+  <img src="/images/homeassistant/tr/esphome-installed-2.png" alt="بعد تثبيت ESPHome في Home Assistant" />
+</Frame>
+
+يُنقر على زر "فتح واجهة الويب".
+
+<Frame caption="شاشة الترحيب في ESPHome">
+  <img src="/images/homeassistant/tr/esphome-welcome.png" alt="شاشة الترحيب في ESPHome" />
+</Frame>
+
+###  4.2 تهيئة ESPHome للوحة Deneyap Kart
+
+في القائمة المفتوحة يُنقر على خيار "Create Device".
+
+<Frame caption="شاشة إضافة جهاز جديد في ESPHome">
+  <img src="/images/homeassistant/tr/esphome-add-device.png" alt="شاشة إضافة جهاز جديد في ESPHome" />
+</Frame>
+
+تُتابع العملية بالنقر على زر "Create new project".
+
+<Frame caption="شاشة تهيئة الجهاز في ESPHome">
+  <img src="/images/homeassistant/tr/esphome-device-config.png" alt="شاشة تهيئة الجهاز في ESPHome" />
+</Frame>
+
+في الصفحة المفتوحة يُبحث حسب طراز MCU الذي ستستخدمه.
+
+<Frame caption="شاشة تهيئة الجهاز في ESPHome">
+  <img src="/images/homeassistant/tr/esphome-device-config-2.png" alt="شاشة تهيئة الجهاز في ESPHome" />
+</Frame>
+
+في هذه الخطوة يُختار الطراز المناسب.
+
+<Frame caption="شاشة اختيار نوع الجهاز في ESPHome">
+  <img src="/images/homeassistant/tr/esphome-device-name.png" alt="شاشة اختيار نوع الجهاز في ESPHome" />
+</Frame>
+
+في هذه الخطوة يجب إعطاء اسم للوحة..
+
+<Frame caption="إكمال تهيئة الجهاز في ESPHome">
+  <img src="/images/homeassistant/tr/esphome-device-wifi.png" alt="إكمال تهيئة الجهاز في ESPHome" />
+</Frame>
+
+في هذه الخطوة يُدخل SSID وكلمة مرور المودم الخاص بك في حقلي "Network Name" و"Password".
+
+```yaml
+substitutions:
+  LED_PIN: GPIO48      # RGB LED الموجود على اللوحة
+  BUTTON_PIN: GPIO0    # زر الإقلاع
+  
+  # تعيينات الأطراف
+  D0: GPIO1
+  D1: GPIO2
+  D4: GPIO42
+  D8: GPIO38
+  D9: GPIO48
+  D12: GPIO10
+  D13: GPIO3
+  D14: GPIO8
+  # I2C
+  SDA_PIN: GPIO47
+  SCL_PIN: GPIO21
+```
+ثم تُنسخ **تعريفات الأطراف (pin)** التي تم إجراؤها في هذا القسم إلى أسفل ملف YAML.
+
+<Frame caption="إضافة مستشعر إلى ملف YAML في ESPHome">
+  <img src="/images/homeassistant/tr/esphome-add-sensor.png" alt="إضافة مستشعر إلى ملف YAML في ESPHome" />
+</Frame>
+
+نظراً لأنه سيُوصَّل مستشعر حركة في هذا المثال، تُلصق التعريفات التالية في أسفل ملف YAML كما في الشكل أعلاه.
+
+```yaml
+binary_sensor:
+  - platform: gpio
+    pin: 
+      number: GPIO42
+      mode: INPUT
+      inverted: false
+    name: "PIR Sensor"
+    device_class: motion
+    filters:
+      - delayed_on: 1s
+```
+
+
+<Note>
+ مستشعر الحركة متصل بالطرف **D4 (GPIO42)**. إذا قمت بتوصيله بطرف مختلف، فستحتاج إلى تحديث حقل **`number`** وفقاً
+ للطرف المعني.
+ لتعيينات الأطراف اللازمة يمكنك الحصول على المعلومات من صفحة [دليل أطراف Deneyap Kart](https://docs.deneyapkart.org/tr/Development_Boards).
+</Note>
+
+يُنقر على زر "Install" الموجود في الزاوية السفلية اليمنى. بهذه الخطوة يكتمل الإعداد.
+
+###  4.3 تحميل البرنامج على Deneyap Kart عبر ESPHome
+
+<Frame caption="خيارات تحميل برنامج ESPHome">
+  <img src="/images/homeassistant/tr/esphome-flash-options.png" alt="خيارات تحميل برنامج ESPHome" />
+</Frame>
+
+أولاً، تُوصَّل **Deneyap Kart** بأي منفذ USB في لوحة تطوير **T3 Gemstone O1** لديك.
+تُعرض خيارات تحميل متنوعة في القائمة المفتوحة، ولكن للتحميل الأول يجب اختيار خيار
+**"Plug into the computer running ESPHome Device Builder"**.
+يمكن إجراء التحميل لاسلكياً في عمليات التحميل اللاحقة.
+
+<Frame caption="تحميل برنامج ESPHome">
+  <img src="/images/homeassistant/tr/esphome-flashing.png" alt="تحميل برنامج ESPHome" />
+</Frame>
+
+يُختار الخيار المناسب المدرج في قسم **اختيار المنفذ**. إذا ظهر أكثر من منفذ، فيُحدد المنفذ الصحيح بأنه المنفذ
+الذي لا يظهر عند نزع Deneyap Kart وإعادة توصيله وفتح القائمة مرة أخرى.
+
+<Frame caption="شاشة سجل تحميل برنامج ESPHome">
+  <img src="/images/homeassistant/tr/esphome-flash-log.png" alt="شاشة سجل تحميل برنامج ESPHome" />
+</Frame>
+
+تبدأ عملية التحميل. يُنصح بالتحلي بالصبر لأن التحميل الأول قد يستغرق بعض الوقت.
+
+<Frame caption="شاشة سجل تحميل برنامج ESPHome">
+  <img src="/images/homeassistant/tr/esphome-flash-log-2.png" alt="شاشة سجل تحميل برنامج ESPHome" />
+</Frame>
+
+بعد اكتمال التحميل، يُنتقل إلى الشاشة الرئيسية لـ ESPHome ويُنقر على قسم "Logs".
+في القائمة المفتوحة أصبح خيار "Wirelessly" متاحاً الآن.
+
+<Frame caption="إضافة جهاز ESPHome">
+  <img src="/images/homeassistant/tr/esphome-find.png" alt="إضافة جهاز ESPHome" />
+</Frame>
+
+على **Home Assistant**، يُنتقل إلى قسم **الإعدادات > الأجهزة والخدمات > إضافة تكامل** ويُنقر على زر الإضافة
+الموجود على جهاز esphome هنا.
+
+<Frame caption="إضافة جهاز ESPHome">
+  <img src="/images/homeassistant/tr/esphome-add-device-homeassistant.png" alt="إضافة جهاز ESPHome" />
+</Frame>
+
+في هذه المرحلة يُنقر على زر **إرسال** الذي يظهر أمامنا.
+
+<Frame caption="إضافة جهاز ESPHome">
+  <img src="/images/homeassistant/tr/esphome-homeassistant-name.png" alt="إضافة جهاز ESPHome" />
+</Frame>
+
+في هذه الخطوة يُعطى اسم للوحة من أجل Home Assistant. بعد ذلك يمكن المتابعة بالنقر على زر **تخطَّ وإنهاء**.
+
+<Frame caption="أجهزة ESPHome">
+  <img src="/images/homeassistant/tr/esphome-devices.png" alt="أجهزة ESPHome" />
+</Frame>
+
+يُنقر على خيار **"1 جهاز"** الموجود تحت **ESPHome**.
+
+<Frame caption="تفاصيل جهاز ESPHome">
+  <img src="/images/homeassistant/tr/esphome-device-details.png" alt="تفاصيل جهاز ESPHome" />
+</Frame>
+
+تهانينا! تم دمج مستشعر الحركة بنجاح في منصة **Home Assistant**. يمكن عرض حالة المستشعر المضاف بشكل لحظي.
+
+## 5\. الأسئلة الشائعة
+
+**أحصل على تحذير "Unsupported System" بعد التثبيت، لماذا؟**
+> قد يظهر هذا التحذير عند استخدام نظام تشغيل غير Home Assistant OS أو عند وجود خدمات أخرى تعمل يدوياً على النظام (مثل Nextcloud أو Tailscale). لا يشكل هذا أي عائق أمام التشغيل المستقر لنظام المنزل الذكي، بل هو لأغراض إعلامية فقط.
+
+**متى سيظهر متجر الإضافات (Add-on)؟**
+> إذا دخلت إلى الواجهة مباشرة بعد اكتمال التثبيت، قد لا تظهر قائمة الإضافات. عندما ينتهي النظام من الإعدادات اللازمة في الخلفية (عادةً خلال 5-10 دقائق)، سيتفعّل تبويب "الإعدادات -> الإضافات" تلقائياً.

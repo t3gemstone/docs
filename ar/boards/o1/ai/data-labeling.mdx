@@ -1,0 +1,91 @@
+---
+title: 'وضع العلامات على البيانات'
+description: 'وضع العلامات على البيانات لمعالجة الصور'
+---
+
+يوضح هذا القسم كيفية إجراء عمليات وضع العلامات عندما تريد تدريب نماذجك الخاصة.
+
+Label Studio هو منصة مفتوحة المصدر لإدارة عملية وضع العلامات (annotation) وتحضير البيانات لأنواع مختلفة من
+البيانات. يتيح وضع العلامات على بيانات الصور أو النصوص أو الصوت أو الفيديو أو السلاسل الزمنية، ويسهّل تحضير
+مجموعات البيانات التي ستُستخدم في تدريب نماذج تعلّم الآلة.
+
+<Frame caption="Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeling.png" />
+</Frame>
+
+ابدأ تشغيل Label Studio عبر بيئة edgeai-tensorlab باستخدام الأمر التالي.
+
+<Note>
+قبل تنفيذ هذه العمليات، يجب أن تكون قد أكملت تثبيت مشروع edgeai-tensorlab في الخطوة السابقة وقمت بالعمليات داخل
+distrobox عبر `task box`.
+</Note>
+
+```bash
+task label-studio
+```
+
+<Frame caption="صفحة تسجيل الدخول في Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-login.png" />
+</Frame>
+
+إذا كان لديك حساب حالياً فيمكنك تسجيل الدخول. وإذا لم يكن لديك حساب بعد، فيمكنك إنشاء حساب جديد بالنقر على زر
+"Sign Up".
+
+<Frame caption="صفحة التسجيل في Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-signup.png" />
+</Frame>
+
+بعد ملء المعلومات المطلوبة، يمكنك إنشاء حسابك بالنقر على زر "Create Account".
+
+<Frame caption="الصفحة الرئيسية لـ Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-home.png" />
+</Frame>
+
+إذا كنت تستخدمه لأول مرة، فستواجه شاشة مشابهة للشاشة أعلاه. يمكنك إنشاء مشروع جديد بالنقر على زر "Create
+Project".
+
+<Frame caption="إنشاء مشروع جديد في Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-1.png" />
+</Frame>
+
+عند إنشاء المشروع، يجب عليك ملء حقلي اسم المشروع ووصف المشروع.
+
+<Frame caption="مشروع جديد في Label Studio: إدخال البيانات">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-2.png" />
+</Frame>
+
+في المرحلة التالية وهي قسم رفع الملفات، يمكنك إضافة الصور الخام أو الصور المعلَّمة إلى النظام كأرشيف.
+
+<Frame caption="مشروع جديد في Label Studio: إعداد وضع العلامات">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-label-setup.png" />
+</Frame>
+
+في قسم "Label Setuping" يجب عليك اختيار القالب المناسب لمشروعك. لاكتشاف الأجسام يجب تحديد خيار "Object
+Detection with Bounding Boxes".
+
+<Frame caption="مشروع جديد في Label Studio: واجهة وضع العلامات">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-create-project-label-interface.png" />
+</Frame>
+
+في هذه الشاشة يجب عليك إدخال أسماء العلامات التي ستُستخدم في نموذجك. سيُعرّف كل سطر كعلامة واحدة. يمكنك إضافة
+أسماء العلامات بالنقر على زر "Add"، ويمكنك بالنقر على العلامات المضافة تعديل ألوانها أو حذفها. بعد إضافة جميع
+العلامات، يمكنك إنشاء مشروعك بالضغط على زر "Save".
+
+<Frame caption="وضع العلامات على البيانات في Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeling.png" />
+</Frame>
+
+في هذه المرحلة يمكنك البدء بوضع العلامات على بياناتك. بعد النقر على إحدى العلامات الموجودة أسفل الصورة التي
+اخترتها، يمكنك تطبيق العلامة المعنية على الصورة. بعد وضع العلامات على الصورة، يمكنك إتمام عملية وضع العلامات
+بالضغط على زر "Submit".
+
+<Frame caption="قائمة البيانات في Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-labeled.png" />
+</Frame>
+
+بعد وضع العلامات على جميع الصور، يجب الضغط على زر "Export". في الشاشة التي تظهر يجب تحديد خيار "YOLO With
+Images" والنقر على زر "Export" الموجود في الأسفل. بهذه العملية تكون قد أنشأت مجموعة البيانات الخاصة بك بنجاح.
+
+<Frame caption="التصدير من Label Studio">
+  <img height="600" width="800" src="/images/o1-board/ai/labelstudio-export.png" />
+</Frame>

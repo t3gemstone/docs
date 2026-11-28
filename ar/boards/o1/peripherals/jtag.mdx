@@ -1,0 +1,42 @@
+---
+title: 'JTAG'
+description: 'استخدام JTAG'
+---
+
+JTAG (Joint Action Test Group) هو معيار أُنشئ لإجراء عمليات مثل فحص التوصيلات في الدوائر الإلكترونية، وبرمجة
+أجهزة التخزين الموجودة على اللوحة، وتصحيح الأخطاء خطوة بخطوة (step debugging). يوجد على اللوحة موصل واحد
+لواجهة JTAG. يتم تصحيح أخطاء تطبيقات R5 ثنائية النواة الموجودة على لوحة تطوير T3-GEM-O1 عبر JTAG.
+
+لإجراء التصحيح، يلزم توفر المتطلبات التالية.
+
+- `كابل T3-GEM-O1 JTAG` واحد
+- حاسوب مثبت عليه `Code Composer Studio`،
+- JTAG debugger مدعوم من Code Composer Studio.
+
+استُخدم في هذا الشرح [Texas Instruments XDS200 USB Debug Probe](https://www.ti.com/tool/TMDSEMU200-U).
+
+## إعداد JTAG والاتصال بـSOC
+
+- ضع لوحة التطوير في وضع `Dev Bootmode` كما هو موضح [هنا](/ar/quickstart#1-3-مفتاح-وضع-الإقلاع-bootmode-switch) ثم وصّل الطاقة.
+  بعد ذلك وصّل `كابل T3-GEM-O1 JTAG` باللوحة كما يظهر في الصورة.
+
+<Frame caption="مهام معلّقة: توصيل كابل JTAG باللوحة">
+  <img style={{height: "300px", width: "auto"}} className="rounded-lg" noZoom src="/images/under-construction.png" />
+</Frame>
+
+- شغّل برنامج `Code Composer Studio` واختر مجلد workspace جديدًا. في الأمثلة هنا، أُنشئ workspace باسم
+  `tutorial_ws`. بعد اختيار الـworkspace ستظهر شاشة `Getting Started`.
+- في هذه الشاشة انقر على `View -> Target Configurations`. في القائمة المفتوحة اضغط على زر
+  `New Target Configuration File` الموجود في الزاوية العلوية اليمنى لفتح شاشة إضافة إعداد جديد.
+  في هذه الشاشة أدخل اسم الإعداد `t3-gem-o1-am67a-debug.ccxml` ثم اضغط على زر `Finish`.
+- ستواجهك شاشة إعدادات الإعداد (configuration). هنا اختر الـdebugger الذي ستستخدمه من القائمة المنسدلة
+  `Connection` (هنا اختير `Texas Instruments XDS2xx USB Debug Probe`).
+- اكتب J722S في حقل الفلترة `Board or Device` وحدد مربع الجهاز `J722S_TDA4VEN_TDA4AEN_AM67`.
+  ثم انقر على زر `Save` الموجود على اليمين لحفظ الإعدادات، واختبر أن الاتصال بالـdebugger تم دون مشاكل
+  باستخدام زر `Test Connection`.
+- عند تشغيل الإعداد المُنشأ من شاشة `Target Configurations`، سيكون الاتصال بلوحة التطوير قائمًا.
+  بعد هذه المرحلة يمكنك الاتصال بالنوى وتحميل الكود.
+
+<Frame caption="إعداد JTAG والاتصال بـSOC">
+  <video controls className="w-full aspect-video" src="/videos/jtag-debug-start.mp4"></video>
+</Frame>

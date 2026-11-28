@@ -1,0 +1,182 @@
+---
+title: 'خارطة الطريق'
+description: 'المشاريع المخطط لها ومراحلها'
+icon: "location-crosshairs"
+---
+
+import { Progress } from '/snippets/progress.mdx';
+
+يحتوي هذا القسم على المشاريع الجديدة المخطط تنفيذها مع Gemstone ومراحل إنجازها. وللمساهمة من خلال المشاركة في المشاريع المعنية قم بزيارة صفحات Github أو منتديات المجتمع.
+
+<Card horizontal arrow="true" title="Apache Nuttx&PX4" icon="spinner" href="./roadmap#apache-nuttx&px4">
+  <Progress percent={90} />
+</Card>
+
+<Card horizontal arrow="true" title="الانتقال إلى Wayland" icon="spinner" href="./roadmap#الانتقال-إلى-wayland">
+  <Progress percent={30} />
+</Card>
+
+<Card horizontal arrow="true" title="Buildroot" icon="spinner" href="./roadmap#buildroot">
+  <Progress percent={80} />
+</Card>
+
+<Card horizontal arrow="true" title="Zenoh" icon="spinner" href="./roadmap#zenoh">
+  <Progress percent={60} />
+</Card>
+
+<Card horizontal arrow="true" title="ChibiOS + Ardupilot" icon="spinner" href="./roadmap#chibios-+-ardupilot">
+  <Progress percent={60} />
+</Card>
+
+<Card horizontal arrow="true" title="Linux Kernel Version 7" icon="clock" href="./roadmap#linux-kernel-version-7">
+  `لم يبدأ بعد`
+</Card>
+
+<Card horizontal arrow="true" title="Gemstone Distro" icon="clock" href="./roadmap#gemstone-distro">
+  `لم يبدأ بعد`
+</Card>
+
+## Apache Nuttx&PX4
+
+يحتوي عتاد Pixhawk [وحدة التحكم في الطيران (Flight Controller)](https://docs.px4.io/main/en/flight_controller/cubepilot_cube_orangeplus.html) غالباً على معالجات STM32 بمعمارية Cortex-M. أما الطيار الآلي المسمى PX4 فيعمل على نظام تشغيل في الوقت الفعلي يسمى Apache Nuttx، ولا يوجد له دعم لمعالج Texas AM67a.
+
+<Columns cols={2}>
+  <Frame caption="Apache Nuttx RTOS">
+  <a href="https://github.com/t3gemstone/NuttX" target="_blank">
+    <img src="/images/apache-nuttx.png" noZoom />
+  </a>
+  </Frame>
+  <Frame caption="PX4 Autopilot">
+  <a href="https://github.com/t3gemstone/PX4-Autopilot" target="_blank">
+    <img src="/images/px4-autopilot.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+يهدف هذا المشروع إلى تشغيل Apache Nuttx و PX4 على نوى Cortex-R5 الموجودة في لوحات تطوير T3-GEM-O1. يوضح الجدول التالي الحالة الحالية والأعمال المزمع تنفيذها.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| تشغيل NuttX على نوى R5                                                                           | `مكتمل`                   |
+| دعم مشغّل GPIO                                                                                         | `مكتمل`                   |
+| دعم مشغّل المنفذ التسلسلي                                                                                    | `مكتمل`                   |
+| الوصول إلى وحدة تحكم NuttShell (nsh)                                                                        | `مكتمل`                   |
+| تحميل NuttX إلى نواة R5 بواسطة U-Boot أو Linux عبر آلية remoteproc                 | `مكتمل`                   |
+| دعم مشغّل I2C                                                                                          | `مكتمل`                   |
+| دعم مشغّل SPI                                                                                          | `مكتمل`                   |
+| دعم مشغّل PWM                                                                                          | `مكتمل`                   |
+| دعم مشغّل ECAP(APWM)                                                                                   | `مكتمل`                   |
+| إعدادات pinmux لجميع الأطراف الموجودة في HAT ذي 40 طرفاً                                                  | `مكتمل`                   |
+| تشغيل الطيار الآلي PX4 كتطبيق (app) على نظام تشغيل Nuttx في Gemstone                     | `مكتمل`                   |
+| الاتصال بين NuttX العامل على نواة R5 و Linux العامل على نواة A53 عبر آلية Texas IPC | `مكتمل`                   |
+| دعم مشغّل CAN Bus                                                                                      | بانتظار مطور متطوع |
+
+## ChibiOS + Ardupilot
+
+يعمل الطيار الآلي Ardupilot حالياً على لوحة تطوير T3 Gemstone O1 عبر Linux، أي على نوى Cortex-A53. ومع ذلك، ومن أجل تحكم في الطيران في الوقت الفعلي (real-time) وبزمن استجابة منخفض (low-latency)، يُفضَّل أن يعمل الطيار الآلي على نوى مخصصة دون تحميل نظام التشغيل. يُستخدم [ChibiOS](https://www.chibios.org/)، وهو نظام التشغيل في الوقت الفعلي الذي يدعمه Ardupilot بشكل أساسي، على نطاق واسع في لوحات وحدات التحكم في الطيران.
+
+يهدف هذا المشروع إلى نقل (port) نظام التشغيل ChibiOS إلى نوى Cortex-R5 الموجودة على SoC من نوع AM67a، وتشغيل Ardupilot على هذه النوى كطيار آلي فوق ChibiOS. وبهذه الطريقة، بينما يتولى Linux العامل على نوى Cortex-A53 المهام العامة، يمكن تنفيذ حلقة التحكم في الطيران في الوقت الفعلي دون انقطاع على نوى Cortex-R5.
+
+<Columns cols={2}>
+  <Frame caption="ChibiOS RTOS">
+  <a href="https://www.chibios.org/" target="_blank">
+    <img src="/images/chibios.png" noZoom />
+  </a>
+  </Frame>
+  <Frame caption="Ardupilot">
+  <a href="https://ardupilot.org/" target="_blank">
+    <img src="/images/ardupilot.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+يوضح الجدول التالي الحالة الحالية والأعمال المزمع تنفيذها.
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| نقل (port) طبقة ChibiOS HAL لنوى Cortex-R5 في AM67a                                            | **قيد التنفيذ**               |
+| تشغيل Ardupilot كطيار آلي فوق ChibiOS                                                | **قيد التنفيذ**               |
+| تحميل ChibiOS إلى نواة R5 بواسطة U-Boot أو Linux عبر آلية remoteproc               | `مكتمل`                   |
+| دعم مشغّل المنفذ التسلسلي (UART) والوصول إلى وحدة التحكم                                                           | `مكتمل`                   |
+| دعم مشغّل GPIO                                                                                         | `مكتمل`                   |
+| تجميع Ardupilot لنوى R5 باستخدام طبقة AP_HAL_ChibiOS                            | `مكتمل`                   |
+| دعم مشغّلي SPI و I2C (لمستشعرات مثل IMU والبارومتر وغيرها)                                               | `مكتمل`                   |
+| دعم مشغّل PWM (لمخرجات المحركات والمواتير المؤازرة)                                                          | `مكتمل`                   |
+| دعم مشغّل CAN Bus (DroneCAN)                                                                           | بانتظار مطور متطوع |
+| الاتصال بين ChibiOS العامل على نواة R5 و Linux العامل على نواة A53 عبر Texas IPC | بانتظار مطور متطوع |
+| توفير اتصال MAVLink للقياس عن بُعد (telemetri) ومحطة التحكم الأرضية (GCS)                                   | بانتظار مطور متطوع |
+
+## Buildroot
+
+سيُضاف دعم Gemstone إلى Buildroot، وهو نظام تجميع Linux ذو بنية أخف قليلاً مقارنة بمشروع Yocto Project. الهدف هنا هو أن يتمكن من يقوم بتنزيل Buildroot من رؤية لوحة `T3-GEM-O1` كلوحة (board) في نظام Buildroot الرسمي، وأن يتمكن من تجميع نوع الصورة المحددة وتحميلها إلى لوحة التطوير.
+
+<Columns cols={1}>
+  <Frame caption="Buildroot">
+  <a href="https://buildroot.org/" target="_blank">
+    <img src="/images/buildroot.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| إضافة تهيئة T3-GEM-O1 داخل Buildroot وإنشاء طلب سحب (pull request) [على هذا العنوان](https://github.com/t3gemstone/buildroot)                 | `مكتمل` |
+
+## الانتقال إلى Wayland {#الانتقال-إلى-wayland}
+
+لا يستطيع المشغّل المقدَّم من TI لوحدة GPU (IMG BXS4-64) المصاحبة لمعالج AM67A SoC تسريع بيئات سطح المكتب X11. حالياً يتم عرض النوافذ بواسطة وحدة CPU (llvmpipe) دون تسريع عتادي. يؤدي هذا الوضع إلى عمل بيئة سطح المكتب بشكل متجمد. ويحتوي المشغّل نفسه على دعم للتسريع خاص بـ Wayland. الهدف هو الانتقال إلى بيئة سطح مكتب تدعم Wayland وتكون مستقرة ومنخفضة استهلاك الموارد وغنية بالميزات وتناسب غالبية المستخدمين.
+
+<Columns cols={1}>
+  <Frame caption="Wayland">
+    <img src="/images/wayland-logo.svg" noZoom />
+  </Frame>
+</Columns>
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| تجميع [مكتبة Mesa](https://gitlab.freedesktop.org/StaticRocket/mesa) باستخدام أدوات التجميع الخاصة بـ Ubuntu 22.04 وتحويلها إلى حزمة DEB | `مكتمل` |
+| اختيار بيئة سطح مكتب أو مدير نوافذ مناسب لـ Wayland | بانتظار مطور متطوع |
+| إيجاد برامج مثل الإعدادات ومدير الملفات ومدير الشبكة (إذا لم تكن مرفقة مع البيئة المختارة) | بانتظار مطور متطوع |
+| إنشاء سمة موحدة لأجزاء مثل حدود النوافذ وشريط الحالة من أجل اتساق الواجهة | بانتظار مطور متطوع |
+
+## Linux Kernel Version 7
+
+بدلاً من الإصدار 6.12 المستخدم حالياً، الهدف هو تشغيل نواة Linux 7 على لوحة تطوير T3-GEM-O1. وبهذه الطريقة سيكون من الممكن الاستفادة من مشغّلات العتاد الجديدة والتحسينات وإصلاحات الأخطاء.
+
+<Columns cols={1}>
+  <Frame caption="Linux Kernel Version 7">
+  <a href="https://github.com/RobertCNelson/arm64-multiplatform/commits/v7.0.x-arm64-k3/" target="_blank">
+    <img src="/images/linux-kernel-7.png" noZoom />
+  </a>
+  </Frame>
+</Columns>
+
+## Gemstone Distro
+
+حالياً يتم إنشاء النواة ومحمل الإقلاع والبرمجيات الثابتة (firmware) المستخدمة في النظام البيئي عبر Yocto لأغراض تعليمية. ثم تُنتج الصور بدمجها مع إصدارات متنوعة من توزيعات Pardus و Ubuntu و Debian. الهدف هو تغيير هذه الطريقة بحيث تُجمَّع جميع البرمجيات الأساسية مثل Kernel والمشغّلات و U-Boot و Firmware دون Yocto، ونقل أحدث إصدار من Ubuntu (port)، وإنتاج توزيعة مستقلة باسم Gemstone Distro. في حين أن التوزيعات مثل Ubuntu و Pardus و Debian موجودة في تطبيق Gemstone Image Writer مع واجهاتها وبيئات سطح المكتب الخاصة بها، ستحتوي Gemstone Distro على واجهاتها الخاصة بالكامل.
+
+بدلاً من أنظمة مثل Devbox و Taskfile و Distrobox، يمكن الانتقال إلى أنظمة تنتج الصور عن طريق التجميع باستخدام أدوات CI/CD المستندة إلى الويب.
+
+## Zenoh
+
+يعمل مشروع Eclipse [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) على وحدات MCU متنوعة تتطلب استهلاكاً منخفضاً للموارد. وكما هو مذكور في مستودع الأكواد الرسمي، فقد تم تكييفه للوحات مثل Arduino و STM32 و ESP. أما بالنسبة لمعماريات AM67A Cortex R5 الموجودة على لوحة T3 Gemstone O1، فلا توجد أعمال تكييف معروفة.
+
+الهدف من هذا العمل هو تمكين مشروع zenoh-pico من العمل مع lwIp على AM67A Cortex-R5، وإزالة استخدام الذاكرة الديناميكية (dynamic memory) وإجراء تكييف الذاكرة الثابتة (static memory)، وتمكين استخدامه كمكتبة (library)، ثم إنشاء طلب سحب (pull request) إلى مستودعات الأكواد الرسمية مع الإشارة إلى توافق T3 Gemstone O1.
+
+<Columns cols={1}>
+  <Frame caption="[ما هو Zenoh؟](https://zenoh.io/docs/overview/what-is-zenoh/)">
+    <img src="/images/zenoh.png" noZoom />
+  </Frame>
+</Columns>
+
+سيتم تنفيذ الخطوات التالية بعد فحص قسم [MCU](./boards/o1/peripherals/mcu) في التوثيق ومستودع [Examples](https://github.com/t3gemstone/examples).
+
+|                                                                                                             |                                |
+|:------------------------------------------------------------------------------------------------------------|-------------------------------:|
+| تجميع [Zenoh Pico](https://github.com/t3gemstone/zenoh-pico) بحالته الحالية كتطبيق MCU لـ Gemstone R5 | `مكتمل` |
+| تنظيف مواضع استخدام الذاكرة الديناميكية في المشروع وتحويلها إلى ذاكرة ثابتة | `مكتمل` |
+| كتابة أمثلة تعمل مع FreeRTOS و lwIp | `مكتمل` |
+| جعل المشروع قابلاً للتجميع كمكتبة (library) وقابلاً للاستخدام في برمجيات MCU الأخرى | `مكتمل` |
+| قيام مشروع Cortex R5 Zenoh MCU بالتوجيه (routing) عبر جهاز [RPMSG Net](https://github.com/t3gemstone/rpmsg-net) الافتراضي في Linux باستخدام IPC بدلاً من ethernet الحقيقي | `مكتمل` |
+| إنشاء إعداد مكوّن من لوحتي Gemstone (IPC) وحاسوب Linux مكتبي واحد (Wifi) وتوصيل الأجهزة معاً عبر Zenoh | **بانتظار مطور متطوع** |
+| إضافة دعم بروتوكول QUIC إلى المشروع | **بانتظار مطور متطوع** |
