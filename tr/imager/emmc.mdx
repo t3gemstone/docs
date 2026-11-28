@@ -56,26 +56,42 @@ SD karta veya çalışan bir sisteme gerek kalmadan eMMC'ye imaj yazılabilir.
 
 </Steps>
 
-### 1.2. GemImager ile İmaj Yükleme
+### 1.2. T3 Gemstone Imager ile İmaj Yükleme
 
-GemImager tüm DFU yazma sürecini otomatik olarak yönetir — önyükleyici dosyaları işletim sistemi
-imajı ile birlikte gönderilir ve doğru sırayla yüklenir.
+T3 Gemstone Imager tüm yazma sürecini kendisi yönetir. Önyükleyici dosyalarını (`tiboot3.bin`, `tispl.bin`,
+`u-boot.img`) DFU ile karta gönderir, ardından kartı **USB yığın depolama (UMS)** moduna alır. Bu modda kartın eMMC'si
+bilgisayara bir disk olarak görünür ve imaj bir SD karta yazılır gibi doğrudan yazılıp doğrulanır.
+
+<Note>
+  UMS ile yazma DFU ile yazmadan çok daha hızlıdır: 1 GB'lık minimal imaj yaklaşık 30 saniyede, 4 GB'lık masaüstü
+  imajı yaklaşık 2 dakikada yazılır. Önyükleyici UMS desteklemiyorsa (eski imajlar) imaj otomatik olarak DFU ile
+  gönderilir; bu yöntem çok daha yavaştır ancak yapmanız gereken adımlar aynıdır.
+</Note>
 
 <Steps>
-  <Step title="GemImager'ı açınız">
-    Bilgisayarınızda **GemImager**'ı başlatınız ve kullanmak istediğiniz kartı seçiniz.
+  <Step title="T3 Gemstone Imager'ı açınız">
+    Uygulamayı [t3gemstone.org/tr/software](https://t3gemstone.org/tr/software) adresinden indirip kurunuz
+    ve açınız. **Kart** başlığı altındaki **AYGIT SEÇİN** butonundan **T3-GEM-O1**'i seçiniz.
 
-    <Warning>
-      GemImager'ın USB aygıtlarına erişebilmesi için **yönetici (administrator) olarak çalıştırılması** gerekmektedir.
-    </Warning>
+    <Note>
+      Uygulamayı yönetici olarak çalıştırmanız gerekmez; gereken izinler yazma sırasında istenir.
+      Ayrıntılar için aşağıdaki **1.3. İşletim Sistemine Göre İzinler** bölümüne bakınız.
+    </Note>
   </Step>
 
   <Step title="İşletim sistemi imajını seçiniz">
-    **İşletim Sistemi Seçin** butonuna tıklayarak yüklemek istediğiniz imajı seçiniz.
+    **İŞLETİM SİSTEMİ SEÇİN** butonuna tıklayarak yüklemek istediğiniz imajı seçiniz. Listedeki imajlar internetten
+    indirilir; bilgisayarınızdaki bir `.img` veya `.img.xz` dosyasını da seçebilirsiniz.
   </Step>
 
-  <Step title="Depolama aygıtını seçiniz">
-    **Hedef Seçin** butonuna tıklayınız ve **USB DFU** seçeneğini seçiniz.
+  <Step title="Hedef olarak DFU modunu seçiniz">
+    **HEDEF SEÇİN** butonuna tıklayınız ve **DFU Modu (eMMC)** seçeneğini seçiniz. Açılan **Önyükleme Modu Anahtarı**
+    penceresi, DFU modu için switch konumunu gösterir. Kartın switch'lerinin bu konumda olduğunu kontrol edip
+    **DEVAM ET** butonuna tıklayınız.
+
+    <Frame>
+      <img src="/images/gem-imager/dfu-bootmode-dialog.png" />
+    </Frame>
 
     <Frame>
       <img src="/images/gem-imager/select-dfu.png" />
@@ -83,21 +99,30 @@ imajı ile birlikte gönderilir ve doğru sırayla yüklenir.
   </Step>
 
   <Step title="İmajı yazınız">
-    **İleri** butonuna tıklayarak OS özelleştirme seçeneklerini yapılandırın ([Özelleştirme](/tr/imager/customization)
-    sayfasına bakınız), ardından **Yaz** butonuna basınız.
+    **İleri** butonuna tıklayarak OS özelleştirme seçeneklerini yapılandırınız ([Özelleştirme](/tr/imager/customization)
+    sayfasına bakınız), ardından yazma işlemini başlatınız.
+
+    Yazma sırasında uygulama sırasıyla şu adımları gösterir:
+
+    1. **Önyükleyici dosyaları alınıyor...**: Önyükleyici, seçilen imaj bilgisayarınızdaysa imajın içinden,
+       değilse sunucudan alınır ve özeti (SHA-256) kontrol edilir.
+    2. **bootloader / tispl.bin / u-boot.img gönderiliyor...**: Önyükleyici aşamaları DFU ile karta gönderilir.
+    3. **Kart USB yığın depolama moduna geçiriliyor...**: Kart eMMC'yi bir disk olarak sunar.
+    4. **İmaj USB yığın depolama üzerinden karta yazılıyor...**: İmaj yazılır ve ardından doğrulanır.
+    5. **Kart eMMC'ye yazıyor (gücü kesmeyin)...**: Kart, önbelleğindeki son verileri eMMC'ye yazar.
 
     <Warning>
-      Yazma işlemi sırasında USB kablosunu çıkarmayınız veya güç bağlantısını kesmeyiniz.
+      Yazma işlemi sırasında USB kablosunu çıkarmayınız veya güç bağlantısını kesmeyiniz. Yazma sırasında
+      bilgisayarınızda görünen diski çıkarmayınız, biçimlendirmeyiniz; uygulama yazma bitince diski kendisi çıkarır.
     </Warning>
-
   </Step>
 
   <Step title="Tamamlanmasını bekleyiniz">
-    Yazma işlemi tamamlandığında Gem Imager başarı mesajı görüntüler.
+    Yazma bittiğinde uygulama **İmaj eMMC'ye başarıyla yazıldı!** mesajını gösterir.
   </Step>
 
   <Step title="Kartı kapatıp bootmode switch'i eMMC konumuna alınız">
-    Kartı tamamen kapatınız, ardından bootmode switch'i aşağıdaki görselde gösterildiği gibi
+    Kartın gücünü kesiniz, ardından bootmode switch'i aşağıdaki görselde gösterildiği gibi
     **eMMC** konumuna getiriniz.
 
     <Frame caption="eMMC boot modu switch pozisyonu">
@@ -118,6 +143,46 @@ imajı ile birlikte gönderilir ve doğru sırayla yüklenir.
     UART bağlantısı hakkında daha fazla bilgi için [Seri Port](/tr/boards/o1/peripherals/serial) sayfasına bakın.
   </Step>
 </Steps>
+
+### 1.3. İşletim Sistemine Göre İzinler
+
+<Tabs>
+  <Tab title="Windows">
+    - Uygulama açılırken Windows yönetici onayı (UAC) ister.
+    - Kurulum programı, kartın DFU arayüzü için gereken **WinUSB** sürücüsünü de kurar. Ayrıca
+      [Zadig](https://zadig.akeo.ie/) ile sürücü kurmanız gerekmez.
+    - Kurulumda **DFU sürücüsü (USB ile yazma)** seçeneğinin işaretini kaldırdıysanız uygulama karta ulaşamadığını
+      bildirir. Bu durumda kurulum programını yeniden çalıştırıp bu seçeneği seçili bırakınız; kartın gücünü
+      kesmeniz gerekmez.
+  </Tab>
+  <Tab title="Linux">
+    - İlk DFU yazma işleminde, kartın DFU arayüzüne erişim için gereken udev kuralını yüklemek üzere yönetici
+      şifreniz bir kez sorulur.
+      Şifre girilmezse uygulama *"Kimlik doğrulama başarısız veya iptal edildi"* hatası verir.
+    - İmaj UMS ile yazılırken diske erişim için yönetici şifresi istenebilir.
+  </Tab>
+  <Tab title="macOS">
+    - **.dmg** dosyasını açıp **T3 Gemstone Imager**'ı **Uygulamalar** klasörüne sürükleyiniz.
+    - Apple Silicon (M serisi) Mac'lerde kart ilk takıldığında macOS *"Aksesuarın bağlanmasına izin verilsin mi?"*
+      diye sorar. **İzin Ver**'i seçiniz; aksi halde uygulama kartı DFU modunda bulamaz. Soruyu kaçırdıysanız USB
+      kablosunu çıkarıp yeniden takınız.
+    - Kart UMS moduna geçtiğinde macOS, diske yazmak için yönetici şifrenizi ister.
+    - Yazma sırasında kartın diski Finder'da bağlanmaz ve "okunamayan disk" uyarısı çıkmaz; uygulama diski
+      yazma bitince kendisi çıkarır.
+  </Tab>
+</Tabs>
+
+### 1.4. Olası Hatalar
+
+| Mesaj | Yapılması gereken |
+|-------|-------------------|
+| Önyükleyici dosyası indirilemedi | İnternet bağlantınızı kontrol edip yeniden deneyiniz. İndirilen dosyanın özeti beklenenle eşleşmezse de bu hata verilir. |
+| Kart USB yığın depolama moduna geçti, ancak ... disk görünmedi | Kartın gücünü kesiniz, bootmode switch'i yeniden DFU konumuna alıp güç veriniz ve yeniden deneyiniz. |
+| ... gönderilirken DFU aktarımı başarısız oldu | Kartın gücünü kesiniz, bootmode switch'i yeniden DFU konumuna alıp güç veriniz ve yeniden deneyiniz. |
+| Aktarım bittikten ... dakika sonra kart hâlâ eMMC'ye yazıyor | Kartın gücünü **kesmeyiniz**; seri porttan takip edip yazma bitene kadar bekleyiniz. |
+
+Uygulama her oturumun kaydını bir log dosyasına yazar. Sorun bildirirken bu dosyayı
+[gem-imager](https://github.com/t3gemstone/gem-imager/issues) deposuna eklemeniz sorunun çözümünü hızlandırır.
 
 ## 2. SDK ile Manuel İmaj Yükleme (dfu-util)
 
@@ -196,12 +261,7 @@ Başarılı bir SDK derlemesinin ardından gereken dosyalar iki dizinde bulunur:
 
 ### 2.1. Doğrulama Adımı
 
-GemImager DFU ile yazma işlemi yapıldığında sırasıyla şu işlemleri gerçekleştirir:
-
-1. Seçilen imajı indirir veya okur
-2. Önyükleyici dosyalarını çıkarır (`tiboot3.bin`, `tispl.bin`, `u-boot.img`)
-3. Her önyükleyici aşamasını DFU üzerinden yazar
-4. Tam OS imajını eMMC'ye aktarır (`rawemmc` alt ayarı)
+Komutları çalıştırmadan önce kartın DFU cihazı olarak göründüğünü doğrulayınız.
 
 <Step title="DFU cihazını doğrulayınız">
   Kartın DFU cihazı olarak göründüğünü doğrulayınız.
@@ -223,8 +283,9 @@ GemImager DFU ile yazma işlemi yapıldığında sırasıyla şu işlemleri ger�
       ```
 
       <Note>
-        Windows'ta `dfu-util.exe -l` çıktısı boş geliyorsa, cihaza **WinUSB** sürücüsünü
-        [Zadig](https://zadig.akeo.ie/) ile yüklemeniz gerekmektedir:
+        Windows'ta `dfu-util.exe -l` çıktısı boş geliyorsa cihaza **WinUSB** sürücüsü yüklenmemiştir. T3 Gemstone
+        Imager kurulumu bu sürücüyü yükler; Imager'ı kurmadıysanız sürücüyü [Zadig](https://zadig.akeo.ie/) ile
+        yükleyebilirsiniz:
 
         1. [zadig.akeo.ie](https://zadig.akeo.ie/) adresinden Zadig'i indirip çalıştırınız
             (kurulum gerektirmez; UAC yönetici onayı isteyecektir)

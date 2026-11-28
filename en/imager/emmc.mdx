@@ -57,68 +57,130 @@ directly over USB. An image can be written to eMMC without needing an SD card or
 
 </Steps>
 
-### 1.2. Loading the Image with GemImager
+### 1.2. Writing the Image with T3 Gemstone Imager
 
-GemImager automatically manages the entire DFU writing process — the bootloader files are shipped
-together with the operating system image and are loaded in the correct order.
+T3 Gemstone Imager handles the whole write. It sends the bootloader files (`tiboot3.bin`, `tispl.bin`, `u-boot.img`)
+to the board over DFU and then switches the board to **USB mass storage (UMS)** mode. In this mode the board's eMMC
+shows up on the computer as a disk, and the image is written and verified directly, as on an SD card.
+
+<Note>
+  Writing over UMS is much faster than over DFU: a 1 GB minimal image takes about 30 seconds and a 4 GB desktop
+  image about 2 minutes. If the bootloader does not support UMS (older images), the image is sent over DFU
+  automatically. That is much slower, but the steps are the same.
+</Note>
 
 <Steps>
-  <Step title="Open GemImager">
-    Launch **GemImager** on your computer and select the board you want to use.
+  <Step title="Open T3 Gemstone Imager">
+    Download and install the application from [t3gemstone.org/en/software](https://t3gemstone.org/en/software) and
+    open it. Under **Board**, click **CHOOSE DEVICE** and select **T3-GEM-O1**.
 
-    <Warning>
-      In order for GemImager to access USB devices, it must be **run as administrator**.
-    </Warning>
+    <Note>
+      You do not need to run the application as administrator; the permissions it needs are requested during the
+      write. See **1.3. Permissions by Operating System** below.
+    </Note>
   </Step>
 
   <Step title="Select the operating system image">
-    Click the **Choose OS** button and select the image you want to write.
+    Click **CHOOSE OS** and select the image you want to write. The images in the list are downloaded from the
+    internet; you can also select an `.img` or `.img.xz` file on your computer.
   </Step>
 
-  <Step title="Select the storage device">
-    Click the **Choose Target** button and select the **USB DFU** option.
+  <Step title="Select DFU mode as the target">
+    Click **CHOOSE STORAGE** and select **DFU Mode (eMMC)**. The **Boot Mode Switch** window that opens shows the
+    switch position for DFU mode. Check that the board's switches are in this position and click **CONTINUE**.
 
     <Frame>
-      <img src="/images/gem-imager/select-dfu.png" />
+      <img src="/images/gem-imager/dfu-bootmode-dialog-en.png" />
+    </Frame>
+
+    <Frame>
+      <img src="/images/gem-imager/select-dfu-en.png" />
     </Frame>
   </Step>
 
   <Step title="Write the image">
-    Click the **Next** button to configure the OS customization options (see the
-    [Customization](/en/imager/customization) page), then press the **Write** button.
+    Click **Next** to configure the OS customization options (see the [Customization](/en/imager/customization)
+    page), then start the write.
+
+    During the write the application shows these steps in order:
+
+    1. **Fetching bootloader files...**: The bootloader is taken from the image itself if the image is on your
+       computer, otherwise from the server, and its checksum (SHA-256) is checked.
+    2. **Sending bootloader / tispl.bin / u-boot.img...**: The bootloader stages are sent to the board over DFU.
+    3. **Switching the board to USB mass storage mode...**: The board exposes its eMMC as a disk.
+    4. **Writing image to the board over USB mass storage...**: The image is written and then verified.
+    5. **Device is writing to eMMC (do not power off)...**: The board writes its last cached data to the eMMC.
 
     <Warning>
-      Do not unplug the USB cable or disconnect the power during the writing process.
+      Do not unplug the USB cable or remove power during the write. Do not eject or format the disk that appears
+      on your computer during the write; the application ejects it itself when the write is done.
     </Warning>
-
   </Step>
 
   <Step title="Wait for completion">
-    When the writing process is complete, Gem Imager displays a success message.
+    When the write is done, the application shows **Image written to eMMC successfully!**
   </Step>
 
-  <Step title="Power off the board and set the bootmode switch to the eMMC position">
-    Fully power off the board, then set the bootmode switch to the **eMMC** position as shown in
-    the image below.
+  <Step title="Power off the board and set the bootmode switch to eMMC">
+    Remove power from the board, then set the bootmode switch to the **eMMC** position as shown below.
 
     <Frame caption="eMMC boot mode switch position">
       <img src="/images/bootmode/emmc-bootmode.svg" />
     </Frame>
 
     <Note>
-      You can monitor the boot process via a serial port connection over UART.
-      Default baudrate: **115200**
+      You can follow the boot over UART with a serial port connection.
+      Default baud rate: **115200**
     </Note>
 
-    After applying power, the board will boot from the image on the eMMC.
+    After power is applied, the board boots from the image on the eMMC.
 
-    <Frame caption="Serial port output during DFU transfer">
+    <Frame caption="Serial port output during the DFU transfer">
       <img src="/images/gem-imager/dfu-serial.png" />
     </Frame>
 
-    For more information about the UART connection, see the [Serial Port](/en/boards/o1/peripherals/serial) page.
+    For more information on the UART connection, see the [Serial Port](/en/boards/o1/peripherals/serial) page.
   </Step>
 </Steps>
+
+### 1.3. Permissions by Operating System
+
+<Tabs>
+  <Tab title="Windows">
+    - Windows asks for administrator approval (UAC) when the application starts.
+    - The installer also installs the **WinUSB** driver the board's DFU interface needs. You do not need to install a
+      driver with [Zadig](https://zadig.akeo.ie/).
+    - If you cleared **DFU driver (USB flashing)** during installation, the application reports that it cannot reach
+      the board. Run the installer again and leave that option selected; the board does not need to be power cycled.
+  </Tab>
+  <Tab title="Linux">
+    - On the first DFU write, your administrator password is asked once to install the udev rule that gives access
+      to the board's DFU interface.
+      If it is not entered, the application reports *"Authentication failed or was cancelled"*.
+    - Your administrator password may be asked for disk access when the image is written over UMS.
+  </Tab>
+  <Tab title="macOS">
+    - Open the **.dmg** and drag **T3 Gemstone Imager** to the **Applications** folder.
+    - On Apple silicon (M series) Macs, macOS asks *"Allow accessory to connect?"* the first time the board is
+      plugged in. Choose **Allow**; otherwise the application cannot find the board in DFU mode. If you missed the
+      prompt, unplug the USB cable and plug it in again.
+    - When the board switches to UMS mode, macOS asks for your administrator password to write to the disk.
+    - During the write the board's disk is not mounted in Finder and no "disk not readable" prompt appears; the
+      application ejects the disk itself when the write is done.
+  </Tab>
+</Tabs>
+
+### 1.4. Possible Errors
+
+| Message | What to do |
+|---------|------------|
+| Failed to download bootloader file | Check your internet connection and retry. This error is also shown when the checksum of the downloaded file does not match. |
+| The board switched to USB mass storage mode, but no disk appeared ... | Power off the board, set the bootmode switch to DFU again, restore power and retry. |
+| DFU transfer failed while sending ... | Power off the board, set the bootmode switch to DFU again, restore power and retry. |
+| The device is still writing to eMMC ... minutes after the transfer finished | Do **not** power off the board; follow the serial console and wait until the write finishes. |
+
+The application writes a log file for every session. Attaching it when you report a problem in the
+[gem-imager](https://github.com/t3gemstone/gem-imager/issues) repository helps solve it faster.
 
 ## 2. Manual Image Loading with the SDK (dfu-util)
 
@@ -197,12 +259,7 @@ After a successful SDK build, the required files are located in two directories:
 
 ### 2.1. Verification Step
 
-When writing with GemImager DFU, the following operations are performed in order:
-
-1. Downloads or reads the selected image
-2. Extracts the bootloader files (`tiboot3.bin`, `tispl.bin`, `u-boot.img`)
-3. Writes each bootloader stage over DFU
-4. Transfers the full OS image to the eMMC (`rawemmc` alt setting)
+Before running the commands, verify that the board appears as a DFU device.
 
 <Step title="Verify the DFU device">
   Verify that the board appears as a DFU device.
@@ -224,8 +281,9 @@ When writing with GemImager DFU, the following operations are performed in order
       ```
 
       <Note>
-        If the output of `dfu-util.exe -l` is empty on Windows, you need to install the **WinUSB**
-        driver on the device using [Zadig](https://zadig.akeo.ie/):
+        If the output of `dfu-util.exe -l` is empty on Windows, the **WinUSB** driver is not installed. The
+        T3 Gemstone Imager installer installs it; if you have not installed the Imager, you can install the driver
+        with [Zadig](https://zadig.akeo.ie/):
 
         1. Download and run Zadig from [zadig.akeo.ie](https://zadig.akeo.ie/)
             (no installation required; it will request UAC administrator approval)
